@@ -1,0 +1,4 @@
+[submodule "lore"]
+	path = lore
+	url = https://github.com/EpicGames/lore.git
+	shallow = true
