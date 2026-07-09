@@ -1,4 +1,4 @@
-# 📖 lore-sys
+# 📖 lore-rs
 
 [![Actions Status](https://github.com/Traverse-Research/Lore-rust-bindings/actions/workflows/ci.yml/badge.svg)](https://github.com/Traverse-Research/Lore-rust-bindings/actions)
 [![Latest version](https://img.shields.io/crates/v/lore-sys.svg?logo=rust)](https://crates.io/crates/lore-sys)
@@ -9,17 +9,17 @@
 
 [![Banner](banner.png)](https://traverseresearch.nl)
 
-Raw Rust bindings for the C API of [Lore], Epic Games' open source version
+Rust bindings and some helper functions for the C API of [Lore], Epic Games' open source version
 control system.
 
-The bindings ([`src/bindings.rs`](src/bindings.rs)) are pregenerated with
-[bindgen] from the `lore-capi/lore.h` header in the [`lore`](lore) git
-submodule, which is itself the cbindgen output committed in the Lore
-repository. Building this crate therefore needs no build script, bindgen,
-libclang or initialized submodule. The Lore dynamic library (`lore.dll` /
-`liblore.so` / `liblore.dylib`, built from Lore's `lore` crate as a `cdylib`)
-is not linked at build time; it is loaded at runtime through [libloading] via
-the generated [`Lore`] struct.
+Lore itself is build in rust but for anyone wanting to link to it dynamically for whatever reason, you need to go through the C API. This crate contains the bindings and some helpers to make that more ergomic.
+
+The raw bindings have been automatically generated using BindGen.
+
+
+A seperate branch also contains pregenerated dynamic library artifacts for Windows, MacOS and Linux, all release builds.
+
+# Depedencies
 
 [Lore]: https://github.com/EpicGames/lore
 [bindgen]: https://crates.io/crates/bindgen
@@ -27,38 +27,25 @@ the generated [`Lore`] struct.
 
 ## Usage
 
-Add this to your Cargo.toml:
-
-```toml
-[dependencies]
-lore-sys = "0.0.0"
-```
-
 Load the library and call into the C API:
 
 ```rust,no_run
-use lore_sys::Lore;
+use lore_rs::Lore;
 
-let lore = unsafe { Lore::load("path/to/lore.dll") }.expect("failed to load Lore");
-// Or resolve `lore.dll`/`liblore.so`/`liblore.dylib` from the system search path:
-// let lore = unsafe { Lore::load(lore_sys::library_filename()) }.expect("failed to load Lore");
-
-unsafe { lore.lore_shutdown() };
+let lore = unsafe { Lore::new("path/to/lore.dll") }.expect("failed to load Lore");
 ```
 
-## Updating the bindings
+For the actual usage of Lore, you can see all the documentation regarding Lore [there](https://github.com/epicgames/lore)
 
-Bump the [`lore`](lore) submodule to the desired revision and regenerate
-[`src/bindings.rs`](src/bindings.rs) from its header with the
-[`generator`](generator) tool. Running it requires `libclang` (see the [bindgen
-requirements](https://rust-lang.github.io/rust-bindgen/requirements.html)):
+## Updating the bindings
+Bump the [`lore`](lore) submodule to the desired revision and run the generator.
 
 ```sh
 git submodule update --init
 cargo run --manifest-path generator/Cargo.toml
+
 ```
 
 The submodule is marked `shallow` in [`.gitmodules`](.gitmodules), so
 initializing it only fetches the pinned revision rather than the full Lore
-history. It is currently pinned to `348e9407f29f59626dec2669c232897cef1cb33e`
-(interface version `0.8.4-nightly`).
+history.
