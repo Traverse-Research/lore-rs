@@ -36,113 +36,228 @@ pub type lore_metadata_type_t = ::std::os::raw::c_int;
 pub struct lore_progress_event_data_t {
     pub _unused: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_progress_event_data_t"]
-        [::std::mem::size_of::<lore_progress_event_data_t>() - 4usize];
-    ["Alignment of lore_progress_event_data_t"]
-        [::std::mem::align_of::<lore_progress_event_data_t>() - 4usize];
-    ["Offset of field: lore_progress_event_data_t::_unused"]
-        [::std::mem::offset_of!(lore_progress_event_data_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_progress_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_progress_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_progress_event_data_t>(),
+        4usize,
+        "Size of lore_progress_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_progress_event_data_t>(),
+        4usize,
+        "Alignment of lore_progress_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_progress_event_data_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_string_t {
     pub string: *const ::std::os::raw::c_char,
     pub length: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_string_t"][::std::mem::size_of::<lore_string_t>() - 16usize];
-    ["Alignment of lore_string_t"][::std::mem::align_of::<lore_string_t>() - 8usize];
-    ["Offset of field: lore_string_t::string"]
-        [::std::mem::offset_of!(lore_string_t, string) - 0usize];
-    ["Offset of field: lore_string_t::length"]
-        [::std::mem::offset_of!(lore_string_t, length) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_string_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_string_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_string_t>(),
+        16usize,
+        "Size of lore_string_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_string_t>(),
+        8usize,
+        "Alignment of lore_string_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).string) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_string_t::string"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).length) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_string_t::length"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_error_event_data_t {
     pub error_type: u32,
     pub error_inner: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_error_event_data_t"][::std::mem::size_of::<lore_error_event_data_t>() - 24usize];
-    ["Alignment of lore_error_event_data_t"]
-        [::std::mem::align_of::<lore_error_event_data_t>() - 8usize];
-    ["Offset of field: lore_error_event_data_t::error_type"]
-        [::std::mem::offset_of!(lore_error_event_data_t, error_type) - 0usize];
-    ["Offset of field: lore_error_event_data_t::error_inner"]
-        [::std::mem::offset_of!(lore_error_event_data_t, error_inner) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_error_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_error_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_error_event_data_t>(),
+        24usize,
+        "Size of lore_error_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_error_event_data_t>(),
+        8usize,
+        "Alignment of lore_error_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_type) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_error_event_data_t::error_type"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_inner) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_error_event_data_t::error_inner"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_complete_event_data_t {
     pub status: i32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_complete_event_data_t"]
-        [::std::mem::size_of::<lore_complete_event_data_t>() - 4usize];
-    ["Alignment of lore_complete_event_data_t"]
-        [::std::mem::align_of::<lore_complete_event_data_t>() - 4usize];
-    ["Offset of field: lore_complete_event_data_t::status"]
-        [::std::mem::offset_of!(lore_complete_event_data_t, status) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_complete_event_data_t>(),
+        4usize,
+        "Size of lore_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_complete_event_data_t>(),
+        4usize,
+        "Alignment of lore_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).status) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_complete_event_data_t::status"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_hash_t {
     pub data: [u8; 32usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_hash_t"][::std::mem::size_of::<lore_hash_t>() - 32usize];
-    ["Alignment of lore_hash_t"][::std::mem::align_of::<lore_hash_t>() - 1usize];
-    ["Offset of field: lore_hash_t::data"][::std::mem::offset_of!(lore_hash_t, data) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_hash_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_hash_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_hash_t>(),
+        32usize,
+        "Size of lore_hash_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_hash_t>(),
+        1usize,
+        "Alignment of lore_hash_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_hash_t::data"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_context_t {
     pub data: [u8; 16usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_context_t"][::std::mem::size_of::<lore_context_t>() - 16usize];
-    ["Alignment of lore_context_t"][::std::mem::align_of::<lore_context_t>() - 1usize];
-    ["Offset of field: lore_context_t::data"]
-        [::std::mem::offset_of!(lore_context_t, data) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_context_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_context_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_context_t>(),
+        16usize,
+        "Size of lore_context_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_context_t>(),
+        1usize,
+        "Alignment of lore_context_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_context_t::data"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_address_t {
     pub hash: lore_hash_t,
     pub context: lore_context_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_address_t"][::std::mem::size_of::<lore_address_t>() - 48usize];
-    ["Alignment of lore_address_t"][::std::mem::align_of::<lore_address_t>() - 1usize];
-    ["Offset of field: lore_address_t::hash"]
-        [::std::mem::offset_of!(lore_address_t, hash) - 0usize];
-    ["Offset of field: lore_address_t::context"]
-        [::std::mem::offset_of!(lore_address_t, context) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_address_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_address_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_address_t>(),
+        48usize,
+        "Size of lore_address_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_address_t>(),
+        1usize,
+        "Alignment of lore_address_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).hash) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_address_t::hash"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).context) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_address_t::context"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_binary_t {
     pub payload: *const ::std::os::raw::c_void,
     pub length: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_binary_t"][::std::mem::size_of::<lore_binary_t>() - 16usize];
-    ["Alignment of lore_binary_t"][::std::mem::align_of::<lore_binary_t>() - 8usize];
-    ["Offset of field: lore_binary_t::payload"]
-        [::std::mem::offset_of!(lore_binary_t, payload) - 0usize];
-    ["Offset of field: lore_binary_t::length"]
-        [::std::mem::offset_of!(lore_binary_t, length) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_binary_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_binary_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_binary_t>(),
+        16usize,
+        "Size of lore_binary_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_binary_t>(),
+        8usize,
+        "Alignment of lore_binary_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).payload) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_binary_t::payload"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).length) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_binary_t::length"
+    );
+}
 pub const LORE_METADATA_ADDRESS: lore_metadata_tag_t = 0;
 pub const LORE_METADATA_BOOLEAN: lore_metadata_tag_t = 1;
 pub const LORE_METADATA_BINARY: lore_metadata_tag_t = 2;
@@ -168,51 +283,109 @@ pub union lore_metadata_t__bindgen_ty_1 {
     pub numeric: u64,
     pub string: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_metadata_t__bindgen_ty_1"]
-        [::std::mem::size_of::<lore_metadata_t__bindgen_ty_1>() - 48usize];
-    ["Alignment of lore_metadata_t__bindgen_ty_1"]
-        [::std::mem::align_of::<lore_metadata_t__bindgen_ty_1>() - 8usize];
-    ["Offset of field: lore_metadata_t__bindgen_ty_1::address"]
-        [::std::mem::offset_of!(lore_metadata_t__bindgen_ty_1, address) - 0usize];
-    ["Offset of field: lore_metadata_t__bindgen_ty_1::boolean"]
-        [::std::mem::offset_of!(lore_metadata_t__bindgen_ty_1, boolean) - 0usize];
-    ["Offset of field: lore_metadata_t__bindgen_ty_1::binary"]
-        [::std::mem::offset_of!(lore_metadata_t__bindgen_ty_1, binary) - 0usize];
-    ["Offset of field: lore_metadata_t__bindgen_ty_1::context"]
-        [::std::mem::offset_of!(lore_metadata_t__bindgen_ty_1, context) - 0usize];
-    ["Offset of field: lore_metadata_t__bindgen_ty_1::hash"]
-        [::std::mem::offset_of!(lore_metadata_t__bindgen_ty_1, hash) - 0usize];
-    ["Offset of field: lore_metadata_t__bindgen_ty_1::numeric"]
-        [::std::mem::offset_of!(lore_metadata_t__bindgen_ty_1, numeric) - 0usize];
-    ["Offset of field: lore_metadata_t__bindgen_ty_1::string"]
-        [::std::mem::offset_of!(lore_metadata_t__bindgen_ty_1, string) - 0usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_metadata_t"][::std::mem::size_of::<lore_metadata_t>() - 56usize];
-    ["Alignment of lore_metadata_t"][::std::mem::align_of::<lore_metadata_t>() - 8usize];
-    ["Offset of field: lore_metadata_t::tag"]
-        [::std::mem::offset_of!(lore_metadata_t, tag) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_metadata_t__bindgen_ty_1() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_metadata_t__bindgen_ty_1> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_metadata_t__bindgen_ty_1>(),
+        48usize,
+        "Size of lore_metadata_t__bindgen_ty_1"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_metadata_t__bindgen_ty_1>(),
+        8usize,
+        "Alignment of lore_metadata_t__bindgen_ty_1"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_metadata_t__bindgen_ty_1::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).boolean) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_metadata_t__bindgen_ty_1::boolean"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).binary) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_metadata_t__bindgen_ty_1::binary"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).context) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_metadata_t__bindgen_ty_1::context"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).hash) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_metadata_t__bindgen_ty_1::hash"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).numeric) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_metadata_t__bindgen_ty_1::numeric"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).string) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_metadata_t__bindgen_ty_1::string"
+    );
+}
+#[test]
+fn bindgen_test_layout_lore_metadata_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_metadata_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_metadata_t>(),
+        56usize,
+        "Size of lore_metadata_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_metadata_t>(),
+        8usize,
+        "Alignment of lore_metadata_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tag) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_metadata_t::tag"
+    );
+}
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct lore_metadata_event_data_t {
     pub key: lore_string_t,
     pub value: lore_metadata_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_metadata_event_data_t"]
-        [::std::mem::size_of::<lore_metadata_event_data_t>() - 72usize];
-    ["Alignment of lore_metadata_event_data_t"]
-        [::std::mem::align_of::<lore_metadata_event_data_t>() - 8usize];
-    ["Offset of field: lore_metadata_event_data_t::key"]
-        [::std::mem::offset_of!(lore_metadata_event_data_t, key) - 0usize];
-    ["Offset of field: lore_metadata_event_data_t::value"]
-        [::std::mem::offset_of!(lore_metadata_event_data_t, value) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_metadata_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_metadata_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_metadata_event_data_t>(),
+        72usize,
+        "Size of lore_metadata_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_metadata_event_data_t>(),
+        8usize,
+        "Alignment of lore_metadata_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_metadata_event_data_t::key"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).value) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_metadata_event_data_t::value"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_log_event_data_t {
@@ -222,80 +395,157 @@ pub struct lore_log_event_data_t {
     pub location: lore_string_t,
     pub message: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_log_event_data_t"][::std::mem::size_of::<lore_log_event_data_t>() - 48usize];
-    ["Alignment of lore_log_event_data_t"]
-        [::std::mem::align_of::<lore_log_event_data_t>() - 8usize];
-    ["Offset of field: lore_log_event_data_t::level"]
-        [::std::mem::offset_of!(lore_log_event_data_t, level) - 0usize];
-    ["Offset of field: lore_log_event_data_t::category"]
-        [::std::mem::offset_of!(lore_log_event_data_t, category) - 4usize];
-    ["Offset of field: lore_log_event_data_t::timestamp"]
-        [::std::mem::offset_of!(lore_log_event_data_t, timestamp) - 8usize];
-    ["Offset of field: lore_log_event_data_t::location"]
-        [::std::mem::offset_of!(lore_log_event_data_t, location) - 16usize];
-    ["Offset of field: lore_log_event_data_t::message"]
-        [::std::mem::offset_of!(lore_log_event_data_t, message) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_log_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_log_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_log_event_data_t>(),
+        48usize,
+        "Size of lore_log_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_log_event_data_t>(),
+        8usize,
+        "Alignment of lore_log_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).level) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_log_event_data_t::level"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).category) as usize - ptr as usize },
+        4usize,
+        "Offset of field: lore_log_event_data_t::category"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).timestamp) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_log_event_data_t::timestamp"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).location) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_log_event_data_t::location"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).message) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_log_event_data_t::message"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_end_event_data_t {
     pub unused: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_end_event_data_t"][::std::mem::size_of::<lore_end_event_data_t>() - 4usize];
-    ["Alignment of lore_end_event_data_t"]
-        [::std::mem::align_of::<lore_end_event_data_t>() - 4usize];
-    ["Offset of field: lore_end_event_data_t::unused"]
-        [::std::mem::offset_of!(lore_end_event_data_t, unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_end_event_data_t>(),
+        4usize,
+        "Size of lore_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_end_event_data_t>(),
+        4usize,
+        "Alignment of lore_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_end_event_data_t::unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_maintenance_event_data_t {
     pub message: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_maintenance_event_data_t"]
-        [::std::mem::size_of::<lore_maintenance_event_data_t>() - 16usize];
-    ["Alignment of lore_maintenance_event_data_t"]
-        [::std::mem::align_of::<lore_maintenance_event_data_t>() - 8usize];
-    ["Offset of field: lore_maintenance_event_data_t::message"]
-        [::std::mem::offset_of!(lore_maintenance_event_data_t, message) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_maintenance_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_maintenance_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_maintenance_event_data_t>(),
+        16usize,
+        "Size of lore_maintenance_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_maintenance_event_data_t>(),
+        8usize,
+        "Alignment of lore_maintenance_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).message) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_maintenance_event_data_t::message"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_auth_url_event_data_t {
     pub url: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_auth_url_event_data_t"]
-        [::std::mem::size_of::<lore_auth_url_event_data_t>() - 16usize];
-    ["Alignment of lore_auth_url_event_data_t"]
-        [::std::mem::align_of::<lore_auth_url_event_data_t>() - 8usize];
-    ["Offset of field: lore_auth_url_event_data_t::url"]
-        [::std::mem::offset_of!(lore_auth_url_event_data_t, url) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_auth_url_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_auth_url_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_auth_url_event_data_t>(),
+        16usize,
+        "Size of lore_auth_url_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_auth_url_event_data_t>(),
+        8usize,
+        "Alignment of lore_auth_url_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).url) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_auth_url_event_data_t::url"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_auth_user_info_event_data_t {
     pub id: lore_string_t,
     pub name: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_auth_user_info_event_data_t"]
-        [::std::mem::size_of::<lore_auth_user_info_event_data_t>() - 32usize];
-    ["Alignment of lore_auth_user_info_event_data_t"]
-        [::std::mem::align_of::<lore_auth_user_info_event_data_t>() - 8usize];
-    ["Offset of field: lore_auth_user_info_event_data_t::id"]
-        [::std::mem::offset_of!(lore_auth_user_info_event_data_t, id) - 0usize];
-    ["Offset of field: lore_auth_user_info_event_data_t::name"]
-        [::std::mem::offset_of!(lore_auth_user_info_event_data_t, name) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_auth_user_info_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_auth_user_info_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_auth_user_info_event_data_t>(),
+        32usize,
+        "Size of lore_auth_user_info_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_auth_user_info_event_data_t>(),
+        8usize,
+        "Alignment of lore_auth_user_info_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_auth_user_info_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_auth_user_info_event_data_t::name"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_auth_user_token_event_data_t {
@@ -306,25 +556,52 @@ pub struct lore_auth_user_token_event_data_t {
     pub flag_service_account: u8,
     pub expires: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_auth_user_token_event_data_t"]
-        [::std::mem::size_of::<lore_auth_user_token_event_data_t>() - 80usize];
-    ["Alignment of lore_auth_user_token_event_data_t"]
-        [::std::mem::align_of::<lore_auth_user_token_event_data_t>() - 8usize];
-    ["Offset of field: lore_auth_user_token_event_data_t::id"]
-        [::std::mem::offset_of!(lore_auth_user_token_event_data_t, id) - 0usize];
-    ["Offset of field: lore_auth_user_token_event_data_t::name"]
-        [::std::mem::offset_of!(lore_auth_user_token_event_data_t, name) - 16usize];
-    ["Offset of field: lore_auth_user_token_event_data_t::token"]
-        [::std::mem::offset_of!(lore_auth_user_token_event_data_t, token) - 32usize];
-    ["Offset of field: lore_auth_user_token_event_data_t::preferred_username"]
-        [::std::mem::offset_of!(lore_auth_user_token_event_data_t, preferred_username) - 48usize];
-    ["Offset of field: lore_auth_user_token_event_data_t::flag_service_account"]
-        [::std::mem::offset_of!(lore_auth_user_token_event_data_t, flag_service_account) - 64usize];
-    ["Offset of field: lore_auth_user_token_event_data_t::expires"]
-        [::std::mem::offset_of!(lore_auth_user_token_event_data_t, expires) - 72usize];
-};
+#[test]
+fn bindgen_test_layout_lore_auth_user_token_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_auth_user_token_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_auth_user_token_event_data_t>(),
+        80usize,
+        "Size of lore_auth_user_token_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_auth_user_token_event_data_t>(),
+        8usize,
+        "Alignment of lore_auth_user_token_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_auth_user_token_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_auth_user_token_event_data_t::name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).token) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_auth_user_token_event_data_t::token"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).preferred_username) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_auth_user_token_event_data_t::preferred_username"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_service_account) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_auth_user_token_event_data_t::flag_service_account"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).expires) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_auth_user_token_event_data_t::expires"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_auth_identity_event_data_t {
@@ -335,25 +612,52 @@ pub struct lore_auth_identity_event_data_t {
     pub expires: u64,
     pub token: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_auth_identity_event_data_t"]
-        [::std::mem::size_of::<lore_auth_identity_event_data_t>() - 88usize];
-    ["Alignment of lore_auth_identity_event_data_t"]
-        [::std::mem::align_of::<lore_auth_identity_event_data_t>() - 8usize];
-    ["Offset of field: lore_auth_identity_event_data_t::auth_url"]
-        [::std::mem::offset_of!(lore_auth_identity_event_data_t, auth_url) - 0usize];
-    ["Offset of field: lore_auth_identity_event_data_t::resource"]
-        [::std::mem::offset_of!(lore_auth_identity_event_data_t, resource) - 16usize];
-    ["Offset of field: lore_auth_identity_event_data_t::user_id"]
-        [::std::mem::offset_of!(lore_auth_identity_event_data_t, user_id) - 32usize];
-    ["Offset of field: lore_auth_identity_event_data_t::authorized_domains"]
-        [::std::mem::offset_of!(lore_auth_identity_event_data_t, authorized_domains) - 48usize];
-    ["Offset of field: lore_auth_identity_event_data_t::expires"]
-        [::std::mem::offset_of!(lore_auth_identity_event_data_t, expires) - 64usize];
-    ["Offset of field: lore_auth_identity_event_data_t::token"]
-        [::std::mem::offset_of!(lore_auth_identity_event_data_t, token) - 72usize];
-};
+#[test]
+fn bindgen_test_layout_lore_auth_identity_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_auth_identity_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_auth_identity_event_data_t>(),
+        88usize,
+        "Size of lore_auth_identity_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_auth_identity_event_data_t>(),
+        8usize,
+        "Alignment of lore_auth_identity_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).auth_url) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_auth_identity_event_data_t::auth_url"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).resource) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_auth_identity_event_data_t::resource"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).user_id) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_auth_identity_event_data_t::user_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).authorized_domains) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_auth_identity_event_data_t::authorized_domains"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).expires) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_auth_identity_event_data_t::expires"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).token) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_auth_identity_event_data_t::token"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_create_event_data_t {
@@ -361,64 +665,126 @@ pub struct lore_branch_create_event_data_t {
     pub latest: lore_hash_t,
     pub is_commit: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_create_event_data_t"]
-        [::std::mem::size_of::<lore_branch_create_event_data_t>() - 56usize];
-    ["Alignment of lore_branch_create_event_data_t"]
-        [::std::mem::align_of::<lore_branch_create_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_create_event_data_t::name"]
-        [::std::mem::offset_of!(lore_branch_create_event_data_t, name) - 0usize];
-    ["Offset of field: lore_branch_create_event_data_t::latest"]
-        [::std::mem::offset_of!(lore_branch_create_event_data_t, latest) - 16usize];
-    ["Offset of field: lore_branch_create_event_data_t::is_commit"]
-        [::std::mem::offset_of!(lore_branch_create_event_data_t, is_commit) - 48usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_create_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_create_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_create_event_data_t>(),
+        56usize,
+        "Size of lore_branch_create_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_create_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_create_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_create_event_data_t::name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).latest) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_create_event_data_t::latest"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).is_commit) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_branch_create_event_data_t::is_commit"
+    );
+}
 pub type lore_branch_id_t = lore_context_t;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_instance_id_t {
     pub data: [u8; 16usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_instance_id_t"][::std::mem::size_of::<lore_instance_id_t>() - 16usize];
-    ["Alignment of lore_instance_id_t"][::std::mem::align_of::<lore_instance_id_t>() - 1usize];
-    ["Offset of field: lore_instance_id_t::data"]
-        [::std::mem::offset_of!(lore_instance_id_t, data) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_instance_id_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_instance_id_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_instance_id_t>(),
+        16usize,
+        "Size of lore_instance_id_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_instance_id_t>(),
+        1usize,
+        "Alignment of lore_instance_id_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_instance_id_t::data"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_instance_id_array_t {
     pub ptr: *const lore_instance_id_t,
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_instance_id_array_t"]
-        [::std::mem::size_of::<lore_instance_id_array_t>() - 16usize];
-    ["Alignment of lore_instance_id_array_t"]
-        [::std::mem::align_of::<lore_instance_id_array_t>() - 8usize];
-    ["Offset of field: lore_instance_id_array_t::ptr"]
-        [::std::mem::offset_of!(lore_instance_id_array_t, ptr) - 0usize];
-    ["Offset of field: lore_instance_id_array_t::count"]
-        [::std::mem::offset_of!(lore_instance_id_array_t, count) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_instance_id_array_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_instance_id_array_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_instance_id_array_t>(),
+        16usize,
+        "Size of lore_instance_id_array_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_instance_id_array_t>(),
+        8usize,
+        "Alignment of lore_instance_id_array_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_instance_id_array_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_instance_id_array_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_string_array_t {
     pub ptr: *const lore_string_t,
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_string_array_t"][::std::mem::size_of::<lore_string_array_t>() - 16usize];
-    ["Alignment of lore_string_array_t"][::std::mem::align_of::<lore_string_array_t>() - 8usize];
-    ["Offset of field: lore_string_array_t::ptr"]
-        [::std::mem::offset_of!(lore_string_array_t, ptr) - 0usize];
-    ["Offset of field: lore_string_array_t::count"]
-        [::std::mem::offset_of!(lore_string_array_t, count) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_string_array_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_string_array_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_string_array_t>(),
+        16usize,
+        "Size of lore_string_array_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_string_array_t>(),
+        8usize,
+        "Alignment of lore_string_array_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_string_array_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_string_array_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_multiple_instance_event_data_t {
@@ -426,83 +792,152 @@ pub struct lore_branch_multiple_instance_event_data_t {
     pub instance_ids: lore_instance_id_array_t,
     pub instance_paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_multiple_instance_event_data_t"]
-        [::std::mem::size_of::<lore_branch_multiple_instance_event_data_t>() - 48usize];
-    ["Alignment of lore_branch_multiple_instance_event_data_t"]
-        [::std::mem::align_of::<lore_branch_multiple_instance_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_multiple_instance_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_branch_multiple_instance_event_data_t, branch) - 0usize];
-    ["Offset of field: lore_branch_multiple_instance_event_data_t::instance_ids"][::std::mem::offset_of!(
-        lore_branch_multiple_instance_event_data_t,
-        instance_ids
-    ) - 16usize];
-    ["Offset of field: lore_branch_multiple_instance_event_data_t::instance_paths"][::std::mem::offset_of!(
-        lore_branch_multiple_instance_event_data_t,
-        instance_paths
-    ) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_multiple_instance_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_multiple_instance_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_multiple_instance_event_data_t>(),
+        48usize,
+        "Size of lore_branch_multiple_instance_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_multiple_instance_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_multiple_instance_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_multiple_instance_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).instance_ids) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_multiple_instance_event_data_t::instance_ids"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).instance_paths) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_multiple_instance_event_data_t::instance_paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_archive_event_data_t {
     pub name: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_archive_event_data_t"]
-        [::std::mem::size_of::<lore_branch_archive_event_data_t>() - 16usize];
-    ["Alignment of lore_branch_archive_event_data_t"]
-        [::std::mem::align_of::<lore_branch_archive_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_archive_event_data_t::name"]
-        [::std::mem::offset_of!(lore_branch_archive_event_data_t, name) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_archive_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_archive_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_archive_event_data_t>(),
+        16usize,
+        "Size of lore_branch_archive_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_archive_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_archive_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_archive_event_data_t::name"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_list_begin_event_data_t {
     pub location: lore_branch_location_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_list_begin_event_data_t"]
-        [::std::mem::size_of::<lore_branch_list_begin_event_data_t>() - 4usize];
-    ["Alignment of lore_branch_list_begin_event_data_t"]
-        [::std::mem::align_of::<lore_branch_list_begin_event_data_t>() - 4usize];
-    ["Offset of field: lore_branch_list_begin_event_data_t::location"]
-        [::std::mem::offset_of!(lore_branch_list_begin_event_data_t, location) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_list_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_list_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_list_begin_event_data_t>(),
+        4usize,
+        "Size of lore_branch_list_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_list_begin_event_data_t>(),
+        4usize,
+        "Alignment of lore_branch_list_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).location) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_list_begin_event_data_t::location"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_point_t {
     pub branch: lore_branch_id_t,
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_point_t"][::std::mem::size_of::<lore_branch_point_t>() - 48usize];
-    ["Alignment of lore_branch_point_t"][::std::mem::align_of::<lore_branch_point_t>() - 1usize];
-    ["Offset of field: lore_branch_point_t::branch"]
-        [::std::mem::offset_of!(lore_branch_point_t, branch) - 0usize];
-    ["Offset of field: lore_branch_point_t::revision"]
-        [::std::mem::offset_of!(lore_branch_point_t, revision) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_point_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_point_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_point_t>(),
+        48usize,
+        "Size of lore_branch_point_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_point_t>(),
+        1usize,
+        "Alignment of lore_branch_point_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_point_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_point_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_point_array_t {
     pub ptr: *const lore_branch_point_t,
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_point_array_t"]
-        [::std::mem::size_of::<lore_branch_point_array_t>() - 16usize];
-    ["Alignment of lore_branch_point_array_t"]
-        [::std::mem::align_of::<lore_branch_point_array_t>() - 8usize];
-    ["Offset of field: lore_branch_point_array_t::ptr"]
-        [::std::mem::offset_of!(lore_branch_point_array_t, ptr) - 0usize];
-    ["Offset of field: lore_branch_point_array_t::count"]
-        [::std::mem::offset_of!(lore_branch_point_array_t, count) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_point_array_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_point_array_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_point_array_t>(),
+        16usize,
+        "Size of lore_branch_point_array_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_point_array_t>(),
+        8usize,
+        "Alignment of lore_branch_point_array_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_point_array_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_branch_point_array_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_list_entry_event_data_t {
@@ -517,87 +952,162 @@ pub struct lore_branch_list_entry_event_data_t {
     pub is_current: u8,
     pub archived: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_list_entry_event_data_t"]
-        [::std::mem::size_of::<lore_branch_list_entry_event_data_t>() - 136usize];
-    ["Alignment of lore_branch_list_entry_event_data_t"]
-        [::std::mem::align_of::<lore_branch_list_entry_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_list_entry_event_data_t::location"]
-        [::std::mem::offset_of!(lore_branch_list_entry_event_data_t, location) - 0usize];
-    ["Offset of field: lore_branch_list_entry_event_data_t::id"]
-        [::std::mem::offset_of!(lore_branch_list_entry_event_data_t, id) - 4usize];
-    ["Offset of field: lore_branch_list_entry_event_data_t::name"]
-        [::std::mem::offset_of!(lore_branch_list_entry_event_data_t, name) - 24usize];
-    ["Offset of field: lore_branch_list_entry_event_data_t::category"]
-        [::std::mem::offset_of!(lore_branch_list_entry_event_data_t, category) - 40usize];
-    ["Offset of field: lore_branch_list_entry_event_data_t::latest"]
-        [::std::mem::offset_of!(lore_branch_list_entry_event_data_t, latest) - 56usize];
-    ["Offset of field: lore_branch_list_entry_event_data_t::stack"]
-        [::std::mem::offset_of!(lore_branch_list_entry_event_data_t, stack) - 88usize];
-    ["Offset of field: lore_branch_list_entry_event_data_t::creator"]
-        [::std::mem::offset_of!(lore_branch_list_entry_event_data_t, creator) - 104usize];
-    ["Offset of field: lore_branch_list_entry_event_data_t::created"]
-        [::std::mem::offset_of!(lore_branch_list_entry_event_data_t, created) - 120usize];
-    ["Offset of field: lore_branch_list_entry_event_data_t::is_current"]
-        [::std::mem::offset_of!(lore_branch_list_entry_event_data_t, is_current) - 128usize];
-    ["Offset of field: lore_branch_list_entry_event_data_t::archived"]
-        [::std::mem::offset_of!(lore_branch_list_entry_event_data_t, archived) - 129usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_list_entry_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_list_entry_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_list_entry_event_data_t>(),
+        136usize,
+        "Size of lore_branch_list_entry_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_list_entry_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_list_entry_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).location) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_list_entry_event_data_t::location"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        4usize,
+        "Offset of field: lore_branch_list_entry_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_branch_list_entry_event_data_t::name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).category) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_branch_list_entry_event_data_t::category"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).latest) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_branch_list_entry_event_data_t::latest"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).stack) as usize - ptr as usize },
+        88usize,
+        "Offset of field: lore_branch_list_entry_event_data_t::stack"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).creator) as usize - ptr as usize },
+        104usize,
+        "Offset of field: lore_branch_list_entry_event_data_t::creator"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).created) as usize - ptr as usize },
+        120usize,
+        "Offset of field: lore_branch_list_entry_event_data_t::created"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).is_current) as usize - ptr as usize },
+        128usize,
+        "Offset of field: lore_branch_list_entry_event_data_t::is_current"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).archived) as usize - ptr as usize },
+        129usize,
+        "Offset of field: lore_branch_list_entry_event_data_t::archived"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_list_end_event_data_t {
     pub location: lore_branch_location_t,
     pub count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_list_end_event_data_t"]
-        [::std::mem::size_of::<lore_branch_list_end_event_data_t>() - 16usize];
-    ["Alignment of lore_branch_list_end_event_data_t"]
-        [::std::mem::align_of::<lore_branch_list_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_list_end_event_data_t::location"]
-        [::std::mem::offset_of!(lore_branch_list_end_event_data_t, location) - 0usize];
-    ["Offset of field: lore_branch_list_end_event_data_t::count"]
-        [::std::mem::offset_of!(lore_branch_list_end_event_data_t, count) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_list_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_list_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_list_end_event_data_t>(),
+        16usize,
+        "Size of lore_branch_list_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_list_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_list_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).location) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_list_end_event_data_t::location"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_branch_list_end_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_abort_begin_event_data_t {
     pub state_staged_revision: lore_hash_t,
     pub state_current_revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_abort_begin_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_abort_begin_event_data_t>() - 64usize];
-    ["Alignment of lore_branch_merge_abort_begin_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_abort_begin_event_data_t>() - 1usize];
-    ["Offset of field: lore_branch_merge_abort_begin_event_data_t::state_staged_revision"][::std::mem::offset_of!(
-        lore_branch_merge_abort_begin_event_data_t,
-        state_staged_revision
-    )
-        - 0usize];
-    ["Offset of field: lore_branch_merge_abort_begin_event_data_t::state_current_revision"][::std::mem::offset_of!(
-        lore_branch_merge_abort_begin_event_data_t,
-        state_current_revision
-    )
-        - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_abort_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_abort_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_abort_begin_event_data_t>(),
+        64usize,
+        "Size of lore_branch_merge_abort_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_abort_begin_event_data_t>(),
+        1usize,
+        "Alignment of lore_branch_merge_abort_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).state_staged_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_abort_begin_event_data_t::state_staged_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).state_current_revision) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_merge_abort_begin_event_data_t::state_current_revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_abort_end_event_data_t {
     pub _unused: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_abort_end_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_abort_end_event_data_t>() - 4usize];
-    ["Alignment of lore_branch_merge_abort_end_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_abort_end_event_data_t>() - 4usize];
-    ["Offset of field: lore_branch_merge_abort_end_event_data_t::_unused"]
-        [::std::mem::offset_of!(lore_branch_merge_abort_end_event_data_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_abort_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_abort_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_abort_end_event_data_t>(),
+        4usize,
+        "Size of lore_branch_merge_abort_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_abort_end_event_data_t>(),
+        4usize,
+        "Alignment of lore_branch_merge_abort_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_abort_end_event_data_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_info_event_data_t {
@@ -613,65 +1123,129 @@ pub struct lore_branch_info_event_data_t {
     pub stack: lore_branch_point_array_t,
     pub archived: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_info_event_data_t"]
-        [::std::mem::size_of::<lore_branch_info_event_data_t>() - 208usize];
-    ["Alignment of lore_branch_info_event_data_t"]
-        [::std::mem::align_of::<lore_branch_info_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_info_event_data_t::id"]
-        [::std::mem::offset_of!(lore_branch_info_event_data_t, id) - 0usize];
-    ["Offset of field: lore_branch_info_event_data_t::name"]
-        [::std::mem::offset_of!(lore_branch_info_event_data_t, name) - 16usize];
-    ["Offset of field: lore_branch_info_event_data_t::category"]
-        [::std::mem::offset_of!(lore_branch_info_event_data_t, category) - 32usize];
-    ["Offset of field: lore_branch_info_event_data_t::latest"]
-        [::std::mem::offset_of!(lore_branch_info_event_data_t, latest) - 48usize];
-    ["Offset of field: lore_branch_info_event_data_t::latest_remote"]
-        [::std::mem::offset_of!(lore_branch_info_event_data_t, latest_remote) - 80usize];
-    ["Offset of field: lore_branch_info_event_data_t::parent"]
-        [::std::mem::offset_of!(lore_branch_info_event_data_t, parent) - 112usize];
-    ["Offset of field: lore_branch_info_event_data_t::branch_point"]
-        [::std::mem::offset_of!(lore_branch_info_event_data_t, branch_point) - 128usize];
-    ["Offset of field: lore_branch_info_event_data_t::creator"]
-        [::std::mem::offset_of!(lore_branch_info_event_data_t, creator) - 160usize];
-    ["Offset of field: lore_branch_info_event_data_t::created"]
-        [::std::mem::offset_of!(lore_branch_info_event_data_t, created) - 176usize];
-    ["Offset of field: lore_branch_info_event_data_t::stack"]
-        [::std::mem::offset_of!(lore_branch_info_event_data_t, stack) - 184usize];
-    ["Offset of field: lore_branch_info_event_data_t::archived"]
-        [::std::mem::offset_of!(lore_branch_info_event_data_t, archived) - 200usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_info_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_info_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_info_event_data_t>(),
+        208usize,
+        "Size of lore_branch_info_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_info_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_info_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_info_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_info_event_data_t::name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).category) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_info_event_data_t::category"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).latest) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_branch_info_event_data_t::latest"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).latest_remote) as usize - ptr as usize },
+        80usize,
+        "Offset of field: lore_branch_info_event_data_t::latest_remote"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).parent) as usize - ptr as usize },
+        112usize,
+        "Offset of field: lore_branch_info_event_data_t::parent"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_point) as usize - ptr as usize },
+        128usize,
+        "Offset of field: lore_branch_info_event_data_t::branch_point"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).creator) as usize - ptr as usize },
+        160usize,
+        "Offset of field: lore_branch_info_event_data_t::creator"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).created) as usize - ptr as usize },
+        176usize,
+        "Offset of field: lore_branch_info_event_data_t::created"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).stack) as usize - ptr as usize },
+        184usize,
+        "Offset of field: lore_branch_info_event_data_t::stack"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).archived) as usize - ptr as usize },
+        200usize,
+        "Offset of field: lore_branch_info_event_data_t::archived"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_diff_begin_event_data_t {
     pub _unused: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_diff_begin_event_data_t"]
-        [::std::mem::size_of::<lore_branch_diff_begin_event_data_t>() - 4usize];
-    ["Alignment of lore_branch_diff_begin_event_data_t"]
-        [::std::mem::align_of::<lore_branch_diff_begin_event_data_t>() - 4usize];
-    ["Offset of field: lore_branch_diff_begin_event_data_t::_unused"]
-        [::std::mem::offset_of!(lore_branch_diff_begin_event_data_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_diff_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_diff_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_diff_begin_event_data_t>(),
+        4usize,
+        "Size of lore_branch_diff_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_diff_begin_event_data_t>(),
+        4usize,
+        "Alignment of lore_branch_diff_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_diff_begin_event_data_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_diff_change_begin_event_data_t {
     pub changes_count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_diff_change_begin_event_data_t"]
-        [::std::mem::size_of::<lore_branch_diff_change_begin_event_data_t>() - 8usize];
-    ["Alignment of lore_branch_diff_change_begin_event_data_t"]
-        [::std::mem::align_of::<lore_branch_diff_change_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_diff_change_begin_event_data_t::changes_count"][::std::mem::offset_of!(
-        lore_branch_diff_change_begin_event_data_t,
-        changes_count
-    ) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_diff_change_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_diff_change_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_diff_change_begin_event_data_t>(),
+        8usize,
+        "Size of lore_branch_diff_change_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_diff_change_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_diff_change_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).changes_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_diff_change_begin_event_data_t::changes_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_diff_node_data_t {
@@ -679,151 +1253,282 @@ pub struct lore_branch_diff_node_data_t {
     pub path: lore_string_t,
     pub automerged: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_diff_node_data_t"]
-        [::std::mem::size_of::<lore_branch_diff_node_data_t>() - 32usize];
-    ["Alignment of lore_branch_diff_node_data_t"]
-        [::std::mem::align_of::<lore_branch_diff_node_data_t>() - 8usize];
-    ["Offset of field: lore_branch_diff_node_data_t::action"]
-        [::std::mem::offset_of!(lore_branch_diff_node_data_t, action) - 0usize];
-    ["Offset of field: lore_branch_diff_node_data_t::path"]
-        [::std::mem::offset_of!(lore_branch_diff_node_data_t, path) - 8usize];
-    ["Offset of field: lore_branch_diff_node_data_t::automerged"]
-        [::std::mem::offset_of!(lore_branch_diff_node_data_t, automerged) - 24usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_diff_node_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_diff_node_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_diff_node_data_t>(),
+        32usize,
+        "Size of lore_branch_diff_node_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_diff_node_data_t>(),
+        8usize,
+        "Alignment of lore_branch_diff_node_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).action) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_diff_node_data_t::action"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_branch_diff_node_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).automerged) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_branch_diff_node_data_t::automerged"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_diff_change_event_data_t {
     pub change: lore_branch_diff_node_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_diff_change_event_data_t"]
-        [::std::mem::size_of::<lore_branch_diff_change_event_data_t>() - 32usize];
-    ["Alignment of lore_branch_diff_change_event_data_t"]
-        [::std::mem::align_of::<lore_branch_diff_change_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_diff_change_event_data_t::change"]
-        [::std::mem::offset_of!(lore_branch_diff_change_event_data_t, change) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_diff_change_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_diff_change_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_diff_change_event_data_t>(),
+        32usize,
+        "Size of lore_branch_diff_change_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_diff_change_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_diff_change_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).change) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_diff_change_event_data_t::change"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_diff_change_end_event_data_t {
     pub _unused: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_diff_change_end_event_data_t"]
-        [::std::mem::size_of::<lore_branch_diff_change_end_event_data_t>() - 4usize];
-    ["Alignment of lore_branch_diff_change_end_event_data_t"]
-        [::std::mem::align_of::<lore_branch_diff_change_end_event_data_t>() - 4usize];
-    ["Offset of field: lore_branch_diff_change_end_event_data_t::_unused"]
-        [::std::mem::offset_of!(lore_branch_diff_change_end_event_data_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_diff_change_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_diff_change_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_diff_change_end_event_data_t>(),
+        4usize,
+        "Size of lore_branch_diff_change_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_diff_change_end_event_data_t>(),
+        4usize,
+        "Alignment of lore_branch_diff_change_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_diff_change_end_event_data_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_diff_conflict_begin_event_data_t {
     pub conflicts_count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_diff_conflict_begin_event_data_t"]
-        [::std::mem::size_of::<lore_branch_diff_conflict_begin_event_data_t>() - 8usize];
-    ["Alignment of lore_branch_diff_conflict_begin_event_data_t"]
-        [::std::mem::align_of::<lore_branch_diff_conflict_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_diff_conflict_begin_event_data_t::conflicts_count"][::std::mem::offset_of!(
-        lore_branch_diff_conflict_begin_event_data_t,
-        conflicts_count
-    ) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_diff_conflict_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_diff_conflict_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_diff_conflict_begin_event_data_t>(),
+        8usize,
+        "Size of lore_branch_diff_conflict_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_diff_conflict_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_diff_conflict_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).conflicts_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_diff_conflict_begin_event_data_t::conflicts_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_diff_conflict_event_data_t {
     pub source_change: lore_branch_diff_node_data_t,
     pub target_change: lore_branch_diff_node_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_diff_conflict_event_data_t"]
-        [::std::mem::size_of::<lore_branch_diff_conflict_event_data_t>() - 64usize];
-    ["Alignment of lore_branch_diff_conflict_event_data_t"]
-        [::std::mem::align_of::<lore_branch_diff_conflict_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_diff_conflict_event_data_t::source_change"]
-        [::std::mem::offset_of!(lore_branch_diff_conflict_event_data_t, source_change) - 0usize];
-    ["Offset of field: lore_branch_diff_conflict_event_data_t::target_change"]
-        [::std::mem::offset_of!(lore_branch_diff_conflict_event_data_t, target_change) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_diff_conflict_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_diff_conflict_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_diff_conflict_event_data_t>(),
+        64usize,
+        "Size of lore_branch_diff_conflict_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_diff_conflict_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_diff_conflict_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_change) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_diff_conflict_event_data_t::source_change"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target_change) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_diff_conflict_event_data_t::target_change"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_diff_conflict_end_event_data_t {
     pub _unused: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_diff_conflict_end_event_data_t"]
-        [::std::mem::size_of::<lore_branch_diff_conflict_end_event_data_t>() - 4usize];
-    ["Alignment of lore_branch_diff_conflict_end_event_data_t"]
-        [::std::mem::align_of::<lore_branch_diff_conflict_end_event_data_t>() - 4usize];
-    ["Offset of field: lore_branch_diff_conflict_end_event_data_t::_unused"]
-        [::std::mem::offset_of!(lore_branch_diff_conflict_end_event_data_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_diff_conflict_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_diff_conflict_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_diff_conflict_end_event_data_t>(),
+        4usize,
+        "Size of lore_branch_diff_conflict_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_diff_conflict_end_event_data_t>(),
+        4usize,
+        "Alignment of lore_branch_diff_conflict_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_diff_conflict_end_event_data_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_diff_end_event_data_t {
     pub _unused: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_diff_end_event_data_t"]
-        [::std::mem::size_of::<lore_branch_diff_end_event_data_t>() - 4usize];
-    ["Alignment of lore_branch_diff_end_event_data_t"]
-        [::std::mem::align_of::<lore_branch_diff_end_event_data_t>() - 4usize];
-    ["Offset of field: lore_branch_diff_end_event_data_t::_unused"]
-        [::std::mem::offset_of!(lore_branch_diff_end_event_data_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_diff_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_diff_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_diff_end_event_data_t>(),
+        4usize,
+        "Size of lore_branch_diff_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_diff_end_event_data_t>(),
+        4usize,
+        "Alignment of lore_branch_diff_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_diff_end_event_data_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_latest_list_entry_event_data_t {
     pub branch: lore_branch_id_t,
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_latest_list_entry_event_data_t"]
-        [::std::mem::size_of::<lore_branch_latest_list_entry_event_data_t>() - 48usize];
-    ["Alignment of lore_branch_latest_list_entry_event_data_t"]
-        [::std::mem::align_of::<lore_branch_latest_list_entry_event_data_t>() - 1usize];
-    ["Offset of field: lore_branch_latest_list_entry_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_branch_latest_list_entry_event_data_t, branch) - 0usize];
-    ["Offset of field: lore_branch_latest_list_entry_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_branch_latest_list_entry_event_data_t, revision) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_latest_list_entry_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_latest_list_entry_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_latest_list_entry_event_data_t>(),
+        48usize,
+        "Size of lore_branch_latest_list_entry_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_latest_list_entry_event_data_t>(),
+        1usize,
+        "Alignment of lore_branch_latest_list_entry_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_latest_list_entry_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_latest_list_entry_event_data_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_conflict_file_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_conflict_file_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_conflict_file_event_data_t>() - 16usize];
-    ["Alignment of lore_branch_merge_conflict_file_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_conflict_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_conflict_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_branch_merge_conflict_file_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_conflict_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_conflict_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_conflict_file_event_data_t>(),
+        16usize,
+        "Size of lore_branch_merge_conflict_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_conflict_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_conflict_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_conflict_file_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_partition_t {
     pub data: [u8; 16usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_partition_t"][::std::mem::size_of::<lore_partition_t>() - 16usize];
-    ["Alignment of lore_partition_t"][::std::mem::align_of::<lore_partition_t>() - 1usize];
-    ["Offset of field: lore_partition_t::data"]
-        [::std::mem::offset_of!(lore_partition_t, data) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_partition_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_partition_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_partition_t>(),
+        16usize,
+        "Size of lore_partition_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_partition_t>(),
+        1usize,
+        "Alignment of lore_partition_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_partition_t::data"
+    );
+}
 pub type lore_repository_id_t = lore_partition_t;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -832,68 +1537,121 @@ pub struct lore_branch_merge_link_skipped_event_data_t {
     pub repository: lore_repository_id_t,
     pub reason: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_link_skipped_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_link_skipped_event_data_t>() - 40usize];
-    ["Alignment of lore_branch_merge_link_skipped_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_link_skipped_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_link_skipped_event_data_t::link_path"]
-        [::std::mem::offset_of!(lore_branch_merge_link_skipped_event_data_t, link_path) - 0usize];
-    ["Offset of field: lore_branch_merge_link_skipped_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_branch_merge_link_skipped_event_data_t, repository) - 16usize];
-    ["Offset of field: lore_branch_merge_link_skipped_event_data_t::reason"]
-        [::std::mem::offset_of!(lore_branch_merge_link_skipped_event_data_t, reason) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_link_skipped_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_link_skipped_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_link_skipped_event_data_t>(),
+        40usize,
+        "Size of lore_branch_merge_link_skipped_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_link_skipped_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_link_skipped_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_link_skipped_event_data_t::link_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_merge_link_skipped_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).reason) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_merge_link_skipped_event_data_t::reason"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_unresolve_file_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_unresolve_file_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_unresolve_file_event_data_t>() - 16usize];
-    ["Alignment of lore_branch_merge_unresolve_file_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_unresolve_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_unresolve_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_branch_merge_unresolve_file_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_unresolve_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_unresolve_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_unresolve_file_event_data_t>(),
+        16usize,
+        "Size of lore_branch_merge_unresolve_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_unresolve_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_unresolve_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_unresolve_file_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_unresolve_revision_event_data_t {
     pub repository: lore_repository_id_t,
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_unresolve_revision_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_unresolve_revision_event_data_t>() - 48usize];
-    ["Alignment of lore_branch_merge_unresolve_revision_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_unresolve_revision_event_data_t>() - 1usize];
-    ["Offset of field: lore_branch_merge_unresolve_revision_event_data_t::repository"][::std::mem::offset_of!(
-        lore_branch_merge_unresolve_revision_event_data_t,
-        repository
-    ) - 0usize];
-    ["Offset of field: lore_branch_merge_unresolve_revision_event_data_t::revision"][::std::mem::offset_of!(
-        lore_branch_merge_unresolve_revision_event_data_t,
-        revision
-    ) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_unresolve_revision_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_unresolve_revision_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_unresolve_revision_event_data_t>(),
+        48usize,
+        "Size of lore_branch_merge_unresolve_revision_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_unresolve_revision_event_data_t>(),
+        1usize,
+        "Alignment of lore_branch_merge_unresolve_revision_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_unresolve_revision_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_merge_unresolve_revision_event_data_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_into_file_begin_event_data_t {
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_into_file_begin_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_into_file_begin_event_data_t>() - 8usize];
-    ["Alignment of lore_branch_merge_into_file_begin_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_into_file_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_into_file_begin_event_data_t::count"]
-        [::std::mem::offset_of!(lore_branch_merge_into_file_begin_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_into_file_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_into_file_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_into_file_begin_event_data_t>(),
+        8usize,
+        "Size of lore_branch_merge_into_file_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_into_file_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_into_file_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_into_file_begin_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_into_file_event_data_t {
@@ -904,175 +1662,304 @@ pub struct lore_branch_merge_into_file_event_data_t {
     pub is_directory: u8,
     pub is_link: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_into_file_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_into_file_event_data_t>() - 40usize];
-    ["Alignment of lore_branch_merge_into_file_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_into_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_into_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_branch_merge_into_file_event_data_t, path) - 0usize];
-    ["Offset of field: lore_branch_merge_into_file_event_data_t::action"]
-        [::std::mem::offset_of!(lore_branch_merge_into_file_event_data_t, action) - 16usize];
-    ["Offset of field: lore_branch_merge_into_file_event_data_t::size"]
-        [::std::mem::offset_of!(lore_branch_merge_into_file_event_data_t, size) - 24usize];
-    ["Offset of field: lore_branch_merge_into_file_event_data_t::is_file"]
-        [::std::mem::offset_of!(lore_branch_merge_into_file_event_data_t, is_file) - 32usize];
-    ["Offset of field: lore_branch_merge_into_file_event_data_t::is_directory"]
-        [::std::mem::offset_of!(lore_branch_merge_into_file_event_data_t, is_directory) - 33usize];
-    ["Offset of field: lore_branch_merge_into_file_event_data_t::is_link"]
-        [::std::mem::offset_of!(lore_branch_merge_into_file_event_data_t, is_link) - 34usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_into_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_into_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_into_file_event_data_t>(),
+        40usize,
+        "Size of lore_branch_merge_into_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_into_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_into_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_into_file_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).action) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_merge_into_file_event_data_t::action"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_branch_merge_into_file_event_data_t::size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).is_file) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_merge_into_file_event_data_t::is_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).is_directory) as usize - ptr as usize },
+        33usize,
+        "Offset of field: lore_branch_merge_into_file_event_data_t::is_directory"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).is_link) as usize - ptr as usize },
+        34usize,
+        "Offset of field: lore_branch_merge_into_file_event_data_t::is_link"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_into_file_end_event_data_t {
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_into_file_end_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_into_file_end_event_data_t>() - 8usize];
-    ["Alignment of lore_branch_merge_into_file_end_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_into_file_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_into_file_end_event_data_t::count"]
-        [::std::mem::offset_of!(lore_branch_merge_into_file_end_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_into_file_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_into_file_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_into_file_end_event_data_t>(),
+        8usize,
+        "Size of lore_branch_merge_into_file_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_into_file_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_into_file_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_into_file_end_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_into_fragment_begin_event_data_t {
     pub fragments: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_into_fragment_begin_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_into_fragment_begin_event_data_t>() - 8usize];
-    ["Alignment of lore_branch_merge_into_fragment_begin_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_into_fragment_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_into_fragment_begin_event_data_t::fragments"][::std::mem::offset_of!(
-        lore_branch_merge_into_fragment_begin_event_data_t,
-        fragments
-    ) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_into_fragment_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_into_fragment_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_into_fragment_begin_event_data_t>(),
+        8usize,
+        "Size of lore_branch_merge_into_fragment_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_into_fragment_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_into_fragment_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).fragments) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_into_fragment_begin_event_data_t::fragments"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_into_fragment_progress_event_data_t {
     pub complete: u64,
     pub count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_into_fragment_progress_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_into_fragment_progress_event_data_t>() - 16usize];
-    ["Alignment of lore_branch_merge_into_fragment_progress_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_into_fragment_progress_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_into_fragment_progress_event_data_t::complete"][::std::mem::offset_of!(
-        lore_branch_merge_into_fragment_progress_event_data_t,
-        complete
-    )
-        - 0usize];
-    ["Offset of field: lore_branch_merge_into_fragment_progress_event_data_t::count"][::std::mem::offset_of!(
-        lore_branch_merge_into_fragment_progress_event_data_t,
-        count
-    ) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_into_fragment_progress_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_into_fragment_progress_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_into_fragment_progress_event_data_t>(),
+        16usize,
+        "Size of lore_branch_merge_into_fragment_progress_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_into_fragment_progress_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_into_fragment_progress_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).complete) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_into_fragment_progress_event_data_t::complete"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_branch_merge_into_fragment_progress_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_into_fragment_end_event_data_t {
     pub fragments: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_into_fragment_end_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_into_fragment_end_event_data_t>() - 8usize];
-    ["Alignment of lore_branch_merge_into_fragment_end_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_into_fragment_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_into_fragment_end_event_data_t::fragments"][::std::mem::offset_of!(
-        lore_branch_merge_into_fragment_end_event_data_t,
-        fragments
-    ) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_into_fragment_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_into_fragment_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_into_fragment_end_event_data_t>(),
+        8usize,
+        "Size of lore_branch_merge_into_fragment_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_into_fragment_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_into_fragment_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).fragments) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_into_fragment_end_event_data_t::fragments"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_into_revision_event_data_t {
     pub revision: lore_hash_t,
     pub revision_number: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_into_revision_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_into_revision_event_data_t>() - 40usize];
-    ["Alignment of lore_branch_merge_into_revision_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_into_revision_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_into_revision_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_branch_merge_into_revision_event_data_t, revision) - 0usize];
-    ["Offset of field: lore_branch_merge_into_revision_event_data_t::revision_number"][::std::mem::offset_of!(
-        lore_branch_merge_into_revision_event_data_t,
-        revision_number
-    ) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_into_revision_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_into_revision_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_into_revision_event_data_t>(),
+        40usize,
+        "Size of lore_branch_merge_into_revision_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_into_revision_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_into_revision_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_into_revision_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_number) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_merge_into_revision_event_data_t::revision_number"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_into_sync_begin_event_data_t {
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_into_sync_begin_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_into_sync_begin_event_data_t>() - 8usize];
-    ["Alignment of lore_branch_merge_into_sync_begin_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_into_sync_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_into_sync_begin_event_data_t::count"]
-        [::std::mem::offset_of!(lore_branch_merge_into_sync_begin_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_into_sync_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_into_sync_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_into_sync_begin_event_data_t>(),
+        8usize,
+        "Size of lore_branch_merge_into_sync_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_into_sync_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_into_sync_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_into_sync_begin_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_into_sync_end_event_data_t {
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_into_sync_end_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_into_sync_end_event_data_t>() - 8usize];
-    ["Alignment of lore_branch_merge_into_sync_end_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_into_sync_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_into_sync_end_event_data_t::count"]
-        [::std::mem::offset_of!(lore_branch_merge_into_sync_end_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_into_sync_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_into_sync_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_into_sync_end_event_data_t>(),
+        8usize,
+        "Size of lore_branch_merge_into_sync_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_into_sync_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_into_sync_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_into_sync_end_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_resolve_file_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_resolve_file_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_resolve_file_event_data_t>() - 16usize];
-    ["Alignment of lore_branch_merge_resolve_file_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_resolve_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_resolve_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_branch_merge_resolve_file_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_resolve_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_resolve_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_resolve_file_event_data_t>(),
+        16usize,
+        "Size of lore_branch_merge_resolve_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_resolve_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_resolve_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_resolve_file_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_resolve_revision_event_data_t {
     pub repository: lore_repository_id_t,
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_resolve_revision_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_resolve_revision_event_data_t>() - 48usize];
-    ["Alignment of lore_branch_merge_resolve_revision_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_resolve_revision_event_data_t>() - 1usize];
-    ["Offset of field: lore_branch_merge_resolve_revision_event_data_t::repository"][::std::mem::offset_of!(
-        lore_branch_merge_resolve_revision_event_data_t,
-        repository
-    ) - 0usize];
-    ["Offset of field: lore_branch_merge_resolve_revision_event_data_t::revision"][::std::mem::offset_of!(
-        lore_branch_merge_resolve_revision_event_data_t,
-        revision
-    ) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_resolve_revision_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_resolve_revision_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_resolve_revision_event_data_t>(),
+        48usize,
+        "Size of lore_branch_merge_resolve_revision_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_resolve_revision_event_data_t>(),
+        1usize,
+        "Alignment of lore_branch_merge_resolve_revision_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_resolve_revision_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_merge_resolve_revision_event_data_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_start_begin_event_data_t {
@@ -1080,21 +1967,37 @@ pub struct lore_branch_merge_start_begin_event_data_t {
     pub revision: lore_hash_t,
     pub revision_number: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_start_begin_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_start_begin_event_data_t>() - 56usize];
-    ["Alignment of lore_branch_merge_start_begin_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_start_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_start_begin_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_branch_merge_start_begin_event_data_t, branch) - 0usize];
-    ["Offset of field: lore_branch_merge_start_begin_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_branch_merge_start_begin_event_data_t, revision) - 16usize];
-    ["Offset of field: lore_branch_merge_start_begin_event_data_t::revision_number"][::std::mem::offset_of!(
-        lore_branch_merge_start_begin_event_data_t,
-        revision_number
-    ) - 48usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_start_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_start_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_start_begin_event_data_t>(),
+        56usize,
+        "Size of lore_branch_merge_start_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_start_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_start_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_start_begin_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_merge_start_begin_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_number) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_branch_merge_start_begin_event_data_t::revision_number"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_sync_progress_event_data_t {
@@ -1108,41 +2011,67 @@ pub struct lore_revision_sync_progress_event_data_t {
     pub bytes_update_total: u64,
     pub discovery_complete: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_sync_progress_event_data_t"]
-        [::std::mem::size_of::<lore_revision_sync_progress_event_data_t>() - 72usize];
-    ["Alignment of lore_revision_sync_progress_event_data_t"]
-        [::std::mem::align_of::<lore_revision_sync_progress_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_sync_progress_event_data_t::file_update"]
-        [::std::mem::offset_of!(lore_revision_sync_progress_event_data_t, file_update) - 0usize];
-    ["Offset of field: lore_revision_sync_progress_event_data_t::file_update_total"][::std::mem::offset_of!(
-        lore_revision_sync_progress_event_data_t,
-        file_update_total
-    ) - 8usize];
-    ["Offset of field: lore_revision_sync_progress_event_data_t::file_delete"]
-        [::std::mem::offset_of!(lore_revision_sync_progress_event_data_t, file_delete) - 16usize];
-    ["Offset of field: lore_revision_sync_progress_event_data_t::file_delete_total"][::std::mem::offset_of!(
-        lore_revision_sync_progress_event_data_t,
-        file_delete_total
-    ) - 24usize];
-    ["Offset of field: lore_revision_sync_progress_event_data_t::file_automerge"][::std::mem::offset_of!(
-        lore_revision_sync_progress_event_data_t,
-        file_automerge
-    ) - 32usize];
-    ["Offset of field: lore_revision_sync_progress_event_data_t::file_conflict"]
-        [::std::mem::offset_of!(lore_revision_sync_progress_event_data_t, file_conflict) - 40usize];
-    ["Offset of field: lore_revision_sync_progress_event_data_t::bytes_update"]
-        [::std::mem::offset_of!(lore_revision_sync_progress_event_data_t, bytes_update) - 48usize];
-    ["Offset of field: lore_revision_sync_progress_event_data_t::bytes_update_total"][::std::mem::offset_of!(
-        lore_revision_sync_progress_event_data_t,
-        bytes_update_total
-    ) - 56usize];
-    ["Offset of field: lore_revision_sync_progress_event_data_t::discovery_complete"][::std::mem::offset_of!(
-        lore_revision_sync_progress_event_data_t,
-        discovery_complete
-    ) - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_sync_progress_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_sync_progress_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_sync_progress_event_data_t>(),
+        72usize,
+        "Size of lore_revision_sync_progress_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_sync_progress_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_sync_progress_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_update) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_sync_progress_event_data_t::file_update"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_update_total) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_sync_progress_event_data_t::file_update_total"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_delete) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_sync_progress_event_data_t::file_delete"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_delete_total) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_revision_sync_progress_event_data_t::file_delete_total"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_automerge) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_sync_progress_event_data_t::file_automerge"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_conflict) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_revision_sync_progress_event_data_t::file_conflict"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).bytes_update) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_revision_sync_progress_event_data_t::bytes_update"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).bytes_update_total) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_revision_sync_progress_event_data_t::bytes_update_total"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).discovery_complete) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_revision_sync_progress_event_data_t::discovery_complete"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_start_end_event_data_t {
@@ -1150,21 +2079,37 @@ pub struct lore_branch_merge_start_end_event_data_t {
     pub signature: lore_hash_t,
     pub has_conflicts: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_start_end_event_data_t"]
-        [::std::mem::size_of::<lore_branch_merge_start_end_event_data_t>() - 112usize];
-    ["Alignment of lore_branch_merge_start_end_event_data_t"]
-        [::std::mem::align_of::<lore_branch_merge_start_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_start_end_event_data_t::stats"]
-        [::std::mem::offset_of!(lore_branch_merge_start_end_event_data_t, stats) - 0usize];
-    ["Offset of field: lore_branch_merge_start_end_event_data_t::signature"]
-        [::std::mem::offset_of!(lore_branch_merge_start_end_event_data_t, signature) - 72usize];
-    ["Offset of field: lore_branch_merge_start_end_event_data_t::has_conflicts"][::std::mem::offset_of!(
-        lore_branch_merge_start_end_event_data_t,
-        has_conflicts
-    ) - 104usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_start_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_start_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_start_end_event_data_t>(),
+        112usize,
+        "Size of lore_branch_merge_start_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_start_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_start_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).stats) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_start_end_event_data_t::stats"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).signature) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_branch_merge_start_end_event_data_t::signature"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).has_conflicts) as usize - ptr as usize },
+        104usize,
+        "Offset of field: lore_branch_merge_start_end_event_data_t::has_conflicts"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_cherry_pick_start_begin_event_data_t {
@@ -1172,21 +2117,37 @@ pub struct lore_cherry_pick_start_begin_event_data_t {
     pub revision: lore_hash_t,
     pub revision_number: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_cherry_pick_start_begin_event_data_t"]
-        [::std::mem::size_of::<lore_cherry_pick_start_begin_event_data_t>() - 56usize];
-    ["Alignment of lore_cherry_pick_start_begin_event_data_t"]
-        [::std::mem::align_of::<lore_cherry_pick_start_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_cherry_pick_start_begin_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_cherry_pick_start_begin_event_data_t, branch) - 0usize];
-    ["Offset of field: lore_cherry_pick_start_begin_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_cherry_pick_start_begin_event_data_t, revision) - 16usize];
-    ["Offset of field: lore_cherry_pick_start_begin_event_data_t::revision_number"][::std::mem::offset_of!(
-        lore_cherry_pick_start_begin_event_data_t,
-        revision_number
-    ) - 48usize];
-};
+#[test]
+fn bindgen_test_layout_lore_cherry_pick_start_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_cherry_pick_start_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_cherry_pick_start_begin_event_data_t>(),
+        56usize,
+        "Size of lore_cherry_pick_start_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_cherry_pick_start_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_cherry_pick_start_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_cherry_pick_start_begin_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_cherry_pick_start_begin_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_number) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_cherry_pick_start_begin_event_data_t::revision_number"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_cherry_pick_start_end_event_data_t {
@@ -1194,140 +2155,237 @@ pub struct lore_cherry_pick_start_end_event_data_t {
     pub signature: lore_hash_t,
     pub has_conflicts: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_cherry_pick_start_end_event_data_t"]
-        [::std::mem::size_of::<lore_cherry_pick_start_end_event_data_t>() - 112usize];
-    ["Alignment of lore_cherry_pick_start_end_event_data_t"]
-        [::std::mem::align_of::<lore_cherry_pick_start_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_cherry_pick_start_end_event_data_t::stats"]
-        [::std::mem::offset_of!(lore_cherry_pick_start_end_event_data_t, stats) - 0usize];
-    ["Offset of field: lore_cherry_pick_start_end_event_data_t::signature"]
-        [::std::mem::offset_of!(lore_cherry_pick_start_end_event_data_t, signature) - 72usize];
-    ["Offset of field: lore_cherry_pick_start_end_event_data_t::has_conflicts"]
-        [::std::mem::offset_of!(lore_cherry_pick_start_end_event_data_t, has_conflicts) - 104usize];
-};
+#[test]
+fn bindgen_test_layout_lore_cherry_pick_start_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_cherry_pick_start_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_cherry_pick_start_end_event_data_t>(),
+        112usize,
+        "Size of lore_cherry_pick_start_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_cherry_pick_start_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_cherry_pick_start_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).stats) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_cherry_pick_start_end_event_data_t::stats"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).signature) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_cherry_pick_start_end_event_data_t::signature"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).has_conflicts) as usize - ptr as usize },
+        104usize,
+        "Offset of field: lore_cherry_pick_start_end_event_data_t::has_conflicts"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_cherry_pick_abort_begin_event_data_t {
     pub state_staged_revision: lore_hash_t,
     pub state_current_revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_cherry_pick_abort_begin_event_data_t"]
-        [::std::mem::size_of::<lore_cherry_pick_abort_begin_event_data_t>() - 64usize];
-    ["Alignment of lore_cherry_pick_abort_begin_event_data_t"]
-        [::std::mem::align_of::<lore_cherry_pick_abort_begin_event_data_t>() - 1usize];
-    ["Offset of field: lore_cherry_pick_abort_begin_event_data_t::state_staged_revision"][::std::mem::offset_of!(
-        lore_cherry_pick_abort_begin_event_data_t,
-        state_staged_revision
-    )
-        - 0usize];
-    ["Offset of field: lore_cherry_pick_abort_begin_event_data_t::state_current_revision"][::std::mem::offset_of!(
-        lore_cherry_pick_abort_begin_event_data_t,
-        state_current_revision
-    )
-        - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_cherry_pick_abort_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_cherry_pick_abort_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_cherry_pick_abort_begin_event_data_t>(),
+        64usize,
+        "Size of lore_cherry_pick_abort_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_cherry_pick_abort_begin_event_data_t>(),
+        1usize,
+        "Alignment of lore_cherry_pick_abort_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).state_staged_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_cherry_pick_abort_begin_event_data_t::state_staged_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).state_current_revision) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_cherry_pick_abort_begin_event_data_t::state_current_revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_cherry_pick_abort_end_event_data_t {
     pub _unused: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_cherry_pick_abort_end_event_data_t"]
-        [::std::mem::size_of::<lore_cherry_pick_abort_end_event_data_t>() - 4usize];
-    ["Alignment of lore_cherry_pick_abort_end_event_data_t"]
-        [::std::mem::align_of::<lore_cherry_pick_abort_end_event_data_t>() - 4usize];
-    ["Offset of field: lore_cherry_pick_abort_end_event_data_t::_unused"]
-        [::std::mem::offset_of!(lore_cherry_pick_abort_end_event_data_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_cherry_pick_abort_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_cherry_pick_abort_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_cherry_pick_abort_end_event_data_t>(),
+        4usize,
+        "Size of lore_cherry_pick_abort_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_cherry_pick_abort_end_event_data_t>(),
+        4usize,
+        "Alignment of lore_cherry_pick_abort_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_cherry_pick_abort_end_event_data_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_cherry_pick_conflict_file_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_cherry_pick_conflict_file_event_data_t"]
-        [::std::mem::size_of::<lore_cherry_pick_conflict_file_event_data_t>() - 16usize];
-    ["Alignment of lore_cherry_pick_conflict_file_event_data_t"]
-        [::std::mem::align_of::<lore_cherry_pick_conflict_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_cherry_pick_conflict_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_cherry_pick_conflict_file_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_cherry_pick_conflict_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_cherry_pick_conflict_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_cherry_pick_conflict_file_event_data_t>(),
+        16usize,
+        "Size of lore_cherry_pick_conflict_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_cherry_pick_conflict_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_cherry_pick_conflict_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_cherry_pick_conflict_file_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_cherry_pick_unresolve_file_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_cherry_pick_unresolve_file_event_data_t"]
-        [::std::mem::size_of::<lore_cherry_pick_unresolve_file_event_data_t>() - 16usize];
-    ["Alignment of lore_cherry_pick_unresolve_file_event_data_t"]
-        [::std::mem::align_of::<lore_cherry_pick_unresolve_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_cherry_pick_unresolve_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_cherry_pick_unresolve_file_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_cherry_pick_unresolve_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_cherry_pick_unresolve_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_cherry_pick_unresolve_file_event_data_t>(),
+        16usize,
+        "Size of lore_cherry_pick_unresolve_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_cherry_pick_unresolve_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_cherry_pick_unresolve_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_cherry_pick_unresolve_file_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_cherry_pick_unresolve_revision_event_data_t {
     pub repository: lore_repository_id_t,
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_cherry_pick_unresolve_revision_event_data_t"]
-        [::std::mem::size_of::<lore_cherry_pick_unresolve_revision_event_data_t>() - 48usize];
-    ["Alignment of lore_cherry_pick_unresolve_revision_event_data_t"]
-        [::std::mem::align_of::<lore_cherry_pick_unresolve_revision_event_data_t>() - 1usize];
-    ["Offset of field: lore_cherry_pick_unresolve_revision_event_data_t::repository"][::std::mem::offset_of!(
-        lore_cherry_pick_unresolve_revision_event_data_t,
-        repository
-    ) - 0usize];
-    ["Offset of field: lore_cherry_pick_unresolve_revision_event_data_t::revision"][::std::mem::offset_of!(
-        lore_cherry_pick_unresolve_revision_event_data_t,
-        revision
-    ) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_cherry_pick_unresolve_revision_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_cherry_pick_unresolve_revision_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_cherry_pick_unresolve_revision_event_data_t>(),
+        48usize,
+        "Size of lore_cherry_pick_unresolve_revision_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_cherry_pick_unresolve_revision_event_data_t>(),
+        1usize,
+        "Alignment of lore_cherry_pick_unresolve_revision_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_cherry_pick_unresolve_revision_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_cherry_pick_unresolve_revision_event_data_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_cherry_pick_resolve_file_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_cherry_pick_resolve_file_event_data_t"]
-        [::std::mem::size_of::<lore_cherry_pick_resolve_file_event_data_t>() - 16usize];
-    ["Alignment of lore_cherry_pick_resolve_file_event_data_t"]
-        [::std::mem::align_of::<lore_cherry_pick_resolve_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_cherry_pick_resolve_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_cherry_pick_resolve_file_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_cherry_pick_resolve_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_cherry_pick_resolve_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_cherry_pick_resolve_file_event_data_t>(),
+        16usize,
+        "Size of lore_cherry_pick_resolve_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_cherry_pick_resolve_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_cherry_pick_resolve_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_cherry_pick_resolve_file_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_cherry_pick_resolve_revision_event_data_t {
     pub repository: lore_repository_id_t,
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_cherry_pick_resolve_revision_event_data_t"]
-        [::std::mem::size_of::<lore_cherry_pick_resolve_revision_event_data_t>() - 48usize];
-    ["Alignment of lore_cherry_pick_resolve_revision_event_data_t"]
-        [::std::mem::align_of::<lore_cherry_pick_resolve_revision_event_data_t>() - 1usize];
-    ["Offset of field: lore_cherry_pick_resolve_revision_event_data_t::repository"][::std::mem::offset_of!(
-        lore_cherry_pick_resolve_revision_event_data_t,
-        repository
-    ) - 0usize];
-    ["Offset of field: lore_cherry_pick_resolve_revision_event_data_t::revision"][::std::mem::offset_of!(
-        lore_cherry_pick_resolve_revision_event_data_t,
-        revision
-    ) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_cherry_pick_resolve_revision_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_cherry_pick_resolve_revision_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_cherry_pick_resolve_revision_event_data_t>(),
+        48usize,
+        "Size of lore_cherry_pick_resolve_revision_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_cherry_pick_resolve_revision_event_data_t>(),
+        1usize,
+        "Alignment of lore_cherry_pick_resolve_revision_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_cherry_pick_resolve_revision_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_cherry_pick_resolve_revision_event_data_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revert_start_begin_event_data_t {
@@ -1335,19 +2393,37 @@ pub struct lore_revert_start_begin_event_data_t {
     pub revision: lore_hash_t,
     pub revision_number: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revert_start_begin_event_data_t"]
-        [::std::mem::size_of::<lore_revert_start_begin_event_data_t>() - 56usize];
-    ["Alignment of lore_revert_start_begin_event_data_t"]
-        [::std::mem::align_of::<lore_revert_start_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_revert_start_begin_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_revert_start_begin_event_data_t, branch) - 0usize];
-    ["Offset of field: lore_revert_start_begin_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_revert_start_begin_event_data_t, revision) - 16usize];
-    ["Offset of field: lore_revert_start_begin_event_data_t::revision_number"]
-        [::std::mem::offset_of!(lore_revert_start_begin_event_data_t, revision_number) - 48usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revert_start_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revert_start_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revert_start_begin_event_data_t>(),
+        56usize,
+        "Size of lore_revert_start_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revert_start_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_revert_start_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revert_start_begin_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revert_start_begin_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_number) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_revert_start_begin_event_data_t::revision_number"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revert_start_end_event_data_t {
@@ -1355,144 +2431,263 @@ pub struct lore_revert_start_end_event_data_t {
     pub signature: lore_hash_t,
     pub has_conflicts: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revert_start_end_event_data_t"]
-        [::std::mem::size_of::<lore_revert_start_end_event_data_t>() - 112usize];
-    ["Alignment of lore_revert_start_end_event_data_t"]
-        [::std::mem::align_of::<lore_revert_start_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_revert_start_end_event_data_t::stats"]
-        [::std::mem::offset_of!(lore_revert_start_end_event_data_t, stats) - 0usize];
-    ["Offset of field: lore_revert_start_end_event_data_t::signature"]
-        [::std::mem::offset_of!(lore_revert_start_end_event_data_t, signature) - 72usize];
-    ["Offset of field: lore_revert_start_end_event_data_t::has_conflicts"]
-        [::std::mem::offset_of!(lore_revert_start_end_event_data_t, has_conflicts) - 104usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revert_start_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revert_start_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revert_start_end_event_data_t>(),
+        112usize,
+        "Size of lore_revert_start_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revert_start_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_revert_start_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).stats) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revert_start_end_event_data_t::stats"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).signature) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_revert_start_end_event_data_t::signature"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).has_conflicts) as usize - ptr as usize },
+        104usize,
+        "Offset of field: lore_revert_start_end_event_data_t::has_conflicts"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revert_abort_begin_event_data_t {
     pub state_staged_revision: lore_hash_t,
     pub state_current_revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revert_abort_begin_event_data_t"]
-        [::std::mem::size_of::<lore_revert_abort_begin_event_data_t>() - 64usize];
-    ["Alignment of lore_revert_abort_begin_event_data_t"]
-        [::std::mem::align_of::<lore_revert_abort_begin_event_data_t>() - 1usize];
-    ["Offset of field: lore_revert_abort_begin_event_data_t::state_staged_revision"][::std::mem::offset_of!(
-        lore_revert_abort_begin_event_data_t,
-        state_staged_revision
-    ) - 0usize];
-    ["Offset of field: lore_revert_abort_begin_event_data_t::state_current_revision"][::std::mem::offset_of!(
-        lore_revert_abort_begin_event_data_t,
-        state_current_revision
-    ) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revert_abort_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revert_abort_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revert_abort_begin_event_data_t>(),
+        64usize,
+        "Size of lore_revert_abort_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revert_abort_begin_event_data_t>(),
+        1usize,
+        "Alignment of lore_revert_abort_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).state_staged_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revert_abort_begin_event_data_t::state_staged_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).state_current_revision) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revert_abort_begin_event_data_t::state_current_revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revert_abort_end_event_data_t {
     pub _unused: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revert_abort_end_event_data_t"]
-        [::std::mem::size_of::<lore_revert_abort_end_event_data_t>() - 4usize];
-    ["Alignment of lore_revert_abort_end_event_data_t"]
-        [::std::mem::align_of::<lore_revert_abort_end_event_data_t>() - 4usize];
-    ["Offset of field: lore_revert_abort_end_event_data_t::_unused"]
-        [::std::mem::offset_of!(lore_revert_abort_end_event_data_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revert_abort_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revert_abort_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revert_abort_end_event_data_t>(),
+        4usize,
+        "Size of lore_revert_abort_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revert_abort_end_event_data_t>(),
+        4usize,
+        "Alignment of lore_revert_abort_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revert_abort_end_event_data_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revert_resolve_file_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revert_resolve_file_event_data_t"]
-        [::std::mem::size_of::<lore_revert_resolve_file_event_data_t>() - 16usize];
-    ["Alignment of lore_revert_resolve_file_event_data_t"]
-        [::std::mem::align_of::<lore_revert_resolve_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_revert_resolve_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_revert_resolve_file_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revert_resolve_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revert_resolve_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revert_resolve_file_event_data_t>(),
+        16usize,
+        "Size of lore_revert_resolve_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revert_resolve_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_revert_resolve_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revert_resolve_file_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revert_resolve_revision_event_data_t {
     pub repository: lore_repository_id_t,
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revert_resolve_revision_event_data_t"]
-        [::std::mem::size_of::<lore_revert_resolve_revision_event_data_t>() - 48usize];
-    ["Alignment of lore_revert_resolve_revision_event_data_t"]
-        [::std::mem::align_of::<lore_revert_resolve_revision_event_data_t>() - 1usize];
-    ["Offset of field: lore_revert_resolve_revision_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_revert_resolve_revision_event_data_t, repository) - 0usize];
-    ["Offset of field: lore_revert_resolve_revision_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_revert_resolve_revision_event_data_t, revision) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revert_resolve_revision_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revert_resolve_revision_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revert_resolve_revision_event_data_t>(),
+        48usize,
+        "Size of lore_revert_resolve_revision_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revert_resolve_revision_event_data_t>(),
+        1usize,
+        "Alignment of lore_revert_resolve_revision_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revert_resolve_revision_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revert_resolve_revision_event_data_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revert_conflict_file_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revert_conflict_file_event_data_t"]
-        [::std::mem::size_of::<lore_revert_conflict_file_event_data_t>() - 16usize];
-    ["Alignment of lore_revert_conflict_file_event_data_t"]
-        [::std::mem::align_of::<lore_revert_conflict_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_revert_conflict_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_revert_conflict_file_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revert_conflict_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revert_conflict_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revert_conflict_file_event_data_t>(),
+        16usize,
+        "Size of lore_revert_conflict_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revert_conflict_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_revert_conflict_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revert_conflict_file_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revert_unresolve_file_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revert_unresolve_file_event_data_t"]
-        [::std::mem::size_of::<lore_revert_unresolve_file_event_data_t>() - 16usize];
-    ["Alignment of lore_revert_unresolve_file_event_data_t"]
-        [::std::mem::align_of::<lore_revert_unresolve_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_revert_unresolve_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_revert_unresolve_file_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revert_unresolve_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revert_unresolve_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revert_unresolve_file_event_data_t>(),
+        16usize,
+        "Size of lore_revert_unresolve_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revert_unresolve_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_revert_unresolve_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revert_unresolve_file_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revert_unresolve_revision_event_data_t {
     pub repository: lore_repository_id_t,
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revert_unresolve_revision_event_data_t"]
-        [::std::mem::size_of::<lore_revert_unresolve_revision_event_data_t>() - 48usize];
-    ["Alignment of lore_revert_unresolve_revision_event_data_t"]
-        [::std::mem::align_of::<lore_revert_unresolve_revision_event_data_t>() - 1usize];
-    ["Offset of field: lore_revert_unresolve_revision_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_revert_unresolve_revision_event_data_t, repository) - 0usize];
-    ["Offset of field: lore_revert_unresolve_revision_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_revert_unresolve_revision_event_data_t, revision) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revert_unresolve_revision_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revert_unresolve_revision_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revert_unresolve_revision_event_data_t>(),
+        48usize,
+        "Size of lore_revert_unresolve_revision_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revert_unresolve_revision_event_data_t>(),
+        1usize,
+        "Alignment of lore_revert_unresolve_revision_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revert_unresolve_revision_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revert_unresolve_revision_event_data_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_protect_event_data_t {
     pub name: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_protect_event_data_t"]
-        [::std::mem::size_of::<lore_branch_protect_event_data_t>() - 16usize];
-    ["Alignment of lore_branch_protect_event_data_t"]
-        [::std::mem::align_of::<lore_branch_protect_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_protect_event_data_t::name"]
-        [::std::mem::offset_of!(lore_branch_protect_event_data_t, name) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_protect_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_protect_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_protect_event_data_t>(),
+        16usize,
+        "Size of lore_branch_protect_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_protect_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_protect_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_protect_event_data_t::name"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_push_event_data_t {
@@ -1509,37 +2704,82 @@ pub struct lore_branch_push_event_data_t {
     pub flag_link: u8,
     pub flag_layer: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_push_event_data_t"]
-        [::std::mem::size_of::<lore_branch_push_event_data_t>() - 152usize];
-    ["Alignment of lore_branch_push_event_data_t"]
-        [::std::mem::align_of::<lore_branch_push_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_push_event_data_t::remote"]
-        [::std::mem::offset_of!(lore_branch_push_event_data_t, remote) - 0usize];
-    ["Offset of field: lore_branch_push_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_branch_push_event_data_t, repository) - 16usize];
-    ["Offset of field: lore_branch_push_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_branch_push_event_data_t, branch) - 32usize];
-    ["Offset of field: lore_branch_push_event_data_t::branch_name"]
-        [::std::mem::offset_of!(lore_branch_push_event_data_t, branch_name) - 48usize];
-    ["Offset of field: lore_branch_push_event_data_t::remote_revision"]
-        [::std::mem::offset_of!(lore_branch_push_event_data_t, remote_revision) - 64usize];
-    ["Offset of field: lore_branch_push_event_data_t::local_revision"]
-        [::std::mem::offset_of!(lore_branch_push_event_data_t, local_revision) - 96usize];
-    ["Offset of field: lore_branch_push_event_data_t::remote_history"]
-        [::std::mem::offset_of!(lore_branch_push_event_data_t, remote_history) - 128usize];
-    ["Offset of field: lore_branch_push_event_data_t::local_history"]
-        [::std::mem::offset_of!(lore_branch_push_event_data_t, local_history) - 136usize];
-    ["Offset of field: lore_branch_push_event_data_t::flag_already_pushed"]
-        [::std::mem::offset_of!(lore_branch_push_event_data_t, flag_already_pushed) - 144usize];
-    ["Offset of field: lore_branch_push_event_data_t::flag_default"]
-        [::std::mem::offset_of!(lore_branch_push_event_data_t, flag_default) - 145usize];
-    ["Offset of field: lore_branch_push_event_data_t::flag_link"]
-        [::std::mem::offset_of!(lore_branch_push_event_data_t, flag_link) - 146usize];
-    ["Offset of field: lore_branch_push_event_data_t::flag_layer"]
-        [::std::mem::offset_of!(lore_branch_push_event_data_t, flag_layer) - 147usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_push_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_push_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_push_event_data_t>(),
+        152usize,
+        "Size of lore_branch_push_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_push_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_push_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_push_event_data_t::remote"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_push_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_push_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_name) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_branch_push_event_data_t::branch_name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_revision) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_branch_push_event_data_t::remote_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local_revision) as usize - ptr as usize },
+        96usize,
+        "Offset of field: lore_branch_push_event_data_t::local_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_history) as usize - ptr as usize },
+        128usize,
+        "Offset of field: lore_branch_push_event_data_t::remote_history"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local_history) as usize - ptr as usize },
+        136usize,
+        "Offset of field: lore_branch_push_event_data_t::local_history"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_already_pushed) as usize - ptr as usize },
+        144usize,
+        "Offset of field: lore_branch_push_event_data_t::flag_already_pushed"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_default) as usize - ptr as usize },
+        145usize,
+        "Offset of field: lore_branch_push_event_data_t::flag_default"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_link) as usize - ptr as usize },
+        146usize,
+        "Offset of field: lore_branch_push_event_data_t::flag_link"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_layer) as usize - ptr as usize },
+        147usize,
+        "Offset of field: lore_branch_push_event_data_t::flag_layer"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_push_revision_update_begin_event_data_t {
@@ -1547,62 +2787,95 @@ pub struct lore_branch_push_revision_update_begin_event_data_t {
     pub old_parent: lore_hash_t,
     pub new_parent: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_push_revision_update_begin_event_data_t"]
-        [::std::mem::size_of::<lore_branch_push_revision_update_begin_event_data_t>() - 96usize];
-    ["Alignment of lore_branch_push_revision_update_begin_event_data_t"]
-        [::std::mem::align_of::<lore_branch_push_revision_update_begin_event_data_t>() - 1usize];
-    ["Offset of field: lore_branch_push_revision_update_begin_event_data_t::revision"][::std::mem::offset_of!(
-        lore_branch_push_revision_update_begin_event_data_t,
-        revision
-    ) - 0usize];
-    ["Offset of field: lore_branch_push_revision_update_begin_event_data_t::old_parent"][::std::mem::offset_of!(
-        lore_branch_push_revision_update_begin_event_data_t,
-        old_parent
-    )
-        - 32usize];
-    ["Offset of field: lore_branch_push_revision_update_begin_event_data_t::new_parent"][::std::mem::offset_of!(
-        lore_branch_push_revision_update_begin_event_data_t,
-        new_parent
-    )
-        - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_push_revision_update_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_push_revision_update_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_push_revision_update_begin_event_data_t>(),
+        96usize,
+        "Size of lore_branch_push_revision_update_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_push_revision_update_begin_event_data_t>(),
+        1usize,
+        "Alignment of lore_branch_push_revision_update_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_push_revision_update_begin_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).old_parent) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_push_revision_update_begin_event_data_t::old_parent"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).new_parent) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_branch_push_revision_update_begin_event_data_t::new_parent"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_push_revision_update_end_event_data_t {
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_push_revision_update_end_event_data_t"]
-        [::std::mem::size_of::<lore_branch_push_revision_update_end_event_data_t>() - 32usize];
-    ["Alignment of lore_branch_push_revision_update_end_event_data_t"]
-        [::std::mem::align_of::<lore_branch_push_revision_update_end_event_data_t>() - 1usize];
-    ["Offset of field: lore_branch_push_revision_update_end_event_data_t::revision"][::std::mem::offset_of!(
-        lore_branch_push_revision_update_end_event_data_t,
-        revision
-    ) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_push_revision_update_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_push_revision_update_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_push_revision_update_end_event_data_t>(),
+        32usize,
+        "Size of lore_branch_push_revision_update_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_push_revision_update_end_event_data_t>(),
+        1usize,
+        "Alignment of lore_branch_push_revision_update_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_push_revision_update_end_event_data_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_push_fragment_begin_event_data_t {
     pub fragments: u64,
     pub bytes_total: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_push_fragment_begin_event_data_t"]
-        [::std::mem::size_of::<lore_branch_push_fragment_begin_event_data_t>() - 16usize];
-    ["Alignment of lore_branch_push_fragment_begin_event_data_t"]
-        [::std::mem::align_of::<lore_branch_push_fragment_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_push_fragment_begin_event_data_t::fragments"]
-        [::std::mem::offset_of!(lore_branch_push_fragment_begin_event_data_t, fragments) - 0usize];
-    ["Offset of field: lore_branch_push_fragment_begin_event_data_t::bytes_total"][::std::mem::offset_of!(
-        lore_branch_push_fragment_begin_event_data_t,
-        bytes_total
-    ) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_push_fragment_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_push_fragment_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_push_fragment_begin_event_data_t>(),
+        16usize,
+        "Size of lore_branch_push_fragment_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_push_fragment_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_push_fragment_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).fragments) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_push_fragment_begin_event_data_t::fragments"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).bytes_total) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_branch_push_fragment_begin_event_data_t::bytes_total"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_push_fragment_progress_event_data_t {
@@ -1611,104 +2884,158 @@ pub struct lore_branch_push_fragment_progress_event_data_t {
     pub bytes_transferred: u64,
     pub bytes_total: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_push_fragment_progress_event_data_t"]
-        [::std::mem::size_of::<lore_branch_push_fragment_progress_event_data_t>() - 32usize];
-    ["Alignment of lore_branch_push_fragment_progress_event_data_t"]
-        [::std::mem::align_of::<lore_branch_push_fragment_progress_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_push_fragment_progress_event_data_t::complete"][::std::mem::offset_of!(
-        lore_branch_push_fragment_progress_event_data_t,
-        complete
-    ) - 0usize];
-    ["Offset of field: lore_branch_push_fragment_progress_event_data_t::count"]
-        [::std::mem::offset_of!(lore_branch_push_fragment_progress_event_data_t, count) - 8usize];
-    ["Offset of field: lore_branch_push_fragment_progress_event_data_t::bytes_transferred"][::std::mem::offset_of!(
-        lore_branch_push_fragment_progress_event_data_t,
-        bytes_transferred
-    )
-        - 16usize];
-    ["Offset of field: lore_branch_push_fragment_progress_event_data_t::bytes_total"][::std::mem::offset_of!(
-        lore_branch_push_fragment_progress_event_data_t,
-        bytes_total
-    ) - 24usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_push_fragment_progress_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_push_fragment_progress_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_push_fragment_progress_event_data_t>(),
+        32usize,
+        "Size of lore_branch_push_fragment_progress_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_push_fragment_progress_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_push_fragment_progress_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).complete) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_push_fragment_progress_event_data_t::complete"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_branch_push_fragment_progress_event_data_t::count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).bytes_transferred) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_push_fragment_progress_event_data_t::bytes_transferred"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).bytes_total) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_branch_push_fragment_progress_event_data_t::bytes_total"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_push_fragment_end_event_data_t {
     pub fragments: u64,
     pub bytes_transferred: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_push_fragment_end_event_data_t"]
-        [::std::mem::size_of::<lore_branch_push_fragment_end_event_data_t>() - 16usize];
-    ["Alignment of lore_branch_push_fragment_end_event_data_t"]
-        [::std::mem::align_of::<lore_branch_push_fragment_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_push_fragment_end_event_data_t::fragments"]
-        [::std::mem::offset_of!(lore_branch_push_fragment_end_event_data_t, fragments) - 0usize];
-    ["Offset of field: lore_branch_push_fragment_end_event_data_t::bytes_transferred"][::std::mem::offset_of!(
-        lore_branch_push_fragment_end_event_data_t,
-        bytes_transferred
-    ) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_push_fragment_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_push_fragment_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_push_fragment_end_event_data_t>(),
+        16usize,
+        "Size of lore_branch_push_fragment_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_push_fragment_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_push_fragment_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).fragments) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_push_fragment_end_event_data_t::fragments"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).bytes_transferred) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_branch_push_fragment_end_event_data_t::bytes_transferred"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_push_branch_create_begin_event_data_t {
     pub local_revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_push_branch_create_begin_event_data_t"]
-        [::std::mem::size_of::<lore_branch_push_branch_create_begin_event_data_t>() - 32usize];
-    ["Alignment of lore_branch_push_branch_create_begin_event_data_t"]
-        [::std::mem::align_of::<lore_branch_push_branch_create_begin_event_data_t>() - 1usize];
-    ["Offset of field: lore_branch_push_branch_create_begin_event_data_t::local_revision"][::std::mem::offset_of!(
-        lore_branch_push_branch_create_begin_event_data_t,
-        local_revision
-    )
-        - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_push_branch_create_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_push_branch_create_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_push_branch_create_begin_event_data_t>(),
+        32usize,
+        "Size of lore_branch_push_branch_create_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_push_branch_create_begin_event_data_t>(),
+        1usize,
+        "Alignment of lore_branch_push_branch_create_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_push_branch_create_begin_event_data_t::local_revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_push_branch_create_end_event_data_t {
     pub remote_revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_push_branch_create_end_event_data_t"]
-        [::std::mem::size_of::<lore_branch_push_branch_create_end_event_data_t>() - 32usize];
-    ["Alignment of lore_branch_push_branch_create_end_event_data_t"]
-        [::std::mem::align_of::<lore_branch_push_branch_create_end_event_data_t>() - 1usize];
-    ["Offset of field: lore_branch_push_branch_create_end_event_data_t::remote_revision"][::std::mem::offset_of!(
-        lore_branch_push_branch_create_end_event_data_t,
-        remote_revision
-    )
-        - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_push_branch_create_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_push_branch_create_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_push_branch_create_end_event_data_t>(),
+        32usize,
+        "Size of lore_branch_push_branch_create_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_push_branch_create_end_event_data_t>(),
+        1usize,
+        "Alignment of lore_branch_push_branch_create_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_push_branch_create_end_event_data_t::remote_revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_push_revision_push_begin_event_data_t {
     pub remote_revision: lore_hash_t,
     pub local_revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_push_revision_push_begin_event_data_t"]
-        [::std::mem::size_of::<lore_branch_push_revision_push_begin_event_data_t>() - 64usize];
-    ["Alignment of lore_branch_push_revision_push_begin_event_data_t"]
-        [::std::mem::align_of::<lore_branch_push_revision_push_begin_event_data_t>() - 1usize];
-    ["Offset of field: lore_branch_push_revision_push_begin_event_data_t::remote_revision"][::std::mem::offset_of!(
-        lore_branch_push_revision_push_begin_event_data_t,
-        remote_revision
-    )
-        - 0usize];
-    ["Offset of field: lore_branch_push_revision_push_begin_event_data_t::local_revision"][::std::mem::offset_of!(
-        lore_branch_push_revision_push_begin_event_data_t,
-        local_revision
-    )
-        - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_push_revision_push_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_push_revision_push_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_push_revision_push_begin_event_data_t>(),
+        64usize,
+        "Size of lore_branch_push_revision_push_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_push_revision_push_begin_event_data_t>(),
+        1usize,
+        "Alignment of lore_branch_push_revision_push_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_push_revision_push_begin_event_data_t::remote_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local_revision) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_push_revision_push_begin_event_data_t::local_revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_push_revision_push_update_event_data_t {
@@ -1716,28 +3043,37 @@ pub struct lore_branch_push_revision_push_update_event_data_t {
     pub new_revision: lore_hash_t,
     pub new_revision_number: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_push_revision_push_update_event_data_t"]
-        [::std::mem::size_of::<lore_branch_push_revision_push_update_event_data_t>() - 72usize];
-    ["Alignment of lore_branch_push_revision_push_update_event_data_t"]
-        [::std::mem::align_of::<lore_branch_push_revision_push_update_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_push_revision_push_update_event_data_t::old_revision"][::std::mem::offset_of!(
-        lore_branch_push_revision_push_update_event_data_t,
-        old_revision
-    )
-        - 0usize];
-    ["Offset of field: lore_branch_push_revision_push_update_event_data_t::new_revision"][::std::mem::offset_of!(
-        lore_branch_push_revision_push_update_event_data_t,
-        new_revision
-    )
-        - 32usize];
-    ["Offset of field: lore_branch_push_revision_push_update_event_data_t::new_revision_number"][::std::mem::offset_of!(
-        lore_branch_push_revision_push_update_event_data_t,
-        new_revision_number
-    )
-        - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_push_revision_push_update_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_push_revision_push_update_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_push_revision_push_update_event_data_t>(),
+        72usize,
+        "Size of lore_branch_push_revision_push_update_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_push_revision_push_update_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_push_revision_push_update_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).old_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_push_revision_push_update_event_data_t::old_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).new_revision) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_push_revision_push_update_event_data_t::new_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).new_revision_number) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_branch_push_revision_push_update_event_data_t::new_revision_number"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_push_revision_push_end_event_data_t {
@@ -1747,38 +3083,43 @@ pub struct lore_branch_push_revision_push_end_event_data_t {
     pub message: lore_string_t,
     pub fast_forward_merged: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_push_revision_push_end_event_data_t"]
-        [::std::mem::size_of::<lore_branch_push_revision_push_end_event_data_t>() - 96usize];
-    ["Alignment of lore_branch_push_revision_push_end_event_data_t"]
-        [::std::mem::align_of::<lore_branch_push_revision_push_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_push_revision_push_end_event_data_t::old_remote_revision"][::std::mem::offset_of!(
-        lore_branch_push_revision_push_end_event_data_t,
-        old_remote_revision
-    )
-        - 0usize];
-    ["Offset of field: lore_branch_push_revision_push_end_event_data_t::new_remote_revision"][::std::mem::offset_of!(
-        lore_branch_push_revision_push_end_event_data_t,
-        new_remote_revision
-    )
-        - 32usize];
-    [
-        "Offset of field: lore_branch_push_revision_push_end_event_data_t::new_remote_revision_number",
-    ][::std::mem::offset_of!(
-        lore_branch_push_revision_push_end_event_data_t,
-        new_remote_revision_number
-    ) - 64usize];
-    ["Offset of field: lore_branch_push_revision_push_end_event_data_t::message"][::std::mem::offset_of!(
-        lore_branch_push_revision_push_end_event_data_t,
-        message
-    ) - 72usize];
-    ["Offset of field: lore_branch_push_revision_push_end_event_data_t::fast_forward_merged"][::std::mem::offset_of!(
-        lore_branch_push_revision_push_end_event_data_t,
-        fast_forward_merged
-    )
-        - 88usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_push_revision_push_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_push_revision_push_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_push_revision_push_end_event_data_t>(),
+        96usize,
+        "Size of lore_branch_push_revision_push_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_push_revision_push_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_push_revision_push_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).old_remote_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_push_revision_push_end_event_data_t::old_remote_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).new_remote_revision) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_push_revision_push_end_event_data_t::new_remote_revision"
+    );
+    assert_eq ! (unsafe { :: std :: ptr :: addr_of ! ((* ptr) . new_remote_revision_number) as usize - ptr as usize } , 64usize , "Offset of field: lore_branch_push_revision_push_end_event_data_t::new_remote_revision_number");
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).message) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_branch_push_revision_push_end_event_data_t::message"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).fast_forward_merged) as usize - ptr as usize },
+        88usize,
+        "Offset of field: lore_branch_push_revision_push_end_event_data_t::fast_forward_merged"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_reset_event_data_t {
@@ -1786,19 +3127,37 @@ pub struct lore_branch_reset_event_data_t {
     pub name: lore_string_t,
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_reset_event_data_t"]
-        [::std::mem::size_of::<lore_branch_reset_event_data_t>() - 64usize];
-    ["Alignment of lore_branch_reset_event_data_t"]
-        [::std::mem::align_of::<lore_branch_reset_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_reset_event_data_t::id"]
-        [::std::mem::offset_of!(lore_branch_reset_event_data_t, id) - 0usize];
-    ["Offset of field: lore_branch_reset_event_data_t::name"]
-        [::std::mem::offset_of!(lore_branch_reset_event_data_t, name) - 16usize];
-    ["Offset of field: lore_branch_reset_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_branch_reset_event_data_t, revision) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_reset_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_reset_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_reset_event_data_t>(),
+        64usize,
+        "Size of lore_branch_reset_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_reset_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_reset_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_reset_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_reset_event_data_t::name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_reset_event_data_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_switch_data_t {
@@ -1809,67 +3168,130 @@ pub struct lore_branch_switch_data_t {
     pub revision: lore_hash_t,
     pub location: lore_branch_location_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_switch_data_t"]
-        [::std::mem::size_of::<lore_branch_switch_data_t>() - 136usize];
-    ["Alignment of lore_branch_switch_data_t"]
-        [::std::mem::align_of::<lore_branch_switch_data_t>() - 8usize];
-    ["Offset of field: lore_branch_switch_data_t::id"]
-        [::std::mem::offset_of!(lore_branch_switch_data_t, id) - 0usize];
-    ["Offset of field: lore_branch_switch_data_t::name"]
-        [::std::mem::offset_of!(lore_branch_switch_data_t, name) - 16usize];
-    ["Offset of field: lore_branch_switch_data_t::latest_local"]
-        [::std::mem::offset_of!(lore_branch_switch_data_t, latest_local) - 32usize];
-    ["Offset of field: lore_branch_switch_data_t::latest_remote"]
-        [::std::mem::offset_of!(lore_branch_switch_data_t, latest_remote) - 64usize];
-    ["Offset of field: lore_branch_switch_data_t::revision"]
-        [::std::mem::offset_of!(lore_branch_switch_data_t, revision) - 96usize];
-    ["Offset of field: lore_branch_switch_data_t::location"]
-        [::std::mem::offset_of!(lore_branch_switch_data_t, location) - 128usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_switch_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_switch_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_switch_data_t>(),
+        136usize,
+        "Size of lore_branch_switch_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_switch_data_t>(),
+        8usize,
+        "Alignment of lore_branch_switch_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_switch_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_switch_data_t::name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).latest_local) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_switch_data_t::latest_local"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).latest_remote) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_branch_switch_data_t::latest_remote"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        96usize,
+        "Offset of field: lore_branch_switch_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).location) as usize - ptr as usize },
+        128usize,
+        "Offset of field: lore_branch_switch_data_t::location"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_switch_begin_event_data_t {
     pub branch: lore_branch_switch_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_switch_begin_event_data_t"]
-        [::std::mem::size_of::<lore_branch_switch_begin_event_data_t>() - 136usize];
-    ["Alignment of lore_branch_switch_begin_event_data_t"]
-        [::std::mem::align_of::<lore_branch_switch_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_switch_begin_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_branch_switch_begin_event_data_t, branch) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_switch_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_switch_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_switch_begin_event_data_t>(),
+        136usize,
+        "Size of lore_branch_switch_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_switch_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_switch_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_switch_begin_event_data_t::branch"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_switch_end_event_data_t {
     pub branch: lore_branch_switch_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_switch_end_event_data_t"]
-        [::std::mem::size_of::<lore_branch_switch_end_event_data_t>() - 136usize];
-    ["Alignment of lore_branch_switch_end_event_data_t"]
-        [::std::mem::align_of::<lore_branch_switch_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_switch_end_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_branch_switch_end_event_data_t, branch) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_switch_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_switch_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_switch_end_event_data_t>(),
+        136usize,
+        "Size of lore_branch_switch_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_switch_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_switch_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_switch_end_event_data_t::branch"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_unprotect_event_data_t {
     pub name: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_unprotect_event_data_t"]
-        [::std::mem::size_of::<lore_branch_unprotect_event_data_t>() - 16usize];
-    ["Alignment of lore_branch_unprotect_event_data_t"]
-        [::std::mem::align_of::<lore_branch_unprotect_event_data_t>() - 8usize];
-    ["Offset of field: lore_branch_unprotect_event_data_t::name"]
-        [::std::mem::offset_of!(lore_branch_unprotect_event_data_t, name) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_unprotect_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_unprotect_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_unprotect_event_data_t>(),
+        16usize,
+        "Size of lore_branch_unprotect_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_unprotect_event_data_t>(),
+        8usize,
+        "Alignment of lore_branch_unprotect_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_unprotect_event_data_t::name"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_info_event_data_t {
@@ -1888,41 +3310,92 @@ pub struct lore_file_info_event_data_t {
     pub local_hash: lore_hash_t,
     pub filter_size: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_info_event_data_t"]
-        [::std::mem::size_of::<lore_file_info_event_data_t>() - 128usize];
-    ["Alignment of lore_file_info_event_data_t"]
-        [::std::mem::align_of::<lore_file_info_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_info_event_data_t::path"]
-        [::std::mem::offset_of!(lore_file_info_event_data_t, path) - 0usize];
-    ["Offset of field: lore_file_info_event_data_t::context"]
-        [::std::mem::offset_of!(lore_file_info_event_data_t, context) - 16usize];
-    ["Offset of field: lore_file_info_event_data_t::hash"]
-        [::std::mem::offset_of!(lore_file_info_event_data_t, hash) - 32usize];
-    ["Offset of field: lore_file_info_event_data_t::is_file"]
-        [::std::mem::offset_of!(lore_file_info_event_data_t, is_file) - 64usize];
-    ["Offset of field: lore_file_info_event_data_t::is_dir"]
-        [::std::mem::offset_of!(lore_file_info_event_data_t, is_dir) - 65usize];
-    ["Offset of field: lore_file_info_event_data_t::flag_modified"]
-        [::std::mem::offset_of!(lore_file_info_event_data_t, flag_modified) - 66usize];
-    ["Offset of field: lore_file_info_event_data_t::flag_deleted"]
-        [::std::mem::offset_of!(lore_file_info_event_data_t, flag_deleted) - 67usize];
-    ["Offset of field: lore_file_info_event_data_t::flag_added"]
-        [::std::mem::offset_of!(lore_file_info_event_data_t, flag_added) - 68usize];
-    ["Offset of field: lore_file_info_event_data_t::flag_conflict"]
-        [::std::mem::offset_of!(lore_file_info_event_data_t, flag_conflict) - 69usize];
-    ["Offset of field: lore_file_info_event_data_t::mode"]
-        [::std::mem::offset_of!(lore_file_info_event_data_t, mode) - 70usize];
-    ["Offset of field: lore_file_info_event_data_t::size"]
-        [::std::mem::offset_of!(lore_file_info_event_data_t, size) - 72usize];
-    ["Offset of field: lore_file_info_event_data_t::local_size"]
-        [::std::mem::offset_of!(lore_file_info_event_data_t, local_size) - 80usize];
-    ["Offset of field: lore_file_info_event_data_t::local_hash"]
-        [::std::mem::offset_of!(lore_file_info_event_data_t, local_hash) - 88usize];
-    ["Offset of field: lore_file_info_event_data_t::filter_size"]
-        [::std::mem::offset_of!(lore_file_info_event_data_t, filter_size) - 120usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_info_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_info_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_info_event_data_t>(),
+        128usize,
+        "Size of lore_file_info_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_info_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_info_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_info_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).context) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_info_event_data_t::context"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).hash) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_info_event_data_t::hash"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).is_file) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_file_info_event_data_t::is_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).is_dir) as usize - ptr as usize },
+        65usize,
+        "Offset of field: lore_file_info_event_data_t::is_dir"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_modified) as usize - ptr as usize },
+        66usize,
+        "Offset of field: lore_file_info_event_data_t::flag_modified"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_deleted) as usize - ptr as usize },
+        67usize,
+        "Offset of field: lore_file_info_event_data_t::flag_deleted"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_added) as usize - ptr as usize },
+        68usize,
+        "Offset of field: lore_file_info_event_data_t::flag_added"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_conflict) as usize - ptr as usize },
+        69usize,
+        "Offset of field: lore_file_info_event_data_t::flag_conflict"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).mode) as usize - ptr as usize },
+        70usize,
+        "Offset of field: lore_file_info_event_data_t::mode"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_file_info_event_data_t::size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local_size) as usize - ptr as usize },
+        80usize,
+        "Offset of field: lore_file_info_event_data_t::local_size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local_hash) as usize - ptr as usize },
+        88usize,
+        "Offset of field: lore_file_info_event_data_t::local_hash"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).filter_size) as usize - ptr as usize },
+        120usize,
+        "Offset of field: lore_file_info_event_data_t::filter_size"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_diff_event_data_t {
@@ -1930,19 +3403,37 @@ pub struct lore_file_diff_event_data_t {
     pub patch: lore_string_t,
     pub action: lore_file_action_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_diff_event_data_t"]
-        [::std::mem::size_of::<lore_file_diff_event_data_t>() - 40usize];
-    ["Alignment of lore_file_diff_event_data_t"]
-        [::std::mem::align_of::<lore_file_diff_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_diff_event_data_t::path"]
-        [::std::mem::offset_of!(lore_file_diff_event_data_t, path) - 0usize];
-    ["Offset of field: lore_file_diff_event_data_t::patch"]
-        [::std::mem::offset_of!(lore_file_diff_event_data_t, patch) - 16usize];
-    ["Offset of field: lore_file_diff_event_data_t::action"]
-        [::std::mem::offset_of!(lore_file_diff_event_data_t, action) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_diff_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_diff_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_diff_event_data_t>(),
+        40usize,
+        "Size of lore_file_diff_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_diff_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_diff_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_diff_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).patch) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_diff_event_data_t::patch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).action) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_diff_event_data_t::action"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_hash_event_data_t {
@@ -1950,19 +3441,37 @@ pub struct lore_file_hash_event_data_t {
     pub size: u64,
     pub hash: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_hash_event_data_t"]
-        [::std::mem::size_of::<lore_file_hash_event_data_t>() - 56usize];
-    ["Alignment of lore_file_hash_event_data_t"]
-        [::std::mem::align_of::<lore_file_hash_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_hash_event_data_t::path"]
-        [::std::mem::offset_of!(lore_file_hash_event_data_t, path) - 0usize];
-    ["Offset of field: lore_file_hash_event_data_t::size"]
-        [::std::mem::offset_of!(lore_file_hash_event_data_t, size) - 16usize];
-    ["Offset of field: lore_file_hash_event_data_t::hash"]
-        [::std::mem::offset_of!(lore_file_hash_event_data_t, hash) - 24usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_hash_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_hash_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_hash_event_data_t>(),
+        56usize,
+        "Size of lore_file_hash_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_hash_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_hash_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_hash_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_hash_event_data_t::size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).hash) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_file_hash_event_data_t::hash"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_history_event_data_t {
@@ -1975,43 +3484,88 @@ pub struct lore_file_history_event_data_t {
     pub size: u64,
     pub action: lore_file_action_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_history_event_data_t"]
-        [::std::mem::size_of::<lore_file_history_event_data_t>() - 200usize];
-    ["Alignment of lore_file_history_event_data_t"]
-        [::std::mem::align_of::<lore_file_history_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_history_event_data_t::path"]
-        [::std::mem::offset_of!(lore_file_history_event_data_t, path) - 0usize];
-    ["Offset of field: lore_file_history_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_file_history_event_data_t, repository) - 16usize];
-    ["Offset of field: lore_file_history_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_file_history_event_data_t, revision) - 32usize];
-    ["Offset of field: lore_file_history_event_data_t::revision_number"]
-        [::std::mem::offset_of!(lore_file_history_event_data_t, revision_number) - 64usize];
-    ["Offset of field: lore_file_history_event_data_t::parent"]
-        [::std::mem::offset_of!(lore_file_history_event_data_t, parent) - 72usize];
-    ["Offset of field: lore_file_history_event_data_t::address"]
-        [::std::mem::offset_of!(lore_file_history_event_data_t, address) - 136usize];
-    ["Offset of field: lore_file_history_event_data_t::size"]
-        [::std::mem::offset_of!(lore_file_history_event_data_t, size) - 184usize];
-    ["Offset of field: lore_file_history_event_data_t::action"]
-        [::std::mem::offset_of!(lore_file_history_event_data_t, action) - 192usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_history_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_history_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_history_event_data_t>(),
+        200usize,
+        "Size of lore_file_history_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_history_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_history_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_history_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_history_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_history_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_number) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_file_history_event_data_t::revision_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).parent) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_file_history_event_data_t::parent"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        136usize,
+        "Offset of field: lore_file_history_event_data_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        184usize,
+        "Offset of field: lore_file_history_event_data_t::size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).action) as usize - ptr as usize },
+        192usize,
+        "Offset of field: lore_file_history_event_data_t::action"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_write_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_write_event_data_t"]
-        [::std::mem::size_of::<lore_file_write_event_data_t>() - 16usize];
-    ["Alignment of lore_file_write_event_data_t"]
-        [::std::mem::align_of::<lore_file_write_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_write_event_data_t::path"]
-        [::std::mem::offset_of!(lore_file_write_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_write_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_write_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_write_event_data_t>(),
+        16usize,
+        "Size of lore_file_write_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_write_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_write_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_write_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_obliterate_event_data_t {
@@ -2019,19 +3573,37 @@ pub struct lore_file_obliterate_event_data_t {
     pub num_fragments: usize,
     pub num_payloads: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_obliterate_event_data_t"]
-        [::std::mem::size_of::<lore_file_obliterate_event_data_t>() - 64usize];
-    ["Alignment of lore_file_obliterate_event_data_t"]
-        [::std::mem::align_of::<lore_file_obliterate_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_obliterate_event_data_t::address"]
-        [::std::mem::offset_of!(lore_file_obliterate_event_data_t, address) - 0usize];
-    ["Offset of field: lore_file_obliterate_event_data_t::num_fragments"]
-        [::std::mem::offset_of!(lore_file_obliterate_event_data_t, num_fragments) - 48usize];
-    ["Offset of field: lore_file_obliterate_event_data_t::num_payloads"]
-        [::std::mem::offset_of!(lore_file_obliterate_event_data_t, num_payloads) - 56usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_obliterate_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_obliterate_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_obliterate_event_data_t>(),
+        64usize,
+        "Size of lore_file_obliterate_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_obliterate_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_obliterate_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_obliterate_event_data_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).num_fragments) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_file_obliterate_event_data_t::num_fragments"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).num_payloads) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_file_obliterate_event_data_t::num_payloads"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dump_event_data_t {
@@ -2041,42 +3613,79 @@ pub struct lore_file_dump_event_data_t {
     pub size_content: u64,
     pub match_made: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dump_event_data_t"]
-        [::std::mem::size_of::<lore_file_dump_event_data_t>() - 72usize];
-    ["Alignment of lore_file_dump_event_data_t"]
-        [::std::mem::align_of::<lore_file_dump_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_dump_event_data_t::address"]
-        [::std::mem::offset_of!(lore_file_dump_event_data_t, address) - 0usize];
-    ["Offset of field: lore_file_dump_event_data_t::flags"]
-        [::std::mem::offset_of!(lore_file_dump_event_data_t, flags) - 48usize];
-    ["Offset of field: lore_file_dump_event_data_t::size_payload"]
-        [::std::mem::offset_of!(lore_file_dump_event_data_t, size_payload) - 52usize];
-    ["Offset of field: lore_file_dump_event_data_t::size_content"]
-        [::std::mem::offset_of!(lore_file_dump_event_data_t, size_content) - 56usize];
-    ["Offset of field: lore_file_dump_event_data_t::match_made"]
-        [::std::mem::offset_of!(lore_file_dump_event_data_t, match_made) - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dump_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dump_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dump_event_data_t>(),
+        72usize,
+        "Size of lore_file_dump_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dump_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_dump_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dump_event_data_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flags) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_file_dump_event_data_t::flags"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size_payload) as usize - ptr as usize },
+        52usize,
+        "Offset of field: lore_file_dump_event_data_t::size_payload"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size_content) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_file_dump_event_data_t::size_content"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).match_made) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_file_dump_event_data_t::match_made"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dependency_add_begin_event_data_t {
     pub path_count: u64,
     pub dependency_count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dependency_add_begin_event_data_t"]
-        [::std::mem::size_of::<lore_file_dependency_add_begin_event_data_t>() - 16usize];
-    ["Alignment of lore_file_dependency_add_begin_event_data_t"]
-        [::std::mem::align_of::<lore_file_dependency_add_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_dependency_add_begin_event_data_t::path_count"]
-        [::std::mem::offset_of!(lore_file_dependency_add_begin_event_data_t, path_count) - 0usize];
-    ["Offset of field: lore_file_dependency_add_begin_event_data_t::dependency_count"][::std::mem::offset_of!(
-        lore_file_dependency_add_begin_event_data_t,
-        dependency_count
-    ) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dependency_add_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dependency_add_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dependency_add_begin_event_data_t>(),
+        16usize,
+        "Size of lore_file_dependency_add_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dependency_add_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_dependency_add_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dependency_add_begin_event_data_t::path_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dependency_count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_file_dependency_add_begin_event_data_t::dependency_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dependency_add_entry_event_data_t {
@@ -2084,55 +3693,95 @@ pub struct lore_file_dependency_add_entry_event_data_t {
     pub dependency: lore_string_t,
     pub tags: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dependency_add_entry_event_data_t"]
-        [::std::mem::size_of::<lore_file_dependency_add_entry_event_data_t>() - 48usize];
-    ["Alignment of lore_file_dependency_add_entry_event_data_t"]
-        [::std::mem::align_of::<lore_file_dependency_add_entry_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_dependency_add_entry_event_data_t::path"]
-        [::std::mem::offset_of!(lore_file_dependency_add_entry_event_data_t, path) - 0usize];
-    ["Offset of field: lore_file_dependency_add_entry_event_data_t::dependency"]
-        [::std::mem::offset_of!(lore_file_dependency_add_entry_event_data_t, dependency) - 16usize];
-    ["Offset of field: lore_file_dependency_add_entry_event_data_t::tags"]
-        [::std::mem::offset_of!(lore_file_dependency_add_entry_event_data_t, tags) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dependency_add_entry_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dependency_add_entry_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dependency_add_entry_event_data_t>(),
+        48usize,
+        "Size of lore_file_dependency_add_entry_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dependency_add_entry_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_dependency_add_entry_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dependency_add_entry_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dependency) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_dependency_add_entry_event_data_t::dependency"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tags) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_dependency_add_entry_event_data_t::tags"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dependency_add_end_event_data_t {
     pub added_count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dependency_add_end_event_data_t"]
-        [::std::mem::size_of::<lore_file_dependency_add_end_event_data_t>() - 8usize];
-    ["Alignment of lore_file_dependency_add_end_event_data_t"]
-        [::std::mem::align_of::<lore_file_dependency_add_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_dependency_add_end_event_data_t::added_count"]
-        [::std::mem::offset_of!(lore_file_dependency_add_end_event_data_t, added_count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dependency_add_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dependency_add_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dependency_add_end_event_data_t>(),
+        8usize,
+        "Size of lore_file_dependency_add_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dependency_add_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_dependency_add_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).added_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dependency_add_end_event_data_t::added_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dependency_remove_begin_event_data_t {
     pub path_count: u64,
     pub dependency_count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dependency_remove_begin_event_data_t"]
-        [::std::mem::size_of::<lore_file_dependency_remove_begin_event_data_t>() - 16usize];
-    ["Alignment of lore_file_dependency_remove_begin_event_data_t"]
-        [::std::mem::align_of::<lore_file_dependency_remove_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_dependency_remove_begin_event_data_t::path_count"][::std::mem::offset_of!(
-        lore_file_dependency_remove_begin_event_data_t,
-        path_count
-    ) - 0usize];
-    ["Offset of field: lore_file_dependency_remove_begin_event_data_t::dependency_count"][::std::mem::offset_of!(
-        lore_file_dependency_remove_begin_event_data_t,
-        dependency_count
-    )
-        - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dependency_remove_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dependency_remove_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dependency_remove_begin_event_data_t>(),
+        16usize,
+        "Size of lore_file_dependency_remove_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dependency_remove_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_dependency_remove_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dependency_remove_begin_event_data_t::path_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dependency_count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_file_dependency_remove_begin_event_data_t::dependency_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dependency_remove_entry_event_data_t {
@@ -2140,70 +3789,121 @@ pub struct lore_file_dependency_remove_entry_event_data_t {
     pub dependency: lore_string_t,
     pub tags: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dependency_remove_entry_event_data_t"]
-        [::std::mem::size_of::<lore_file_dependency_remove_entry_event_data_t>() - 48usize];
-    ["Alignment of lore_file_dependency_remove_entry_event_data_t"]
-        [::std::mem::align_of::<lore_file_dependency_remove_entry_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_dependency_remove_entry_event_data_t::path"]
-        [::std::mem::offset_of!(lore_file_dependency_remove_entry_event_data_t, path) - 0usize];
-    ["Offset of field: lore_file_dependency_remove_entry_event_data_t::dependency"][::std::mem::offset_of!(
-        lore_file_dependency_remove_entry_event_data_t,
-        dependency
-    ) - 16usize];
-    ["Offset of field: lore_file_dependency_remove_entry_event_data_t::tags"]
-        [::std::mem::offset_of!(lore_file_dependency_remove_entry_event_data_t, tags) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dependency_remove_entry_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dependency_remove_entry_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dependency_remove_entry_event_data_t>(),
+        48usize,
+        "Size of lore_file_dependency_remove_entry_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dependency_remove_entry_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_dependency_remove_entry_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dependency_remove_entry_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dependency) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_dependency_remove_entry_event_data_t::dependency"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tags) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_dependency_remove_entry_event_data_t::tags"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dependency_remove_end_event_data_t {
     pub removed_count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dependency_remove_end_event_data_t"]
-        [::std::mem::size_of::<lore_file_dependency_remove_end_event_data_t>() - 8usize];
-    ["Alignment of lore_file_dependency_remove_end_event_data_t"]
-        [::std::mem::align_of::<lore_file_dependency_remove_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_dependency_remove_end_event_data_t::removed_count"][::std::mem::offset_of!(
-        lore_file_dependency_remove_end_event_data_t,
-        removed_count
-    ) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dependency_remove_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dependency_remove_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dependency_remove_end_event_data_t>(),
+        8usize,
+        "Size of lore_file_dependency_remove_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dependency_remove_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_dependency_remove_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).removed_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dependency_remove_end_event_data_t::removed_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dependency_list_begin_event_data_t {
     pub file_count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dependency_list_begin_event_data_t"]
-        [::std::mem::size_of::<lore_file_dependency_list_begin_event_data_t>() - 8usize];
-    ["Alignment of lore_file_dependency_list_begin_event_data_t"]
-        [::std::mem::align_of::<lore_file_dependency_list_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_dependency_list_begin_event_data_t::file_count"]
-        [::std::mem::offset_of!(lore_file_dependency_list_begin_event_data_t, file_count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dependency_list_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dependency_list_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dependency_list_begin_event_data_t>(),
+        8usize,
+        "Size of lore_file_dependency_list_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dependency_list_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_dependency_list_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dependency_list_begin_event_data_t::file_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dependency_list_file_event_data_t {
     pub path: lore_string_t,
     pub entry_count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dependency_list_file_event_data_t"]
-        [::std::mem::size_of::<lore_file_dependency_list_file_event_data_t>() - 24usize];
-    ["Alignment of lore_file_dependency_list_file_event_data_t"]
-        [::std::mem::align_of::<lore_file_dependency_list_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_dependency_list_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_file_dependency_list_file_event_data_t, path) - 0usize];
-    ["Offset of field: lore_file_dependency_list_file_event_data_t::entry_count"][::std::mem::offset_of!(
-        lore_file_dependency_list_file_event_data_t,
-        entry_count
-    ) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dependency_list_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dependency_list_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dependency_list_file_event_data_t>(),
+        24usize,
+        "Size of lore_file_dependency_list_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dependency_list_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_dependency_list_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dependency_list_file_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).entry_count) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_dependency_list_file_event_data_t::entry_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dependency_list_entry_event_data_t {
@@ -2211,63 +3911,115 @@ pub struct lore_file_dependency_list_entry_event_data_t {
     pub tags: lore_string_array_t,
     pub depth: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dependency_list_entry_event_data_t"]
-        [::std::mem::size_of::<lore_file_dependency_list_entry_event_data_t>() - 40usize];
-    ["Alignment of lore_file_dependency_list_entry_event_data_t"]
-        [::std::mem::align_of::<lore_file_dependency_list_entry_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_dependency_list_entry_event_data_t::path"]
-        [::std::mem::offset_of!(lore_file_dependency_list_entry_event_data_t, path) - 0usize];
-    ["Offset of field: lore_file_dependency_list_entry_event_data_t::tags"]
-        [::std::mem::offset_of!(lore_file_dependency_list_entry_event_data_t, tags) - 16usize];
-    ["Offset of field: lore_file_dependency_list_entry_event_data_t::depth"]
-        [::std::mem::offset_of!(lore_file_dependency_list_entry_event_data_t, depth) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dependency_list_entry_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dependency_list_entry_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dependency_list_entry_event_data_t>(),
+        40usize,
+        "Size of lore_file_dependency_list_entry_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dependency_list_entry_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_dependency_list_entry_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dependency_list_entry_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tags) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_dependency_list_entry_event_data_t::tags"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).depth) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_dependency_list_entry_event_data_t::depth"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dependency_list_file_end_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dependency_list_file_end_event_data_t"]
-        [::std::mem::size_of::<lore_file_dependency_list_file_end_event_data_t>() - 16usize];
-    ["Alignment of lore_file_dependency_list_file_end_event_data_t"]
-        [::std::mem::align_of::<lore_file_dependency_list_file_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_dependency_list_file_end_event_data_t::path"]
-        [::std::mem::offset_of!(lore_file_dependency_list_file_end_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dependency_list_file_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dependency_list_file_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dependency_list_file_end_event_data_t>(),
+        16usize,
+        "Size of lore_file_dependency_list_file_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dependency_list_file_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_dependency_list_file_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dependency_list_file_end_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dependency_list_end_event_data_t {
     pub total_entry_count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dependency_list_end_event_data_t"]
-        [::std::mem::size_of::<lore_file_dependency_list_end_event_data_t>() - 8usize];
-    ["Alignment of lore_file_dependency_list_end_event_data_t"]
-        [::std::mem::align_of::<lore_file_dependency_list_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_dependency_list_end_event_data_t::total_entry_count"][::std::mem::offset_of!(
-        lore_file_dependency_list_end_event_data_t,
-        total_entry_count
-    ) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dependency_list_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dependency_list_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dependency_list_end_event_data_t>(),
+        8usize,
+        "Size of lore_file_dependency_list_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dependency_list_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_dependency_list_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).total_entry_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dependency_list_end_event_data_t::total_entry_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_reset_begin_event_data_t {
     pub path_count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_reset_begin_event_data_t"]
-        [::std::mem::size_of::<lore_file_reset_begin_event_data_t>() - 8usize];
-    ["Alignment of lore_file_reset_begin_event_data_t"]
-        [::std::mem::align_of::<lore_file_reset_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_reset_begin_event_data_t::path_count"]
-        [::std::mem::offset_of!(lore_file_reset_begin_event_data_t, path_count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_reset_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_reset_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_reset_begin_event_data_t>(),
+        8usize,
+        "Size of lore_file_reset_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_reset_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_reset_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_reset_begin_event_data_t::path_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_reset_count_data_t {
@@ -2276,49 +4028,94 @@ pub struct lore_file_reset_count_data_t {
     pub file_reset_count: u64,
     pub file_delete_count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_reset_count_data_t"]
-        [::std::mem::size_of::<lore_file_reset_count_data_t>() - 32usize];
-    ["Alignment of lore_file_reset_count_data_t"]
-        [::std::mem::align_of::<lore_file_reset_count_data_t>() - 8usize];
-    ["Offset of field: lore_file_reset_count_data_t::directory_reset_count"]
-        [::std::mem::offset_of!(lore_file_reset_count_data_t, directory_reset_count) - 0usize];
-    ["Offset of field: lore_file_reset_count_data_t::directory_delete_count"]
-        [::std::mem::offset_of!(lore_file_reset_count_data_t, directory_delete_count) - 8usize];
-    ["Offset of field: lore_file_reset_count_data_t::file_reset_count"]
-        [::std::mem::offset_of!(lore_file_reset_count_data_t, file_reset_count) - 16usize];
-    ["Offset of field: lore_file_reset_count_data_t::file_delete_count"]
-        [::std::mem::offset_of!(lore_file_reset_count_data_t, file_delete_count) - 24usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_reset_count_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_reset_count_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_reset_count_data_t>(),
+        32usize,
+        "Size of lore_file_reset_count_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_reset_count_data_t>(),
+        8usize,
+        "Alignment of lore_file_reset_count_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).directory_reset_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_reset_count_data_t::directory_reset_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).directory_delete_count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_file_reset_count_data_t::directory_delete_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_reset_count) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_reset_count_data_t::file_reset_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_delete_count) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_file_reset_count_data_t::file_delete_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_reset_progress_event_data_t {
     pub count: lore_file_reset_count_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_reset_progress_event_data_t"]
-        [::std::mem::size_of::<lore_file_reset_progress_event_data_t>() - 32usize];
-    ["Alignment of lore_file_reset_progress_event_data_t"]
-        [::std::mem::align_of::<lore_file_reset_progress_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_reset_progress_event_data_t::count"]
-        [::std::mem::offset_of!(lore_file_reset_progress_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_reset_progress_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_reset_progress_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_reset_progress_event_data_t>(),
+        32usize,
+        "Size of lore_file_reset_progress_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_reset_progress_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_reset_progress_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_reset_progress_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_reset_end_event_data_t {
     pub count: lore_file_reset_count_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_reset_end_event_data_t"]
-        [::std::mem::size_of::<lore_file_reset_end_event_data_t>() - 32usize];
-    ["Alignment of lore_file_reset_end_event_data_t"]
-        [::std::mem::align_of::<lore_file_reset_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_reset_end_event_data_t::count"]
-        [::std::mem::offset_of!(lore_file_reset_end_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_reset_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_reset_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_reset_end_event_data_t>(),
+        32usize,
+        "Size of lore_file_reset_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_reset_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_reset_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_reset_end_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_reset_file_event_data_t {
@@ -2326,50 +4123,95 @@ pub struct lore_file_reset_file_event_data_t {
     pub action: lore_file_action_t,
     pub from_path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_reset_file_event_data_t"]
-        [::std::mem::size_of::<lore_file_reset_file_event_data_t>() - 40usize];
-    ["Alignment of lore_file_reset_file_event_data_t"]
-        [::std::mem::align_of::<lore_file_reset_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_reset_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_file_reset_file_event_data_t, path) - 0usize];
-    ["Offset of field: lore_file_reset_file_event_data_t::action"]
-        [::std::mem::offset_of!(lore_file_reset_file_event_data_t, action) - 16usize];
-    ["Offset of field: lore_file_reset_file_event_data_t::from_path"]
-        [::std::mem::offset_of!(lore_file_reset_file_event_data_t, from_path) - 24usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_reset_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_reset_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_reset_file_event_data_t>(),
+        40usize,
+        "Size of lore_file_reset_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_reset_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_reset_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_reset_file_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).action) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_reset_file_event_data_t::action"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).from_path) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_file_reset_file_event_data_t::from_path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_filter_exclude_event_data_t {
     pub reason: u8,
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_filter_exclude_event_data_t"]
-        [::std::mem::size_of::<lore_filter_exclude_event_data_t>() - 24usize];
-    ["Alignment of lore_filter_exclude_event_data_t"]
-        [::std::mem::align_of::<lore_filter_exclude_event_data_t>() - 8usize];
-    ["Offset of field: lore_filter_exclude_event_data_t::reason"]
-        [::std::mem::offset_of!(lore_filter_exclude_event_data_t, reason) - 0usize];
-    ["Offset of field: lore_filter_exclude_event_data_t::path"]
-        [::std::mem::offset_of!(lore_filter_exclude_event_data_t, path) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_filter_exclude_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_filter_exclude_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_filter_exclude_event_data_t>(),
+        24usize,
+        "Size of lore_filter_exclude_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_filter_exclude_event_data_t>(),
+        8usize,
+        "Alignment of lore_filter_exclude_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).reason) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_filter_exclude_event_data_t::reason"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_filter_exclude_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_stage_begin_event_data_t {
     pub path_count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_stage_begin_event_data_t"]
-        [::std::mem::size_of::<lore_file_stage_begin_event_data_t>() - 8usize];
-    ["Alignment of lore_file_stage_begin_event_data_t"]
-        [::std::mem::align_of::<lore_file_stage_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_stage_begin_event_data_t::path_count"]
-        [::std::mem::offset_of!(lore_file_stage_begin_event_data_t, path_count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_stage_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_stage_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_stage_begin_event_data_t>(),
+        8usize,
+        "Size of lore_file_stage_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_stage_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_stage_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_stage_begin_event_data_t::path_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_stage_count_data_t {
@@ -2383,76 +4225,151 @@ pub struct lore_file_stage_count_data_t {
     pub file_move_count: u64,
     pub total_count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_stage_count_data_t"]
-        [::std::mem::size_of::<lore_file_stage_count_data_t>() - 72usize];
-    ["Alignment of lore_file_stage_count_data_t"]
-        [::std::mem::align_of::<lore_file_stage_count_data_t>() - 8usize];
-    ["Offset of field: lore_file_stage_count_data_t::directory_modify_count"]
-        [::std::mem::offset_of!(lore_file_stage_count_data_t, directory_modify_count) - 0usize];
-    ["Offset of field: lore_file_stage_count_data_t::directory_add_count"]
-        [::std::mem::offset_of!(lore_file_stage_count_data_t, directory_add_count) - 8usize];
-    ["Offset of field: lore_file_stage_count_data_t::directory_delete_count"]
-        [::std::mem::offset_of!(lore_file_stage_count_data_t, directory_delete_count) - 16usize];
-    ["Offset of field: lore_file_stage_count_data_t::directory_move_count"]
-        [::std::mem::offset_of!(lore_file_stage_count_data_t, directory_move_count) - 24usize];
-    ["Offset of field: lore_file_stage_count_data_t::file_modify_count"]
-        [::std::mem::offset_of!(lore_file_stage_count_data_t, file_modify_count) - 32usize];
-    ["Offset of field: lore_file_stage_count_data_t::file_add_count"]
-        [::std::mem::offset_of!(lore_file_stage_count_data_t, file_add_count) - 40usize];
-    ["Offset of field: lore_file_stage_count_data_t::file_delete_count"]
-        [::std::mem::offset_of!(lore_file_stage_count_data_t, file_delete_count) - 48usize];
-    ["Offset of field: lore_file_stage_count_data_t::file_move_count"]
-        [::std::mem::offset_of!(lore_file_stage_count_data_t, file_move_count) - 56usize];
-    ["Offset of field: lore_file_stage_count_data_t::total_count"]
-        [::std::mem::offset_of!(lore_file_stage_count_data_t, total_count) - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_stage_count_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_stage_count_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_stage_count_data_t>(),
+        72usize,
+        "Size of lore_file_stage_count_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_stage_count_data_t>(),
+        8usize,
+        "Alignment of lore_file_stage_count_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).directory_modify_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_stage_count_data_t::directory_modify_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).directory_add_count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_file_stage_count_data_t::directory_add_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).directory_delete_count) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_stage_count_data_t::directory_delete_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).directory_move_count) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_file_stage_count_data_t::directory_move_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_modify_count) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_stage_count_data_t::file_modify_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_add_count) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_file_stage_count_data_t::file_add_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_delete_count) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_file_stage_count_data_t::file_delete_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_move_count) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_file_stage_count_data_t::file_move_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).total_count) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_file_stage_count_data_t::total_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_stage_progress_event_data_t {
     pub count: lore_file_stage_count_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_stage_progress_event_data_t"]
-        [::std::mem::size_of::<lore_file_stage_progress_event_data_t>() - 72usize];
-    ["Alignment of lore_file_stage_progress_event_data_t"]
-        [::std::mem::align_of::<lore_file_stage_progress_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_stage_progress_event_data_t::count"]
-        [::std::mem::offset_of!(lore_file_stage_progress_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_stage_progress_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_stage_progress_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_stage_progress_event_data_t>(),
+        72usize,
+        "Size of lore_file_stage_progress_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_stage_progress_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_stage_progress_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_stage_progress_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_stage_end_event_data_t {
     pub count: lore_file_stage_count_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_stage_end_event_data_t"]
-        [::std::mem::size_of::<lore_file_stage_end_event_data_t>() - 72usize];
-    ["Alignment of lore_file_stage_end_event_data_t"]
-        [::std::mem::align_of::<lore_file_stage_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_stage_end_event_data_t::count"]
-        [::std::mem::offset_of!(lore_file_stage_end_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_stage_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_stage_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_stage_end_event_data_t>(),
+        72usize,
+        "Size of lore_file_stage_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_stage_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_stage_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_stage_end_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_stage_revision_event_data_t {
     pub repository: lore_repository_id_t,
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_stage_revision_event_data_t"]
-        [::std::mem::size_of::<lore_file_stage_revision_event_data_t>() - 48usize];
-    ["Alignment of lore_file_stage_revision_event_data_t"]
-        [::std::mem::align_of::<lore_file_stage_revision_event_data_t>() - 1usize];
-    ["Offset of field: lore_file_stage_revision_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_file_stage_revision_event_data_t, repository) - 0usize];
-    ["Offset of field: lore_file_stage_revision_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_file_stage_revision_event_data_t, revision) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_stage_revision_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_stage_revision_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_stage_revision_event_data_t>(),
+        48usize,
+        "Size of lore_file_stage_revision_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_stage_revision_event_data_t>(),
+        1usize,
+        "Alignment of lore_file_stage_revision_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_stage_revision_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_stage_revision_event_data_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_stage_file_event_data_t {
@@ -2460,33 +4377,63 @@ pub struct lore_file_stage_file_event_data_t {
     pub path: lore_string_t,
     pub action: lore_file_action_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_stage_file_event_data_t"]
-        [::std::mem::size_of::<lore_file_stage_file_event_data_t>() - 40usize];
-    ["Alignment of lore_file_stage_file_event_data_t"]
-        [::std::mem::align_of::<lore_file_stage_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_stage_file_event_data_t::from_path"]
-        [::std::mem::offset_of!(lore_file_stage_file_event_data_t, from_path) - 0usize];
-    ["Offset of field: lore_file_stage_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_file_stage_file_event_data_t, path) - 16usize];
-    ["Offset of field: lore_file_stage_file_event_data_t::action"]
-        [::std::mem::offset_of!(lore_file_stage_file_event_data_t, action) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_stage_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_stage_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_stage_file_event_data_t>(),
+        40usize,
+        "Size of lore_file_stage_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_stage_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_stage_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).from_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_stage_file_event_data_t::from_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_stage_file_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).action) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_stage_file_event_data_t::action"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_unstage_begin_event_data_t {
     pub path_count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_unstage_begin_event_data_t"]
-        [::std::mem::size_of::<lore_file_unstage_begin_event_data_t>() - 8usize];
-    ["Alignment of lore_file_unstage_begin_event_data_t"]
-        [::std::mem::align_of::<lore_file_unstage_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_unstage_begin_event_data_t::path_count"]
-        [::std::mem::offset_of!(lore_file_unstage_begin_event_data_t, path_count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_unstage_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_unstage_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_unstage_begin_event_data_t>(),
+        8usize,
+        "Size of lore_file_unstage_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_unstage_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_unstage_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_unstage_begin_event_data_t::path_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_unstage_count_data_t {
@@ -2496,87 +4443,163 @@ pub struct lore_file_unstage_count_data_t {
     pub file_discarded_count: u64,
     pub total_count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_unstage_count_data_t"]
-        [::std::mem::size_of::<lore_file_unstage_count_data_t>() - 40usize];
-    ["Alignment of lore_file_unstage_count_data_t"]
-        [::std::mem::align_of::<lore_file_unstage_count_data_t>() - 8usize];
-    ["Offset of field: lore_file_unstage_count_data_t::directory_unstaged_count"]
-        [::std::mem::offset_of!(lore_file_unstage_count_data_t, directory_unstaged_count) - 0usize];
-    ["Offset of field: lore_file_unstage_count_data_t::directory_discarded_count"][::std::mem::offset_of!(
-        lore_file_unstage_count_data_t,
-        directory_discarded_count
-    ) - 8usize];
-    ["Offset of field: lore_file_unstage_count_data_t::file_unstaged_count"]
-        [::std::mem::offset_of!(lore_file_unstage_count_data_t, file_unstaged_count) - 16usize];
-    ["Offset of field: lore_file_unstage_count_data_t::file_discarded_count"]
-        [::std::mem::offset_of!(lore_file_unstage_count_data_t, file_discarded_count) - 24usize];
-    ["Offset of field: lore_file_unstage_count_data_t::total_count"]
-        [::std::mem::offset_of!(lore_file_unstage_count_data_t, total_count) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_unstage_count_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_unstage_count_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_unstage_count_data_t>(),
+        40usize,
+        "Size of lore_file_unstage_count_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_unstage_count_data_t>(),
+        8usize,
+        "Alignment of lore_file_unstage_count_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).directory_unstaged_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_unstage_count_data_t::directory_unstaged_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).directory_discarded_count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_file_unstage_count_data_t::directory_discarded_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_unstaged_count) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_unstage_count_data_t::file_unstaged_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_discarded_count) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_file_unstage_count_data_t::file_discarded_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).total_count) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_unstage_count_data_t::total_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_unstage_progress_event_data_t {
     pub count: lore_file_unstage_count_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_unstage_progress_event_data_t"]
-        [::std::mem::size_of::<lore_file_unstage_progress_event_data_t>() - 40usize];
-    ["Alignment of lore_file_unstage_progress_event_data_t"]
-        [::std::mem::align_of::<lore_file_unstage_progress_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_unstage_progress_event_data_t::count"]
-        [::std::mem::offset_of!(lore_file_unstage_progress_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_unstage_progress_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_unstage_progress_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_unstage_progress_event_data_t>(),
+        40usize,
+        "Size of lore_file_unstage_progress_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_unstage_progress_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_unstage_progress_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_unstage_progress_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_unstage_end_event_data_t {
     pub count: lore_file_unstage_count_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_unstage_end_event_data_t"]
-        [::std::mem::size_of::<lore_file_unstage_end_event_data_t>() - 40usize];
-    ["Alignment of lore_file_unstage_end_event_data_t"]
-        [::std::mem::align_of::<lore_file_unstage_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_unstage_end_event_data_t::count"]
-        [::std::mem::offset_of!(lore_file_unstage_end_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_unstage_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_unstage_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_unstage_end_event_data_t>(),
+        40usize,
+        "Size of lore_file_unstage_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_unstage_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_unstage_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_unstage_end_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_unstage_revision_event_data_t {
     pub repository: lore_repository_id_t,
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_unstage_revision_event_data_t"]
-        [::std::mem::size_of::<lore_file_unstage_revision_event_data_t>() - 48usize];
-    ["Alignment of lore_file_unstage_revision_event_data_t"]
-        [::std::mem::align_of::<lore_file_unstage_revision_event_data_t>() - 1usize];
-    ["Offset of field: lore_file_unstage_revision_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_file_unstage_revision_event_data_t, repository) - 0usize];
-    ["Offset of field: lore_file_unstage_revision_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_file_unstage_revision_event_data_t, revision) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_unstage_revision_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_unstage_revision_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_unstage_revision_event_data_t>(),
+        48usize,
+        "Size of lore_file_unstage_revision_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_unstage_revision_event_data_t>(),
+        1usize,
+        "Alignment of lore_file_unstage_revision_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_unstage_revision_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_unstage_revision_event_data_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_unstage_file_event_data_t {
     pub path: lore_string_t,
     pub action: lore_file_action_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_unstage_file_event_data_t"]
-        [::std::mem::size_of::<lore_file_unstage_file_event_data_t>() - 24usize];
-    ["Alignment of lore_file_unstage_file_event_data_t"]
-        [::std::mem::align_of::<lore_file_unstage_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_file_unstage_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_file_unstage_file_event_data_t, path) - 0usize];
-    ["Offset of field: lore_file_unstage_file_event_data_t::action"]
-        [::std::mem::offset_of!(lore_file_unstage_file_event_data_t, action) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_unstage_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_unstage_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_unstage_file_event_data_t>(),
+        24usize,
+        "Size of lore_file_unstage_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_unstage_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_file_unstage_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_unstage_file_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).action) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_unstage_file_event_data_t::action"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_fragment_t {
@@ -2584,34 +4607,68 @@ pub struct lore_fragment_t {
     pub size_payload: u32,
     pub size_content: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_fragment_t"][::std::mem::size_of::<lore_fragment_t>() - 16usize];
-    ["Alignment of lore_fragment_t"][::std::mem::align_of::<lore_fragment_t>() - 8usize];
-    ["Offset of field: lore_fragment_t::flags"]
-        [::std::mem::offset_of!(lore_fragment_t, flags) - 0usize];
-    ["Offset of field: lore_fragment_t::size_payload"]
-        [::std::mem::offset_of!(lore_fragment_t, size_payload) - 4usize];
-    ["Offset of field: lore_fragment_t::size_content"]
-        [::std::mem::offset_of!(lore_fragment_t, size_content) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_fragment_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_fragment_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_fragment_t>(),
+        16usize,
+        "Size of lore_fragment_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_fragment_t>(),
+        8usize,
+        "Alignment of lore_fragment_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flags) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_fragment_t::flags"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size_payload) as usize - ptr as usize },
+        4usize,
+        "Offset of field: lore_fragment_t::size_payload"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size_content) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_fragment_t::size_content"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_fragment_write_event_data_t {
     pub fragment: lore_fragment_t,
     pub deduplicated: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_fragment_write_event_data_t"]
-        [::std::mem::size_of::<lore_fragment_write_event_data_t>() - 24usize];
-    ["Alignment of lore_fragment_write_event_data_t"]
-        [::std::mem::align_of::<lore_fragment_write_event_data_t>() - 8usize];
-    ["Offset of field: lore_fragment_write_event_data_t::fragment"]
-        [::std::mem::offset_of!(lore_fragment_write_event_data_t, fragment) - 0usize];
-    ["Offset of field: lore_fragment_write_event_data_t::deduplicated"]
-        [::std::mem::offset_of!(lore_fragment_write_event_data_t, deduplicated) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_fragment_write_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_fragment_write_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_fragment_write_event_data_t>(),
+        24usize,
+        "Size of lore_fragment_write_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_fragment_write_event_data_t>(),
+        8usize,
+        "Alignment of lore_fragment_write_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).fragment) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_fragment_write_event_data_t::fragment"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).deduplicated) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_fragment_write_event_data_t::deduplicated"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_layer_add_event_data_t {
@@ -2621,23 +4678,47 @@ pub struct lore_layer_add_event_data_t {
     pub metadata: lore_string_t,
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_layer_add_event_data_t"]
-        [::std::mem::size_of::<lore_layer_add_event_data_t>() - 96usize];
-    ["Alignment of lore_layer_add_event_data_t"]
-        [::std::mem::align_of::<lore_layer_add_event_data_t>() - 8usize];
-    ["Offset of field: lore_layer_add_event_data_t::target_path"]
-        [::std::mem::offset_of!(lore_layer_add_event_data_t, target_path) - 0usize];
-    ["Offset of field: lore_layer_add_event_data_t::source_repository"]
-        [::std::mem::offset_of!(lore_layer_add_event_data_t, source_repository) - 16usize];
-    ["Offset of field: lore_layer_add_event_data_t::source_path"]
-        [::std::mem::offset_of!(lore_layer_add_event_data_t, source_path) - 32usize];
-    ["Offset of field: lore_layer_add_event_data_t::metadata"]
-        [::std::mem::offset_of!(lore_layer_add_event_data_t, metadata) - 48usize];
-    ["Offset of field: lore_layer_add_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_layer_add_event_data_t, revision) - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_layer_add_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_layer_add_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_layer_add_event_data_t>(),
+        96usize,
+        "Size of lore_layer_add_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_layer_add_event_data_t>(),
+        8usize,
+        "Alignment of lore_layer_add_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_layer_add_event_data_t::target_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_repository) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_layer_add_event_data_t::source_repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_path) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_layer_add_event_data_t::source_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).metadata) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_layer_add_event_data_t::metadata"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_layer_add_event_data_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_layer_entry_event_data_t {
@@ -2647,23 +4728,47 @@ pub struct lore_layer_entry_event_data_t {
     pub metadata: lore_string_t,
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_layer_entry_event_data_t"]
-        [::std::mem::size_of::<lore_layer_entry_event_data_t>() - 96usize];
-    ["Alignment of lore_layer_entry_event_data_t"]
-        [::std::mem::align_of::<lore_layer_entry_event_data_t>() - 8usize];
-    ["Offset of field: lore_layer_entry_event_data_t::target_path"]
-        [::std::mem::offset_of!(lore_layer_entry_event_data_t, target_path) - 0usize];
-    ["Offset of field: lore_layer_entry_event_data_t::source_repository"]
-        [::std::mem::offset_of!(lore_layer_entry_event_data_t, source_repository) - 16usize];
-    ["Offset of field: lore_layer_entry_event_data_t::source_path"]
-        [::std::mem::offset_of!(lore_layer_entry_event_data_t, source_path) - 32usize];
-    ["Offset of field: lore_layer_entry_event_data_t::metadata"]
-        [::std::mem::offset_of!(lore_layer_entry_event_data_t, metadata) - 48usize];
-    ["Offset of field: lore_layer_entry_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_layer_entry_event_data_t, revision) - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_layer_entry_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_layer_entry_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_layer_entry_event_data_t>(),
+        96usize,
+        "Size of lore_layer_entry_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_layer_entry_event_data_t>(),
+        8usize,
+        "Alignment of lore_layer_entry_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_layer_entry_event_data_t::target_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_repository) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_layer_entry_event_data_t::source_repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_path) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_layer_entry_event_data_t::source_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).metadata) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_layer_entry_event_data_t::metadata"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_layer_entry_event_data_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_layer_remove_event_data_t {
@@ -2677,31 +4782,67 @@ pub struct lore_layer_remove_event_data_t {
     pub directory_count: u64,
     pub modified_count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_layer_remove_event_data_t"]
-        [::std::mem::size_of::<lore_layer_remove_event_data_t>() - 112usize];
-    ["Alignment of lore_layer_remove_event_data_t"]
-        [::std::mem::align_of::<lore_layer_remove_event_data_t>() - 8usize];
-    ["Offset of field: lore_layer_remove_event_data_t::target_path"]
-        [::std::mem::offset_of!(lore_layer_remove_event_data_t, target_path) - 0usize];
-    ["Offset of field: lore_layer_remove_event_data_t::source_repository"]
-        [::std::mem::offset_of!(lore_layer_remove_event_data_t, source_repository) - 16usize];
-    ["Offset of field: lore_layer_remove_event_data_t::source_path"]
-        [::std::mem::offset_of!(lore_layer_remove_event_data_t, source_path) - 32usize];
-    ["Offset of field: lore_layer_remove_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_layer_remove_event_data_t, revision) - 48usize];
-    ["Offset of field: lore_layer_remove_event_data_t::forced"]
-        [::std::mem::offset_of!(lore_layer_remove_event_data_t, forced) - 80usize];
-    ["Offset of field: lore_layer_remove_event_data_t::purged"]
-        [::std::mem::offset_of!(lore_layer_remove_event_data_t, purged) - 81usize];
-    ["Offset of field: lore_layer_remove_event_data_t::file_count"]
-        [::std::mem::offset_of!(lore_layer_remove_event_data_t, file_count) - 88usize];
-    ["Offset of field: lore_layer_remove_event_data_t::directory_count"]
-        [::std::mem::offset_of!(lore_layer_remove_event_data_t, directory_count) - 96usize];
-    ["Offset of field: lore_layer_remove_event_data_t::modified_count"]
-        [::std::mem::offset_of!(lore_layer_remove_event_data_t, modified_count) - 104usize];
-};
+#[test]
+fn bindgen_test_layout_lore_layer_remove_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_layer_remove_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_layer_remove_event_data_t>(),
+        112usize,
+        "Size of lore_layer_remove_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_layer_remove_event_data_t>(),
+        8usize,
+        "Alignment of lore_layer_remove_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_layer_remove_event_data_t::target_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_repository) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_layer_remove_event_data_t::source_repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_path) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_layer_remove_event_data_t::source_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_layer_remove_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).forced) as usize - ptr as usize },
+        80usize,
+        "Offset of field: lore_layer_remove_event_data_t::forced"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).purged) as usize - ptr as usize },
+        81usize,
+        "Offset of field: lore_layer_remove_event_data_t::purged"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_count) as usize - ptr as usize },
+        88usize,
+        "Offset of field: lore_layer_remove_event_data_t::file_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).directory_count) as usize - ptr as usize },
+        96usize,
+        "Offset of field: lore_layer_remove_event_data_t::directory_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).modified_count) as usize - ptr as usize },
+        104usize,
+        "Offset of field: lore_layer_remove_event_data_t::modified_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_layer_staged_entry_event_data_t {
@@ -2709,19 +4850,37 @@ pub struct lore_layer_staged_entry_event_data_t {
     pub source_repository: lore_repository_id_t,
     pub staged_file_count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_layer_staged_entry_event_data_t"]
-        [::std::mem::size_of::<lore_layer_staged_entry_event_data_t>() - 40usize];
-    ["Alignment of lore_layer_staged_entry_event_data_t"]
-        [::std::mem::align_of::<lore_layer_staged_entry_event_data_t>() - 8usize];
-    ["Offset of field: lore_layer_staged_entry_event_data_t::target_path"]
-        [::std::mem::offset_of!(lore_layer_staged_entry_event_data_t, target_path) - 0usize];
-    ["Offset of field: lore_layer_staged_entry_event_data_t::source_repository"]
-        [::std::mem::offset_of!(lore_layer_staged_entry_event_data_t, source_repository) - 16usize];
-    ["Offset of field: lore_layer_staged_entry_event_data_t::staged_file_count"]
-        [::std::mem::offset_of!(lore_layer_staged_entry_event_data_t, staged_file_count) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_layer_staged_entry_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_layer_staged_entry_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_layer_staged_entry_event_data_t>(),
+        40usize,
+        "Size of lore_layer_staged_entry_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_layer_staged_entry_event_data_t>(),
+        8usize,
+        "Alignment of lore_layer_staged_entry_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_layer_staged_entry_event_data_t::target_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_repository) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_layer_staged_entry_event_data_t::source_repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).staged_file_count) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_layer_staged_entry_event_data_t::staged_file_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_link_change_event_data_t {
@@ -2731,23 +4890,47 @@ pub struct lore_link_change_event_data_t {
     pub revision: lore_hash_t,
     pub action: lore_file_action_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_link_change_event_data_t"]
-        [::std::mem::size_of::<lore_link_change_event_data_t>() - 88usize];
-    ["Alignment of lore_link_change_event_data_t"]
-        [::std::mem::align_of::<lore_link_change_event_data_t>() - 8usize];
-    ["Offset of field: lore_link_change_event_data_t::link_path"]
-        [::std::mem::offset_of!(lore_link_change_event_data_t, link_path) - 0usize];
-    ["Offset of field: lore_link_change_event_data_t::link_repository"]
-        [::std::mem::offset_of!(lore_link_change_event_data_t, link_repository) - 16usize];
-    ["Offset of field: lore_link_change_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_link_change_event_data_t, branch) - 32usize];
-    ["Offset of field: lore_link_change_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_link_change_event_data_t, revision) - 48usize];
-    ["Offset of field: lore_link_change_event_data_t::action"]
-        [::std::mem::offset_of!(lore_link_change_event_data_t, action) - 80usize];
-};
+#[test]
+fn bindgen_test_layout_lore_link_change_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_link_change_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_link_change_event_data_t>(),
+        88usize,
+        "Size of lore_link_change_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_link_change_event_data_t>(),
+        8usize,
+        "Alignment of lore_link_change_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_link_change_event_data_t::link_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link_repository) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_link_change_event_data_t::link_repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_link_change_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_link_change_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).action) as usize - ptr as usize },
+        80usize,
+        "Offset of field: lore_link_change_event_data_t::action"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_link_entry_event_data_t {
@@ -2761,31 +4944,67 @@ pub struct lore_link_entry_event_data_t {
     pub revision: lore_hash_t,
     pub flags: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_link_entry_event_data_t"]
-        [::std::mem::size_of::<lore_link_entry_event_data_t>() - 136usize];
-    ["Alignment of lore_link_entry_event_data_t"]
-        [::std::mem::align_of::<lore_link_entry_event_data_t>() - 8usize];
-    ["Offset of field: lore_link_entry_event_data_t::link"]
-        [::std::mem::offset_of!(lore_link_entry_event_data_t, link) - 0usize];
-    ["Offset of field: lore_link_entry_event_data_t::link_node"]
-        [::std::mem::offset_of!(lore_link_entry_event_data_t, link_node) - 16usize];
-    ["Offset of field: lore_link_entry_event_data_t::link_path"]
-        [::std::mem::offset_of!(lore_link_entry_event_data_t, link_path) - 24usize];
-    ["Offset of field: lore_link_entry_event_data_t::source_node"]
-        [::std::mem::offset_of!(lore_link_entry_event_data_t, source_node) - 40usize];
-    ["Offset of field: lore_link_entry_event_data_t::source_path"]
-        [::std::mem::offset_of!(lore_link_entry_event_data_t, source_path) - 48usize];
-    ["Offset of field: lore_link_entry_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_link_entry_event_data_t, branch) - 64usize];
-    ["Offset of field: lore_link_entry_event_data_t::branch_name"]
-        [::std::mem::offset_of!(lore_link_entry_event_data_t, branch_name) - 80usize];
-    ["Offset of field: lore_link_entry_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_link_entry_event_data_t, revision) - 96usize];
-    ["Offset of field: lore_link_entry_event_data_t::flags"]
-        [::std::mem::offset_of!(lore_link_entry_event_data_t, flags) - 128usize];
-};
+#[test]
+fn bindgen_test_layout_lore_link_entry_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_link_entry_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_link_entry_event_data_t>(),
+        136usize,
+        "Size of lore_link_entry_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_link_entry_event_data_t>(),
+        8usize,
+        "Alignment of lore_link_entry_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_link_entry_event_data_t::link"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link_node) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_link_entry_event_data_t::link_node"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link_path) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_link_entry_event_data_t::link_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_node) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_link_entry_event_data_t::source_node"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_path) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_link_entry_event_data_t::source_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_link_entry_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_name) as usize - ptr as usize },
+        80usize,
+        "Offset of field: lore_link_entry_event_data_t::branch_name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        96usize,
+        "Offset of field: lore_link_entry_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flags) as usize - ptr as usize },
+        128usize,
+        "Offset of field: lore_link_entry_event_data_t::flags"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_lock_file_acquire_begin_event_data_t {
@@ -2793,47 +5012,89 @@ pub struct lore_lock_file_acquire_begin_event_data_t {
     pub dry_run: u8,
     pub ignored: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_lock_file_acquire_begin_event_data_t"]
-        [::std::mem::size_of::<lore_lock_file_acquire_begin_event_data_t>() - 16usize];
-    ["Alignment of lore_lock_file_acquire_begin_event_data_t"]
-        [::std::mem::align_of::<lore_lock_file_acquire_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_lock_file_acquire_begin_event_data_t::count"]
-        [::std::mem::offset_of!(lore_lock_file_acquire_begin_event_data_t, count) - 0usize];
-    ["Offset of field: lore_lock_file_acquire_begin_event_data_t::dry_run"]
-        [::std::mem::offset_of!(lore_lock_file_acquire_begin_event_data_t, dry_run) - 8usize];
-    ["Offset of field: lore_lock_file_acquire_begin_event_data_t::ignored"]
-        [::std::mem::offset_of!(lore_lock_file_acquire_begin_event_data_t, ignored) - 9usize];
-};
+#[test]
+fn bindgen_test_layout_lore_lock_file_acquire_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_lock_file_acquire_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_lock_file_acquire_begin_event_data_t>(),
+        16usize,
+        "Size of lore_lock_file_acquire_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_lock_file_acquire_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_lock_file_acquire_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_lock_file_acquire_begin_event_data_t::count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dry_run) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_lock_file_acquire_begin_event_data_t::dry_run"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ignored) as usize - ptr as usize },
+        9usize,
+        "Offset of field: lore_lock_file_acquire_begin_event_data_t::ignored"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_lock_file_acquire_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_lock_file_acquire_event_data_t"]
-        [::std::mem::size_of::<lore_lock_file_acquire_event_data_t>() - 16usize];
-    ["Alignment of lore_lock_file_acquire_event_data_t"]
-        [::std::mem::align_of::<lore_lock_file_acquire_event_data_t>() - 8usize];
-    ["Offset of field: lore_lock_file_acquire_event_data_t::path"]
-        [::std::mem::offset_of!(lore_lock_file_acquire_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_lock_file_acquire_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_lock_file_acquire_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_lock_file_acquire_event_data_t>(),
+        16usize,
+        "Size of lore_lock_file_acquire_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_lock_file_acquire_event_data_t>(),
+        8usize,
+        "Alignment of lore_lock_file_acquire_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_lock_file_acquire_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_lock_file_status_begin_event_data_t {
     pub count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_lock_file_status_begin_event_data_t"]
-        [::std::mem::size_of::<lore_lock_file_status_begin_event_data_t>() - 8usize];
-    ["Alignment of lore_lock_file_status_begin_event_data_t"]
-        [::std::mem::align_of::<lore_lock_file_status_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_lock_file_status_begin_event_data_t::count"]
-        [::std::mem::offset_of!(lore_lock_file_status_begin_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_lock_file_status_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_lock_file_status_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_lock_file_status_begin_event_data_t>(),
+        8usize,
+        "Size of lore_lock_file_status_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_lock_file_status_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_lock_file_status_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_lock_file_status_begin_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_lock_file_status_event_data_t {
@@ -2841,33 +5102,63 @@ pub struct lore_lock_file_status_event_data_t {
     pub owner: lore_string_t,
     pub locked_at: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_lock_file_status_event_data_t"]
-        [::std::mem::size_of::<lore_lock_file_status_event_data_t>() - 40usize];
-    ["Alignment of lore_lock_file_status_event_data_t"]
-        [::std::mem::align_of::<lore_lock_file_status_event_data_t>() - 8usize];
-    ["Offset of field: lore_lock_file_status_event_data_t::path"]
-        [::std::mem::offset_of!(lore_lock_file_status_event_data_t, path) - 0usize];
-    ["Offset of field: lore_lock_file_status_event_data_t::owner"]
-        [::std::mem::offset_of!(lore_lock_file_status_event_data_t, owner) - 16usize];
-    ["Offset of field: lore_lock_file_status_event_data_t::locked_at"]
-        [::std::mem::offset_of!(lore_lock_file_status_event_data_t, locked_at) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_lock_file_status_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_lock_file_status_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_lock_file_status_event_data_t>(),
+        40usize,
+        "Size of lore_lock_file_status_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_lock_file_status_event_data_t>(),
+        8usize,
+        "Alignment of lore_lock_file_status_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_lock_file_status_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).owner) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_lock_file_status_event_data_t::owner"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).locked_at) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_lock_file_status_event_data_t::locked_at"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_lock_file_query_begin_event_data_t {
     pub count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_lock_file_query_begin_event_data_t"]
-        [::std::mem::size_of::<lore_lock_file_query_begin_event_data_t>() - 8usize];
-    ["Alignment of lore_lock_file_query_begin_event_data_t"]
-        [::std::mem::align_of::<lore_lock_file_query_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_lock_file_query_begin_event_data_t::count"]
-        [::std::mem::offset_of!(lore_lock_file_query_begin_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_lock_file_query_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_lock_file_query_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_lock_file_query_begin_event_data_t>(),
+        8usize,
+        "Size of lore_lock_file_query_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_lock_file_query_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_lock_file_query_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_lock_file_query_begin_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_lock_file_query_event_data_t {
@@ -2876,21 +5167,42 @@ pub struct lore_lock_file_query_event_data_t {
     pub owner: lore_string_t,
     pub locked_at: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_lock_file_query_event_data_t"]
-        [::std::mem::size_of::<lore_lock_file_query_event_data_t>() - 56usize];
-    ["Alignment of lore_lock_file_query_event_data_t"]
-        [::std::mem::align_of::<lore_lock_file_query_event_data_t>() - 8usize];
-    ["Offset of field: lore_lock_file_query_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_lock_file_query_event_data_t, branch) - 0usize];
-    ["Offset of field: lore_lock_file_query_event_data_t::path"]
-        [::std::mem::offset_of!(lore_lock_file_query_event_data_t, path) - 16usize];
-    ["Offset of field: lore_lock_file_query_event_data_t::owner"]
-        [::std::mem::offset_of!(lore_lock_file_query_event_data_t, owner) - 32usize];
-    ["Offset of field: lore_lock_file_query_event_data_t::locked_at"]
-        [::std::mem::offset_of!(lore_lock_file_query_event_data_t, locked_at) - 48usize];
-};
+#[test]
+fn bindgen_test_layout_lore_lock_file_query_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_lock_file_query_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_lock_file_query_event_data_t>(),
+        56usize,
+        "Size of lore_lock_file_query_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_lock_file_query_event_data_t>(),
+        8usize,
+        "Alignment of lore_lock_file_query_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_lock_file_query_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_lock_file_query_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).owner) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_lock_file_query_event_data_t::owner"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).locked_at) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_lock_file_query_event_data_t::locked_at"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_lock_file_release_begin_event_data_t {
@@ -2898,75 +5210,141 @@ pub struct lore_lock_file_release_begin_event_data_t {
     pub dry_run: u8,
     pub not_found: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_lock_file_release_begin_event_data_t"]
-        [::std::mem::size_of::<lore_lock_file_release_begin_event_data_t>() - 16usize];
-    ["Alignment of lore_lock_file_release_begin_event_data_t"]
-        [::std::mem::align_of::<lore_lock_file_release_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_lock_file_release_begin_event_data_t::count"]
-        [::std::mem::offset_of!(lore_lock_file_release_begin_event_data_t, count) - 0usize];
-    ["Offset of field: lore_lock_file_release_begin_event_data_t::dry_run"]
-        [::std::mem::offset_of!(lore_lock_file_release_begin_event_data_t, dry_run) - 8usize];
-    ["Offset of field: lore_lock_file_release_begin_event_data_t::not_found"]
-        [::std::mem::offset_of!(lore_lock_file_release_begin_event_data_t, not_found) - 9usize];
-};
+#[test]
+fn bindgen_test_layout_lore_lock_file_release_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_lock_file_release_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_lock_file_release_begin_event_data_t>(),
+        16usize,
+        "Size of lore_lock_file_release_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_lock_file_release_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_lock_file_release_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_lock_file_release_begin_event_data_t::count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dry_run) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_lock_file_release_begin_event_data_t::dry_run"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).not_found) as usize - ptr as usize },
+        9usize,
+        "Offset of field: lore_lock_file_release_begin_event_data_t::not_found"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_lock_file_release_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_lock_file_release_event_data_t"]
-        [::std::mem::size_of::<lore_lock_file_release_event_data_t>() - 16usize];
-    ["Alignment of lore_lock_file_release_event_data_t"]
-        [::std::mem::align_of::<lore_lock_file_release_event_data_t>() - 8usize];
-    ["Offset of field: lore_lock_file_release_event_data_t::path"]
-        [::std::mem::offset_of!(lore_lock_file_release_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_lock_file_release_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_lock_file_release_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_lock_file_release_event_data_t>(),
+        16usize,
+        "Size of lore_lock_file_release_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_lock_file_release_event_data_t>(),
+        8usize,
+        "Alignment of lore_lock_file_release_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_lock_file_release_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_metadata_clear_file_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_metadata_clear_file_event_data_t"]
-        [::std::mem::size_of::<lore_metadata_clear_file_event_data_t>() - 16usize];
-    ["Alignment of lore_metadata_clear_file_event_data_t"]
-        [::std::mem::align_of::<lore_metadata_clear_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_metadata_clear_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_metadata_clear_file_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_metadata_clear_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_metadata_clear_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_metadata_clear_file_event_data_t>(),
+        16usize,
+        "Size of lore_metadata_clear_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_metadata_clear_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_metadata_clear_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_metadata_clear_file_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_metadata_clear_revision_event_data_t {
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_metadata_clear_revision_event_data_t"]
-        [::std::mem::size_of::<lore_metadata_clear_revision_event_data_t>() - 32usize];
-    ["Alignment of lore_metadata_clear_revision_event_data_t"]
-        [::std::mem::align_of::<lore_metadata_clear_revision_event_data_t>() - 1usize];
-    ["Offset of field: lore_metadata_clear_revision_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_metadata_clear_revision_event_data_t, revision) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_metadata_clear_revision_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_metadata_clear_revision_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_metadata_clear_revision_event_data_t>(),
+        32usize,
+        "Size of lore_metadata_clear_revision_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_metadata_clear_revision_event_data_t>(),
+        1usize,
+        "Alignment of lore_metadata_clear_revision_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_metadata_clear_revision_event_data_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_path_ignore_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_path_ignore_event_data_t"]
-        [::std::mem::size_of::<lore_path_ignore_event_data_t>() - 16usize];
-    ["Alignment of lore_path_ignore_event_data_t"]
-        [::std::mem::align_of::<lore_path_ignore_event_data_t>() - 8usize];
-    ["Offset of field: lore_path_ignore_event_data_t::path"]
-        [::std::mem::offset_of!(lore_path_ignore_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_path_ignore_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_path_ignore_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_path_ignore_event_data_t>(),
+        16usize,
+        "Size of lore_path_ignore_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_path_ignore_event_data_t>(),
+        8usize,
+        "Alignment of lore_path_ignore_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_path_ignore_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_create_event_data_t {
@@ -2974,19 +5352,37 @@ pub struct lore_repository_create_event_data_t {
     pub name: lore_string_t,
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_create_event_data_t"]
-        [::std::mem::size_of::<lore_repository_create_event_data_t>() - 48usize];
-    ["Alignment of lore_repository_create_event_data_t"]
-        [::std::mem::align_of::<lore_repository_create_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_create_event_data_t::id"]
-        [::std::mem::offset_of!(lore_repository_create_event_data_t, id) - 0usize];
-    ["Offset of field: lore_repository_create_event_data_t::name"]
-        [::std::mem::offset_of!(lore_repository_create_event_data_t, name) - 16usize];
-    ["Offset of field: lore_repository_create_event_data_t::path"]
-        [::std::mem::offset_of!(lore_repository_create_event_data_t, path) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_create_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_create_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_create_event_data_t>(),
+        48usize,
+        "Size of lore_repository_create_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_create_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_create_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_create_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_create_event_data_t::name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_repository_create_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_clone_begin_event_data_t {
@@ -2995,21 +5391,42 @@ pub struct lore_repository_clone_begin_event_data_t {
     pub revision: lore_hash_t,
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_clone_begin_event_data_t"]
-        [::std::mem::size_of::<lore_repository_clone_begin_event_data_t>() - 80usize];
-    ["Alignment of lore_repository_clone_begin_event_data_t"]
-        [::std::mem::align_of::<lore_repository_clone_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_clone_begin_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_repository_clone_begin_event_data_t, repository) - 0usize];
-    ["Offset of field: lore_repository_clone_begin_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_repository_clone_begin_event_data_t, branch) - 16usize];
-    ["Offset of field: lore_repository_clone_begin_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_repository_clone_begin_event_data_t, revision) - 32usize];
-    ["Offset of field: lore_repository_clone_begin_event_data_t::path"]
-        [::std::mem::offset_of!(lore_repository_clone_begin_event_data_t, path) - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_clone_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_clone_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_clone_begin_event_data_t>(),
+        80usize,
+        "Size of lore_repository_clone_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_clone_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_clone_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_clone_begin_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_clone_begin_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_repository_clone_begin_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_repository_clone_begin_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_clone_count_data_t {
@@ -3023,45 +5440,93 @@ pub struct lore_repository_clone_count_data_t {
     pub bytes_total: u64,
     pub discovery_complete: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_clone_count_data_t"]
-        [::std::mem::size_of::<lore_repository_clone_count_data_t>() - 72usize];
-    ["Alignment of lore_repository_clone_count_data_t"]
-        [::std::mem::align_of::<lore_repository_clone_count_data_t>() - 8usize];
-    ["Offset of field: lore_repository_clone_count_data_t::file_complete"]
-        [::std::mem::offset_of!(lore_repository_clone_count_data_t, file_complete) - 0usize];
-    ["Offset of field: lore_repository_clone_count_data_t::file_retain"]
-        [::std::mem::offset_of!(lore_repository_clone_count_data_t, file_retain) - 8usize];
-    ["Offset of field: lore_repository_clone_count_data_t::file_replace"]
-        [::std::mem::offset_of!(lore_repository_clone_count_data_t, file_replace) - 16usize];
-    ["Offset of field: lore_repository_clone_count_data_t::file_count"]
-        [::std::mem::offset_of!(lore_repository_clone_count_data_t, file_count) - 24usize];
-    ["Offset of field: lore_repository_clone_count_data_t::file_inflight"]
-        [::std::mem::offset_of!(lore_repository_clone_count_data_t, file_inflight) - 32usize];
-    ["Offset of field: lore_repository_clone_count_data_t::fragment_inflight"]
-        [::std::mem::offset_of!(lore_repository_clone_count_data_t, fragment_inflight) - 40usize];
-    ["Offset of field: lore_repository_clone_count_data_t::bytes_transferred"]
-        [::std::mem::offset_of!(lore_repository_clone_count_data_t, bytes_transferred) - 48usize];
-    ["Offset of field: lore_repository_clone_count_data_t::bytes_total"]
-        [::std::mem::offset_of!(lore_repository_clone_count_data_t, bytes_total) - 56usize];
-    ["Offset of field: lore_repository_clone_count_data_t::discovery_complete"]
-        [::std::mem::offset_of!(lore_repository_clone_count_data_t, discovery_complete) - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_clone_count_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_clone_count_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_clone_count_data_t>(),
+        72usize,
+        "Size of lore_repository_clone_count_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_clone_count_data_t>(),
+        8usize,
+        "Alignment of lore_repository_clone_count_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_complete) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_clone_count_data_t::file_complete"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_retain) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_repository_clone_count_data_t::file_retain"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_replace) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_clone_count_data_t::file_replace"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_count) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_repository_clone_count_data_t::file_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_inflight) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_repository_clone_count_data_t::file_inflight"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).fragment_inflight) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_repository_clone_count_data_t::fragment_inflight"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).bytes_transferred) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_repository_clone_count_data_t::bytes_transferred"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).bytes_total) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_repository_clone_count_data_t::bytes_total"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).discovery_complete) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_repository_clone_count_data_t::discovery_complete"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_clone_progress_event_data_t {
     pub count: lore_repository_clone_count_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_clone_progress_event_data_t"]
-        [::std::mem::size_of::<lore_repository_clone_progress_event_data_t>() - 72usize];
-    ["Alignment of lore_repository_clone_progress_event_data_t"]
-        [::std::mem::align_of::<lore_repository_clone_progress_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_clone_progress_event_data_t::count"]
-        [::std::mem::offset_of!(lore_repository_clone_progress_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_clone_progress_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_clone_progress_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_clone_progress_event_data_t>(),
+        72usize,
+        "Size of lore_repository_clone_progress_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_clone_progress_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_clone_progress_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_clone_progress_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_clone_end_event_data_t {
@@ -3069,33 +5534,63 @@ pub struct lore_repository_clone_end_event_data_t {
     pub revision: lore_hash_t,
     pub count: lore_repository_clone_count_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_clone_end_event_data_t"]
-        [::std::mem::size_of::<lore_repository_clone_end_event_data_t>() - 120usize];
-    ["Alignment of lore_repository_clone_end_event_data_t"]
-        [::std::mem::align_of::<lore_repository_clone_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_clone_end_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_repository_clone_end_event_data_t, branch) - 0usize];
-    ["Offset of field: lore_repository_clone_end_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_repository_clone_end_event_data_t, revision) - 16usize];
-    ["Offset of field: lore_repository_clone_end_event_data_t::count"]
-        [::std::mem::offset_of!(lore_repository_clone_end_event_data_t, count) - 48usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_clone_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_clone_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_clone_end_event_data_t>(),
+        120usize,
+        "Size of lore_repository_clone_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_clone_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_clone_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_clone_end_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_clone_end_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_repository_clone_end_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_dependency_resolve_begin_event_data_t {
     pub root_count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_dependency_resolve_begin_event_data_t"]
-        [::std::mem::size_of::<lore_dependency_resolve_begin_event_data_t>() - 8usize];
-    ["Alignment of lore_dependency_resolve_begin_event_data_t"]
-        [::std::mem::align_of::<lore_dependency_resolve_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_dependency_resolve_begin_event_data_t::root_count"]
-        [::std::mem::offset_of!(lore_dependency_resolve_begin_event_data_t, root_count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_dependency_resolve_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_dependency_resolve_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_dependency_resolve_begin_event_data_t>(),
+        8usize,
+        "Size of lore_dependency_resolve_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_dependency_resolve_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_dependency_resolve_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).root_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_dependency_resolve_begin_event_data_t::root_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_dependency_resolve_item_event_data_t {
@@ -3103,33 +5598,63 @@ pub struct lore_dependency_resolve_item_event_data_t {
     pub target: lore_string_t,
     pub tags: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_dependency_resolve_item_event_data_t"]
-        [::std::mem::size_of::<lore_dependency_resolve_item_event_data_t>() - 48usize];
-    ["Alignment of lore_dependency_resolve_item_event_data_t"]
-        [::std::mem::align_of::<lore_dependency_resolve_item_event_data_t>() - 8usize];
-    ["Offset of field: lore_dependency_resolve_item_event_data_t::source"]
-        [::std::mem::offset_of!(lore_dependency_resolve_item_event_data_t, source) - 0usize];
-    ["Offset of field: lore_dependency_resolve_item_event_data_t::target"]
-        [::std::mem::offset_of!(lore_dependency_resolve_item_event_data_t, target) - 16usize];
-    ["Offset of field: lore_dependency_resolve_item_event_data_t::tags"]
-        [::std::mem::offset_of!(lore_dependency_resolve_item_event_data_t, tags) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_dependency_resolve_item_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_dependency_resolve_item_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_dependency_resolve_item_event_data_t>(),
+        48usize,
+        "Size of lore_dependency_resolve_item_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_dependency_resolve_item_event_data_t>(),
+        8usize,
+        "Alignment of lore_dependency_resolve_item_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_dependency_resolve_item_event_data_t::source"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_dependency_resolve_item_event_data_t::target"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tags) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_dependency_resolve_item_event_data_t::tags"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_dependency_resolve_end_event_data_t {
     pub resolved_count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_dependency_resolve_end_event_data_t"]
-        [::std::mem::size_of::<lore_dependency_resolve_end_event_data_t>() - 8usize];
-    ["Alignment of lore_dependency_resolve_end_event_data_t"]
-        [::std::mem::align_of::<lore_dependency_resolve_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_dependency_resolve_end_event_data_t::resolved_count"]
-        [::std::mem::offset_of!(lore_dependency_resolve_end_event_data_t, resolved_count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_dependency_resolve_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_dependency_resolve_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_dependency_resolve_end_event_data_t>(),
+        8usize,
+        "Size of lore_dependency_resolve_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_dependency_resolve_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_dependency_resolve_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).resolved_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_dependency_resolve_end_event_data_t::resolved_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_data_event_data_t {
@@ -3142,94 +5667,184 @@ pub struct lore_repository_data_event_data_t {
     pub creator: lore_string_t,
     pub created: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_data_event_data_t"]
-        [::std::mem::size_of::<lore_repository_data_event_data_t>() - 120usize];
-    ["Alignment of lore_repository_data_event_data_t"]
-        [::std::mem::align_of::<lore_repository_data_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_data_event_data_t::remote_url"]
-        [::std::mem::offset_of!(lore_repository_data_event_data_t, remote_url) - 0usize];
-    ["Offset of field: lore_repository_data_event_data_t::id"]
-        [::std::mem::offset_of!(lore_repository_data_event_data_t, id) - 16usize];
-    ["Offset of field: lore_repository_data_event_data_t::name"]
-        [::std::mem::offset_of!(lore_repository_data_event_data_t, name) - 32usize];
-    ["Offset of field: lore_repository_data_event_data_t::description"]
-        [::std::mem::offset_of!(lore_repository_data_event_data_t, description) - 48usize];
-    ["Offset of field: lore_repository_data_event_data_t::default_branch"]
-        [::std::mem::offset_of!(lore_repository_data_event_data_t, default_branch) - 64usize];
-    ["Offset of field: lore_repository_data_event_data_t::default_branch_name"]
-        [::std::mem::offset_of!(lore_repository_data_event_data_t, default_branch_name) - 80usize];
-    ["Offset of field: lore_repository_data_event_data_t::creator"]
-        [::std::mem::offset_of!(lore_repository_data_event_data_t, creator) - 96usize];
-    ["Offset of field: lore_repository_data_event_data_t::created"]
-        [::std::mem::offset_of!(lore_repository_data_event_data_t, created) - 112usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_data_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_data_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_data_event_data_t>(),
+        120usize,
+        "Size of lore_repository_data_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_data_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_data_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_url) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_data_event_data_t::remote_url"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_data_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_repository_data_event_data_t::name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).description) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_repository_data_event_data_t::description"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).default_branch) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_repository_data_event_data_t::default_branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).default_branch_name) as usize - ptr as usize },
+        80usize,
+        "Offset of field: lore_repository_data_event_data_t::default_branch_name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).creator) as usize - ptr as usize },
+        96usize,
+        "Offset of field: lore_repository_data_event_data_t::creator"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).created) as usize - ptr as usize },
+        112usize,
+        "Offset of field: lore_repository_data_event_data_t::created"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_config_get_event_data_t {
     pub key: lore_string_t,
     pub value: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_config_get_event_data_t"]
-        [::std::mem::size_of::<lore_repository_config_get_event_data_t>() - 32usize];
-    ["Alignment of lore_repository_config_get_event_data_t"]
-        [::std::mem::align_of::<lore_repository_config_get_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_config_get_event_data_t::key"]
-        [::std::mem::offset_of!(lore_repository_config_get_event_data_t, key) - 0usize];
-    ["Offset of field: lore_repository_config_get_event_data_t::value"]
-        [::std::mem::offset_of!(lore_repository_config_get_event_data_t, value) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_config_get_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_config_get_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_config_get_event_data_t>(),
+        32usize,
+        "Size of lore_repository_config_get_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_config_get_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_config_get_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_config_get_event_data_t::key"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).value) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_config_get_event_data_t::value"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_dump_begin_event_data_t {
     pub repository: lore_repository_id_t,
     pub revision: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_dump_begin_event_data_t"]
-        [::std::mem::size_of::<lore_repository_dump_begin_event_data_t>() - 48usize];
-    ["Alignment of lore_repository_dump_begin_event_data_t"]
-        [::std::mem::align_of::<lore_repository_dump_begin_event_data_t>() - 1usize];
-    ["Offset of field: lore_repository_dump_begin_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_repository_dump_begin_event_data_t, repository) - 0usize];
-    ["Offset of field: lore_repository_dump_begin_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_repository_dump_begin_event_data_t, revision) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_dump_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_dump_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_dump_begin_event_data_t>(),
+        48usize,
+        "Size of lore_repository_dump_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_dump_begin_event_data_t>(),
+        1usize,
+        "Alignment of lore_repository_dump_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_dump_begin_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_dump_begin_event_data_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_dump_end_event_data_t {
     pub _unused: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_dump_end_event_data_t"]
-        [::std::mem::size_of::<lore_repository_dump_end_event_data_t>() - 4usize];
-    ["Alignment of lore_repository_dump_end_event_data_t"]
-        [::std::mem::align_of::<lore_repository_dump_end_event_data_t>() - 4usize];
-    ["Offset of field: lore_repository_dump_end_event_data_t::_unused"]
-        [::std::mem::offset_of!(lore_repository_dump_end_event_data_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_dump_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_dump_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_dump_end_event_data_t>(),
+        4usize,
+        "Size of lore_repository_dump_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_dump_end_event_data_t>(),
+        4usize,
+        "Alignment of lore_repository_dump_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_dump_end_event_data_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_list_entry_event_data_t {
     pub id: lore_repository_id_t,
     pub name: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_list_entry_event_data_t"]
-        [::std::mem::size_of::<lore_repository_list_entry_event_data_t>() - 32usize];
-    ["Alignment of lore_repository_list_entry_event_data_t"]
-        [::std::mem::align_of::<lore_repository_list_entry_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_list_entry_event_data_t::id"]
-        [::std::mem::offset_of!(lore_repository_list_entry_event_data_t, id) - 0usize];
-    ["Offset of field: lore_repository_list_entry_event_data_t::name"]
-        [::std::mem::offset_of!(lore_repository_list_entry_event_data_t, name) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_list_entry_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_list_entry_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_list_entry_event_data_t>(),
+        32usize,
+        "Size of lore_repository_list_entry_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_list_entry_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_list_entry_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_list_entry_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_list_entry_event_data_t::name"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_instance_event_data_t {
@@ -3240,56 +5855,104 @@ pub struct lore_repository_instance_event_data_t {
     pub revision: lore_hash_t,
     pub stale: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_instance_event_data_t"]
-        [::std::mem::size_of::<lore_repository_instance_event_data_t>() - 104usize];
-    ["Alignment of lore_repository_instance_event_data_t"]
-        [::std::mem::align_of::<lore_repository_instance_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_instance_event_data_t::instance_id"]
-        [::std::mem::offset_of!(lore_repository_instance_event_data_t, instance_id) - 0usize];
-    ["Offset of field: lore_repository_instance_event_data_t::path"]
-        [::std::mem::offset_of!(lore_repository_instance_event_data_t, path) - 16usize];
-    ["Offset of field: lore_repository_instance_event_data_t::branch_name"]
-        [::std::mem::offset_of!(lore_repository_instance_event_data_t, branch_name) - 32usize];
-    ["Offset of field: lore_repository_instance_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_repository_instance_event_data_t, branch) - 48usize];
-    ["Offset of field: lore_repository_instance_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_repository_instance_event_data_t, revision) - 64usize];
-    ["Offset of field: lore_repository_instance_event_data_t::stale"]
-        [::std::mem::offset_of!(lore_repository_instance_event_data_t, stale) - 96usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_instance_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_instance_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_instance_event_data_t>(),
+        104usize,
+        "Size of lore_repository_instance_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_instance_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_instance_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).instance_id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_instance_event_data_t::instance_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_instance_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_name) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_repository_instance_event_data_t::branch_name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_repository_instance_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_repository_instance_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).stale) as usize - ptr as usize },
+        96usize,
+        "Offset of field: lore_repository_instance_event_data_t::stale"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_verify_state_begin_event_data_t {
     pub _unused: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_verify_state_begin_event_data_t"]
-        [::std::mem::size_of::<lore_repository_verify_state_begin_event_data_t>() - 4usize];
-    ["Alignment of lore_repository_verify_state_begin_event_data_t"]
-        [::std::mem::align_of::<lore_repository_verify_state_begin_event_data_t>() - 4usize];
-    ["Offset of field: lore_repository_verify_state_begin_event_data_t::_unused"]
-        [::std::mem::offset_of!(lore_repository_verify_state_begin_event_data_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_verify_state_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_verify_state_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_verify_state_begin_event_data_t>(),
+        4usize,
+        "Size of lore_repository_verify_state_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_verify_state_begin_event_data_t>(),
+        4usize,
+        "Alignment of lore_repository_verify_state_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_verify_state_begin_event_data_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_verify_state_end_event_data_t {
     pub healed_staged_state: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_verify_state_end_event_data_t"]
-        [::std::mem::size_of::<lore_repository_verify_state_end_event_data_t>() - 32usize];
-    ["Alignment of lore_repository_verify_state_end_event_data_t"]
-        [::std::mem::align_of::<lore_repository_verify_state_end_event_data_t>() - 1usize];
-    ["Offset of field: lore_repository_verify_state_end_event_data_t::healed_staged_state"][::std::mem::offset_of!(
-        lore_repository_verify_state_end_event_data_t,
-        healed_staged_state
-    )
-        - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_verify_state_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_verify_state_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_verify_state_end_event_data_t>(),
+        32usize,
+        "Size of lore_repository_verify_state_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_verify_state_end_event_data_t>(),
+        1usize,
+        "Alignment of lore_repository_verify_state_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).healed_staged_state) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_verify_state_end_event_data_t::healed_staged_state"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_verify_fragment_match_event_data_t {
@@ -3305,85 +5968,110 @@ pub struct lore_repository_verify_fragment_match_event_data_t {
     pub pack_file: u32,
     pub last_access: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_verify_fragment_match_event_data_t"]
-        [::std::mem::size_of::<lore_repository_verify_fragment_match_event_data_t>() - 104usize];
-    ["Alignment of lore_repository_verify_fragment_match_event_data_t"]
-        [::std::mem::align_of::<lore_repository_verify_fragment_match_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_verify_fragment_match_event_data_t::slot"]
-        [::std::mem::offset_of!(lore_repository_verify_fragment_match_event_data_t, slot) - 0usize];
-    ["Offset of field: lore_repository_verify_fragment_match_event_data_t::index"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_match_event_data_t,
-        index
-    ) - 4usize];
-    ["Offset of field: lore_repository_verify_fragment_match_event_data_t::repository"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_match_event_data_t,
-        repository
-    ) - 8usize];
-    ["Offset of field: lore_repository_verify_fragment_match_event_data_t::address_hash"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_match_event_data_t,
-        address_hash
-    )
-        - 24usize];
-    ["Offset of field: lore_repository_verify_fragment_match_event_data_t::address_context"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_match_event_data_t,
-        address_context
-    )
-        - 56usize];
-    ["Offset of field: lore_repository_verify_fragment_match_event_data_t::flags"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_match_event_data_t,
-        flags
-    ) - 72usize];
-    ["Offset of field: lore_repository_verify_fragment_match_event_data_t::size_payload"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_match_event_data_t,
-        size_payload
-    )
-        - 76usize];
-    ["Offset of field: lore_repository_verify_fragment_match_event_data_t::size_content"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_match_event_data_t,
-        size_content
-    )
-        - 80usize];
-    ["Offset of field: lore_repository_verify_fragment_match_event_data_t::pack_offset"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_match_event_data_t,
-        pack_offset
-    )
-        - 88usize];
-    ["Offset of field: lore_repository_verify_fragment_match_event_data_t::pack_file"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_match_event_data_t,
-        pack_file
-    ) - 92usize];
-    ["Offset of field: lore_repository_verify_fragment_match_event_data_t::last_access"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_match_event_data_t,
-        last_access
-    )
-        - 96usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_verify_fragment_match_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_verify_fragment_match_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_verify_fragment_match_event_data_t>(),
+        104usize,
+        "Size of lore_repository_verify_fragment_match_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_verify_fragment_match_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_verify_fragment_match_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).slot) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_verify_fragment_match_event_data_t::slot"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).index) as usize - ptr as usize },
+        4usize,
+        "Offset of field: lore_repository_verify_fragment_match_event_data_t::index"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_repository_verify_fragment_match_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address_hash) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_repository_verify_fragment_match_event_data_t::address_hash"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address_context) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_repository_verify_fragment_match_event_data_t::address_context"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flags) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_repository_verify_fragment_match_event_data_t::flags"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size_payload) as usize - ptr as usize },
+        76usize,
+        "Offset of field: lore_repository_verify_fragment_match_event_data_t::size_payload"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size_content) as usize - ptr as usize },
+        80usize,
+        "Offset of field: lore_repository_verify_fragment_match_event_data_t::size_content"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).pack_offset) as usize - ptr as usize },
+        88usize,
+        "Offset of field: lore_repository_verify_fragment_match_event_data_t::pack_offset"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).pack_file) as usize - ptr as usize },
+        92usize,
+        "Offset of field: lore_repository_verify_fragment_match_event_data_t::pack_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).last_access) as usize - ptr as usize },
+        96usize,
+        "Offset of field: lore_repository_verify_fragment_match_event_data_t::last_access"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_verify_fragment_match_event_data_array_t {
     pub ptr: *const lore_repository_verify_fragment_match_event_data_t,
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_verify_fragment_match_event_data_array_t"][::std::mem::size_of::<
+#[test]
+fn bindgen_test_layout_lore_repository_verify_fragment_match_event_data_array_t() {
+    const UNINIT: ::std::mem::MaybeUninit<
         lore_repository_verify_fragment_match_event_data_array_t,
-    >() - 16usize];
-    ["Alignment of lore_repository_verify_fragment_match_event_data_array_t"][::std::mem::align_of::<
-        lore_repository_verify_fragment_match_event_data_array_t,
-    >() - 8usize];
-    ["Offset of field: lore_repository_verify_fragment_match_event_data_array_t::ptr"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_match_event_data_array_t,
-        ptr
-    ) - 0usize];
-    ["Offset of field: lore_repository_verify_fragment_match_event_data_array_t::count"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_match_event_data_array_t,
-        count
-    )
-        - 8usize];
-};
+    > = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_verify_fragment_match_event_data_array_t>(),
+        16usize,
+        "Size of lore_repository_verify_fragment_match_event_data_array_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_verify_fragment_match_event_data_array_t>(),
+        8usize,
+        "Alignment of lore_repository_verify_fragment_match_event_data_array_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_verify_fragment_match_event_data_array_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_repository_verify_fragment_match_event_data_array_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_verify_fragment_event_data_t {
@@ -3397,44 +6085,67 @@ pub struct lore_repository_verify_fragment_event_data_t {
     pub matches: lore_repository_verify_fragment_match_event_data_array_t,
     pub error: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_verify_fragment_event_data_t"]
-        [::std::mem::size_of::<lore_repository_verify_fragment_event_data_t>() - 104usize];
-    ["Alignment of lore_repository_verify_fragment_event_data_t"]
-        [::std::mem::align_of::<lore_repository_verify_fragment_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_verify_fragment_event_data_t::hash"]
-        [::std::mem::offset_of!(lore_repository_verify_fragment_event_data_t, hash) - 0usize];
-    ["Offset of field: lore_repository_verify_fragment_event_data_t::group_index"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_event_data_t,
-        group_index
-    ) - 32usize];
-    ["Offset of field: lore_repository_verify_fragment_event_data_t::bucket_index"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_event_data_t,
-        bucket_index
-    ) - 36usize];
-    ["Offset of field: lore_repository_verify_fragment_event_data_t::index_path"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_event_data_t,
-        index_path
-    ) - 40usize];
-    ["Offset of field: lore_repository_verify_fragment_event_data_t::entry_count"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_event_data_t,
-        entry_count
-    ) - 56usize];
-    ["Offset of field: lore_repository_verify_fragment_event_data_t::packfile_entry_count"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_event_data_t,
-        packfile_entry_count
-    )
-        - 60usize];
-    ["Offset of field: lore_repository_verify_fragment_event_data_t::match_count"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_event_data_t,
-        match_count
-    ) - 64usize];
-    ["Offset of field: lore_repository_verify_fragment_event_data_t::matches"]
-        [::std::mem::offset_of!(lore_repository_verify_fragment_event_data_t, matches) - 72usize];
-    ["Offset of field: lore_repository_verify_fragment_event_data_t::error"]
-        [::std::mem::offset_of!(lore_repository_verify_fragment_event_data_t, error) - 88usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_verify_fragment_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_verify_fragment_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_verify_fragment_event_data_t>(),
+        104usize,
+        "Size of lore_repository_verify_fragment_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_verify_fragment_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_verify_fragment_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).hash) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_verify_fragment_event_data_t::hash"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).group_index) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_repository_verify_fragment_event_data_t::group_index"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).bucket_index) as usize - ptr as usize },
+        36usize,
+        "Offset of field: lore_repository_verify_fragment_event_data_t::bucket_index"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).index_path) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_repository_verify_fragment_event_data_t::index_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).entry_count) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_repository_verify_fragment_event_data_t::entry_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).packfile_entry_count) as usize - ptr as usize },
+        60usize,
+        "Offset of field: lore_repository_verify_fragment_event_data_t::packfile_entry_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).match_count) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_repository_verify_fragment_event_data_t::match_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).matches) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_repository_verify_fragment_event_data_t::matches"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
+        88usize,
+        "Offset of field: lore_repository_verify_fragment_event_data_t::error"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_verify_fragment_remote_event_data_t {
@@ -3444,36 +6155,47 @@ pub struct lore_repository_verify_fragment_remote_event_data_t {
     pub healed: u8,
     pub error: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_verify_fragment_remote_event_data_t"]
-        [::std::mem::size_of::<lore_repository_verify_fragment_remote_event_data_t>() - 72usize];
-    ["Alignment of lore_repository_verify_fragment_remote_event_data_t"]
-        [::std::mem::align_of::<lore_repository_verify_fragment_remote_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_verify_fragment_remote_event_data_t::address_hash"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_remote_event_data_t,
-        address_hash
-    )
-        - 0usize];
-    ["Offset of field: lore_repository_verify_fragment_remote_event_data_t::address_context"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_remote_event_data_t,
-        address_context
-    )
-        - 32usize];
-    ["Offset of field: lore_repository_verify_fragment_remote_event_data_t::corrupted"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_remote_event_data_t,
-        corrupted
-    )
-        - 48usize];
-    ["Offset of field: lore_repository_verify_fragment_remote_event_data_t::healed"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_remote_event_data_t,
-        healed
-    ) - 49usize];
-    ["Offset of field: lore_repository_verify_fragment_remote_event_data_t::error"][::std::mem::offset_of!(
-        lore_repository_verify_fragment_remote_event_data_t,
-        error
-    ) - 56usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_verify_fragment_remote_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_verify_fragment_remote_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_verify_fragment_remote_event_data_t>(),
+        72usize,
+        "Size of lore_repository_verify_fragment_remote_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_verify_fragment_remote_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_verify_fragment_remote_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address_hash) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_verify_fragment_remote_event_data_t::address_hash"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address_context) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_repository_verify_fragment_remote_event_data_t::address_context"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).corrupted) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_repository_verify_fragment_remote_event_data_t::corrupted"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).healed) as usize - ptr as usize },
+        49usize,
+        "Offset of field: lore_repository_verify_fragment_remote_event_data_t::healed"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_repository_verify_fragment_remote_event_data_t::error"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_state_dump_event_data_t {
@@ -3482,21 +6204,42 @@ pub struct lore_repository_state_dump_event_data_t {
     pub tree_hash: lore_hash_t,
     pub tree_size: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_state_dump_event_data_t"]
-        [::std::mem::size_of::<lore_repository_state_dump_event_data_t>() - 80usize];
-    ["Alignment of lore_repository_state_dump_event_data_t"]
-        [::std::mem::align_of::<lore_repository_state_dump_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_state_dump_event_data_t::revision_number"]
-        [::std::mem::offset_of!(lore_repository_state_dump_event_data_t, revision_number) - 0usize];
-    ["Offset of field: lore_repository_state_dump_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_repository_state_dump_event_data_t, revision) - 8usize];
-    ["Offset of field: lore_repository_state_dump_event_data_t::tree_hash"]
-        [::std::mem::offset_of!(lore_repository_state_dump_event_data_t, tree_hash) - 40usize];
-    ["Offset of field: lore_repository_state_dump_event_data_t::tree_size"]
-        [::std::mem::offset_of!(lore_repository_state_dump_event_data_t, tree_size) - 72usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_state_dump_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_state_dump_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_state_dump_event_data_t>(),
+        80usize,
+        "Size of lore_repository_state_dump_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_state_dump_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_state_dump_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_number) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_state_dump_event_data_t::revision_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_repository_state_dump_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tree_hash) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_repository_state_dump_event_data_t::tree_hash"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tree_size) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_repository_state_dump_event_data_t::tree_size"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_state_dump_node_event_data_t {
@@ -3509,29 +6252,62 @@ pub struct lore_repository_state_dump_node_event_data_t {
     pub flags: u16,
     pub type_data: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_state_dump_node_event_data_t"]
-        [::std::mem::size_of::<lore_repository_state_dump_node_event_data_t>() - 64usize];
-    ["Alignment of lore_repository_state_dump_node_event_data_t"]
-        [::std::mem::align_of::<lore_repository_state_dump_node_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_state_dump_node_event_data_t::name"]
-        [::std::mem::offset_of!(lore_repository_state_dump_node_event_data_t, name) - 0usize];
-    ["Offset of field: lore_repository_state_dump_node_event_data_t::id"]
-        [::std::mem::offset_of!(lore_repository_state_dump_node_event_data_t, id) - 16usize];
-    ["Offset of field: lore_repository_state_dump_node_event_data_t::parent"]
-        [::std::mem::offset_of!(lore_repository_state_dump_node_event_data_t, parent) - 20usize];
-    ["Offset of field: lore_repository_state_dump_node_event_data_t::sibling"]
-        [::std::mem::offset_of!(lore_repository_state_dump_node_event_data_t, sibling) - 24usize];
-    ["Offset of field: lore_repository_state_dump_node_event_data_t::mode"]
-        [::std::mem::offset_of!(lore_repository_state_dump_node_event_data_t, mode) - 28usize];
-    ["Offset of field: lore_repository_state_dump_node_event_data_t::size"]
-        [::std::mem::offset_of!(lore_repository_state_dump_node_event_data_t, size) - 32usize];
-    ["Offset of field: lore_repository_state_dump_node_event_data_t::flags"]
-        [::std::mem::offset_of!(lore_repository_state_dump_node_event_data_t, flags) - 40usize];
-    ["Offset of field: lore_repository_state_dump_node_event_data_t::type_data"]
-        [::std::mem::offset_of!(lore_repository_state_dump_node_event_data_t, type_data) - 48usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_state_dump_node_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_state_dump_node_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_state_dump_node_event_data_t>(),
+        64usize,
+        "Size of lore_repository_state_dump_node_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_state_dump_node_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_state_dump_node_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_state_dump_node_event_data_t::name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_state_dump_node_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).parent) as usize - ptr as usize },
+        20usize,
+        "Offset of field: lore_repository_state_dump_node_event_data_t::parent"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).sibling) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_repository_state_dump_node_event_data_t::sibling"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).mode) as usize - ptr as usize },
+        28usize,
+        "Offset of field: lore_repository_state_dump_node_event_data_t::mode"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_repository_state_dump_node_event_data_t::size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flags) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_repository_state_dump_node_event_data_t::flags"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).type_data) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_repository_state_dump_node_event_data_t::type_data"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_status_revision_event_data_t {
@@ -3553,85 +6329,103 @@ pub struct lore_repository_status_revision_event_data_t {
     pub remote_authorized: u8,
     pub remote_branch_exist: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_status_revision_event_data_t"]
-        [::std::mem::size_of::<lore_repository_status_revision_event_data_t>() - 272usize];
-    ["Alignment of lore_repository_status_revision_event_data_t"]
-        [::std::mem::align_of::<lore_repository_status_revision_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_repository_status_revision_event_data_t, repository) - 0usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_repository_status_revision_event_data_t, branch) - 16usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::branch_name"][::std::mem::offset_of!(
-        lore_repository_status_revision_event_data_t,
-        branch_name
-    ) - 32usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_repository_status_revision_event_data_t, revision) - 48usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::revision_number"][::std::mem::offset_of!(
-        lore_repository_status_revision_event_data_t,
-        revision_number
-    ) - 80usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::revision_staged"][::std::mem::offset_of!(
-        lore_repository_status_revision_event_data_t,
-        revision_staged
-    ) - 88usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::revision_merged"][::std::mem::offset_of!(
-        lore_repository_status_revision_event_data_t,
-        revision_merged
-    )
-        - 120usize];
-    [
-        "Offset of field: lore_repository_status_revision_event_data_t::revision_merged_parent_branch",
-    ][::std::mem::offset_of!(
-        lore_repository_status_revision_event_data_t,
-        revision_merged_parent_branch
-    ) - 152usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::revision_local"][::std::mem::offset_of!(
-        lore_repository_status_revision_event_data_t,
-        revision_local
-    ) - 184usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::revision_local_number"][::std::mem::offset_of!(
-        lore_repository_status_revision_event_data_t,
-        revision_local_number
-    )
-        - 216usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::revision_remote"][::std::mem::offset_of!(
-        lore_repository_status_revision_event_data_t,
-        revision_remote
-    )
-        - 224usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::revision_remote_number"][::std::mem::offset_of!(
-        lore_repository_status_revision_event_data_t,
-        revision_remote_number
-    )
-        - 256usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::is_local_ahead"][::std::mem::offset_of!(
-        lore_repository_status_revision_event_data_t,
-        is_local_ahead
-    ) - 264usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::is_remote_ahead"][::std::mem::offset_of!(
-        lore_repository_status_revision_event_data_t,
-        is_remote_ahead
-    )
-        - 265usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::remote_available"][::std::mem::offset_of!(
-        lore_repository_status_revision_event_data_t,
-        remote_available
-    )
-        - 266usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::remote_authorized"][::std::mem::offset_of!(
-        lore_repository_status_revision_event_data_t,
-        remote_authorized
-    )
-        - 267usize];
-    ["Offset of field: lore_repository_status_revision_event_data_t::remote_branch_exist"][::std::mem::offset_of!(
-        lore_repository_status_revision_event_data_t,
-        remote_branch_exist
-    )
-        - 268usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_status_revision_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_status_revision_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_status_revision_event_data_t>(),
+        272usize,
+        "Size of lore_repository_status_revision_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_status_revision_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_status_revision_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_name) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::branch_name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_number) as usize - ptr as usize },
+        80usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::revision_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_staged) as usize - ptr as usize },
+        88usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::revision_staged"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_merged) as usize - ptr as usize },
+        120usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::revision_merged"
+    );
+    assert_eq ! (unsafe { :: std :: ptr :: addr_of ! ((* ptr) . revision_merged_parent_branch) as usize - ptr as usize } , 152usize , "Offset of field: lore_repository_status_revision_event_data_t::revision_merged_parent_branch");
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_local) as usize - ptr as usize },
+        184usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::revision_local"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_local_number) as usize - ptr as usize },
+        216usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::revision_local_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_remote) as usize - ptr as usize },
+        224usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::revision_remote"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_remote_number) as usize - ptr as usize },
+        256usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::revision_remote_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).is_local_ahead) as usize - ptr as usize },
+        264usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::is_local_ahead"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).is_remote_ahead) as usize - ptr as usize },
+        265usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::is_remote_ahead"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_available) as usize - ptr as usize },
+        266usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::remote_available"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_authorized) as usize - ptr as usize },
+        267usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::remote_authorized"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_branch_exist) as usize - ptr as usize },
+        268usize,
+        "Offset of field: lore_repository_status_revision_event_data_t::remote_branch_exist"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_status_file_event_data_t {
@@ -3649,67 +6443,119 @@ pub struct lore_repository_status_file_event_data_t {
     pub flag_dirty: u8,
     pub from_path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_status_file_event_data_t"]
-        [::std::mem::size_of::<lore_repository_status_file_event_data_t>() - 56usize];
-    ["Alignment of lore_repository_status_file_event_data_t"]
-        [::std::mem::align_of::<lore_repository_status_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_status_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_repository_status_file_event_data_t, path) - 0usize];
-    ["Offset of field: lore_repository_status_file_event_data_t::size"]
-        [::std::mem::offset_of!(lore_repository_status_file_event_data_t, size) - 16usize];
-    ["Offset of field: lore_repository_status_file_event_data_t::action"]
-        [::std::mem::offset_of!(lore_repository_status_file_event_data_t, action) - 24usize];
-    ["Offset of field: lore_repository_status_file_event_data_t::type_"]
-        [::std::mem::offset_of!(lore_repository_status_file_event_data_t, type_) - 28usize];
-    ["Offset of field: lore_repository_status_file_event_data_t::flag_staged"]
-        [::std::mem::offset_of!(lore_repository_status_file_event_data_t, flag_staged) - 32usize];
-    ["Offset of field: lore_repository_status_file_event_data_t::flag_merged"]
-        [::std::mem::offset_of!(lore_repository_status_file_event_data_t, flag_merged) - 33usize];
-    ["Offset of field: lore_repository_status_file_event_data_t::flag_conflict"]
-        [::std::mem::offset_of!(lore_repository_status_file_event_data_t, flag_conflict) - 34usize];
-    ["Offset of field: lore_repository_status_file_event_data_t::flag_conflict_unresolved"][::std::mem::offset_of!(
-        lore_repository_status_file_event_data_t,
-        flag_conflict_unresolved
-    )
-        - 35usize];
-    ["Offset of field: lore_repository_status_file_event_data_t::flag_conflict_automerged"][::std::mem::offset_of!(
-        lore_repository_status_file_event_data_t,
-        flag_conflict_automerged
-    )
-        - 36usize];
-    ["Offset of field: lore_repository_status_file_event_data_t::flag_conflict_mine"][::std::mem::offset_of!(
-        lore_repository_status_file_event_data_t,
-        flag_conflict_mine
-    ) - 37usize];
-    ["Offset of field: lore_repository_status_file_event_data_t::flag_conflict_theirs"][::std::mem::offset_of!(
-        lore_repository_status_file_event_data_t,
-        flag_conflict_theirs
-    )
-        - 38usize];
-    ["Offset of field: lore_repository_status_file_event_data_t::flag_dirty"]
-        [::std::mem::offset_of!(lore_repository_status_file_event_data_t, flag_dirty) - 39usize];
-    ["Offset of field: lore_repository_status_file_event_data_t::from_path"]
-        [::std::mem::offset_of!(lore_repository_status_file_event_data_t, from_path) - 40usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_status_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_status_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_status_file_event_data_t>(),
+        56usize,
+        "Size of lore_repository_status_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_status_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_status_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_status_file_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_status_file_event_data_t::size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).action) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_repository_status_file_event_data_t::action"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).type_) as usize - ptr as usize },
+        28usize,
+        "Offset of field: lore_repository_status_file_event_data_t::type_"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_staged) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_repository_status_file_event_data_t::flag_staged"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_merged) as usize - ptr as usize },
+        33usize,
+        "Offset of field: lore_repository_status_file_event_data_t::flag_merged"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_conflict) as usize - ptr as usize },
+        34usize,
+        "Offset of field: lore_repository_status_file_event_data_t::flag_conflict"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_conflict_unresolved) as usize - ptr as usize },
+        35usize,
+        "Offset of field: lore_repository_status_file_event_data_t::flag_conflict_unresolved"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_conflict_automerged) as usize - ptr as usize },
+        36usize,
+        "Offset of field: lore_repository_status_file_event_data_t::flag_conflict_automerged"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_conflict_mine) as usize - ptr as usize },
+        37usize,
+        "Offset of field: lore_repository_status_file_event_data_t::flag_conflict_mine"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_conflict_theirs) as usize - ptr as usize },
+        38usize,
+        "Offset of field: lore_repository_status_file_event_data_t::flag_conflict_theirs"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_dirty) as usize - ptr as usize },
+        39usize,
+        "Offset of field: lore_repository_status_file_event_data_t::flag_dirty"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).from_path) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_repository_status_file_event_data_t::from_path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_status_count_event_data_t {
     pub directories: u64,
     pub files: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_status_count_event_data_t"]
-        [::std::mem::size_of::<lore_repository_status_count_event_data_t>() - 16usize];
-    ["Alignment of lore_repository_status_count_event_data_t"]
-        [::std::mem::align_of::<lore_repository_status_count_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_status_count_event_data_t::directories"]
-        [::std::mem::offset_of!(lore_repository_status_count_event_data_t, directories) - 0usize];
-    ["Offset of field: lore_repository_status_count_event_data_t::files"]
-        [::std::mem::offset_of!(lore_repository_status_count_event_data_t, files) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_status_count_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_status_count_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_status_count_event_data_t>(),
+        16usize,
+        "Size of lore_repository_status_count_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_status_count_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_status_count_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).directories) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_status_count_event_data_t::directories"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).files) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_repository_status_count_event_data_t::files"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_status_summary_event_data_t {
@@ -3719,23 +6565,47 @@ pub struct lore_repository_status_summary_event_data_t {
     pub moves: u64,
     pub copies: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_status_summary_event_data_t"]
-        [::std::mem::size_of::<lore_repository_status_summary_event_data_t>() - 40usize];
-    ["Alignment of lore_repository_status_summary_event_data_t"]
-        [::std::mem::align_of::<lore_repository_status_summary_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_status_summary_event_data_t::adds"]
-        [::std::mem::offset_of!(lore_repository_status_summary_event_data_t, adds) - 0usize];
-    ["Offset of field: lore_repository_status_summary_event_data_t::deletes"]
-        [::std::mem::offset_of!(lore_repository_status_summary_event_data_t, deletes) - 8usize];
-    ["Offset of field: lore_repository_status_summary_event_data_t::modifies"]
-        [::std::mem::offset_of!(lore_repository_status_summary_event_data_t, modifies) - 16usize];
-    ["Offset of field: lore_repository_status_summary_event_data_t::moves"]
-        [::std::mem::offset_of!(lore_repository_status_summary_event_data_t, moves) - 24usize];
-    ["Offset of field: lore_repository_status_summary_event_data_t::copies"]
-        [::std::mem::offset_of!(lore_repository_status_summary_event_data_t, copies) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_status_summary_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_status_summary_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_status_summary_event_data_t>(),
+        40usize,
+        "Size of lore_repository_status_summary_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_status_summary_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_status_summary_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).adds) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_status_summary_event_data_t::adds"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).deletes) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_repository_status_summary_event_data_t::deletes"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).modifies) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_status_summary_event_data_t::modifies"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).moves) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_repository_status_summary_event_data_t::moves"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).copies) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_repository_status_summary_event_data_t::copies"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_store_immutable_query_event_data_t {
@@ -3748,62 +6618,88 @@ pub struct lore_repository_store_immutable_query_event_data_t {
     pub payload_size: u32,
     pub content_size: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_store_immutable_query_event_data_t"]
-        [::std::mem::size_of::<lore_repository_store_immutable_query_event_data_t>() - 80usize];
-    ["Alignment of lore_repository_store_immutable_query_event_data_t"]
-        [::std::mem::align_of::<lore_repository_store_immutable_query_event_data_t>() - 8usize];
-    ["Offset of field: lore_repository_store_immutable_query_event_data_t::address"][::std::mem::offset_of!(
-        lore_repository_store_immutable_query_event_data_t,
-        address
-    ) - 0usize];
-    ["Offset of field: lore_repository_store_immutable_query_event_data_t::remote"][::std::mem::offset_of!(
-        lore_repository_store_immutable_query_event_data_t,
-        remote
-    ) - 48usize];
-    ["Offset of field: lore_repository_store_immutable_query_event_data_t::status"][::std::mem::offset_of!(
-        lore_repository_store_immutable_query_event_data_t,
-        status
-    ) - 52usize];
-    ["Offset of field: lore_repository_store_immutable_query_event_data_t::payload"][::std::mem::offset_of!(
-        lore_repository_store_immutable_query_event_data_t,
-        payload
-    ) - 56usize];
-    ["Offset of field: lore_repository_store_immutable_query_event_data_t::subfragment"][::std::mem::offset_of!(
-        lore_repository_store_immutable_query_event_data_t,
-        subfragment
-    )
-        - 57usize];
-    ["Offset of field: lore_repository_store_immutable_query_event_data_t::flags"][::std::mem::offset_of!(
-        lore_repository_store_immutable_query_event_data_t,
-        flags
-    ) - 60usize];
-    ["Offset of field: lore_repository_store_immutable_query_event_data_t::payload_size"][::std::mem::offset_of!(
-        lore_repository_store_immutable_query_event_data_t,
-        payload_size
-    )
-        - 64usize];
-    ["Offset of field: lore_repository_store_immutable_query_event_data_t::content_size"][::std::mem::offset_of!(
-        lore_repository_store_immutable_query_event_data_t,
-        content_size
-    )
-        - 72usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_store_immutable_query_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_store_immutable_query_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_store_immutable_query_event_data_t>(),
+        80usize,
+        "Size of lore_repository_store_immutable_query_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_store_immutable_query_event_data_t>(),
+        8usize,
+        "Alignment of lore_repository_store_immutable_query_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_store_immutable_query_event_data_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_repository_store_immutable_query_event_data_t::remote"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).status) as usize - ptr as usize },
+        52usize,
+        "Offset of field: lore_repository_store_immutable_query_event_data_t::status"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).payload) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_repository_store_immutable_query_event_data_t::payload"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).subfragment) as usize - ptr as usize },
+        57usize,
+        "Offset of field: lore_repository_store_immutable_query_event_data_t::subfragment"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flags) as usize - ptr as usize },
+        60usize,
+        "Offset of field: lore_repository_store_immutable_query_event_data_t::flags"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).payload_size) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_repository_store_immutable_query_event_data_t::payload_size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).content_size) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_repository_store_immutable_query_event_data_t::content_size"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_commit_begin_event_data_t {
     pub _unused: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_commit_begin_event_data_t"]
-        [::std::mem::size_of::<lore_revision_commit_begin_event_data_t>() - 4usize];
-    ["Alignment of lore_revision_commit_begin_event_data_t"]
-        [::std::mem::align_of::<lore_revision_commit_begin_event_data_t>() - 4usize];
-    ["Offset of field: lore_revision_commit_begin_event_data_t::_unused"]
-        [::std::mem::offset_of!(lore_revision_commit_begin_event_data_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_commit_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_commit_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_commit_begin_event_data_t>(),
+        4usize,
+        "Size of lore_revision_commit_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_commit_begin_event_data_t>(),
+        4usize,
+        "Alignment of lore_revision_commit_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_commit_begin_event_data_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_commit_count_data_t {
@@ -3818,63 +6714,124 @@ pub struct lore_revision_commit_count_data_t {
     pub bytes_total: u64,
     pub discovery_complete: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_commit_count_data_t"]
-        [::std::mem::size_of::<lore_revision_commit_count_data_t>() - 80usize];
-    ["Alignment of lore_revision_commit_count_data_t"]
-        [::std::mem::align_of::<lore_revision_commit_count_data_t>() - 8usize];
-    ["Offset of field: lore_revision_commit_count_data_t::directory_count"]
-        [::std::mem::offset_of!(lore_revision_commit_count_data_t, directory_count) - 0usize];
-    ["Offset of field: lore_revision_commit_count_data_t::directory_total"]
-        [::std::mem::offset_of!(lore_revision_commit_count_data_t, directory_total) - 8usize];
-    ["Offset of field: lore_revision_commit_count_data_t::file_count"]
-        [::std::mem::offset_of!(lore_revision_commit_count_data_t, file_count) - 16usize];
-    ["Offset of field: lore_revision_commit_count_data_t::file_total"]
-        [::std::mem::offset_of!(lore_revision_commit_count_data_t, file_total) - 24usize];
-    ["Offset of field: lore_revision_commit_count_data_t::directory_delete_count"][::std::mem::offset_of!(
-        lore_revision_commit_count_data_t,
-        directory_delete_count
-    ) - 32usize];
-    ["Offset of field: lore_revision_commit_count_data_t::file_modify_count"]
-        [::std::mem::offset_of!(lore_revision_commit_count_data_t, file_modify_count) - 40usize];
-    ["Offset of field: lore_revision_commit_count_data_t::file_delete_count"]
-        [::std::mem::offset_of!(lore_revision_commit_count_data_t, file_delete_count) - 48usize];
-    ["Offset of field: lore_revision_commit_count_data_t::bytes_transferred"]
-        [::std::mem::offset_of!(lore_revision_commit_count_data_t, bytes_transferred) - 56usize];
-    ["Offset of field: lore_revision_commit_count_data_t::bytes_total"]
-        [::std::mem::offset_of!(lore_revision_commit_count_data_t, bytes_total) - 64usize];
-    ["Offset of field: lore_revision_commit_count_data_t::discovery_complete"]
-        [::std::mem::offset_of!(lore_revision_commit_count_data_t, discovery_complete) - 72usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_commit_count_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_commit_count_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_commit_count_data_t>(),
+        80usize,
+        "Size of lore_revision_commit_count_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_commit_count_data_t>(),
+        8usize,
+        "Alignment of lore_revision_commit_count_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).directory_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_commit_count_data_t::directory_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).directory_total) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_commit_count_data_t::directory_total"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_count) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_commit_count_data_t::file_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_total) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_revision_commit_count_data_t::file_total"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).directory_delete_count) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_commit_count_data_t::directory_delete_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_modify_count) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_revision_commit_count_data_t::file_modify_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_delete_count) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_revision_commit_count_data_t::file_delete_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).bytes_transferred) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_revision_commit_count_data_t::bytes_transferred"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).bytes_total) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_revision_commit_count_data_t::bytes_total"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).discovery_complete) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_revision_commit_count_data_t::discovery_complete"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_commit_progress_event_data_t {
     pub count: lore_revision_commit_count_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_commit_progress_event_data_t"]
-        [::std::mem::size_of::<lore_revision_commit_progress_event_data_t>() - 80usize];
-    ["Alignment of lore_revision_commit_progress_event_data_t"]
-        [::std::mem::align_of::<lore_revision_commit_progress_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_commit_progress_event_data_t::count"]
-        [::std::mem::offset_of!(lore_revision_commit_progress_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_commit_progress_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_commit_progress_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_commit_progress_event_data_t>(),
+        80usize,
+        "Size of lore_revision_commit_progress_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_commit_progress_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_commit_progress_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_commit_progress_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_commit_end_event_data_t {
     pub count: lore_revision_commit_count_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_commit_end_event_data_t"]
-        [::std::mem::size_of::<lore_revision_commit_end_event_data_t>() - 80usize];
-    ["Alignment of lore_revision_commit_end_event_data_t"]
-        [::std::mem::align_of::<lore_revision_commit_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_commit_end_event_data_t::count"]
-        [::std::mem::offset_of!(lore_revision_commit_end_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_commit_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_commit_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_commit_end_event_data_t>(),
+        80usize,
+        "Size of lore_revision_commit_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_commit_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_commit_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_commit_end_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_commit_revision_event_data_t {
@@ -3885,29 +6842,52 @@ pub struct lore_revision_commit_revision_event_data_t {
     pub parent: lore_hash_t,
     pub parent_other: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_commit_revision_event_data_t"]
-        [::std::mem::size_of::<lore_revision_commit_revision_event_data_t>() - 136usize];
-    ["Alignment of lore_revision_commit_revision_event_data_t"]
-        [::std::mem::align_of::<lore_revision_commit_revision_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_commit_revision_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_revision_commit_revision_event_data_t, repository) - 0usize];
-    ["Offset of field: lore_revision_commit_revision_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_revision_commit_revision_event_data_t, branch) - 16usize];
-    ["Offset of field: lore_revision_commit_revision_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_revision_commit_revision_event_data_t, revision) - 32usize];
-    ["Offset of field: lore_revision_commit_revision_event_data_t::revision_number"][::std::mem::offset_of!(
-        lore_revision_commit_revision_event_data_t,
-        revision_number
-    ) - 64usize];
-    ["Offset of field: lore_revision_commit_revision_event_data_t::parent"]
-        [::std::mem::offset_of!(lore_revision_commit_revision_event_data_t, parent) - 72usize];
-    ["Offset of field: lore_revision_commit_revision_event_data_t::parent_other"][::std::mem::offset_of!(
-        lore_revision_commit_revision_event_data_t,
-        parent_other
-    ) - 104usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_commit_revision_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_commit_revision_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_commit_revision_event_data_t>(),
+        136usize,
+        "Size of lore_revision_commit_revision_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_commit_revision_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_commit_revision_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_commit_revision_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_commit_revision_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_commit_revision_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_number) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_revision_commit_revision_event_data_t::revision_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).parent) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_revision_commit_revision_event_data_t::parent"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).parent_other) as usize - ptr as usize },
+        104usize,
+        "Offset of field: lore_revision_commit_revision_event_data_t::parent_other"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_info_event_data_t {
@@ -3916,21 +6896,42 @@ pub struct lore_revision_info_event_data_t {
     pub revision_number: u64,
     pub parent: [lore_hash_t; 2usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_info_event_data_t"]
-        [::std::mem::size_of::<lore_revision_info_event_data_t>() - 120usize];
-    ["Alignment of lore_revision_info_event_data_t"]
-        [::std::mem::align_of::<lore_revision_info_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_info_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_revision_info_event_data_t, repository) - 0usize];
-    ["Offset of field: lore_revision_info_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_revision_info_event_data_t, revision) - 16usize];
-    ["Offset of field: lore_revision_info_event_data_t::revision_number"]
-        [::std::mem::offset_of!(lore_revision_info_event_data_t, revision_number) - 48usize];
-    ["Offset of field: lore_revision_info_event_data_t::parent"]
-        [::std::mem::offset_of!(lore_revision_info_event_data_t, parent) - 56usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_info_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_info_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_info_event_data_t>(),
+        120usize,
+        "Size of lore_revision_info_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_info_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_info_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_info_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_info_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_number) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_revision_info_event_data_t::revision_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).parent) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_revision_info_event_data_t::parent"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_info_delta_event_data_t {
@@ -3941,25 +6942,52 @@ pub struct lore_revision_info_delta_event_data_t {
     pub flag_merged: u8,
     pub flag_file: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_info_delta_event_data_t"]
-        [::std::mem::size_of::<lore_revision_info_delta_event_data_t>() - 32usize];
-    ["Alignment of lore_revision_info_delta_event_data_t"]
-        [::std::mem::align_of::<lore_revision_info_delta_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_info_delta_event_data_t::path"]
-        [::std::mem::offset_of!(lore_revision_info_delta_event_data_t, path) - 0usize];
-    ["Offset of field: lore_revision_info_delta_event_data_t::size"]
-        [::std::mem::offset_of!(lore_revision_info_delta_event_data_t, size) - 16usize];
-    ["Offset of field: lore_revision_info_delta_event_data_t::action"]
-        [::std::mem::offset_of!(lore_revision_info_delta_event_data_t, action) - 24usize];
-    ["Offset of field: lore_revision_info_delta_event_data_t::flag_modify"]
-        [::std::mem::offset_of!(lore_revision_info_delta_event_data_t, flag_modify) - 28usize];
-    ["Offset of field: lore_revision_info_delta_event_data_t::flag_merged"]
-        [::std::mem::offset_of!(lore_revision_info_delta_event_data_t, flag_merged) - 29usize];
-    ["Offset of field: lore_revision_info_delta_event_data_t::flag_file"]
-        [::std::mem::offset_of!(lore_revision_info_delta_event_data_t, flag_file) - 30usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_info_delta_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_info_delta_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_info_delta_event_data_t>(),
+        32usize,
+        "Size of lore_revision_info_delta_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_info_delta_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_info_delta_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_info_delta_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_info_delta_event_data_t::size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).action) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_revision_info_delta_event_data_t::action"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_modify) as usize - ptr as usize },
+        28usize,
+        "Offset of field: lore_revision_info_delta_event_data_t::flag_modify"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_merged) as usize - ptr as usize },
+        29usize,
+        "Offset of field: lore_revision_info_delta_event_data_t::flag_merged"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_file) as usize - ptr as usize },
+        30usize,
+        "Offset of field: lore_revision_info_delta_event_data_t::flag_file"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_diff_file_event_data_t {
@@ -3970,56 +6998,110 @@ pub struct lore_revision_diff_file_event_data_t {
     pub old_address: lore_address_t,
     pub new_address: lore_address_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_diff_file_event_data_t"]
-        [::std::mem::size_of::<lore_revision_diff_file_event_data_t>() - 120usize];
-    ["Alignment of lore_revision_diff_file_event_data_t"]
-        [::std::mem::align_of::<lore_revision_diff_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_diff_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_revision_diff_file_event_data_t, path) - 0usize];
-    ["Offset of field: lore_revision_diff_file_event_data_t::action"]
-        [::std::mem::offset_of!(lore_revision_diff_file_event_data_t, action) - 16usize];
-    ["Offset of field: lore_revision_diff_file_event_data_t::old_is_file"]
-        [::std::mem::offset_of!(lore_revision_diff_file_event_data_t, old_is_file) - 20usize];
-    ["Offset of field: lore_revision_diff_file_event_data_t::new_is_file"]
-        [::std::mem::offset_of!(lore_revision_diff_file_event_data_t, new_is_file) - 21usize];
-    ["Offset of field: lore_revision_diff_file_event_data_t::old_address"]
-        [::std::mem::offset_of!(lore_revision_diff_file_event_data_t, old_address) - 22usize];
-    ["Offset of field: lore_revision_diff_file_event_data_t::new_address"]
-        [::std::mem::offset_of!(lore_revision_diff_file_event_data_t, new_address) - 70usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_diff_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_diff_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_diff_file_event_data_t>(),
+        120usize,
+        "Size of lore_revision_diff_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_diff_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_diff_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_diff_file_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).action) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_diff_file_event_data_t::action"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).old_is_file) as usize - ptr as usize },
+        20usize,
+        "Offset of field: lore_revision_diff_file_event_data_t::old_is_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).new_is_file) as usize - ptr as usize },
+        21usize,
+        "Offset of field: lore_revision_diff_file_event_data_t::new_is_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).old_address) as usize - ptr as usize },
+        22usize,
+        "Offset of field: lore_revision_diff_file_event_data_t::old_address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).new_address) as usize - ptr as usize },
+        70usize,
+        "Offset of field: lore_revision_diff_file_event_data_t::new_address"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_find_event_data_t {
     pub signature: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_find_event_data_t"]
-        [::std::mem::size_of::<lore_revision_find_event_data_t>() - 32usize];
-    ["Alignment of lore_revision_find_event_data_t"]
-        [::std::mem::align_of::<lore_revision_find_event_data_t>() - 1usize];
-    ["Offset of field: lore_revision_find_event_data_t::signature"]
-        [::std::mem::offset_of!(lore_revision_find_event_data_t, signature) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_find_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_find_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_find_event_data_t>(),
+        32usize,
+        "Size of lore_revision_find_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_find_event_data_t>(),
+        1usize,
+        "Alignment of lore_revision_find_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).signature) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_find_event_data_t::signature"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_history_event_data_t {
     pub repository: lore_repository_id_t,
     pub branch: lore_branch_id_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_history_event_data_t"]
-        [::std::mem::size_of::<lore_revision_history_event_data_t>() - 32usize];
-    ["Alignment of lore_revision_history_event_data_t"]
-        [::std::mem::align_of::<lore_revision_history_event_data_t>() - 1usize];
-    ["Offset of field: lore_revision_history_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_revision_history_event_data_t, repository) - 0usize];
-    ["Offset of field: lore_revision_history_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_revision_history_event_data_t, branch) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_history_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_history_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_history_event_data_t>(),
+        32usize,
+        "Size of lore_revision_history_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_history_event_data_t>(),
+        1usize,
+        "Alignment of lore_revision_history_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_history_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_history_event_data_t::branch"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_history_entry_event_data_t {
@@ -4027,35 +7109,63 @@ pub struct lore_revision_history_entry_event_data_t {
     pub revision_number: u64,
     pub parent: [lore_hash_t; 2usize],
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_history_entry_event_data_t"]
-        [::std::mem::size_of::<lore_revision_history_entry_event_data_t>() - 104usize];
-    ["Alignment of lore_revision_history_entry_event_data_t"]
-        [::std::mem::align_of::<lore_revision_history_entry_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_history_entry_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_revision_history_entry_event_data_t, revision) - 0usize];
-    ["Offset of field: lore_revision_history_entry_event_data_t::revision_number"][::std::mem::offset_of!(
-        lore_revision_history_entry_event_data_t,
-        revision_number
-    ) - 32usize];
-    ["Offset of field: lore_revision_history_entry_event_data_t::parent"]
-        [::std::mem::offset_of!(lore_revision_history_entry_event_data_t, parent) - 40usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_history_entry_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_history_entry_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_history_entry_event_data_t>(),
+        104usize,
+        "Size of lore_revision_history_entry_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_history_entry_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_history_entry_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_history_entry_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_number) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_history_entry_event_data_t::revision_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).parent) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_revision_history_entry_event_data_t::parent"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_restore_file_begin_event_data_t {
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_restore_file_begin_event_data_t"]
-        [::std::mem::size_of::<lore_revision_restore_file_begin_event_data_t>() - 8usize];
-    ["Alignment of lore_revision_restore_file_begin_event_data_t"]
-        [::std::mem::align_of::<lore_revision_restore_file_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_restore_file_begin_event_data_t::count"]
-        [::std::mem::offset_of!(lore_revision_restore_file_begin_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_restore_file_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_restore_file_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_restore_file_begin_event_data_t>(),
+        8usize,
+        "Size of lore_revision_restore_file_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_restore_file_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_restore_file_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_restore_file_begin_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_restore_file_event_data_t {
@@ -4066,139 +7176,246 @@ pub struct lore_revision_restore_file_event_data_t {
     pub is_directory: u8,
     pub is_module: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_restore_file_event_data_t"]
-        [::std::mem::size_of::<lore_revision_restore_file_event_data_t>() - 40usize];
-    ["Alignment of lore_revision_restore_file_event_data_t"]
-        [::std::mem::align_of::<lore_revision_restore_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_restore_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_revision_restore_file_event_data_t, path) - 0usize];
-    ["Offset of field: lore_revision_restore_file_event_data_t::action"]
-        [::std::mem::offset_of!(lore_revision_restore_file_event_data_t, action) - 16usize];
-    ["Offset of field: lore_revision_restore_file_event_data_t::size"]
-        [::std::mem::offset_of!(lore_revision_restore_file_event_data_t, size) - 24usize];
-    ["Offset of field: lore_revision_restore_file_event_data_t::is_file"]
-        [::std::mem::offset_of!(lore_revision_restore_file_event_data_t, is_file) - 32usize];
-    ["Offset of field: lore_revision_restore_file_event_data_t::is_directory"]
-        [::std::mem::offset_of!(lore_revision_restore_file_event_data_t, is_directory) - 33usize];
-    ["Offset of field: lore_revision_restore_file_event_data_t::is_module"]
-        [::std::mem::offset_of!(lore_revision_restore_file_event_data_t, is_module) - 34usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_restore_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_restore_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_restore_file_event_data_t>(),
+        40usize,
+        "Size of lore_revision_restore_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_restore_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_restore_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_restore_file_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).action) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_restore_file_event_data_t::action"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_revision_restore_file_event_data_t::size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).is_file) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_restore_file_event_data_t::is_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).is_directory) as usize - ptr as usize },
+        33usize,
+        "Offset of field: lore_revision_restore_file_event_data_t::is_directory"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).is_module) as usize - ptr as usize },
+        34usize,
+        "Offset of field: lore_revision_restore_file_event_data_t::is_module"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_restore_file_end_event_data_t {
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_restore_file_end_event_data_t"]
-        [::std::mem::size_of::<lore_revision_restore_file_end_event_data_t>() - 8usize];
-    ["Alignment of lore_revision_restore_file_end_event_data_t"]
-        [::std::mem::align_of::<lore_revision_restore_file_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_restore_file_end_event_data_t::count"]
-        [::std::mem::offset_of!(lore_revision_restore_file_end_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_restore_file_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_restore_file_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_restore_file_end_event_data_t>(),
+        8usize,
+        "Size of lore_revision_restore_file_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_restore_file_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_restore_file_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_restore_file_end_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_restore_fragment_begin_event_data_t {
     pub fragments: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_restore_fragment_begin_event_data_t"]
-        [::std::mem::size_of::<lore_revision_restore_fragment_begin_event_data_t>() - 8usize];
-    ["Alignment of lore_revision_restore_fragment_begin_event_data_t"]
-        [::std::mem::align_of::<lore_revision_restore_fragment_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_restore_fragment_begin_event_data_t::fragments"][::std::mem::offset_of!(
-        lore_revision_restore_fragment_begin_event_data_t,
-        fragments
-    ) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_restore_fragment_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_restore_fragment_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_restore_fragment_begin_event_data_t>(),
+        8usize,
+        "Size of lore_revision_restore_fragment_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_restore_fragment_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_restore_fragment_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).fragments) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_restore_fragment_begin_event_data_t::fragments"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_restore_fragment_progress_event_data_t {
     pub complete: u64,
     pub count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_restore_fragment_progress_event_data_t"]
-        [::std::mem::size_of::<lore_revision_restore_fragment_progress_event_data_t>() - 16usize];
-    ["Alignment of lore_revision_restore_fragment_progress_event_data_t"]
-        [::std::mem::align_of::<lore_revision_restore_fragment_progress_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_restore_fragment_progress_event_data_t::complete"][::std::mem::offset_of!(
-        lore_revision_restore_fragment_progress_event_data_t,
-        complete
-    ) - 0usize];
-    ["Offset of field: lore_revision_restore_fragment_progress_event_data_t::count"][::std::mem::offset_of!(
-        lore_revision_restore_fragment_progress_event_data_t,
-        count
-    ) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_restore_fragment_progress_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_restore_fragment_progress_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_restore_fragment_progress_event_data_t>(),
+        16usize,
+        "Size of lore_revision_restore_fragment_progress_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_restore_fragment_progress_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_restore_fragment_progress_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).complete) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_restore_fragment_progress_event_data_t::complete"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_restore_fragment_progress_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_restore_fragment_end_event_data_t {
     pub fragments: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_restore_fragment_end_event_data_t"]
-        [::std::mem::size_of::<lore_revision_restore_fragment_end_event_data_t>() - 8usize];
-    ["Alignment of lore_revision_restore_fragment_end_event_data_t"]
-        [::std::mem::align_of::<lore_revision_restore_fragment_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_restore_fragment_end_event_data_t::fragments"][::std::mem::offset_of!(
-        lore_revision_restore_fragment_end_event_data_t,
-        fragments
-    ) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_restore_fragment_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_restore_fragment_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_restore_fragment_end_event_data_t>(),
+        8usize,
+        "Size of lore_revision_restore_fragment_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_restore_fragment_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_restore_fragment_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).fragments) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_restore_fragment_end_event_data_t::fragments"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_restore_revision_event_data_t {
     pub revision: lore_hash_t,
     pub revision_number: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_restore_revision_event_data_t"]
-        [::std::mem::size_of::<lore_revision_restore_revision_event_data_t>() - 40usize];
-    ["Alignment of lore_revision_restore_revision_event_data_t"]
-        [::std::mem::align_of::<lore_revision_restore_revision_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_restore_revision_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_revision_restore_revision_event_data_t, revision) - 0usize];
-    ["Offset of field: lore_revision_restore_revision_event_data_t::revision_number"][::std::mem::offset_of!(
-        lore_revision_restore_revision_event_data_t,
-        revision_number
-    ) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_restore_revision_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_restore_revision_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_restore_revision_event_data_t>(),
+        40usize,
+        "Size of lore_revision_restore_revision_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_restore_revision_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_restore_revision_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_restore_revision_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_number) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_restore_revision_event_data_t::revision_number"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_restore_sync_begin_event_data_t {
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_restore_sync_begin_event_data_t"]
-        [::std::mem::size_of::<lore_revision_restore_sync_begin_event_data_t>() - 8usize];
-    ["Alignment of lore_revision_restore_sync_begin_event_data_t"]
-        [::std::mem::align_of::<lore_revision_restore_sync_begin_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_restore_sync_begin_event_data_t::count"]
-        [::std::mem::offset_of!(lore_revision_restore_sync_begin_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_restore_sync_begin_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_restore_sync_begin_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_restore_sync_begin_event_data_t>(),
+        8usize,
+        "Size of lore_revision_restore_sync_begin_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_restore_sync_begin_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_restore_sync_begin_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_restore_sync_begin_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_restore_sync_end_event_data_t {
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_restore_sync_end_event_data_t"]
-        [::std::mem::size_of::<lore_revision_restore_sync_end_event_data_t>() - 8usize];
-    ["Alignment of lore_revision_restore_sync_end_event_data_t"]
-        [::std::mem::align_of::<lore_revision_restore_sync_end_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_restore_sync_end_event_data_t::count"]
-        [::std::mem::offset_of!(lore_revision_restore_sync_end_event_data_t, count) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_restore_sync_end_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_restore_sync_end_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_restore_sync_end_event_data_t>(),
+        8usize,
+        "Size of lore_revision_restore_sync_end_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_restore_sync_end_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_restore_sync_end_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_restore_sync_end_event_data_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_resolve_event_data_t {
@@ -4209,25 +7426,52 @@ pub struct lore_revision_resolve_event_data_t {
     pub remote: u8,
     pub local: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_resolve_event_data_t"]
-        [::std::mem::size_of::<lore_revision_resolve_event_data_t>() - 64usize];
-    ["Alignment of lore_revision_resolve_event_data_t"]
-        [::std::mem::align_of::<lore_revision_resolve_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_resolve_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_revision_resolve_event_data_t, repository) - 0usize];
-    ["Offset of field: lore_revision_resolve_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_revision_resolve_event_data_t, branch) - 16usize];
-    ["Offset of field: lore_revision_resolve_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_revision_resolve_event_data_t, revision) - 32usize];
-    ["Offset of field: lore_revision_resolve_event_data_t::revision_number"]
-        [::std::mem::offset_of!(lore_revision_resolve_event_data_t, revision_number) - 48usize];
-    ["Offset of field: lore_revision_resolve_event_data_t::remote"]
-        [::std::mem::offset_of!(lore_revision_resolve_event_data_t, remote) - 56usize];
-    ["Offset of field: lore_revision_resolve_event_data_t::local"]
-        [::std::mem::offset_of!(lore_revision_resolve_event_data_t, local) - 57usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_resolve_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_resolve_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_resolve_event_data_t>(),
+        64usize,
+        "Size of lore_revision_resolve_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_resolve_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_resolve_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_resolve_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_resolve_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_resolve_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_number) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_revision_resolve_event_data_t::revision_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_revision_resolve_event_data_t::remote"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local) as usize - ptr as usize },
+        57usize,
+        "Offset of field: lore_revision_resolve_event_data_t::local"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_sync_target_event_data_t {
@@ -4242,41 +7486,72 @@ pub struct lore_revision_sync_target_event_data_t {
     pub is_latest: u8,
     pub local: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_sync_target_event_data_t"]
-        [::std::mem::size_of::<lore_revision_sync_target_event_data_t>() - 152usize];
-    ["Alignment of lore_revision_sync_target_event_data_t"]
-        [::std::mem::align_of::<lore_revision_sync_target_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_sync_target_event_data_t::remote"]
-        [::std::mem::offset_of!(lore_revision_sync_target_event_data_t, remote) - 0usize];
-    ["Offset of field: lore_revision_sync_target_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_revision_sync_target_event_data_t, repository) - 16usize];
-    ["Offset of field: lore_revision_sync_target_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_revision_sync_target_event_data_t, branch) - 32usize];
-    ["Offset of field: lore_revision_sync_target_event_data_t::branch_name"]
-        [::std::mem::offset_of!(lore_revision_sync_target_event_data_t, branch_name) - 48usize];
-    ["Offset of field: lore_revision_sync_target_event_data_t::source_revision"]
-        [::std::mem::offset_of!(lore_revision_sync_target_event_data_t, source_revision) - 64usize];
-    ["Offset of field: lore_revision_sync_target_event_data_t::source_revision_number"][::std::mem::offset_of!(
-        lore_revision_sync_target_event_data_t,
-        source_revision_number
-    )
-        - 96usize];
-    ["Offset of field: lore_revision_sync_target_event_data_t::target_revision"][::std::mem::offset_of!(
-        lore_revision_sync_target_event_data_t,
-        target_revision
-    ) - 104usize];
-    ["Offset of field: lore_revision_sync_target_event_data_t::target_revision_number"][::std::mem::offset_of!(
-        lore_revision_sync_target_event_data_t,
-        target_revision_number
-    )
-        - 136usize];
-    ["Offset of field: lore_revision_sync_target_event_data_t::is_latest"]
-        [::std::mem::offset_of!(lore_revision_sync_target_event_data_t, is_latest) - 144usize];
-    ["Offset of field: lore_revision_sync_target_event_data_t::local"]
-        [::std::mem::offset_of!(lore_revision_sync_target_event_data_t, local) - 145usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_sync_target_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_sync_target_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_sync_target_event_data_t>(),
+        152usize,
+        "Size of lore_revision_sync_target_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_sync_target_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_sync_target_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_sync_target_event_data_t::remote"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_sync_target_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_sync_target_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_name) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_revision_sync_target_event_data_t::branch_name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_revision) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_revision_sync_target_event_data_t::source_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_revision_number) as usize - ptr as usize },
+        96usize,
+        "Offset of field: lore_revision_sync_target_event_data_t::source_revision_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target_revision) as usize - ptr as usize },
+        104usize,
+        "Offset of field: lore_revision_sync_target_event_data_t::target_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target_revision_number) as usize - ptr as usize },
+        136usize,
+        "Offset of field: lore_revision_sync_target_event_data_t::target_revision_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).is_latest) as usize - ptr as usize },
+        144usize,
+        "Offset of field: lore_revision_sync_target_event_data_t::is_latest"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local) as usize - ptr as usize },
+        145usize,
+        "Offset of field: lore_revision_sync_target_event_data_t::local"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_sync_file_event_data_t {
@@ -4285,21 +7560,42 @@ pub struct lore_revision_sync_file_event_data_t {
     pub action: lore_file_action_t,
     pub flag_file: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_sync_file_event_data_t"]
-        [::std::mem::size_of::<lore_revision_sync_file_event_data_t>() - 32usize];
-    ["Alignment of lore_revision_sync_file_event_data_t"]
-        [::std::mem::align_of::<lore_revision_sync_file_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_sync_file_event_data_t::path"]
-        [::std::mem::offset_of!(lore_revision_sync_file_event_data_t, path) - 0usize];
-    ["Offset of field: lore_revision_sync_file_event_data_t::size"]
-        [::std::mem::offset_of!(lore_revision_sync_file_event_data_t, size) - 16usize];
-    ["Offset of field: lore_revision_sync_file_event_data_t::action"]
-        [::std::mem::offset_of!(lore_revision_sync_file_event_data_t, action) - 24usize];
-    ["Offset of field: lore_revision_sync_file_event_data_t::flag_file"]
-        [::std::mem::offset_of!(lore_revision_sync_file_event_data_t, flag_file) - 28usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_sync_file_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_sync_file_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_sync_file_event_data_t>(),
+        32usize,
+        "Size of lore_revision_sync_file_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_sync_file_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_sync_file_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_sync_file_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_sync_file_event_data_t::size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).action) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_revision_sync_file_event_data_t::action"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_file) as usize - ptr as usize },
+        28usize,
+        "Offset of field: lore_revision_sync_file_event_data_t::flag_file"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_sync_revision_event_data_t {
@@ -4309,25 +7605,47 @@ pub struct lore_revision_sync_revision_event_data_t {
     pub flag_merge: u8,
     pub flag_conflict: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_sync_revision_event_data_t"]
-        [::std::mem::size_of::<lore_revision_sync_revision_event_data_t>() - 64usize];
-    ["Alignment of lore_revision_sync_revision_event_data_t"]
-        [::std::mem::align_of::<lore_revision_sync_revision_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_sync_revision_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_revision_sync_revision_event_data_t, branch) - 0usize];
-    ["Offset of field: lore_revision_sync_revision_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_revision_sync_revision_event_data_t, revision) - 16usize];
-    ["Offset of field: lore_revision_sync_revision_event_data_t::revision_number"][::std::mem::offset_of!(
-        lore_revision_sync_revision_event_data_t,
-        revision_number
-    ) - 48usize];
-    ["Offset of field: lore_revision_sync_revision_event_data_t::flag_merge"]
-        [::std::mem::offset_of!(lore_revision_sync_revision_event_data_t, flag_merge) - 56usize];
-    ["Offset of field: lore_revision_sync_revision_event_data_t::flag_conflict"]
-        [::std::mem::offset_of!(lore_revision_sync_revision_event_data_t, flag_conflict) - 57usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_sync_revision_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_sync_revision_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_sync_revision_event_data_t>(),
+        64usize,
+        "Size of lore_revision_sync_revision_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_sync_revision_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_sync_revision_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_sync_revision_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_sync_revision_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_number) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_revision_sync_revision_event_data_t::revision_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_merge) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_revision_sync_revision_event_data_t::flag_merge"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).flag_conflict) as usize - ptr as usize },
+        57usize,
+        "Offset of field: lore_revision_sync_revision_event_data_t::flag_conflict"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_bisect_event_data_t {
@@ -4336,51 +7654,94 @@ pub struct lore_revision_bisect_event_data_t {
     pub end_revision_number: u64,
     pub done: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_bisect_event_data_t"]
-        [::std::mem::size_of::<lore_revision_bisect_event_data_t>() - 32usize];
-    ["Alignment of lore_revision_bisect_event_data_t"]
-        [::std::mem::align_of::<lore_revision_bisect_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_bisect_event_data_t::start_revision_number"]
-        [::std::mem::offset_of!(lore_revision_bisect_event_data_t, start_revision_number) - 0usize];
-    ["Offset of field: lore_revision_bisect_event_data_t::target_revision_number"][::std::mem::offset_of!(
-        lore_revision_bisect_event_data_t,
-        target_revision_number
-    ) - 8usize];
-    ["Offset of field: lore_revision_bisect_event_data_t::end_revision_number"]
-        [::std::mem::offset_of!(lore_revision_bisect_event_data_t, end_revision_number) - 16usize];
-    ["Offset of field: lore_revision_bisect_event_data_t::done"]
-        [::std::mem::offset_of!(lore_revision_bisect_event_data_t, done) - 24usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_bisect_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_bisect_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_bisect_event_data_t>(),
+        32usize,
+        "Size of lore_revision_bisect_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_bisect_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_bisect_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).start_revision_number) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_bisect_event_data_t::start_revision_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target_revision_number) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_bisect_event_data_t::target_revision_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).end_revision_number) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_bisect_event_data_t::end_revision_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).done) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_revision_bisect_event_data_t::done"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_notification_branch_created_event_data_t {
     pub branch: lore_branch_id_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_notification_branch_created_event_data_t"]
-        [::std::mem::size_of::<lore_notification_branch_created_event_data_t>() - 16usize];
-    ["Alignment of lore_notification_branch_created_event_data_t"]
-        [::std::mem::align_of::<lore_notification_branch_created_event_data_t>() - 1usize];
-    ["Offset of field: lore_notification_branch_created_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_notification_branch_created_event_data_t, branch) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_notification_branch_created_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_notification_branch_created_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_notification_branch_created_event_data_t>(),
+        16usize,
+        "Size of lore_notification_branch_created_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_notification_branch_created_event_data_t>(),
+        1usize,
+        "Alignment of lore_notification_branch_created_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_notification_branch_created_event_data_t::branch"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_notification_branch_deleted_event_data_t {
     pub branch: lore_branch_id_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_notification_branch_deleted_event_data_t"]
-        [::std::mem::size_of::<lore_notification_branch_deleted_event_data_t>() - 16usize];
-    ["Alignment of lore_notification_branch_deleted_event_data_t"]
-        [::std::mem::align_of::<lore_notification_branch_deleted_event_data_t>() - 1usize];
-    ["Offset of field: lore_notification_branch_deleted_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_notification_branch_deleted_event_data_t, branch) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_notification_branch_deleted_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_notification_branch_deleted_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_notification_branch_deleted_event_data_t>(),
+        16usize,
+        "Size of lore_notification_branch_deleted_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_notification_branch_deleted_event_data_t>(),
+        1usize,
+        "Alignment of lore_notification_branch_deleted_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_notification_branch_deleted_event_data_t::branch"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_notification_branch_pushed_event_data_t {
@@ -4389,23 +7750,42 @@ pub struct lore_notification_branch_pushed_event_data_t {
     pub branch: lore_branch_id_t,
     pub user_id: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_notification_branch_pushed_event_data_t"]
-        [::std::mem::size_of::<lore_notification_branch_pushed_event_data_t>() - 72usize];
-    ["Alignment of lore_notification_branch_pushed_event_data_t"]
-        [::std::mem::align_of::<lore_notification_branch_pushed_event_data_t>() - 8usize];
-    ["Offset of field: lore_notification_branch_pushed_event_data_t::revision"]
-        [::std::mem::offset_of!(lore_notification_branch_pushed_event_data_t, revision) - 0usize];
-    ["Offset of field: lore_notification_branch_pushed_event_data_t::revision_number"][::std::mem::offset_of!(
-        lore_notification_branch_pushed_event_data_t,
-        revision_number
-    ) - 32usize];
-    ["Offset of field: lore_notification_branch_pushed_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_notification_branch_pushed_event_data_t, branch) - 40usize];
-    ["Offset of field: lore_notification_branch_pushed_event_data_t::user_id"]
-        [::std::mem::offset_of!(lore_notification_branch_pushed_event_data_t, user_id) - 56usize];
-};
+#[test]
+fn bindgen_test_layout_lore_notification_branch_pushed_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_notification_branch_pushed_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_notification_branch_pushed_event_data_t>(),
+        72usize,
+        "Size of lore_notification_branch_pushed_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_notification_branch_pushed_event_data_t>(),
+        8usize,
+        "Alignment of lore_notification_branch_pushed_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_notification_branch_pushed_event_data_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_number) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_notification_branch_pushed_event_data_t::revision_number"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_notification_branch_pushed_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).user_id) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_notification_branch_pushed_event_data_t::user_id"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_notification_resource_locked_event_data_t {
@@ -4413,19 +7793,37 @@ pub struct lore_notification_resource_locked_event_data_t {
     pub branch: lore_branch_id_t,
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_notification_resource_locked_event_data_t"]
-        [::std::mem::size_of::<lore_notification_resource_locked_event_data_t>() - 48usize];
-    ["Alignment of lore_notification_resource_locked_event_data_t"]
-        [::std::mem::align_of::<lore_notification_resource_locked_event_data_t>() - 8usize];
-    ["Offset of field: lore_notification_resource_locked_event_data_t::user_id"]
-        [::std::mem::offset_of!(lore_notification_resource_locked_event_data_t, user_id) - 0usize];
-    ["Offset of field: lore_notification_resource_locked_event_data_t::branch"]
-        [::std::mem::offset_of!(lore_notification_resource_locked_event_data_t, branch) - 16usize];
-    ["Offset of field: lore_notification_resource_locked_event_data_t::paths"]
-        [::std::mem::offset_of!(lore_notification_resource_locked_event_data_t, paths) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_notification_resource_locked_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_notification_resource_locked_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_notification_resource_locked_event_data_t>(),
+        48usize,
+        "Size of lore_notification_resource_locked_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_notification_resource_locked_event_data_t>(),
+        8usize,
+        "Alignment of lore_notification_resource_locked_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).user_id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_notification_resource_locked_event_data_t::user_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_notification_resource_locked_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_notification_resource_locked_event_data_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_notification_resource_unlocked_event_data_t {
@@ -4433,80 +7831,146 @@ pub struct lore_notification_resource_unlocked_event_data_t {
     pub branch: lore_branch_id_t,
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_notification_resource_unlocked_event_data_t"]
-        [::std::mem::size_of::<lore_notification_resource_unlocked_event_data_t>() - 48usize];
-    ["Alignment of lore_notification_resource_unlocked_event_data_t"]
-        [::std::mem::align_of::<lore_notification_resource_unlocked_event_data_t>() - 8usize];
-    ["Offset of field: lore_notification_resource_unlocked_event_data_t::user_id"][::std::mem::offset_of!(
-        lore_notification_resource_unlocked_event_data_t,
-        user_id
-    ) - 0usize];
-    ["Offset of field: lore_notification_resource_unlocked_event_data_t::branch"][::std::mem::offset_of!(
-        lore_notification_resource_unlocked_event_data_t,
-        branch
-    ) - 16usize];
-    ["Offset of field: lore_notification_resource_unlocked_event_data_t::paths"]
-        [::std::mem::offset_of!(lore_notification_resource_unlocked_event_data_t, paths) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_notification_resource_unlocked_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_notification_resource_unlocked_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_notification_resource_unlocked_event_data_t>(),
+        48usize,
+        "Size of lore_notification_resource_unlocked_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_notification_resource_unlocked_event_data_t>(),
+        8usize,
+        "Alignment of lore_notification_resource_unlocked_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).user_id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_notification_resource_unlocked_event_data_t::user_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_notification_resource_unlocked_event_data_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_notification_resource_unlocked_event_data_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_notification_subscribed_event_data_t {
     pub repository: lore_repository_id_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_notification_subscribed_event_data_t"]
-        [::std::mem::size_of::<lore_notification_subscribed_event_data_t>() - 16usize];
-    ["Alignment of lore_notification_subscribed_event_data_t"]
-        [::std::mem::align_of::<lore_notification_subscribed_event_data_t>() - 1usize];
-    ["Offset of field: lore_notification_subscribed_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_notification_subscribed_event_data_t, repository) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_notification_subscribed_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_notification_subscribed_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_notification_subscribed_event_data_t>(),
+        16usize,
+        "Size of lore_notification_subscribed_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_notification_subscribed_event_data_t>(),
+        1usize,
+        "Alignment of lore_notification_subscribed_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_notification_subscribed_event_data_t::repository"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_notification_unsubscribed_event_data_t {
     pub repository: lore_repository_id_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_notification_unsubscribed_event_data_t"]
-        [::std::mem::size_of::<lore_notification_unsubscribed_event_data_t>() - 16usize];
-    ["Alignment of lore_notification_unsubscribed_event_data_t"]
-        [::std::mem::align_of::<lore_notification_unsubscribed_event_data_t>() - 1usize];
-    ["Offset of field: lore_notification_unsubscribed_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_notification_unsubscribed_event_data_t, repository) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_notification_unsubscribed_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_notification_unsubscribed_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_notification_unsubscribed_event_data_t>(),
+        16usize,
+        "Size of lore_notification_unsubscribed_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_notification_unsubscribed_event_data_t>(),
+        1usize,
+        "Alignment of lore_notification_unsubscribed_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_notification_unsubscribed_event_data_t::repository"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_shared_store_create_event_data_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_shared_store_create_event_data_t"]
-        [::std::mem::size_of::<lore_shared_store_create_event_data_t>() - 16usize];
-    ["Alignment of lore_shared_store_create_event_data_t"]
-        [::std::mem::align_of::<lore_shared_store_create_event_data_t>() - 8usize];
-    ["Offset of field: lore_shared_store_create_event_data_t::path"]
-        [::std::mem::offset_of!(lore_shared_store_create_event_data_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_shared_store_create_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_shared_store_create_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_shared_store_create_event_data_t>(),
+        16usize,
+        "Size of lore_shared_store_create_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_shared_store_create_event_data_t>(),
+        8usize,
+        "Alignment of lore_shared_store_create_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_shared_store_create_event_data_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_uint8_array_t {
     pub ptr: *const u8,
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_uint8_array_t"][::std::mem::size_of::<lore_uint8_array_t>() - 16usize];
-    ["Alignment of lore_uint8_array_t"][::std::mem::align_of::<lore_uint8_array_t>() - 8usize];
-    ["Offset of field: lore_uint8_array_t::ptr"]
-        [::std::mem::offset_of!(lore_uint8_array_t, ptr) - 0usize];
-    ["Offset of field: lore_uint8_array_t::count"]
-        [::std::mem::offset_of!(lore_uint8_array_t, count) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_uint8_array_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_uint8_array_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_uint8_array_t>(),
+        16usize,
+        "Size of lore_uint8_array_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_uint8_array_t>(),
+        8usize,
+        "Alignment of lore_uint8_array_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_uint8_array_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_uint8_array_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_shared_store_info_event_data_t {
@@ -4515,21 +7979,42 @@ pub struct lore_shared_store_info_event_data_t {
     pub paths: lore_string_array_t,
     pub exists: lore_uint8_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_shared_store_info_event_data_t"]
-        [::std::mem::size_of::<lore_shared_store_info_event_data_t>() - 56usize];
-    ["Alignment of lore_shared_store_info_event_data_t"]
-        [::std::mem::align_of::<lore_shared_store_info_event_data_t>() - 8usize];
-    ["Offset of field: lore_shared_store_info_event_data_t::use_automatically"]
-        [::std::mem::offset_of!(lore_shared_store_info_event_data_t, use_automatically) - 0usize];
-    ["Offset of field: lore_shared_store_info_event_data_t::remote_urls"]
-        [::std::mem::offset_of!(lore_shared_store_info_event_data_t, remote_urls) - 8usize];
-    ["Offset of field: lore_shared_store_info_event_data_t::paths"]
-        [::std::mem::offset_of!(lore_shared_store_info_event_data_t, paths) - 24usize];
-    ["Offset of field: lore_shared_store_info_event_data_t::exists"]
-        [::std::mem::offset_of!(lore_shared_store_info_event_data_t, exists) - 40usize];
-};
+#[test]
+fn bindgen_test_layout_lore_shared_store_info_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_shared_store_info_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_shared_store_info_event_data_t>(),
+        56usize,
+        "Size of lore_shared_store_info_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_shared_store_info_event_data_t>(),
+        8usize,
+        "Alignment of lore_shared_store_info_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).use_automatically) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_shared_store_info_event_data_t::use_automatically"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_urls) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_shared_store_info_event_data_t::remote_urls"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_shared_store_info_event_data_t::paths"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).exists) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_shared_store_info_event_data_t::exists"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_link_staged_entry_event_data_t {
@@ -4537,33 +8022,63 @@ pub struct lore_link_staged_entry_event_data_t {
     pub repository: lore_repository_id_t,
     pub staged_file_count: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_link_staged_entry_event_data_t"]
-        [::std::mem::size_of::<lore_link_staged_entry_event_data_t>() - 40usize];
-    ["Alignment of lore_link_staged_entry_event_data_t"]
-        [::std::mem::align_of::<lore_link_staged_entry_event_data_t>() - 8usize];
-    ["Offset of field: lore_link_staged_entry_event_data_t::path"]
-        [::std::mem::offset_of!(lore_link_staged_entry_event_data_t, path) - 0usize];
-    ["Offset of field: lore_link_staged_entry_event_data_t::repository"]
-        [::std::mem::offset_of!(lore_link_staged_entry_event_data_t, repository) - 16usize];
-    ["Offset of field: lore_link_staged_entry_event_data_t::staged_file_count"]
-        [::std::mem::offset_of!(lore_link_staged_entry_event_data_t, staged_file_count) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_link_staged_entry_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_link_staged_entry_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_link_staged_entry_event_data_t>(),
+        40usize,
+        "Size of lore_link_staged_entry_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_link_staged_entry_event_data_t>(),
+        8usize,
+        "Alignment of lore_link_staged_entry_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_link_staged_entry_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_link_staged_entry_event_data_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).staged_file_count) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_link_staged_entry_event_data_t::staged_file_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_opened_event_data_t {
     pub handle_id: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_opened_event_data_t"]
-        [::std::mem::size_of::<lore_storage_opened_event_data_t>() - 8usize];
-    ["Alignment of lore_storage_opened_event_data_t"]
-        [::std::mem::align_of::<lore_storage_opened_event_data_t>() - 8usize];
-    ["Offset of field: lore_storage_opened_event_data_t::handle_id"]
-        [::std::mem::offset_of!(lore_storage_opened_event_data_t, handle_id) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_opened_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_opened_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_opened_event_data_t>(),
+        8usize,
+        "Size of lore_storage_opened_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_opened_event_data_t>(),
+        8usize,
+        "Alignment of lore_storage_opened_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle_id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_opened_event_data_t::handle_id"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_put_item_complete_event_data_t {
@@ -4571,19 +8086,37 @@ pub struct lore_storage_put_item_complete_event_data_t {
     pub address: lore_address_t,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_put_item_complete_event_data_t"]
-        [::std::mem::size_of::<lore_storage_put_item_complete_event_data_t>() - 64usize];
-    ["Alignment of lore_storage_put_item_complete_event_data_t"]
-        [::std::mem::align_of::<lore_storage_put_item_complete_event_data_t>() - 8usize];
-    ["Offset of field: lore_storage_put_item_complete_event_data_t::id"]
-        [::std::mem::offset_of!(lore_storage_put_item_complete_event_data_t, id) - 0usize];
-    ["Offset of field: lore_storage_put_item_complete_event_data_t::address"]
-        [::std::mem::offset_of!(lore_storage_put_item_complete_event_data_t, address) - 8usize];
-    ["Offset of field: lore_storage_put_item_complete_event_data_t::error_code"]
-        [::std::mem::offset_of!(lore_storage_put_item_complete_event_data_t, error_code) - 56usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_put_item_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_put_item_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_put_item_complete_event_data_t>(),
+        64usize,
+        "Size of lore_storage_put_item_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_put_item_complete_event_data_t>(),
+        8usize,
+        "Alignment of lore_storage_put_item_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_put_item_complete_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_put_item_complete_event_data_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_storage_put_item_complete_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_get_header_event_data_t {
@@ -4591,32 +8124,68 @@ pub struct lore_storage_get_header_event_data_t {
     pub address: lore_address_t,
     pub size_content: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_get_header_event_data_t"]
-        [::std::mem::size_of::<lore_storage_get_header_event_data_t>() - 64usize];
-    ["Alignment of lore_storage_get_header_event_data_t"]
-        [::std::mem::align_of::<lore_storage_get_header_event_data_t>() - 8usize];
-    ["Offset of field: lore_storage_get_header_event_data_t::id"]
-        [::std::mem::offset_of!(lore_storage_get_header_event_data_t, id) - 0usize];
-    ["Offset of field: lore_storage_get_header_event_data_t::address"]
-        [::std::mem::offset_of!(lore_storage_get_header_event_data_t, address) - 8usize];
-    ["Offset of field: lore_storage_get_header_event_data_t::size_content"]
-        [::std::mem::offset_of!(lore_storage_get_header_event_data_t, size_content) - 56usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_get_header_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_get_header_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_get_header_event_data_t>(),
+        64usize,
+        "Size of lore_storage_get_header_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_get_header_event_data_t>(),
+        8usize,
+        "Alignment of lore_storage_get_header_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_get_header_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_get_header_event_data_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size_content) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_storage_get_header_event_data_t::size_content"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_bytes_t {
     pub ptr: *const ::std::os::raw::c_void,
     pub len: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_bytes_t"][::std::mem::size_of::<lore_bytes_t>() - 16usize];
-    ["Alignment of lore_bytes_t"][::std::mem::align_of::<lore_bytes_t>() - 8usize];
-    ["Offset of field: lore_bytes_t::ptr"][::std::mem::offset_of!(lore_bytes_t, ptr) - 0usize];
-    ["Offset of field: lore_bytes_t::len"][::std::mem::offset_of!(lore_bytes_t, len) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_bytes_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_bytes_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_bytes_t>(),
+        16usize,
+        "Size of lore_bytes_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_bytes_t>(),
+        8usize,
+        "Alignment of lore_bytes_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_bytes_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).len) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_bytes_t::len"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_get_data_event_data_t {
@@ -4625,21 +8194,42 @@ pub struct lore_storage_get_data_event_data_t {
     pub offset: u64,
     pub bytes: lore_bytes_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_get_data_event_data_t"]
-        [::std::mem::size_of::<lore_storage_get_data_event_data_t>() - 80usize];
-    ["Alignment of lore_storage_get_data_event_data_t"]
-        [::std::mem::align_of::<lore_storage_get_data_event_data_t>() - 8usize];
-    ["Offset of field: lore_storage_get_data_event_data_t::id"]
-        [::std::mem::offset_of!(lore_storage_get_data_event_data_t, id) - 0usize];
-    ["Offset of field: lore_storage_get_data_event_data_t::address"]
-        [::std::mem::offset_of!(lore_storage_get_data_event_data_t, address) - 8usize];
-    ["Offset of field: lore_storage_get_data_event_data_t::offset"]
-        [::std::mem::offset_of!(lore_storage_get_data_event_data_t, offset) - 56usize];
-    ["Offset of field: lore_storage_get_data_event_data_t::bytes"]
-        [::std::mem::offset_of!(lore_storage_get_data_event_data_t, bytes) - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_get_data_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_get_data_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_get_data_event_data_t>(),
+        80usize,
+        "Size of lore_storage_get_data_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_get_data_event_data_t>(),
+        8usize,
+        "Alignment of lore_storage_get_data_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_get_data_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_get_data_event_data_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).offset) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_storage_get_data_event_data_t::offset"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).bytes) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_storage_get_data_event_data_t::bytes"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_get_item_complete_event_data_t {
@@ -4647,19 +8237,37 @@ pub struct lore_storage_get_item_complete_event_data_t {
     pub address: lore_address_t,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_get_item_complete_event_data_t"]
-        [::std::mem::size_of::<lore_storage_get_item_complete_event_data_t>() - 64usize];
-    ["Alignment of lore_storage_get_item_complete_event_data_t"]
-        [::std::mem::align_of::<lore_storage_get_item_complete_event_data_t>() - 8usize];
-    ["Offset of field: lore_storage_get_item_complete_event_data_t::id"]
-        [::std::mem::offset_of!(lore_storage_get_item_complete_event_data_t, id) - 0usize];
-    ["Offset of field: lore_storage_get_item_complete_event_data_t::address"]
-        [::std::mem::offset_of!(lore_storage_get_item_complete_event_data_t, address) - 8usize];
-    ["Offset of field: lore_storage_get_item_complete_event_data_t::error_code"]
-        [::std::mem::offset_of!(lore_storage_get_item_complete_event_data_t, error_code) - 56usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_get_item_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_get_item_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_get_item_complete_event_data_t>(),
+        64usize,
+        "Size of lore_storage_get_item_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_get_item_complete_event_data_t>(),
+        8usize,
+        "Alignment of lore_storage_get_item_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_get_item_complete_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_get_item_complete_event_data_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_storage_get_item_complete_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_get_metadata_item_complete_event_data_t {
@@ -4668,29 +8276,42 @@ pub struct lore_storage_get_metadata_item_complete_event_data_t {
     pub fragment: lore_fragment_t,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_get_metadata_item_complete_event_data_t"]
-        [::std::mem::size_of::<lore_storage_get_metadata_item_complete_event_data_t>() - 80usize];
-    ["Alignment of lore_storage_get_metadata_item_complete_event_data_t"]
-        [::std::mem::align_of::<lore_storage_get_metadata_item_complete_event_data_t>() - 8usize];
-    ["Offset of field: lore_storage_get_metadata_item_complete_event_data_t::id"]
-        [::std::mem::offset_of!(lore_storage_get_metadata_item_complete_event_data_t, id) - 0usize];
-    ["Offset of field: lore_storage_get_metadata_item_complete_event_data_t::address"][::std::mem::offset_of!(
-        lore_storage_get_metadata_item_complete_event_data_t,
-        address
-    ) - 8usize];
-    ["Offset of field: lore_storage_get_metadata_item_complete_event_data_t::fragment"][::std::mem::offset_of!(
-        lore_storage_get_metadata_item_complete_event_data_t,
-        fragment
-    )
-        - 56usize];
-    ["Offset of field: lore_storage_get_metadata_item_complete_event_data_t::error_code"][::std::mem::offset_of!(
-        lore_storage_get_metadata_item_complete_event_data_t,
-        error_code
-    )
-        - 72usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_get_metadata_item_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_get_metadata_item_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_get_metadata_item_complete_event_data_t>(),
+        80usize,
+        "Size of lore_storage_get_metadata_item_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_get_metadata_item_complete_event_data_t>(),
+        8usize,
+        "Alignment of lore_storage_get_metadata_item_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_get_metadata_item_complete_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_get_metadata_item_complete_event_data_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).fragment) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_storage_get_metadata_item_complete_event_data_t::fragment"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_storage_get_metadata_item_complete_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_copy_item_complete_event_data_t {
@@ -4701,36 +8322,52 @@ pub struct lore_storage_copy_item_complete_event_data_t {
     pub target_context: lore_context_t,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_copy_item_complete_event_data_t"]
-        [::std::mem::size_of::<lore_storage_copy_item_complete_event_data_t>() - 112usize];
-    ["Alignment of lore_storage_copy_item_complete_event_data_t"]
-        [::std::mem::align_of::<lore_storage_copy_item_complete_event_data_t>() - 8usize];
-    ["Offset of field: lore_storage_copy_item_complete_event_data_t::id"]
-        [::std::mem::offset_of!(lore_storage_copy_item_complete_event_data_t, id) - 0usize];
-    ["Offset of field: lore_storage_copy_item_complete_event_data_t::source_partition"][::std::mem::offset_of!(
-        lore_storage_copy_item_complete_event_data_t,
-        source_partition
-    ) - 8usize];
-    ["Offset of field: lore_storage_copy_item_complete_event_data_t::target_partition"][::std::mem::offset_of!(
-        lore_storage_copy_item_complete_event_data_t,
-        target_partition
-    )
-        - 24usize];
-    ["Offset of field: lore_storage_copy_item_complete_event_data_t::source_address"][::std::mem::offset_of!(
-        lore_storage_copy_item_complete_event_data_t,
-        source_address
-    ) - 40usize];
-    ["Offset of field: lore_storage_copy_item_complete_event_data_t::target_context"][::std::mem::offset_of!(
-        lore_storage_copy_item_complete_event_data_t,
-        target_context
-    ) - 88usize];
-    ["Offset of field: lore_storage_copy_item_complete_event_data_t::error_code"][::std::mem::offset_of!(
-        lore_storage_copy_item_complete_event_data_t,
-        error_code
-    ) - 104usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_copy_item_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_copy_item_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_copy_item_complete_event_data_t>(),
+        112usize,
+        "Size of lore_storage_copy_item_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_copy_item_complete_event_data_t>(),
+        8usize,
+        "Alignment of lore_storage_copy_item_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_copy_item_complete_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_partition) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_copy_item_complete_event_data_t::source_partition"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target_partition) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_storage_copy_item_complete_event_data_t::target_partition"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_address) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_storage_copy_item_complete_event_data_t::source_address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target_context) as usize - ptr as usize },
+        88usize,
+        "Offset of field: lore_storage_copy_item_complete_event_data_t::target_context"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        104usize,
+        "Offset of field: lore_storage_copy_item_complete_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_obliterate_item_complete_event_data_t {
@@ -4742,44 +8379,57 @@ pub struct lore_storage_obliterate_item_complete_event_data_t {
     pub remote_skipped: u8,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_obliterate_item_complete_event_data_t"]
-        [::std::mem::size_of::<lore_storage_obliterate_item_complete_event_data_t>() - 64usize];
-    ["Alignment of lore_storage_obliterate_item_complete_event_data_t"]
-        [::std::mem::align_of::<lore_storage_obliterate_item_complete_event_data_t>() - 8usize];
-    ["Offset of field: lore_storage_obliterate_item_complete_event_data_t::id"]
-        [::std::mem::offset_of!(lore_storage_obliterate_item_complete_event_data_t, id) - 0usize];
-    ["Offset of field: lore_storage_obliterate_item_complete_event_data_t::address"][::std::mem::offset_of!(
-        lore_storage_obliterate_item_complete_event_data_t,
-        address
-    ) - 8usize];
-    ["Offset of field: lore_storage_obliterate_item_complete_event_data_t::local_success"][::std::mem::offset_of!(
-        lore_storage_obliterate_item_complete_event_data_t,
-        local_success
-    )
-        - 56usize];
-    ["Offset of field: lore_storage_obliterate_item_complete_event_data_t::remote_success"][::std::mem::offset_of!(
-        lore_storage_obliterate_item_complete_event_data_t,
-        remote_success
-    )
-        - 57usize];
-    ["Offset of field: lore_storage_obliterate_item_complete_event_data_t::local_skipped"][::std::mem::offset_of!(
-        lore_storage_obliterate_item_complete_event_data_t,
-        local_skipped
-    )
-        - 58usize];
-    ["Offset of field: lore_storage_obliterate_item_complete_event_data_t::remote_skipped"][::std::mem::offset_of!(
-        lore_storage_obliterate_item_complete_event_data_t,
-        remote_skipped
-    )
-        - 59usize];
-    ["Offset of field: lore_storage_obliterate_item_complete_event_data_t::error_code"][::std::mem::offset_of!(
-        lore_storage_obliterate_item_complete_event_data_t,
-        error_code
-    )
-        - 60usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_obliterate_item_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_obliterate_item_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_obliterate_item_complete_event_data_t>(),
+        64usize,
+        "Size of lore_storage_obliterate_item_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_obliterate_item_complete_event_data_t>(),
+        8usize,
+        "Alignment of lore_storage_obliterate_item_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_obliterate_item_complete_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_obliterate_item_complete_event_data_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local_success) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_storage_obliterate_item_complete_event_data_t::local_success"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_success) as usize - ptr as usize },
+        57usize,
+        "Offset of field: lore_storage_obliterate_item_complete_event_data_t::remote_success"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local_skipped) as usize - ptr as usize },
+        58usize,
+        "Offset of field: lore_storage_obliterate_item_complete_event_data_t::local_skipped"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_skipped) as usize - ptr as usize },
+        59usize,
+        "Offset of field: lore_storage_obliterate_item_complete_event_data_t::remote_skipped"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        60usize,
+        "Offset of field: lore_storage_obliterate_item_complete_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_upload_item_complete_event_data_t {
@@ -4788,40 +8438,68 @@ pub struct lore_storage_upload_item_complete_event_data_t {
     pub already_durable: u8,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_upload_item_complete_event_data_t"]
-        [::std::mem::size_of::<lore_storage_upload_item_complete_event_data_t>() - 64usize];
-    ["Alignment of lore_storage_upload_item_complete_event_data_t"]
-        [::std::mem::align_of::<lore_storage_upload_item_complete_event_data_t>() - 8usize];
-    ["Offset of field: lore_storage_upload_item_complete_event_data_t::id"]
-        [::std::mem::offset_of!(lore_storage_upload_item_complete_event_data_t, id) - 0usize];
-    ["Offset of field: lore_storage_upload_item_complete_event_data_t::address"]
-        [::std::mem::offset_of!(lore_storage_upload_item_complete_event_data_t, address) - 8usize];
-    ["Offset of field: lore_storage_upload_item_complete_event_data_t::already_durable"][::std::mem::offset_of!(
-        lore_storage_upload_item_complete_event_data_t,
-        already_durable
-    )
-        - 56usize];
-    ["Offset of field: lore_storage_upload_item_complete_event_data_t::error_code"][::std::mem::offset_of!(
-        lore_storage_upload_item_complete_event_data_t,
-        error_code
-    ) - 60usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_upload_item_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_upload_item_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_upload_item_complete_event_data_t>(),
+        64usize,
+        "Size of lore_storage_upload_item_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_upload_item_complete_event_data_t>(),
+        8usize,
+        "Alignment of lore_storage_upload_item_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_upload_item_complete_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_upload_item_complete_event_data_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).already_durable) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_storage_upload_item_complete_event_data_t::already_durable"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        60usize,
+        "Offset of field: lore_storage_upload_item_complete_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_loaded_event_data_t {
     pub handle_id: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_loaded_event_data_t"]
-        [::std::mem::size_of::<lore_revision_tree_loaded_event_data_t>() - 8usize];
-    ["Alignment of lore_revision_tree_loaded_event_data_t"]
-        [::std::mem::align_of::<lore_revision_tree_loaded_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_loaded_event_data_t::handle_id"]
-        [::std::mem::offset_of!(lore_revision_tree_loaded_event_data_t, handle_id) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_loaded_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_loaded_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_loaded_event_data_t>(),
+        8usize,
+        "Size of lore_revision_tree_loaded_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_loaded_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_loaded_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle_id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_loaded_event_data_t::handle_id"
+    );
+}
 pub type lore_node_id_t = u32;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -4830,26 +8508,37 @@ pub struct lore_revision_tree_resolve_path_complete_event_data_t {
     pub node_id: lore_node_id_t,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_resolve_path_complete_event_data_t"]
-        [::std::mem::size_of::<lore_revision_tree_resolve_path_complete_event_data_t>() - 16usize];
-    ["Alignment of lore_revision_tree_resolve_path_complete_event_data_t"]
-        [::std::mem::align_of::<lore_revision_tree_resolve_path_complete_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_resolve_path_complete_event_data_t::id"][::std::mem::offset_of!(
-        lore_revision_tree_resolve_path_complete_event_data_t,
-        id
-    ) - 0usize];
-    ["Offset of field: lore_revision_tree_resolve_path_complete_event_data_t::node_id"][::std::mem::offset_of!(
-        lore_revision_tree_resolve_path_complete_event_data_t,
-        node_id
-    ) - 8usize];
-    ["Offset of field: lore_revision_tree_resolve_path_complete_event_data_t::error_code"][::std::mem::offset_of!(
-        lore_revision_tree_resolve_path_complete_event_data_t,
-        error_code
-    )
-        - 12usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_resolve_path_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_resolve_path_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_resolve_path_complete_event_data_t>(),
+        16usize,
+        "Size of lore_revision_tree_resolve_path_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_resolve_path_complete_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_resolve_path_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_resolve_path_complete_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).node_id) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_resolve_path_complete_event_data_t::node_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        12usize,
+        "Offset of field: lore_revision_tree_resolve_path_complete_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_child_event_data_t {
@@ -4863,31 +8552,67 @@ pub struct lore_revision_tree_child_event_data_t {
     pub address: lore_address_t,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_child_event_data_t"]
-        [::std::mem::size_of::<lore_revision_tree_child_event_data_t>() - 112usize];
-    ["Alignment of lore_revision_tree_child_event_data_t"]
-        [::std::mem::align_of::<lore_revision_tree_child_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_child_event_data_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_child_event_data_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_child_event_data_t::node_id"]
-        [::std::mem::offset_of!(lore_revision_tree_child_event_data_t, node_id) - 8usize];
-    ["Offset of field: lore_revision_tree_child_event_data_t::name"]
-        [::std::mem::offset_of!(lore_revision_tree_child_event_data_t, name) - 16usize];
-    ["Offset of field: lore_revision_tree_child_event_data_t::parent_id"]
-        [::std::mem::offset_of!(lore_revision_tree_child_event_data_t, parent_id) - 32usize];
-    ["Offset of field: lore_revision_tree_child_event_data_t::kind"]
-        [::std::mem::offset_of!(lore_revision_tree_child_event_data_t, kind) - 36usize];
-    ["Offset of field: lore_revision_tree_child_event_data_t::mode"]
-        [::std::mem::offset_of!(lore_revision_tree_child_event_data_t, mode) - 40usize];
-    ["Offset of field: lore_revision_tree_child_event_data_t::size"]
-        [::std::mem::offset_of!(lore_revision_tree_child_event_data_t, size) - 48usize];
-    ["Offset of field: lore_revision_tree_child_event_data_t::address"]
-        [::std::mem::offset_of!(lore_revision_tree_child_event_data_t, address) - 56usize];
-    ["Offset of field: lore_revision_tree_child_event_data_t::error_code"]
-        [::std::mem::offset_of!(lore_revision_tree_child_event_data_t, error_code) - 104usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_child_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_child_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_child_event_data_t>(),
+        112usize,
+        "Size of lore_revision_tree_child_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_child_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_child_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_child_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).node_id) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_child_event_data_t::node_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_tree_child_event_data_t::name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).parent_id) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_tree_child_event_data_t::parent_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).kind) as usize - ptr as usize },
+        36usize,
+        "Offset of field: lore_revision_tree_child_event_data_t::kind"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).mode) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_revision_tree_child_event_data_t::mode"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_revision_tree_child_event_data_t::size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_revision_tree_child_event_data_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        104usize,
+        "Offset of field: lore_revision_tree_child_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_root_info_data_t {
@@ -4897,23 +8622,47 @@ pub struct lore_revision_tree_root_info_data_t {
     pub author_identity: lore_string_t,
     pub metadata_key_count: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_root_info_data_t"]
-        [::std::mem::size_of::<lore_revision_tree_root_info_data_t>() - 104usize];
-    ["Alignment of lore_revision_tree_root_info_data_t"]
-        [::std::mem::align_of::<lore_revision_tree_root_info_data_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_root_info_data_t::is_root"]
-        [::std::mem::offset_of!(lore_revision_tree_root_info_data_t, is_root) - 0usize];
-    ["Offset of field: lore_revision_tree_root_info_data_t::parent"]
-        [::std::mem::offset_of!(lore_revision_tree_root_info_data_t, parent) - 1usize];
-    ["Offset of field: lore_revision_tree_root_info_data_t::creation_timestamp"]
-        [::std::mem::offset_of!(lore_revision_tree_root_info_data_t, creation_timestamp) - 72usize];
-    ["Offset of field: lore_revision_tree_root_info_data_t::author_identity"]
-        [::std::mem::offset_of!(lore_revision_tree_root_info_data_t, author_identity) - 80usize];
-    ["Offset of field: lore_revision_tree_root_info_data_t::metadata_key_count"]
-        [::std::mem::offset_of!(lore_revision_tree_root_info_data_t, metadata_key_count) - 96usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_root_info_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_root_info_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_root_info_data_t>(),
+        104usize,
+        "Size of lore_revision_tree_root_info_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_root_info_data_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_root_info_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).is_root) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_root_info_data_t::is_root"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).parent) as usize - ptr as usize },
+        1usize,
+        "Offset of field: lore_revision_tree_root_info_data_t::parent"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).creation_timestamp) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_revision_tree_root_info_data_t::creation_timestamp"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).author_identity) as usize - ptr as usize },
+        80usize,
+        "Offset of field: lore_revision_tree_root_info_data_t::author_identity"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).metadata_key_count) as usize - ptr as usize },
+        96usize,
+        "Offset of field: lore_revision_tree_root_info_data_t::metadata_key_count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_node_info_event_data_t {
@@ -4928,33 +8677,72 @@ pub struct lore_revision_tree_node_info_event_data_t {
     pub file_id: lore_context_t,
     pub root_info: lore_revision_tree_root_info_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_node_info_event_data_t"]
-        [::std::mem::size_of::<lore_revision_tree_node_info_event_data_t>() - 224usize];
-    ["Alignment of lore_revision_tree_node_info_event_data_t"]
-        [::std::mem::align_of::<lore_revision_tree_node_info_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_node_info_event_data_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_node_info_event_data_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_node_info_event_data_t::node_id"]
-        [::std::mem::offset_of!(lore_revision_tree_node_info_event_data_t, node_id) - 8usize];
-    ["Offset of field: lore_revision_tree_node_info_event_data_t::name"]
-        [::std::mem::offset_of!(lore_revision_tree_node_info_event_data_t, name) - 16usize];
-    ["Offset of field: lore_revision_tree_node_info_event_data_t::parent_id"]
-        [::std::mem::offset_of!(lore_revision_tree_node_info_event_data_t, parent_id) - 32usize];
-    ["Offset of field: lore_revision_tree_node_info_event_data_t::kind"]
-        [::std::mem::offset_of!(lore_revision_tree_node_info_event_data_t, kind) - 36usize];
-    ["Offset of field: lore_revision_tree_node_info_event_data_t::mode"]
-        [::std::mem::offset_of!(lore_revision_tree_node_info_event_data_t, mode) - 40usize];
-    ["Offset of field: lore_revision_tree_node_info_event_data_t::size"]
-        [::std::mem::offset_of!(lore_revision_tree_node_info_event_data_t, size) - 48usize];
-    ["Offset of field: lore_revision_tree_node_info_event_data_t::address"]
-        [::std::mem::offset_of!(lore_revision_tree_node_info_event_data_t, address) - 56usize];
-    ["Offset of field: lore_revision_tree_node_info_event_data_t::file_id"]
-        [::std::mem::offset_of!(lore_revision_tree_node_info_event_data_t, file_id) - 104usize];
-    ["Offset of field: lore_revision_tree_node_info_event_data_t::root_info"]
-        [::std::mem::offset_of!(lore_revision_tree_node_info_event_data_t, root_info) - 120usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_node_info_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_node_info_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_node_info_event_data_t>(),
+        224usize,
+        "Size of lore_revision_tree_node_info_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_node_info_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_node_info_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_node_info_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).node_id) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_node_info_event_data_t::node_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_tree_node_info_event_data_t::name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).parent_id) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_tree_node_info_event_data_t::parent_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).kind) as usize - ptr as usize },
+        36usize,
+        "Offset of field: lore_revision_tree_node_info_event_data_t::kind"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).mode) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_revision_tree_node_info_event_data_t::mode"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_revision_tree_node_info_event_data_t::size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_revision_tree_node_info_event_data_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_id) as usize - ptr as usize },
+        104usize,
+        "Offset of field: lore_revision_tree_node_info_event_data_t::file_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).root_info) as usize - ptr as usize },
+        120usize,
+        "Offset of field: lore_revision_tree_node_info_event_data_t::root_info"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_node_path_event_data_t {
@@ -4962,19 +8750,37 @@ pub struct lore_revision_tree_node_path_event_data_t {
     pub path: lore_string_t,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_node_path_event_data_t"]
-        [::std::mem::size_of::<lore_revision_tree_node_path_event_data_t>() - 32usize];
-    ["Alignment of lore_revision_tree_node_path_event_data_t"]
-        [::std::mem::align_of::<lore_revision_tree_node_path_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_node_path_event_data_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_node_path_event_data_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_node_path_event_data_t::path"]
-        [::std::mem::offset_of!(lore_revision_tree_node_path_event_data_t, path) - 8usize];
-    ["Offset of field: lore_revision_tree_node_path_event_data_t::error_code"]
-        [::std::mem::offset_of!(lore_revision_tree_node_path_event_data_t, error_code) - 24usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_node_path_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_node_path_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_node_path_event_data_t>(),
+        32usize,
+        "Size of lore_revision_tree_node_path_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_node_path_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_node_path_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_node_path_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_node_path_event_data_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_revision_tree_node_path_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_add_complete_event_data_t {
@@ -4982,40 +8788,69 @@ pub struct lore_revision_tree_add_complete_event_data_t {
     pub node_id: lore_node_id_t,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_add_complete_event_data_t"]
-        [::std::mem::size_of::<lore_revision_tree_add_complete_event_data_t>() - 16usize];
-    ["Alignment of lore_revision_tree_add_complete_event_data_t"]
-        [::std::mem::align_of::<lore_revision_tree_add_complete_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_add_complete_event_data_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_add_complete_event_data_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_add_complete_event_data_t::node_id"]
-        [::std::mem::offset_of!(lore_revision_tree_add_complete_event_data_t, node_id) - 8usize];
-    ["Offset of field: lore_revision_tree_add_complete_event_data_t::error_code"][::std::mem::offset_of!(
-        lore_revision_tree_add_complete_event_data_t,
-        error_code
-    ) - 12usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_add_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_add_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_add_complete_event_data_t>(),
+        16usize,
+        "Size of lore_revision_tree_add_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_add_complete_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_add_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_add_complete_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).node_id) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_add_complete_event_data_t::node_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        12usize,
+        "Offset of field: lore_revision_tree_add_complete_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_delete_complete_event_data_t {
     pub id: u64,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_delete_complete_event_data_t"]
-        [::std::mem::size_of::<lore_revision_tree_delete_complete_event_data_t>() - 16usize];
-    ["Alignment of lore_revision_tree_delete_complete_event_data_t"]
-        [::std::mem::align_of::<lore_revision_tree_delete_complete_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_delete_complete_event_data_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_delete_complete_event_data_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_delete_complete_event_data_t::error_code"][::std::mem::offset_of!(
-        lore_revision_tree_delete_complete_event_data_t,
-        error_code
-    ) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_delete_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_delete_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_delete_complete_event_data_t>(),
+        16usize,
+        "Size of lore_revision_tree_delete_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_delete_complete_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_delete_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_delete_complete_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_delete_complete_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_modify_complete_event_data_t {
@@ -5023,21 +8858,37 @@ pub struct lore_revision_tree_modify_complete_event_data_t {
     pub node_id: lore_node_id_t,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_modify_complete_event_data_t"]
-        [::std::mem::size_of::<lore_revision_tree_modify_complete_event_data_t>() - 16usize];
-    ["Alignment of lore_revision_tree_modify_complete_event_data_t"]
-        [::std::mem::align_of::<lore_revision_tree_modify_complete_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_modify_complete_event_data_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_modify_complete_event_data_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_modify_complete_event_data_t::node_id"]
-        [::std::mem::offset_of!(lore_revision_tree_modify_complete_event_data_t, node_id) - 8usize];
-    ["Offset of field: lore_revision_tree_modify_complete_event_data_t::error_code"][::std::mem::offset_of!(
-        lore_revision_tree_modify_complete_event_data_t,
-        error_code
-    ) - 12usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_modify_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_modify_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_modify_complete_event_data_t>(),
+        16usize,
+        "Size of lore_revision_tree_modify_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_modify_complete_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_modify_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_modify_complete_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).node_id) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_modify_complete_event_data_t::node_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        12usize,
+        "Offset of field: lore_revision_tree_modify_complete_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_move_complete_event_data_t {
@@ -5045,43 +8896,69 @@ pub struct lore_revision_tree_move_complete_event_data_t {
     pub node_id: lore_node_id_t,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_move_complete_event_data_t"]
-        [::std::mem::size_of::<lore_revision_tree_move_complete_event_data_t>() - 16usize];
-    ["Alignment of lore_revision_tree_move_complete_event_data_t"]
-        [::std::mem::align_of::<lore_revision_tree_move_complete_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_move_complete_event_data_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_move_complete_event_data_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_move_complete_event_data_t::node_id"]
-        [::std::mem::offset_of!(lore_revision_tree_move_complete_event_data_t, node_id) - 8usize];
-    ["Offset of field: lore_revision_tree_move_complete_event_data_t::error_code"][::std::mem::offset_of!(
-        lore_revision_tree_move_complete_event_data_t,
-        error_code
-    ) - 12usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_move_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_move_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_move_complete_event_data_t>(),
+        16usize,
+        "Size of lore_revision_tree_move_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_move_complete_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_move_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_move_complete_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).node_id) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_move_complete_event_data_t::node_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        12usize,
+        "Offset of field: lore_revision_tree_move_complete_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_metadata_set_complete_event_data_t {
     pub id: u64,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_metadata_set_complete_event_data_t"]
-        [::std::mem::size_of::<lore_revision_tree_metadata_set_complete_event_data_t>() - 16usize];
-    ["Alignment of lore_revision_tree_metadata_set_complete_event_data_t"]
-        [::std::mem::align_of::<lore_revision_tree_metadata_set_complete_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_metadata_set_complete_event_data_t::id"][::std::mem::offset_of!(
-        lore_revision_tree_metadata_set_complete_event_data_t,
-        id
-    ) - 0usize];
-    ["Offset of field: lore_revision_tree_metadata_set_complete_event_data_t::error_code"][::std::mem::offset_of!(
-        lore_revision_tree_metadata_set_complete_event_data_t,
-        error_code
-    )
-        - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_metadata_set_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_metadata_set_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_metadata_set_complete_event_data_t>(),
+        16usize,
+        "Size of lore_revision_tree_metadata_set_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_metadata_set_complete_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_metadata_set_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_metadata_set_complete_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_metadata_set_complete_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct lore_revision_tree_metadata_get_complete_event_data_t {
@@ -5090,30 +8967,42 @@ pub struct lore_revision_tree_metadata_get_complete_event_data_t {
     pub value: lore_metadata_t,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_metadata_get_complete_event_data_t"]
-        [::std::mem::size_of::<lore_revision_tree_metadata_get_complete_event_data_t>() - 88usize];
-    ["Alignment of lore_revision_tree_metadata_get_complete_event_data_t"]
-        [::std::mem::align_of::<lore_revision_tree_metadata_get_complete_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_metadata_get_complete_event_data_t::id"][::std::mem::offset_of!(
-        lore_revision_tree_metadata_get_complete_event_data_t,
-        id
-    ) - 0usize];
-    ["Offset of field: lore_revision_tree_metadata_get_complete_event_data_t::key"][::std::mem::offset_of!(
-        lore_revision_tree_metadata_get_complete_event_data_t,
-        key
-    ) - 8usize];
-    ["Offset of field: lore_revision_tree_metadata_get_complete_event_data_t::value"][::std::mem::offset_of!(
-        lore_revision_tree_metadata_get_complete_event_data_t,
-        value
-    ) - 24usize];
-    ["Offset of field: lore_revision_tree_metadata_get_complete_event_data_t::error_code"][::std::mem::offset_of!(
-        lore_revision_tree_metadata_get_complete_event_data_t,
-        error_code
-    )
-        - 80usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_metadata_get_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_metadata_get_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_metadata_get_complete_event_data_t>(),
+        88usize,
+        "Size of lore_revision_tree_metadata_get_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_metadata_get_complete_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_metadata_get_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_metadata_get_complete_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_metadata_get_complete_event_data_t::key"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).value) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_revision_tree_metadata_get_complete_event_data_t::value"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        80usize,
+        "Offset of field: lore_revision_tree_metadata_get_complete_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_commit_complete_event_data_t {
@@ -5122,46 +9011,74 @@ pub struct lore_revision_tree_commit_complete_event_data_t {
     pub new_tip_hash: lore_hash_t,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_commit_complete_event_data_t"]
-        [::std::mem::size_of::<lore_revision_tree_commit_complete_event_data_t>() - 80usize];
-    ["Alignment of lore_revision_tree_commit_complete_event_data_t"]
-        [::std::mem::align_of::<lore_revision_tree_commit_complete_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_commit_complete_event_data_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_commit_complete_event_data_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_commit_complete_event_data_t::revision_hash"][::std::mem::offset_of!(
-        lore_revision_tree_commit_complete_event_data_t,
-        revision_hash
-    ) - 8usize];
-    ["Offset of field: lore_revision_tree_commit_complete_event_data_t::new_tip_hash"][::std::mem::offset_of!(
-        lore_revision_tree_commit_complete_event_data_t,
-        new_tip_hash
-    ) - 40usize];
-    ["Offset of field: lore_revision_tree_commit_complete_event_data_t::error_code"][::std::mem::offset_of!(
-        lore_revision_tree_commit_complete_event_data_t,
-        error_code
-    ) - 72usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_commit_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_commit_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_commit_complete_event_data_t>(),
+        80usize,
+        "Size of lore_revision_tree_commit_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_commit_complete_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_commit_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_commit_complete_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_hash) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_commit_complete_event_data_t::revision_hash"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).new_tip_hash) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_revision_tree_commit_complete_event_data_t::new_tip_hash"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_revision_tree_commit_complete_event_data_t::error_code"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_close_complete_event_data_t {
     pub id: u64,
     pub error_code: lore_error_code_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_close_complete_event_data_t"]
-        [::std::mem::size_of::<lore_revision_tree_close_complete_event_data_t>() - 16usize];
-    ["Alignment of lore_revision_tree_close_complete_event_data_t"]
-        [::std::mem::align_of::<lore_revision_tree_close_complete_event_data_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_close_complete_event_data_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_close_complete_event_data_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_close_complete_event_data_t::error_code"][::std::mem::offset_of!(
-        lore_revision_tree_close_complete_event_data_t,
-        error_code
-    ) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_close_complete_event_data_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_close_complete_event_data_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_close_complete_event_data_t>(),
+        16usize,
+        "Size of lore_revision_tree_close_complete_event_data_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_close_complete_event_data_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_close_complete_event_data_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_close_complete_event_data_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_close_complete_event_data_t::error_code"
+    );
+}
 pub const LORE_EVENT_PROGRESS: lore_event_id_t = 0;
 pub const LORE_EVENT_ERROR: lore_event_id_t = 1;
 pub const LORE_EVENT_COMPLETE: lore_event_id_t = 2;
@@ -5600,511 +9517,1185 @@ pub union lore_event_t__bindgen_ty_1 {
     pub revision_tree_commit_complete: lore_revision_tree_commit_complete_event_data_t,
     pub revision_tree_close_complete: lore_revision_tree_close_complete_event_data_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_event_t__bindgen_ty_1"]
-        [::std::mem::size_of::<lore_event_t__bindgen_ty_1>() - 272usize];
-    ["Alignment of lore_event_t__bindgen_ty_1"]
-        [::std::mem::align_of::<lore_event_t__bindgen_ty_1>() - 8usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::progress"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, progress) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::error"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, error) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::complete"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, complete) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::metadata"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, metadata) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::log"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, log) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::maintenance"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, maintenance) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::auth_url"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, auth_url) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::auth_user_info"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, auth_user_info) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::auth_user_token"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, auth_user_token) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::auth_identity"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, auth_identity) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_create"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_create) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_multiple_instance"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_multiple_instance) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_archive"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_archive) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_list_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_list_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_list_entry"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_list_entry) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_list_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_list_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_abort_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_merge_abort_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_abort_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_merge_abort_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_info"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_info) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_diff_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_diff_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_diff_change_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_diff_change_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_diff_change"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_diff_change) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_diff_change_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_diff_change_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_diff_conflict_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_diff_conflict_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_diff_conflict"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_diff_conflict) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_diff_conflict_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_diff_conflict_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_diff_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_diff_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_latest_list_entry"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_latest_list_entry) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_conflict_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_merge_conflict_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_link_skipped"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_merge_link_skipped) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_unresolve_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_merge_unresolve_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_unresolve_revision"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        branch_merge_unresolve_revision
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_file_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_merge_into_file_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_merge_into_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_file_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_merge_into_file_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_fragment_begin"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        branch_merge_into_fragment_begin
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_fragment_progress"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        branch_merge_into_fragment_progress
-    )
-        - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_fragment_end"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        branch_merge_into_fragment_end
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_revision"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_merge_into_revision) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_sync_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_merge_into_sync_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_sync_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_merge_into_sync_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_resolve_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_merge_resolve_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_resolve_revision"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        branch_merge_resolve_revision
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_start_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_merge_start_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_merge_start_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_merge_start_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_start_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, cherry_pick_start_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_start_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, cherry_pick_start_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_abort_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, cherry_pick_abort_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_abort_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, cherry_pick_abort_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_conflict_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, cherry_pick_conflict_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_unresolve_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, cherry_pick_unresolve_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_unresolve_revision"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        cherry_pick_unresolve_revision
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_resolve_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, cherry_pick_resolve_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_resolve_revision"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, cherry_pick_resolve_revision) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revert_start_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revert_start_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revert_start_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revert_start_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revert_abort_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revert_abort_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revert_abort_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revert_abort_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revert_resolve_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revert_resolve_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revert_resolve_revision"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revert_resolve_revision) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revert_conflict_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revert_conflict_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revert_unresolve_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revert_unresolve_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revert_unresolve_revision"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revert_unresolve_revision) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_protect"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_protect) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_push"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_push) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_push_revision_update_begin"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        branch_push_revision_update_begin
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_push_revision_update_end"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        branch_push_revision_update_end
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_push_fragment_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_push_fragment_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_push_fragment_progress"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        branch_push_fragment_progress
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_push_fragment_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_push_fragment_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_push_branch_create_begin"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        branch_push_branch_create_begin
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_push_branch_create_end"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        branch_push_branch_create_end
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_push_revision_push_begin"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        branch_push_revision_push_begin
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_push_revision_push_update"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        branch_push_revision_push_update
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_push_revision_push_end"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        branch_push_revision_push_end
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_reset"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_reset) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_switch_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_switch_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_switch_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_switch_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::branch_unprotect"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, branch_unprotect) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_info"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_info) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_diff"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_diff) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_hash"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_hash) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_history"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_history) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_write"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_write) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_obliterate"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_obliterate) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_dump"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_dump) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_dependency_add_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_dependency_add_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_dependency_add_entry"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_dependency_add_entry) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_dependency_add_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_dependency_add_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_dependency_remove_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_dependency_remove_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_dependency_remove_entry"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_dependency_remove_entry) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_dependency_remove_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_dependency_remove_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_dependency_list_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_dependency_list_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_dependency_list_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_dependency_list_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_dependency_list_entry"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_dependency_list_entry) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_dependency_list_file_end"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        file_dependency_list_file_end
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_dependency_list_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_dependency_list_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_reset_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_reset_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_reset_progress"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_reset_progress) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_reset_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_reset_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_reset_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_reset_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::filter_exclude"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, filter_exclude) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_stage_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_stage_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_stage_progress"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_stage_progress) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_stage_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_stage_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_stage_revision"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_stage_revision) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_stage_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_stage_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_unstage_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_unstage_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_unstage_progress"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_unstage_progress) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_unstage_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_unstage_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_unstage_revision"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_unstage_revision) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::file_unstage_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, file_unstage_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::fragment_write"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, fragment_write) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::layer_add"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, layer_add) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::layer_entry"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, layer_entry) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::layer_remove"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, layer_remove) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::layer_staged_entry"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, layer_staged_entry) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::link_change"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, link_change) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::link_entry"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, link_entry) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::lock_file_acquire_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, lock_file_acquire_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::lock_file_acquire"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, lock_file_acquire) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::lock_file_status_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, lock_file_status_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::lock_file_status"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, lock_file_status) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::lock_file_query_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, lock_file_query_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::lock_file_query"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, lock_file_query) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::lock_file_release_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, lock_file_release_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::lock_file_release"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, lock_file_release) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::metadata_clear_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, metadata_clear_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::metadata_clear_revision"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, metadata_clear_revision) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::path_ignore"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, path_ignore) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_create"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_create) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_clone_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_clone_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_clone_progress"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_clone_progress) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_clone_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_clone_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::dependency_resolve_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, dependency_resolve_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::dependency_resolve_item"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, dependency_resolve_item) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::dependency_resolve_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, dependency_resolve_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_data"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_data) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_config_get"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_config_get) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_dump_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_dump_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_dump_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_dump_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_list_entry"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_list_entry) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_instance"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_instance) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_verify_state_begin"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        repository_verify_state_begin
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_verify_state_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_verify_state_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_verify_fragment"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_verify_fragment) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_verify_fragment_match"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        repository_verify_fragment_match
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_verify_fragment_remote"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        repository_verify_fragment_remote
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_state_dump"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_state_dump) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_state_dump_node"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_state_dump_node) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_status_revision"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_status_revision) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_status_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_status_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_status_count"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_status_count) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_status_summary"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, repository_status_summary) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::repository_store_immutable_query"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        repository_store_immutable_query
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_commit_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_commit_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_commit_progress"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_commit_progress) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_commit_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_commit_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_commit_revision"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_commit_revision) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_info"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_info) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_info_delta"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_info_delta) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_diff_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_diff_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_find"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_find) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_history"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_history) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_history_entry"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_history_entry) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_restore_file_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_restore_file_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_restore_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_restore_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_restore_file_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_restore_file_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_restore_fragment_begin"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        revision_restore_fragment_begin
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_restore_fragment_progress"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        revision_restore_fragment_progress
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_restore_fragment_end"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        revision_restore_fragment_end
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_restore_revision"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_restore_revision) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_restore_sync_begin"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_restore_sync_begin) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_restore_sync_end"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_restore_sync_end) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_resolve"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_resolve) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_sync_target"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_sync_target) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_sync_file"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_sync_file) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_sync_progress"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_sync_progress) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_sync_revision"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_sync_revision) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_bisect"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_bisect) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::notification_branch_created"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, notification_branch_created) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::notification_branch_deleted"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, notification_branch_deleted) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::notification_branch_pushed"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, notification_branch_pushed) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::notification_resource_locked"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, notification_resource_locked) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::notification_resource_unlocked"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        notification_resource_unlocked
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::notification_subscribed"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, notification_subscribed) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::notification_unsubscribed"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, notification_unsubscribed) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::shared_store_create"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, shared_store_create) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::shared_store_info"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, shared_store_info) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::link_staged_entry"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, link_staged_entry) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::storage_opened"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, storage_opened) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::storage_put_item_complete"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, storage_put_item_complete) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::storage_get_header"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, storage_get_header) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::storage_get_data"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, storage_get_data) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::storage_get_item_complete"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, storage_get_item_complete) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::storage_get_metadata_item_complete"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        storage_get_metadata_item_complete
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::storage_copy_item_complete"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, storage_copy_item_complete) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::storage_obliterate_item_complete"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        storage_obliterate_item_complete
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::storage_upload_item_complete"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, storage_upload_item_complete) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_tree_loaded"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_tree_loaded) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_tree_resolve_path_complete"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        revision_tree_resolve_path_complete
-    )
-        - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_tree_child"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_tree_child) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_tree_node_info"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_tree_node_info) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_tree_node_path"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_tree_node_path) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_tree_add_complete"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_tree_add_complete) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_tree_delete_complete"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        revision_tree_delete_complete
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_tree_modify_complete"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        revision_tree_modify_complete
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_tree_move_complete"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_tree_move_complete) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_tree_metadata_set_complete"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        revision_tree_metadata_set_complete
-    )
-        - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_tree_metadata_get_complete"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        revision_tree_metadata_get_complete
-    )
-        - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_tree_commit_complete"][::std::mem::offset_of!(
-        lore_event_t__bindgen_ty_1,
-        revision_tree_commit_complete
-    ) - 0usize];
-    ["Offset of field: lore_event_t__bindgen_ty_1::revision_tree_close_complete"]
-        [::std::mem::offset_of!(lore_event_t__bindgen_ty_1, revision_tree_close_complete) - 0usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_event_t"][::std::mem::size_of::<lore_event_t>() - 280usize];
-    ["Alignment of lore_event_t"][::std::mem::align_of::<lore_event_t>() - 8usize];
-    ["Offset of field: lore_event_t::tag"][::std::mem::offset_of!(lore_event_t, tag) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_event_t__bindgen_ty_1() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_event_t__bindgen_ty_1> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_event_t__bindgen_ty_1>(),
+        272usize,
+        "Size of lore_event_t__bindgen_ty_1"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_event_t__bindgen_ty_1>(),
+        8usize,
+        "Alignment of lore_event_t__bindgen_ty_1"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).progress) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::progress"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::error"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).complete) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::complete"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).metadata) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::metadata"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).log) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::log"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).maintenance) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::maintenance"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).auth_url) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::auth_url"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).auth_user_info) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::auth_user_info"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).auth_user_token) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::auth_user_token"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).auth_identity) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::auth_identity"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_create) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_create"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_multiple_instance) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_multiple_instance"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_archive) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_archive"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_list_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_list_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_list_entry) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_list_entry"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_list_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_list_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_merge_abort_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_abort_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_merge_abort_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_abort_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_info) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_info"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_diff_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_diff_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_diff_change_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_diff_change_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_diff_change) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_diff_change"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_diff_change_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_diff_change_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_diff_conflict_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_diff_conflict_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_diff_conflict) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_diff_conflict"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_diff_conflict_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_diff_conflict_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_diff_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_diff_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_latest_list_entry) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_latest_list_entry"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_merge_conflict_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_conflict_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_merge_link_skipped) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_link_skipped"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_merge_unresolve_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_unresolve_file"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).branch_merge_unresolve_revision) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_unresolve_revision"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).branch_merge_into_file_begin) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_file_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_merge_into_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_merge_into_file_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_file_end"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).branch_merge_into_fragment_begin) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_fragment_begin"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).branch_merge_into_fragment_progress) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_fragment_progress"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).branch_merge_into_fragment_end) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_fragment_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_merge_into_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_revision"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).branch_merge_into_sync_begin) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_sync_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_merge_into_sync_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_into_sync_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_merge_resolve_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_resolve_file"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).branch_merge_resolve_revision) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_resolve_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_merge_start_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_start_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_merge_start_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_merge_start_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).cherry_pick_start_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_start_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).cherry_pick_start_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_start_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).cherry_pick_abort_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_abort_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).cherry_pick_abort_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_abort_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).cherry_pick_conflict_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_conflict_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).cherry_pick_unresolve_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_unresolve_file"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).cherry_pick_unresolve_revision) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_unresolve_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).cherry_pick_resolve_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_resolve_file"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).cherry_pick_resolve_revision) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::cherry_pick_resolve_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revert_start_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revert_start_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revert_start_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revert_start_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revert_abort_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revert_abort_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revert_abort_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revert_abort_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revert_resolve_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revert_resolve_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revert_resolve_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revert_resolve_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revert_conflict_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revert_conflict_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revert_unresolve_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revert_unresolve_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revert_unresolve_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revert_unresolve_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_protect) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_protect"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_push) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_push"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).branch_push_revision_update_begin) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_push_revision_update_begin"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).branch_push_revision_update_end) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_push_revision_update_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_push_fragment_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_push_fragment_begin"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).branch_push_fragment_progress) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_push_fragment_progress"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_push_fragment_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_push_fragment_end"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).branch_push_branch_create_begin) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_push_branch_create_begin"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).branch_push_branch_create_end) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_push_branch_create_end"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).branch_push_revision_push_begin) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_push_revision_push_begin"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).branch_push_revision_push_update) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_push_revision_push_update"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).branch_push_revision_push_end) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_push_revision_push_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_reset) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_reset"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_switch_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_switch_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_switch_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_switch_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_unprotect) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::branch_unprotect"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_info) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_info"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_diff) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_diff"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_hash) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_hash"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_history) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_history"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_write) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_write"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_obliterate) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_obliterate"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_dump) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_dump"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_dependency_add_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_dependency_add_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_dependency_add_entry) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_dependency_add_entry"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_dependency_add_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_dependency_add_end"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).file_dependency_remove_begin) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_dependency_remove_begin"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).file_dependency_remove_entry) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_dependency_remove_entry"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_dependency_remove_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_dependency_remove_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_dependency_list_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_dependency_list_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_dependency_list_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_dependency_list_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_dependency_list_entry) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_dependency_list_entry"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).file_dependency_list_file_end) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_dependency_list_file_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_dependency_list_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_dependency_list_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_reset_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_reset_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_reset_progress) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_reset_progress"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_reset_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_reset_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_reset_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_reset_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).filter_exclude) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::filter_exclude"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_stage_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_stage_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_stage_progress) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_stage_progress"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_stage_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_stage_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_stage_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_stage_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_stage_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_stage_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_unstage_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_unstage_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_unstage_progress) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_unstage_progress"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_unstage_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_unstage_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_unstage_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_unstage_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_unstage_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::file_unstage_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).fragment_write) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::fragment_write"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).layer_add) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::layer_add"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).layer_entry) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::layer_entry"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).layer_remove) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::layer_remove"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).layer_staged_entry) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::layer_staged_entry"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link_change) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::link_change"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link_entry) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::link_entry"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).lock_file_acquire_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::lock_file_acquire_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).lock_file_acquire) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::lock_file_acquire"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).lock_file_status_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::lock_file_status_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).lock_file_status) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::lock_file_status"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).lock_file_query_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::lock_file_query_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).lock_file_query) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::lock_file_query"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).lock_file_release_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::lock_file_release_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).lock_file_release) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::lock_file_release"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).metadata_clear_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::metadata_clear_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).metadata_clear_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::metadata_clear_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path_ignore) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::path_ignore"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_create) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_create"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_clone_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_clone_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_clone_progress) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_clone_progress"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_clone_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_clone_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dependency_resolve_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::dependency_resolve_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dependency_resolve_item) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::dependency_resolve_item"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dependency_resolve_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::dependency_resolve_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_data) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_data"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_config_get) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_config_get"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_dump_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_dump_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_dump_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_dump_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_list_entry) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_list_entry"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_instance) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_instance"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).repository_verify_state_begin) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_verify_state_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_verify_state_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_verify_state_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_verify_fragment) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_verify_fragment"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).repository_verify_fragment_match) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_verify_fragment_match"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).repository_verify_fragment_remote) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_verify_fragment_remote"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_state_dump) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_state_dump"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_state_dump_node) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_state_dump_node"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_status_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_status_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_status_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_status_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_status_count) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_status_count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_status_summary) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_status_summary"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).repository_store_immutable_query) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::repository_store_immutable_query"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_commit_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_commit_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_commit_progress) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_commit_progress"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_commit_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_commit_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_commit_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_commit_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_info) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_info"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_info_delta) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_info_delta"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_diff_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_diff_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_find) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_find"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_history) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_history"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_history_entry) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_history_entry"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_restore_file_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_restore_file_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_restore_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_restore_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_restore_file_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_restore_file_end"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).revision_restore_fragment_begin) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_restore_fragment_begin"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).revision_restore_fragment_progress) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_restore_fragment_progress"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).revision_restore_fragment_end) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_restore_fragment_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_restore_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_restore_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_restore_sync_begin) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_restore_sync_begin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_restore_sync_end) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_restore_sync_end"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_resolve) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_resolve"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_sync_target) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_sync_target"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_sync_file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_sync_file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_sync_progress) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_sync_progress"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_sync_revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_sync_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_bisect) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_bisect"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).notification_branch_created) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::notification_branch_created"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).notification_branch_deleted) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::notification_branch_deleted"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).notification_branch_pushed) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::notification_branch_pushed"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).notification_resource_locked) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::notification_resource_locked"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).notification_resource_unlocked) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::notification_resource_unlocked"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).notification_subscribed) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::notification_subscribed"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).notification_unsubscribed) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::notification_unsubscribed"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).shared_store_create) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::shared_store_create"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).shared_store_info) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::shared_store_info"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link_staged_entry) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::link_staged_entry"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).storage_opened) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::storage_opened"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).storage_put_item_complete) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::storage_put_item_complete"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).storage_get_header) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::storage_get_header"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).storage_get_data) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::storage_get_data"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).storage_get_item_complete) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::storage_get_item_complete"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).storage_get_metadata_item_complete) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::storage_get_metadata_item_complete"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).storage_copy_item_complete) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::storage_copy_item_complete"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).storage_obliterate_item_complete) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::storage_obliterate_item_complete"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).storage_upload_item_complete) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::storage_upload_item_complete"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_tree_loaded) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_tree_loaded"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).revision_tree_resolve_path_complete) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_tree_resolve_path_complete"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_tree_child) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_tree_child"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_tree_node_info) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_tree_node_info"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_tree_node_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_tree_node_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_tree_add_complete) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_tree_add_complete"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).revision_tree_delete_complete) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_tree_delete_complete"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).revision_tree_modify_complete) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_tree_modify_complete"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_tree_move_complete) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_tree_move_complete"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).revision_tree_metadata_set_complete) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_tree_metadata_set_complete"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).revision_tree_metadata_get_complete) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_tree_metadata_get_complete"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).revision_tree_commit_complete) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_tree_commit_complete"
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).revision_tree_close_complete) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_event_t__bindgen_ty_1::revision_tree_close_complete"
+    );
+}
+#[test]
+fn bindgen_test_layout_lore_event_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_event_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_event_t>(),
+        280usize,
+        "Size of lore_event_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_event_t>(),
+        8usize,
+        "Alignment of lore_event_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tag) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_t::tag"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_global_args_t {
@@ -6130,67 +10721,152 @@ pub struct lore_global_args_t {
     pub sync_data: u8,
     pub cache: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_global_args_t"][::std::mem::size_of::<lore_global_args_t>() - 120usize];
-    ["Alignment of lore_global_args_t"][::std::mem::align_of::<lore_global_args_t>() - 8usize];
-    ["Offset of field: lore_global_args_t::repository_path"]
-        [::std::mem::offset_of!(lore_global_args_t, repository_path) - 0usize];
-    ["Offset of field: lore_global_args_t::correlation_id"]
-        [::std::mem::offset_of!(lore_global_args_t, correlation_id) - 16usize];
-    ["Offset of field: lore_global_args_t::identity"]
-        [::std::mem::offset_of!(lore_global_args_t, identity) - 32usize];
-    ["Offset of field: lore_global_args_t::force"]
-        [::std::mem::offset_of!(lore_global_args_t, force) - 48usize];
-    ["Offset of field: lore_global_args_t::offline"]
-        [::std::mem::offset_of!(lore_global_args_t, offline) - 49usize];
-    ["Offset of field: lore_global_args_t::local"]
-        [::std::mem::offset_of!(lore_global_args_t, local) - 50usize];
-    ["Offset of field: lore_global_args_t::remote"]
-        [::std::mem::offset_of!(lore_global_args_t, remote) - 51usize];
-    ["Offset of field: lore_global_args_t::dry_run"]
-        [::std::mem::offset_of!(lore_global_args_t, dry_run) - 52usize];
-    ["Offset of field: lore_global_args_t::no_atime"]
-        [::std::mem::offset_of!(lore_global_args_t, no_atime) - 53usize];
-    ["Offset of field: lore_global_args_t::max_connections"]
-        [::std::mem::offset_of!(lore_global_args_t, max_connections) - 56usize];
-    ["Offset of field: lore_global_args_t::search_limit"]
-        [::std::mem::offset_of!(lore_global_args_t, search_limit) - 60usize];
-    ["Offset of field: lore_global_args_t::search_nearest"]
-        [::std::mem::offset_of!(lore_global_args_t, search_nearest) - 64usize];
-    ["Offset of field: lore_global_args_t::gc"]
-        [::std::mem::offset_of!(lore_global_args_t, gc) - 65usize];
-    ["Offset of field: lore_global_args_t::in_memory"]
-        [::std::mem::offset_of!(lore_global_args_t, in_memory) - 66usize];
-    ["Offset of field: lore_global_args_t::file_count_limit"]
-        [::std::mem::offset_of!(lore_global_args_t, file_count_limit) - 72usize];
-    ["Offset of field: lore_global_args_t::file_size_limit"]
-        [::std::mem::offset_of!(lore_global_args_t, file_size_limit) - 80usize];
-    ["Offset of field: lore_global_args_t::compress_task_limit"]
-        [::std::mem::offset_of!(lore_global_args_t, compress_task_limit) - 88usize];
-    ["Offset of field: lore_global_args_t::store_keep_alive"]
-        [::std::mem::offset_of!(lore_global_args_t, store_keep_alive) - 96usize];
-    ["Offset of field: lore_global_args_t::store_keep_alive_seconds"]
-        [::std::mem::offset_of!(lore_global_args_t, store_keep_alive_seconds) - 104usize];
-    ["Offset of field: lore_global_args_t::sync_data"]
-        [::std::mem::offset_of!(lore_global_args_t, sync_data) - 112usize];
-    ["Offset of field: lore_global_args_t::cache"]
-        [::std::mem::offset_of!(lore_global_args_t, cache) - 113usize];
-};
+#[test]
+fn bindgen_test_layout_lore_global_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_global_args_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_global_args_t>(),
+        120usize,
+        "Size of lore_global_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_global_args_t>(),
+        8usize,
+        "Alignment of lore_global_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_global_args_t::repository_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).correlation_id) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_global_args_t::correlation_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).identity) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_global_args_t::identity"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).force) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_global_args_t::force"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).offline) as usize - ptr as usize },
+        49usize,
+        "Offset of field: lore_global_args_t::offline"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local) as usize - ptr as usize },
+        50usize,
+        "Offset of field: lore_global_args_t::local"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote) as usize - ptr as usize },
+        51usize,
+        "Offset of field: lore_global_args_t::remote"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dry_run) as usize - ptr as usize },
+        52usize,
+        "Offset of field: lore_global_args_t::dry_run"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).no_atime) as usize - ptr as usize },
+        53usize,
+        "Offset of field: lore_global_args_t::no_atime"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).max_connections) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_global_args_t::max_connections"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).search_limit) as usize - ptr as usize },
+        60usize,
+        "Offset of field: lore_global_args_t::search_limit"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).search_nearest) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_global_args_t::search_nearest"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).gc) as usize - ptr as usize },
+        65usize,
+        "Offset of field: lore_global_args_t::gc"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).in_memory) as usize - ptr as usize },
+        66usize,
+        "Offset of field: lore_global_args_t::in_memory"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_count_limit) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_global_args_t::file_count_limit"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_size_limit) as usize - ptr as usize },
+        80usize,
+        "Offset of field: lore_global_args_t::file_size_limit"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).compress_task_limit) as usize - ptr as usize },
+        88usize,
+        "Offset of field: lore_global_args_t::compress_task_limit"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).store_keep_alive) as usize - ptr as usize },
+        96usize,
+        "Offset of field: lore_global_args_t::store_keep_alive"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).store_keep_alive_seconds) as usize - ptr as usize },
+        104usize,
+        "Offset of field: lore_global_args_t::store_keep_alive_seconds"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).sync_data) as usize - ptr as usize },
+        112usize,
+        "Offset of field: lore_global_args_t::sync_data"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).cache) as usize - ptr as usize },
+        113usize,
+        "Offset of field: lore_global_args_t::cache"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_auth_user_info_args_t {
     pub user_ids: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_auth_user_info_args_t"]
-        [::std::mem::size_of::<lore_auth_user_info_args_t>() - 16usize];
-    ["Alignment of lore_auth_user_info_args_t"]
-        [::std::mem::align_of::<lore_auth_user_info_args_t>() - 8usize];
-    ["Offset of field: lore_auth_user_info_args_t::user_ids"]
-        [::std::mem::offset_of!(lore_auth_user_info_args_t, user_ids) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_auth_user_info_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_auth_user_info_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_auth_user_info_args_t>(),
+        16usize,
+        "Size of lore_auth_user_info_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_auth_user_info_args_t>(),
+        8usize,
+        "Alignment of lore_auth_user_info_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).user_ids) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_auth_user_info_args_t::user_ids"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_event_callback_config_t {
@@ -6198,17 +10874,32 @@ pub struct lore_event_callback_config_t {
     pub func:
         ::std::option::Option<unsafe extern "C" fn(event: *const lore_event_t, user_context: u64)>,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_event_callback_config_t"]
-        [::std::mem::size_of::<lore_event_callback_config_t>() - 16usize];
-    ["Alignment of lore_event_callback_config_t"]
-        [::std::mem::align_of::<lore_event_callback_config_t>() - 8usize];
-    ["Offset of field: lore_event_callback_config_t::user_context"]
-        [::std::mem::offset_of!(lore_event_callback_config_t, user_context) - 0usize];
-    ["Offset of field: lore_event_callback_config_t::func"]
-        [::std::mem::offset_of!(lore_event_callback_config_t, func) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_event_callback_config_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_event_callback_config_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_event_callback_config_t>(),
+        16usize,
+        "Size of lore_event_callback_config_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_event_callback_config_t>(),
+        8usize,
+        "Alignment of lore_event_callback_config_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).user_context) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_event_callback_config_t::user_context"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).func) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_event_callback_config_t::func"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_auth_login_with_token_args_t {
@@ -6217,34 +10908,68 @@ pub struct lore_auth_login_with_token_args_t {
     pub token_type: lore_string_t,
     pub auth_url: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_auth_login_with_token_args_t"]
-        [::std::mem::size_of::<lore_auth_login_with_token_args_t>() - 64usize];
-    ["Alignment of lore_auth_login_with_token_args_t"]
-        [::std::mem::align_of::<lore_auth_login_with_token_args_t>() - 8usize];
-    ["Offset of field: lore_auth_login_with_token_args_t::remote_url"]
-        [::std::mem::offset_of!(lore_auth_login_with_token_args_t, remote_url) - 0usize];
-    ["Offset of field: lore_auth_login_with_token_args_t::token"]
-        [::std::mem::offset_of!(lore_auth_login_with_token_args_t, token) - 16usize];
-    ["Offset of field: lore_auth_login_with_token_args_t::token_type"]
-        [::std::mem::offset_of!(lore_auth_login_with_token_args_t, token_type) - 32usize];
-    ["Offset of field: lore_auth_login_with_token_args_t::auth_url"]
-        [::std::mem::offset_of!(lore_auth_login_with_token_args_t, auth_url) - 48usize];
-};
+#[test]
+fn bindgen_test_layout_lore_auth_login_with_token_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_auth_login_with_token_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_auth_login_with_token_args_t>(),
+        64usize,
+        "Size of lore_auth_login_with_token_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_auth_login_with_token_args_t>(),
+        8usize,
+        "Alignment of lore_auth_login_with_token_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_url) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_auth_login_with_token_args_t::remote_url"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).token) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_auth_login_with_token_args_t::token"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).token_type) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_auth_login_with_token_args_t::token_type"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).auth_url) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_auth_login_with_token_args_t::auth_url"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_auth_list_args_t {
     pub with_token: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_auth_list_args_t"][::std::mem::size_of::<lore_auth_list_args_t>() - 1usize];
-    ["Alignment of lore_auth_list_args_t"]
-        [::std::mem::align_of::<lore_auth_list_args_t>() - 1usize];
-    ["Offset of field: lore_auth_list_args_t::with_token"]
-        [::std::mem::offset_of!(lore_auth_list_args_t, with_token) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_auth_list_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_auth_list_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_auth_list_args_t>(),
+        1usize,
+        "Size of lore_auth_list_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_auth_list_args_t>(),
+        1usize,
+        "Alignment of lore_auth_list_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).with_token) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_auth_list_args_t::with_token"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_auth_logout_args_t {
@@ -6252,31 +10977,63 @@ pub struct lore_auth_logout_args_t {
     pub resource: lore_string_t,
     pub user_id: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_auth_logout_args_t"][::std::mem::size_of::<lore_auth_logout_args_t>() - 48usize];
-    ["Alignment of lore_auth_logout_args_t"]
-        [::std::mem::align_of::<lore_auth_logout_args_t>() - 8usize];
-    ["Offset of field: lore_auth_logout_args_t::auth_url"]
-        [::std::mem::offset_of!(lore_auth_logout_args_t, auth_url) - 0usize];
-    ["Offset of field: lore_auth_logout_args_t::resource"]
-        [::std::mem::offset_of!(lore_auth_logout_args_t, resource) - 16usize];
-    ["Offset of field: lore_auth_logout_args_t::user_id"]
-        [::std::mem::offset_of!(lore_auth_logout_args_t, user_id) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_auth_logout_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_auth_logout_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_auth_logout_args_t>(),
+        48usize,
+        "Size of lore_auth_logout_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_auth_logout_args_t>(),
+        8usize,
+        "Alignment of lore_auth_logout_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).auth_url) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_auth_logout_args_t::auth_url"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).resource) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_auth_logout_args_t::resource"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).user_id) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_auth_logout_args_t::user_id"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_auth_clear_args_t {
     pub _unused: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_auth_clear_args_t"][::std::mem::size_of::<lore_auth_clear_args_t>() - 1usize];
-    ["Alignment of lore_auth_clear_args_t"]
-        [::std::mem::align_of::<lore_auth_clear_args_t>() - 1usize];
-    ["Offset of field: lore_auth_clear_args_t::_unused"]
-        [::std::mem::offset_of!(lore_auth_clear_args_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_auth_clear_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_auth_clear_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_auth_clear_args_t>(),
+        1usize,
+        "Size of lore_auth_clear_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_auth_clear_args_t>(),
+        1usize,
+        "Alignment of lore_auth_clear_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_auth_clear_args_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_auth_local_user_info_args_t {
@@ -6284,36 +11041,69 @@ pub struct lore_auth_local_user_info_args_t {
     pub user_ids: lore_string_array_t,
     pub with_token: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_auth_local_user_info_args_t"]
-        [::std::mem::size_of::<lore_auth_local_user_info_args_t>() - 40usize];
-    ["Alignment of lore_auth_local_user_info_args_t"]
-        [::std::mem::align_of::<lore_auth_local_user_info_args_t>() - 8usize];
-    ["Offset of field: lore_auth_local_user_info_args_t::auth_endpoint"]
-        [::std::mem::offset_of!(lore_auth_local_user_info_args_t, auth_endpoint) - 0usize];
-    ["Offset of field: lore_auth_local_user_info_args_t::user_ids"]
-        [::std::mem::offset_of!(lore_auth_local_user_info_args_t, user_ids) - 16usize];
-    ["Offset of field: lore_auth_local_user_info_args_t::with_token"]
-        [::std::mem::offset_of!(lore_auth_local_user_info_args_t, with_token) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_auth_local_user_info_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_auth_local_user_info_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_auth_local_user_info_args_t>(),
+        40usize,
+        "Size of lore_auth_local_user_info_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_auth_local_user_info_args_t>(),
+        8usize,
+        "Alignment of lore_auth_local_user_info_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).auth_endpoint) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_auth_local_user_info_args_t::auth_endpoint"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).user_ids) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_auth_local_user_info_args_t::user_ids"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).with_token) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_auth_local_user_info_args_t::with_token"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_auth_login_interactive_args_t {
     pub remote_url: lore_string_t,
     pub no_browser: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_auth_login_interactive_args_t"]
-        [::std::mem::size_of::<lore_auth_login_interactive_args_t>() - 24usize];
-    ["Alignment of lore_auth_login_interactive_args_t"]
-        [::std::mem::align_of::<lore_auth_login_interactive_args_t>() - 8usize];
-    ["Offset of field: lore_auth_login_interactive_args_t::remote_url"]
-        [::std::mem::offset_of!(lore_auth_login_interactive_args_t, remote_url) - 0usize];
-    ["Offset of field: lore_auth_login_interactive_args_t::no_browser"]
-        [::std::mem::offset_of!(lore_auth_login_interactive_args_t, no_browser) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_auth_login_interactive_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_auth_login_interactive_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_auth_login_interactive_args_t>(),
+        24usize,
+        "Size of lore_auth_login_interactive_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_auth_login_interactive_args_t>(),
+        8usize,
+        "Alignment of lore_auth_login_interactive_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_url) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_auth_login_interactive_args_t::remote_url"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).no_browser) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_auth_login_interactive_args_t::no_browser"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_create_args_t {
@@ -6321,32 +11111,63 @@ pub struct lore_branch_create_args_t {
     pub category: lore_string_t,
     pub id: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_create_args_t"]
-        [::std::mem::size_of::<lore_branch_create_args_t>() - 48usize];
-    ["Alignment of lore_branch_create_args_t"]
-        [::std::mem::align_of::<lore_branch_create_args_t>() - 8usize];
-    ["Offset of field: lore_branch_create_args_t::branch"]
-        [::std::mem::offset_of!(lore_branch_create_args_t, branch) - 0usize];
-    ["Offset of field: lore_branch_create_args_t::category"]
-        [::std::mem::offset_of!(lore_branch_create_args_t, category) - 16usize];
-    ["Offset of field: lore_branch_create_args_t::id"]
-        [::std::mem::offset_of!(lore_branch_create_args_t, id) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_create_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_create_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_create_args_t>(),
+        48usize,
+        "Size of lore_branch_create_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_create_args_t>(),
+        8usize,
+        "Alignment of lore_branch_create_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_create_args_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).category) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_create_args_t::category"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_create_args_t::id"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_info_args_t {
     pub branch: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_info_args_t"][::std::mem::size_of::<lore_branch_info_args_t>() - 16usize];
-    ["Alignment of lore_branch_info_args_t"]
-        [::std::mem::align_of::<lore_branch_info_args_t>() - 8usize];
-    ["Offset of field: lore_branch_info_args_t::branch"]
-        [::std::mem::offset_of!(lore_branch_info_args_t, branch) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_info_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_info_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_info_args_t>(),
+        16usize,
+        "Size of lore_branch_info_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_info_args_t>(),
+        8usize,
+        "Alignment of lore_branch_info_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_info_args_t::branch"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_diff_args_t {
@@ -6355,106 +11176,204 @@ pub struct lore_branch_diff_args_t {
     pub path: lore_string_t,
     pub auto_resolve: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_diff_args_t"][::std::mem::size_of::<lore_branch_diff_args_t>() - 56usize];
-    ["Alignment of lore_branch_diff_args_t"]
-        [::std::mem::align_of::<lore_branch_diff_args_t>() - 8usize];
-    ["Offset of field: lore_branch_diff_args_t::source"]
-        [::std::mem::offset_of!(lore_branch_diff_args_t, source) - 0usize];
-    ["Offset of field: lore_branch_diff_args_t::target"]
-        [::std::mem::offset_of!(lore_branch_diff_args_t, target) - 16usize];
-    ["Offset of field: lore_branch_diff_args_t::path"]
-        [::std::mem::offset_of!(lore_branch_diff_args_t, path) - 32usize];
-    ["Offset of field: lore_branch_diff_args_t::auto_resolve"]
-        [::std::mem::offset_of!(lore_branch_diff_args_t, auto_resolve) - 48usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_diff_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_diff_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_diff_args_t>(),
+        56usize,
+        "Size of lore_branch_diff_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_diff_args_t>(),
+        8usize,
+        "Alignment of lore_branch_diff_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_diff_args_t::source"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_diff_args_t::target"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_diff_args_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).auto_resolve) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_branch_diff_args_t::auto_resolve"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_protect_args_t {
     pub branch: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_protect_args_t"]
-        [::std::mem::size_of::<lore_branch_protect_args_t>() - 16usize];
-    ["Alignment of lore_branch_protect_args_t"]
-        [::std::mem::align_of::<lore_branch_protect_args_t>() - 8usize];
-    ["Offset of field: lore_branch_protect_args_t::branch"]
-        [::std::mem::offset_of!(lore_branch_protect_args_t, branch) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_protect_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_protect_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_protect_args_t>(),
+        16usize,
+        "Size of lore_branch_protect_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_protect_args_t>(),
+        8usize,
+        "Alignment of lore_branch_protect_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_protect_args_t::branch"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_unprotect_args_t {
     pub branch: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_unprotect_args_t"]
-        [::std::mem::size_of::<lore_branch_unprotect_args_t>() - 16usize];
-    ["Alignment of lore_branch_unprotect_args_t"]
-        [::std::mem::align_of::<lore_branch_unprotect_args_t>() - 8usize];
-    ["Offset of field: lore_branch_unprotect_args_t::branch"]
-        [::std::mem::offset_of!(lore_branch_unprotect_args_t, branch) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_unprotect_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_unprotect_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_unprotect_args_t>(),
+        16usize,
+        "Size of lore_branch_unprotect_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_unprotect_args_t>(),
+        8usize,
+        "Alignment of lore_branch_unprotect_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_unprotect_args_t::branch"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_archive_args_t {
     pub branch: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_archive_args_t"]
-        [::std::mem::size_of::<lore_branch_archive_args_t>() - 16usize];
-    ["Alignment of lore_branch_archive_args_t"]
-        [::std::mem::align_of::<lore_branch_archive_args_t>() - 8usize];
-    ["Offset of field: lore_branch_archive_args_t::branch"]
-        [::std::mem::offset_of!(lore_branch_archive_args_t, branch) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_archive_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_archive_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_archive_args_t>(),
+        16usize,
+        "Size of lore_branch_archive_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_archive_args_t>(),
+        8usize,
+        "Alignment of lore_branch_archive_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_archive_args_t::branch"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_list_args_t {
     pub archived: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_list_args_t"][::std::mem::size_of::<lore_branch_list_args_t>() - 1usize];
-    ["Alignment of lore_branch_list_args_t"]
-        [::std::mem::align_of::<lore_branch_list_args_t>() - 1usize];
-    ["Offset of field: lore_branch_list_args_t::archived"]
-        [::std::mem::offset_of!(lore_branch_list_args_t, archived) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_list_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_list_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_list_args_t>(),
+        1usize,
+        "Size of lore_branch_list_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_list_args_t>(),
+        1usize,
+        "Alignment of lore_branch_list_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).archived) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_list_args_t::archived"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_abort_args_t {
     pub link: lore_string_t,
     pub ignore_links: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_abort_args_t"]
-        [::std::mem::size_of::<lore_branch_merge_abort_args_t>() - 24usize];
-    ["Alignment of lore_branch_merge_abort_args_t"]
-        [::std::mem::align_of::<lore_branch_merge_abort_args_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_abort_args_t::link"]
-        [::std::mem::offset_of!(lore_branch_merge_abort_args_t, link) - 0usize];
-    ["Offset of field: lore_branch_merge_abort_args_t::ignore_links"]
-        [::std::mem::offset_of!(lore_branch_merge_abort_args_t, ignore_links) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_abort_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_abort_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_abort_args_t>(),
+        24usize,
+        "Size of lore_branch_merge_abort_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_abort_args_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_abort_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_abort_args_t::link"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ignore_links) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_merge_abort_args_t::ignore_links"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_unresolve_args_t {
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_unresolve_args_t"]
-        [::std::mem::size_of::<lore_branch_merge_unresolve_args_t>() - 16usize];
-    ["Alignment of lore_branch_merge_unresolve_args_t"]
-        [::std::mem::align_of::<lore_branch_merge_unresolve_args_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_unresolve_args_t::paths"]
-        [::std::mem::offset_of!(lore_branch_merge_unresolve_args_t, paths) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_unresolve_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_unresolve_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_unresolve_args_t>(),
+        16usize,
+        "Size of lore_branch_merge_unresolve_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_unresolve_args_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_unresolve_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_unresolve_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_into_args_t {
@@ -6464,79 +11383,151 @@ pub struct lore_branch_merge_into_args_t {
     pub link: lore_string_t,
     pub ignore_links: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_into_args_t"]
-        [::std::mem::size_of::<lore_branch_merge_into_args_t>() - 72usize];
-    ["Alignment of lore_branch_merge_into_args_t"]
-        [::std::mem::align_of::<lore_branch_merge_into_args_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_into_args_t::branch"]
-        [::std::mem::offset_of!(lore_branch_merge_into_args_t, branch) - 0usize];
-    ["Offset of field: lore_branch_merge_into_args_t::branch_id"]
-        [::std::mem::offset_of!(lore_branch_merge_into_args_t, branch_id) - 16usize];
-    ["Offset of field: lore_branch_merge_into_args_t::message"]
-        [::std::mem::offset_of!(lore_branch_merge_into_args_t, message) - 32usize];
-    ["Offset of field: lore_branch_merge_into_args_t::link"]
-        [::std::mem::offset_of!(lore_branch_merge_into_args_t, link) - 48usize];
-    ["Offset of field: lore_branch_merge_into_args_t::ignore_links"]
-        [::std::mem::offset_of!(lore_branch_merge_into_args_t, ignore_links) - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_into_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_into_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_into_args_t>(),
+        72usize,
+        "Size of lore_branch_merge_into_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_into_args_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_into_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_into_args_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch_id) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_merge_into_args_t::branch_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).message) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_merge_into_args_t::message"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_branch_merge_into_args_t::link"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ignore_links) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_branch_merge_into_args_t::ignore_links"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_resolve_args_t {
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_resolve_args_t"]
-        [::std::mem::size_of::<lore_branch_merge_resolve_args_t>() - 16usize];
-    ["Alignment of lore_branch_merge_resolve_args_t"]
-        [::std::mem::align_of::<lore_branch_merge_resolve_args_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_resolve_args_t::paths"]
-        [::std::mem::offset_of!(lore_branch_merge_resolve_args_t, paths) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_resolve_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_resolve_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_resolve_args_t>(),
+        16usize,
+        "Size of lore_branch_merge_resolve_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_resolve_args_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_resolve_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_resolve_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_resolve_mine_args_t {
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_resolve_mine_args_t"]
-        [::std::mem::size_of::<lore_branch_merge_resolve_mine_args_t>() - 16usize];
-    ["Alignment of lore_branch_merge_resolve_mine_args_t"]
-        [::std::mem::align_of::<lore_branch_merge_resolve_mine_args_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_resolve_mine_args_t::paths"]
-        [::std::mem::offset_of!(lore_branch_merge_resolve_mine_args_t, paths) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_resolve_mine_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_resolve_mine_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_resolve_mine_args_t>(),
+        16usize,
+        "Size of lore_branch_merge_resolve_mine_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_resolve_mine_args_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_resolve_mine_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_resolve_mine_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_resolve_theirs_args_t {
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_resolve_theirs_args_t"]
-        [::std::mem::size_of::<lore_branch_merge_resolve_theirs_args_t>() - 16usize];
-    ["Alignment of lore_branch_merge_resolve_theirs_args_t"]
-        [::std::mem::align_of::<lore_branch_merge_resolve_theirs_args_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_resolve_theirs_args_t::paths"]
-        [::std::mem::offset_of!(lore_branch_merge_resolve_theirs_args_t, paths) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_resolve_theirs_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_resolve_theirs_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_resolve_theirs_args_t>(),
+        16usize,
+        "Size of lore_branch_merge_resolve_theirs_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_resolve_theirs_args_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_resolve_theirs_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_resolve_theirs_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_restart_args_t {
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_restart_args_t"]
-        [::std::mem::size_of::<lore_branch_merge_restart_args_t>() - 16usize];
-    ["Alignment of lore_branch_merge_restart_args_t"]
-        [::std::mem::align_of::<lore_branch_merge_restart_args_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_restart_args_t::paths"]
-        [::std::mem::offset_of!(lore_branch_merge_restart_args_t, paths) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_restart_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_restart_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_restart_args_t>(),
+        16usize,
+        "Size of lore_branch_merge_restart_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_restart_args_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_restart_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_restart_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_merge_start_args_t {
@@ -6546,23 +11537,47 @@ pub struct lore_branch_merge_start_args_t {
     pub link: lore_string_t,
     pub ignore_links: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_merge_start_args_t"]
-        [::std::mem::size_of::<lore_branch_merge_start_args_t>() - 64usize];
-    ["Alignment of lore_branch_merge_start_args_t"]
-        [::std::mem::align_of::<lore_branch_merge_start_args_t>() - 8usize];
-    ["Offset of field: lore_branch_merge_start_args_t::branch"]
-        [::std::mem::offset_of!(lore_branch_merge_start_args_t, branch) - 0usize];
-    ["Offset of field: lore_branch_merge_start_args_t::message"]
-        [::std::mem::offset_of!(lore_branch_merge_start_args_t, message) - 16usize];
-    ["Offset of field: lore_branch_merge_start_args_t::no_commit"]
-        [::std::mem::offset_of!(lore_branch_merge_start_args_t, no_commit) - 32usize];
-    ["Offset of field: lore_branch_merge_start_args_t::link"]
-        [::std::mem::offset_of!(lore_branch_merge_start_args_t, link) - 40usize];
-    ["Offset of field: lore_branch_merge_start_args_t::ignore_links"]
-        [::std::mem::offset_of!(lore_branch_merge_start_args_t, ignore_links) - 56usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_merge_start_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_merge_start_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_merge_start_args_t>(),
+        64usize,
+        "Size of lore_branch_merge_start_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_merge_start_args_t>(),
+        8usize,
+        "Alignment of lore_branch_merge_start_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_merge_start_args_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).message) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_merge_start_args_t::message"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).no_commit) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_merge_start_args_t::no_commit"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_branch_merge_start_args_t::link"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ignore_links) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_branch_merge_start_args_t::ignore_links"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_switch_args_t {
@@ -6571,88 +11586,170 @@ pub struct lore_branch_switch_args_t {
     pub reset: u8,
     pub bare: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_switch_args_t"]
-        [::std::mem::size_of::<lore_branch_switch_args_t>() - 40usize];
-    ["Alignment of lore_branch_switch_args_t"]
-        [::std::mem::align_of::<lore_branch_switch_args_t>() - 8usize];
-    ["Offset of field: lore_branch_switch_args_t::branch"]
-        [::std::mem::offset_of!(lore_branch_switch_args_t, branch) - 0usize];
-    ["Offset of field: lore_branch_switch_args_t::revision"]
-        [::std::mem::offset_of!(lore_branch_switch_args_t, revision) - 16usize];
-    ["Offset of field: lore_branch_switch_args_t::reset"]
-        [::std::mem::offset_of!(lore_branch_switch_args_t, reset) - 32usize];
-    ["Offset of field: lore_branch_switch_args_t::bare"]
-        [::std::mem::offset_of!(lore_branch_switch_args_t, bare) - 33usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_switch_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_switch_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_switch_args_t>(),
+        40usize,
+        "Size of lore_branch_switch_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_switch_args_t>(),
+        8usize,
+        "Alignment of lore_branch_switch_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_switch_args_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_switch_args_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).reset) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_switch_args_t::reset"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).bare) as usize - ptr as usize },
+        33usize,
+        "Offset of field: lore_branch_switch_args_t::bare"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_reset_args_t {
     pub revision: lore_string_t,
     pub branch: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_reset_args_t"]
-        [::std::mem::size_of::<lore_branch_reset_args_t>() - 32usize];
-    ["Alignment of lore_branch_reset_args_t"]
-        [::std::mem::align_of::<lore_branch_reset_args_t>() - 8usize];
-    ["Offset of field: lore_branch_reset_args_t::revision"]
-        [::std::mem::offset_of!(lore_branch_reset_args_t, revision) - 0usize];
-    ["Offset of field: lore_branch_reset_args_t::branch"]
-        [::std::mem::offset_of!(lore_branch_reset_args_t, branch) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_reset_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_reset_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_reset_args_t>(),
+        32usize,
+        "Size of lore_branch_reset_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_reset_args_t>(),
+        8usize,
+        "Alignment of lore_branch_reset_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_reset_args_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_reset_args_t::branch"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_push_args_t {
     pub branch: lore_string_t,
     pub fast_forward_merge: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_push_args_t"][::std::mem::size_of::<lore_branch_push_args_t>() - 24usize];
-    ["Alignment of lore_branch_push_args_t"]
-        [::std::mem::align_of::<lore_branch_push_args_t>() - 8usize];
-    ["Offset of field: lore_branch_push_args_t::branch"]
-        [::std::mem::offset_of!(lore_branch_push_args_t, branch) - 0usize];
-    ["Offset of field: lore_branch_push_args_t::fast_forward_merge"]
-        [::std::mem::offset_of!(lore_branch_push_args_t, fast_forward_merge) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_push_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_push_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_push_args_t>(),
+        24usize,
+        "Size of lore_branch_push_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_push_args_t>(),
+        8usize,
+        "Alignment of lore_branch_push_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_push_args_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).fast_forward_merge) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_push_args_t::fast_forward_merge"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_metadata_get_args_t {
     pub branch: lore_string_t,
     pub key: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_metadata_get_args_t"]
-        [::std::mem::size_of::<lore_branch_metadata_get_args_t>() - 32usize];
-    ["Alignment of lore_branch_metadata_get_args_t"]
-        [::std::mem::align_of::<lore_branch_metadata_get_args_t>() - 8usize];
-    ["Offset of field: lore_branch_metadata_get_args_t::branch"]
-        [::std::mem::offset_of!(lore_branch_metadata_get_args_t, branch) - 0usize];
-    ["Offset of field: lore_branch_metadata_get_args_t::key"]
-        [::std::mem::offset_of!(lore_branch_metadata_get_args_t, key) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_metadata_get_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_metadata_get_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_metadata_get_args_t>(),
+        32usize,
+        "Size of lore_branch_metadata_get_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_metadata_get_args_t>(),
+        8usize,
+        "Alignment of lore_branch_metadata_get_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_metadata_get_args_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_metadata_get_args_t::key"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_metadata_type_array_t {
     pub ptr: *const lore_metadata_type_t,
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_metadata_type_array_t"]
-        [::std::mem::size_of::<lore_metadata_type_array_t>() - 16usize];
-    ["Alignment of lore_metadata_type_array_t"]
-        [::std::mem::align_of::<lore_metadata_type_array_t>() - 8usize];
-    ["Offset of field: lore_metadata_type_array_t::ptr"]
-        [::std::mem::offset_of!(lore_metadata_type_array_t, ptr) - 0usize];
-    ["Offset of field: lore_metadata_type_array_t::count"]
-        [::std::mem::offset_of!(lore_metadata_type_array_t, count) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_metadata_type_array_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_metadata_type_array_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_metadata_type_array_t>(),
+        16usize,
+        "Size of lore_metadata_type_array_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_metadata_type_array_t>(),
+        8usize,
+        "Alignment of lore_metadata_type_array_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_metadata_type_array_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_metadata_type_array_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_metadata_set_args_t {
@@ -6661,38 +11758,74 @@ pub struct lore_branch_metadata_set_args_t {
     pub values: lore_string_array_t,
     pub formats: lore_metadata_type_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_metadata_set_args_t"]
-        [::std::mem::size_of::<lore_branch_metadata_set_args_t>() - 64usize];
-    ["Alignment of lore_branch_metadata_set_args_t"]
-        [::std::mem::align_of::<lore_branch_metadata_set_args_t>() - 8usize];
-    ["Offset of field: lore_branch_metadata_set_args_t::branch"]
-        [::std::mem::offset_of!(lore_branch_metadata_set_args_t, branch) - 0usize];
-    ["Offset of field: lore_branch_metadata_set_args_t::keys"]
-        [::std::mem::offset_of!(lore_branch_metadata_set_args_t, keys) - 16usize];
-    ["Offset of field: lore_branch_metadata_set_args_t::values"]
-        [::std::mem::offset_of!(lore_branch_metadata_set_args_t, values) - 32usize];
-    ["Offset of field: lore_branch_metadata_set_args_t::formats"]
-        [::std::mem::offset_of!(lore_branch_metadata_set_args_t, formats) - 48usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_metadata_set_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_metadata_set_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_metadata_set_args_t>(),
+        64usize,
+        "Size of lore_branch_metadata_set_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_metadata_set_args_t>(),
+        8usize,
+        "Alignment of lore_branch_metadata_set_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_metadata_set_args_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).keys) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_metadata_set_args_t::keys"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).values) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_branch_metadata_set_args_t::values"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).formats) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_branch_metadata_set_args_t::formats"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_branch_metadata_clear_args_t {
     pub branch: lore_string_t,
     pub keys: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_branch_metadata_clear_args_t"]
-        [::std::mem::size_of::<lore_branch_metadata_clear_args_t>() - 32usize];
-    ["Alignment of lore_branch_metadata_clear_args_t"]
-        [::std::mem::align_of::<lore_branch_metadata_clear_args_t>() - 8usize];
-    ["Offset of field: lore_branch_metadata_clear_args_t::branch"]
-        [::std::mem::offset_of!(lore_branch_metadata_clear_args_t, branch) - 0usize];
-    ["Offset of field: lore_branch_metadata_clear_args_t::keys"]
-        [::std::mem::offset_of!(lore_branch_metadata_clear_args_t, keys) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_branch_metadata_clear_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_metadata_clear_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_metadata_clear_args_t>(),
+        32usize,
+        "Size of lore_branch_metadata_clear_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_metadata_clear_args_t>(),
+        8usize,
+        "Alignment of lore_branch_metadata_clear_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_metadata_clear_args_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).keys) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_metadata_clear_args_t::keys"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_info_args_t {
@@ -6701,20 +11834,42 @@ pub struct lore_file_info_args_t {
     pub local: u8,
     pub filtered: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_info_args_t"][::std::mem::size_of::<lore_file_info_args_t>() - 40usize];
-    ["Alignment of lore_file_info_args_t"]
-        [::std::mem::align_of::<lore_file_info_args_t>() - 8usize];
-    ["Offset of field: lore_file_info_args_t::paths"]
-        [::std::mem::offset_of!(lore_file_info_args_t, paths) - 0usize];
-    ["Offset of field: lore_file_info_args_t::revision"]
-        [::std::mem::offset_of!(lore_file_info_args_t, revision) - 16usize];
-    ["Offset of field: lore_file_info_args_t::local"]
-        [::std::mem::offset_of!(lore_file_info_args_t, local) - 32usize];
-    ["Offset of field: lore_file_info_args_t::filtered"]
-        [::std::mem::offset_of!(lore_file_info_args_t, filtered) - 33usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_info_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_info_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_info_args_t>(),
+        40usize,
+        "Size of lore_file_info_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_info_args_t>(),
+        8usize,
+        "Alignment of lore_file_info_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_info_args_t::paths"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_info_args_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_info_args_t::local"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).filtered) as usize - ptr as usize },
+        33usize,
+        "Offset of field: lore_file_info_args_t::filtered"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_diff_args_t {
@@ -6726,39 +11881,83 @@ pub struct lore_file_diff_args_t {
     pub ignore_whitespace_eol: u8,
     pub ignore_whitespace_inline: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_diff_args_t"][::std::mem::size_of::<lore_file_diff_args_t>() - 64usize];
-    ["Alignment of lore_file_diff_args_t"]
-        [::std::mem::align_of::<lore_file_diff_args_t>() - 8usize];
-    ["Offset of field: lore_file_diff_args_t::paths"]
-        [::std::mem::offset_of!(lore_file_diff_args_t, paths) - 0usize];
-    ["Offset of field: lore_file_diff_args_t::source_revision"]
-        [::std::mem::offset_of!(lore_file_diff_args_t, source_revision) - 16usize];
-    ["Offset of field: lore_file_diff_args_t::target_revision"]
-        [::std::mem::offset_of!(lore_file_diff_args_t, target_revision) - 32usize];
-    ["Offset of field: lore_file_diff_args_t::diff3"]
-        [::std::mem::offset_of!(lore_file_diff_args_t, diff3) - 48usize];
-    ["Offset of field: lore_file_diff_args_t::context_lines"]
-        [::std::mem::offset_of!(lore_file_diff_args_t, context_lines) - 52usize];
-    ["Offset of field: lore_file_diff_args_t::ignore_whitespace_eol"]
-        [::std::mem::offset_of!(lore_file_diff_args_t, ignore_whitespace_eol) - 56usize];
-    ["Offset of field: lore_file_diff_args_t::ignore_whitespace_inline"]
-        [::std::mem::offset_of!(lore_file_diff_args_t, ignore_whitespace_inline) - 57usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_diff_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_diff_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_diff_args_t>(),
+        64usize,
+        "Size of lore_file_diff_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_diff_args_t>(),
+        8usize,
+        "Alignment of lore_file_diff_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_diff_args_t::paths"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_diff_args_t::source_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target_revision) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_diff_args_t::target_revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).diff3) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_file_diff_args_t::diff3"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).context_lines) as usize - ptr as usize },
+        52usize,
+        "Offset of field: lore_file_diff_args_t::context_lines"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ignore_whitespace_eol) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_file_diff_args_t::ignore_whitespace_eol"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ignore_whitespace_inline) as usize - ptr as usize },
+        57usize,
+        "Offset of field: lore_file_diff_args_t::ignore_whitespace_inline"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_hash_args_t {
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_hash_args_t"][::std::mem::size_of::<lore_file_hash_args_t>() - 16usize];
-    ["Alignment of lore_file_hash_args_t"]
-        [::std::mem::align_of::<lore_file_hash_args_t>() - 8usize];
-    ["Offset of field: lore_file_hash_args_t::paths"]
-        [::std::mem::offset_of!(lore_file_hash_args_t, paths) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_hash_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_hash_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_hash_args_t>(),
+        16usize,
+        "Size of lore_file_hash_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_hash_args_t>(),
+        8usize,
+        "Alignment of lore_file_hash_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_hash_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_history_args_t {
@@ -6768,37 +11967,73 @@ pub struct lore_file_history_args_t {
     pub length: u32,
     pub depth: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_history_args_t"]
-        [::std::mem::size_of::<lore_file_history_args_t>() - 56usize];
-    ["Alignment of lore_file_history_args_t"]
-        [::std::mem::align_of::<lore_file_history_args_t>() - 8usize];
-    ["Offset of field: lore_file_history_args_t::path"]
-        [::std::mem::offset_of!(lore_file_history_args_t, path) - 0usize];
-    ["Offset of field: lore_file_history_args_t::revision"]
-        [::std::mem::offset_of!(lore_file_history_args_t, revision) - 16usize];
-    ["Offset of field: lore_file_history_args_t::branch"]
-        [::std::mem::offset_of!(lore_file_history_args_t, branch) - 32usize];
-    ["Offset of field: lore_file_history_args_t::length"]
-        [::std::mem::offset_of!(lore_file_history_args_t, length) - 48usize];
-    ["Offset of field: lore_file_history_args_t::depth"]
-        [::std::mem::offset_of!(lore_file_history_args_t, depth) - 52usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_history_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_history_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_history_args_t>(),
+        56usize,
+        "Size of lore_file_history_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_history_args_t>(),
+        8usize,
+        "Alignment of lore_file_history_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_history_args_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_history_args_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_history_args_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).length) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_file_history_args_t::length"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).depth) as usize - ptr as usize },
+        52usize,
+        "Offset of field: lore_file_history_args_t::depth"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_metadata_clear_args_t {
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_metadata_clear_args_t"]
-        [::std::mem::size_of::<lore_file_metadata_clear_args_t>() - 16usize];
-    ["Alignment of lore_file_metadata_clear_args_t"]
-        [::std::mem::align_of::<lore_file_metadata_clear_args_t>() - 8usize];
-    ["Offset of field: lore_file_metadata_clear_args_t::path"]
-        [::std::mem::offset_of!(lore_file_metadata_clear_args_t, path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_metadata_clear_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_metadata_clear_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_metadata_clear_args_t>(),
+        16usize,
+        "Size of lore_file_metadata_clear_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_metadata_clear_args_t>(),
+        8usize,
+        "Alignment of lore_file_metadata_clear_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_metadata_clear_args_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_metadata_get_args_t {
@@ -6806,51 +12041,100 @@ pub struct lore_file_metadata_get_args_t {
     pub path: lore_string_t,
     pub key: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_metadata_get_args_t"]
-        [::std::mem::size_of::<lore_file_metadata_get_args_t>() - 48usize];
-    ["Alignment of lore_file_metadata_get_args_t"]
-        [::std::mem::align_of::<lore_file_metadata_get_args_t>() - 8usize];
-    ["Offset of field: lore_file_metadata_get_args_t::revision"]
-        [::std::mem::offset_of!(lore_file_metadata_get_args_t, revision) - 0usize];
-    ["Offset of field: lore_file_metadata_get_args_t::path"]
-        [::std::mem::offset_of!(lore_file_metadata_get_args_t, path) - 16usize];
-    ["Offset of field: lore_file_metadata_get_args_t::key"]
-        [::std::mem::offset_of!(lore_file_metadata_get_args_t, key) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_metadata_get_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_metadata_get_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_metadata_get_args_t>(),
+        48usize,
+        "Size of lore_file_metadata_get_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_metadata_get_args_t>(),
+        8usize,
+        "Alignment of lore_file_metadata_get_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_metadata_get_args_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_metadata_get_args_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_metadata_get_args_t::key"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_metadata_list_args_t {
     pub path: lore_string_t,
     pub revision: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_metadata_list_args_t"]
-        [::std::mem::size_of::<lore_file_metadata_list_args_t>() - 32usize];
-    ["Alignment of lore_file_metadata_list_args_t"]
-        [::std::mem::align_of::<lore_file_metadata_list_args_t>() - 8usize];
-    ["Offset of field: lore_file_metadata_list_args_t::path"]
-        [::std::mem::offset_of!(lore_file_metadata_list_args_t, path) - 0usize];
-    ["Offset of field: lore_file_metadata_list_args_t::revision"]
-        [::std::mem::offset_of!(lore_file_metadata_list_args_t, revision) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_metadata_list_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_metadata_list_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_metadata_list_args_t>(),
+        32usize,
+        "Size of lore_file_metadata_list_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_metadata_list_args_t>(),
+        8usize,
+        "Alignment of lore_file_metadata_list_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_metadata_list_args_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_metadata_list_args_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_uint32_array_t {
     pub ptr: *const u32,
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_uint32_array_t"][::std::mem::size_of::<lore_uint32_array_t>() - 16usize];
-    ["Alignment of lore_uint32_array_t"][::std::mem::align_of::<lore_uint32_array_t>() - 8usize];
-    ["Offset of field: lore_uint32_array_t::ptr"]
-        [::std::mem::offset_of!(lore_uint32_array_t, ptr) - 0usize];
-    ["Offset of field: lore_uint32_array_t::count"]
-        [::std::mem::offset_of!(lore_uint32_array_t, count) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_uint32_array_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_uint32_array_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_uint32_array_t>(),
+        16usize,
+        "Size of lore_uint32_array_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_uint32_array_t>(),
+        8usize,
+        "Alignment of lore_uint32_array_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_uint32_array_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_uint32_array_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_metadata_set_args_t {
@@ -6860,23 +12144,47 @@ pub struct lore_file_metadata_set_args_t {
     pub formats: lore_metadata_type_array_t,
     pub entries: lore_uint32_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_metadata_set_args_t"]
-        [::std::mem::size_of::<lore_file_metadata_set_args_t>() - 80usize];
-    ["Alignment of lore_file_metadata_set_args_t"]
-        [::std::mem::align_of::<lore_file_metadata_set_args_t>() - 8usize];
-    ["Offset of field: lore_file_metadata_set_args_t::paths"]
-        [::std::mem::offset_of!(lore_file_metadata_set_args_t, paths) - 0usize];
-    ["Offset of field: lore_file_metadata_set_args_t::keys"]
-        [::std::mem::offset_of!(lore_file_metadata_set_args_t, keys) - 16usize];
-    ["Offset of field: lore_file_metadata_set_args_t::values"]
-        [::std::mem::offset_of!(lore_file_metadata_set_args_t, values) - 32usize];
-    ["Offset of field: lore_file_metadata_set_args_t::formats"]
-        [::std::mem::offset_of!(lore_file_metadata_set_args_t, formats) - 48usize];
-    ["Offset of field: lore_file_metadata_set_args_t::entries"]
-        [::std::mem::offset_of!(lore_file_metadata_set_args_t, entries) - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_metadata_set_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_metadata_set_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_metadata_set_args_t>(),
+        80usize,
+        "Size of lore_file_metadata_set_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_metadata_set_args_t>(),
+        8usize,
+        "Alignment of lore_file_metadata_set_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_metadata_set_args_t::paths"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).keys) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_metadata_set_args_t::keys"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).values) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_metadata_set_args_t::values"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).formats) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_file_metadata_set_args_t::formats"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).entries) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_file_metadata_set_args_t::entries"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_reset_args_t {
@@ -6884,18 +12192,37 @@ pub struct lore_file_reset_args_t {
     pub revision: lore_string_t,
     pub purge: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_reset_args_t"][::std::mem::size_of::<lore_file_reset_args_t>() - 40usize];
-    ["Alignment of lore_file_reset_args_t"]
-        [::std::mem::align_of::<lore_file_reset_args_t>() - 8usize];
-    ["Offset of field: lore_file_reset_args_t::paths"]
-        [::std::mem::offset_of!(lore_file_reset_args_t, paths) - 0usize];
-    ["Offset of field: lore_file_reset_args_t::revision"]
-        [::std::mem::offset_of!(lore_file_reset_args_t, revision) - 16usize];
-    ["Offset of field: lore_file_reset_args_t::purge"]
-        [::std::mem::offset_of!(lore_file_reset_args_t, purge) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_reset_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_reset_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_reset_args_t>(),
+        40usize,
+        "Size of lore_file_reset_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_reset_args_t>(),
+        8usize,
+        "Alignment of lore_file_reset_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_reset_args_t::paths"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_reset_args_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).purge) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_reset_args_t::purge"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_reset_to_last_merged_args_t {
@@ -6903,19 +12230,37 @@ pub struct lore_file_reset_to_last_merged_args_t {
     pub branch: lore_string_t,
     pub purge: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_reset_to_last_merged_args_t"]
-        [::std::mem::size_of::<lore_file_reset_to_last_merged_args_t>() - 40usize];
-    ["Alignment of lore_file_reset_to_last_merged_args_t"]
-        [::std::mem::align_of::<lore_file_reset_to_last_merged_args_t>() - 8usize];
-    ["Offset of field: lore_file_reset_to_last_merged_args_t::paths"]
-        [::std::mem::offset_of!(lore_file_reset_to_last_merged_args_t, paths) - 0usize];
-    ["Offset of field: lore_file_reset_to_last_merged_args_t::branch"]
-        [::std::mem::offset_of!(lore_file_reset_to_last_merged_args_t, branch) - 16usize];
-    ["Offset of field: lore_file_reset_to_last_merged_args_t::purge"]
-        [::std::mem::offset_of!(lore_file_reset_to_last_merged_args_t, purge) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_reset_to_last_merged_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_reset_to_last_merged_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_reset_to_last_merged_args_t>(),
+        40usize,
+        "Size of lore_file_reset_to_last_merged_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_reset_to_last_merged_args_t>(),
+        8usize,
+        "Alignment of lore_file_reset_to_last_merged_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_reset_to_last_merged_args_t::paths"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_reset_to_last_merged_args_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).purge) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_reset_to_last_merged_args_t::purge"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_stage_args_t {
@@ -6923,110 +12268,211 @@ pub struct lore_file_stage_args_t {
     pub case_change: u32,
     pub scan: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_stage_args_t"][::std::mem::size_of::<lore_file_stage_args_t>() - 24usize];
-    ["Alignment of lore_file_stage_args_t"]
-        [::std::mem::align_of::<lore_file_stage_args_t>() - 8usize];
-    ["Offset of field: lore_file_stage_args_t::paths"]
-        [::std::mem::offset_of!(lore_file_stage_args_t, paths) - 0usize];
-    ["Offset of field: lore_file_stage_args_t::case_change"]
-        [::std::mem::offset_of!(lore_file_stage_args_t, case_change) - 16usize];
-    ["Offset of field: lore_file_stage_args_t::scan"]
-        [::std::mem::offset_of!(lore_file_stage_args_t, scan) - 20usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_stage_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_stage_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_stage_args_t>(),
+        24usize,
+        "Size of lore_file_stage_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_stage_args_t>(),
+        8usize,
+        "Alignment of lore_file_stage_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_stage_args_t::paths"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).case_change) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_stage_args_t::case_change"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).scan) as usize - ptr as usize },
+        20usize,
+        "Offset of field: lore_file_stage_args_t::scan"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_stage_merge_args_t {
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_stage_merge_args_t"]
-        [::std::mem::size_of::<lore_file_stage_merge_args_t>() - 16usize];
-    ["Alignment of lore_file_stage_merge_args_t"]
-        [::std::mem::align_of::<lore_file_stage_merge_args_t>() - 8usize];
-    ["Offset of field: lore_file_stage_merge_args_t::paths"]
-        [::std::mem::offset_of!(lore_file_stage_merge_args_t, paths) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_stage_merge_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_stage_merge_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_stage_merge_args_t>(),
+        16usize,
+        "Size of lore_file_stage_merge_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_stage_merge_args_t>(),
+        8usize,
+        "Alignment of lore_file_stage_merge_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_stage_merge_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_stage_move_args_t {
     pub from_path: lore_string_t,
     pub to_path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_stage_move_args_t"]
-        [::std::mem::size_of::<lore_file_stage_move_args_t>() - 32usize];
-    ["Alignment of lore_file_stage_move_args_t"]
-        [::std::mem::align_of::<lore_file_stage_move_args_t>() - 8usize];
-    ["Offset of field: lore_file_stage_move_args_t::from_path"]
-        [::std::mem::offset_of!(lore_file_stage_move_args_t, from_path) - 0usize];
-    ["Offset of field: lore_file_stage_move_args_t::to_path"]
-        [::std::mem::offset_of!(lore_file_stage_move_args_t, to_path) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_stage_move_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_stage_move_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_stage_move_args_t>(),
+        32usize,
+        "Size of lore_file_stage_move_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_stage_move_args_t>(),
+        8usize,
+        "Alignment of lore_file_stage_move_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).from_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_stage_move_args_t::from_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).to_path) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_stage_move_args_t::to_path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dirty_args_t {
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dirty_args_t"][::std::mem::size_of::<lore_file_dirty_args_t>() - 16usize];
-    ["Alignment of lore_file_dirty_args_t"]
-        [::std::mem::align_of::<lore_file_dirty_args_t>() - 8usize];
-    ["Offset of field: lore_file_dirty_args_t::paths"]
-        [::std::mem::offset_of!(lore_file_dirty_args_t, paths) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dirty_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dirty_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dirty_args_t>(),
+        16usize,
+        "Size of lore_file_dirty_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dirty_args_t>(),
+        8usize,
+        "Alignment of lore_file_dirty_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dirty_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dirty_move_args_t {
     pub from_path: lore_string_t,
     pub to_path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dirty_move_args_t"]
-        [::std::mem::size_of::<lore_file_dirty_move_args_t>() - 32usize];
-    ["Alignment of lore_file_dirty_move_args_t"]
-        [::std::mem::align_of::<lore_file_dirty_move_args_t>() - 8usize];
-    ["Offset of field: lore_file_dirty_move_args_t::from_path"]
-        [::std::mem::offset_of!(lore_file_dirty_move_args_t, from_path) - 0usize];
-    ["Offset of field: lore_file_dirty_move_args_t::to_path"]
-        [::std::mem::offset_of!(lore_file_dirty_move_args_t, to_path) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dirty_move_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dirty_move_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dirty_move_args_t>(),
+        32usize,
+        "Size of lore_file_dirty_move_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dirty_move_args_t>(),
+        8usize,
+        "Alignment of lore_file_dirty_move_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).from_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dirty_move_args_t::from_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).to_path) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_dirty_move_args_t::to_path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dirty_copy_args_t {
     pub from_path: lore_string_t,
     pub to_path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dirty_copy_args_t"]
-        [::std::mem::size_of::<lore_file_dirty_copy_args_t>() - 32usize];
-    ["Alignment of lore_file_dirty_copy_args_t"]
-        [::std::mem::align_of::<lore_file_dirty_copy_args_t>() - 8usize];
-    ["Offset of field: lore_file_dirty_copy_args_t::from_path"]
-        [::std::mem::offset_of!(lore_file_dirty_copy_args_t, from_path) - 0usize];
-    ["Offset of field: lore_file_dirty_copy_args_t::to_path"]
-        [::std::mem::offset_of!(lore_file_dirty_copy_args_t, to_path) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dirty_copy_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dirty_copy_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dirty_copy_args_t>(),
+        32usize,
+        "Size of lore_file_dirty_copy_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dirty_copy_args_t>(),
+        8usize,
+        "Alignment of lore_file_dirty_copy_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).from_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dirty_copy_args_t::from_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).to_path) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_dirty_copy_args_t::to_path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_unstage_args_t {
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_unstage_args_t"]
-        [::std::mem::size_of::<lore_file_unstage_args_t>() - 16usize];
-    ["Alignment of lore_file_unstage_args_t"]
-        [::std::mem::align_of::<lore_file_unstage_args_t>() - 8usize];
-    ["Offset of field: lore_file_unstage_args_t::paths"]
-        [::std::mem::offset_of!(lore_file_unstage_args_t, paths) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_unstage_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_unstage_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_unstage_args_t>(),
+        16usize,
+        "Size of lore_file_unstage_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_unstage_args_t>(),
+        8usize,
+        "Alignment of lore_file_unstage_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_unstage_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_write_args_t {
@@ -7035,53 +12481,106 @@ pub struct lore_file_write_args_t {
     pub revision: lore_string_t,
     pub output: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_write_args_t"][::std::mem::size_of::<lore_file_write_args_t>() - 64usize];
-    ["Alignment of lore_file_write_args_t"]
-        [::std::mem::align_of::<lore_file_write_args_t>() - 8usize];
-    ["Offset of field: lore_file_write_args_t::address"]
-        [::std::mem::offset_of!(lore_file_write_args_t, address) - 0usize];
-    ["Offset of field: lore_file_write_args_t::path"]
-        [::std::mem::offset_of!(lore_file_write_args_t, path) - 16usize];
-    ["Offset of field: lore_file_write_args_t::revision"]
-        [::std::mem::offset_of!(lore_file_write_args_t, revision) - 32usize];
-    ["Offset of field: lore_file_write_args_t::output"]
-        [::std::mem::offset_of!(lore_file_write_args_t, output) - 48usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_write_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_write_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_write_args_t>(),
+        64usize,
+        "Size of lore_file_write_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_write_args_t>(),
+        8usize,
+        "Alignment of lore_file_write_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_write_args_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_write_args_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_write_args_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).output) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_file_write_args_t::output"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_obliterate_args_t {
     pub address: lore_string_t,
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_obliterate_args_t"]
-        [::std::mem::size_of::<lore_file_obliterate_args_t>() - 32usize];
-    ["Alignment of lore_file_obliterate_args_t"]
-        [::std::mem::align_of::<lore_file_obliterate_args_t>() - 8usize];
-    ["Offset of field: lore_file_obliterate_args_t::address"]
-        [::std::mem::offset_of!(lore_file_obliterate_args_t, address) - 0usize];
-    ["Offset of field: lore_file_obliterate_args_t::path"]
-        [::std::mem::offset_of!(lore_file_obliterate_args_t, path) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_obliterate_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_obliterate_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_obliterate_args_t>(),
+        32usize,
+        "Size of lore_file_obliterate_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_obliterate_args_t>(),
+        8usize,
+        "Alignment of lore_file_obliterate_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_obliterate_args_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_obliterate_args_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dump_args_t {
     pub address: lore_string_t,
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dump_args_t"][::std::mem::size_of::<lore_file_dump_args_t>() - 32usize];
-    ["Alignment of lore_file_dump_args_t"]
-        [::std::mem::align_of::<lore_file_dump_args_t>() - 8usize];
-    ["Offset of field: lore_file_dump_args_t::address"]
-        [::std::mem::offset_of!(lore_file_dump_args_t, address) - 0usize];
-    ["Offset of field: lore_file_dump_args_t::path"]
-        [::std::mem::offset_of!(lore_file_dump_args_t, path) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dump_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dump_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dump_args_t>(),
+        32usize,
+        "Size of lore_file_dump_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dump_args_t>(),
+        8usize,
+        "Alignment of lore_file_dump_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dump_args_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_dump_args_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dependency_add_args_t {
@@ -7092,25 +12591,52 @@ pub struct lore_file_dependency_add_args_t {
     pub tag_counts: lore_uint32_array_t,
     pub force: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dependency_add_args_t"]
-        [::std::mem::size_of::<lore_file_dependency_add_args_t>() - 88usize];
-    ["Alignment of lore_file_dependency_add_args_t"]
-        [::std::mem::align_of::<lore_file_dependency_add_args_t>() - 8usize];
-    ["Offset of field: lore_file_dependency_add_args_t::paths"]
-        [::std::mem::offset_of!(lore_file_dependency_add_args_t, paths) - 0usize];
-    ["Offset of field: lore_file_dependency_add_args_t::dependencies"]
-        [::std::mem::offset_of!(lore_file_dependency_add_args_t, dependencies) - 16usize];
-    ["Offset of field: lore_file_dependency_add_args_t::tags"]
-        [::std::mem::offset_of!(lore_file_dependency_add_args_t, tags) - 32usize];
-    ["Offset of field: lore_file_dependency_add_args_t::dep_counts"]
-        [::std::mem::offset_of!(lore_file_dependency_add_args_t, dep_counts) - 48usize];
-    ["Offset of field: lore_file_dependency_add_args_t::tag_counts"]
-        [::std::mem::offset_of!(lore_file_dependency_add_args_t, tag_counts) - 64usize];
-    ["Offset of field: lore_file_dependency_add_args_t::force"]
-        [::std::mem::offset_of!(lore_file_dependency_add_args_t, force) - 80usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dependency_add_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dependency_add_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dependency_add_args_t>(),
+        88usize,
+        "Size of lore_file_dependency_add_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dependency_add_args_t>(),
+        8usize,
+        "Alignment of lore_file_dependency_add_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dependency_add_args_t::paths"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dependencies) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_dependency_add_args_t::dependencies"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tags) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_dependency_add_args_t::tags"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dep_counts) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_file_dependency_add_args_t::dep_counts"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tag_counts) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_file_dependency_add_args_t::tag_counts"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).force) as usize - ptr as usize },
+        80usize,
+        "Offset of field: lore_file_dependency_add_args_t::force"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dependency_remove_args_t {
@@ -7120,23 +12646,47 @@ pub struct lore_file_dependency_remove_args_t {
     pub dep_counts: lore_uint32_array_t,
     pub tag_counts: lore_uint32_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dependency_remove_args_t"]
-        [::std::mem::size_of::<lore_file_dependency_remove_args_t>() - 80usize];
-    ["Alignment of lore_file_dependency_remove_args_t"]
-        [::std::mem::align_of::<lore_file_dependency_remove_args_t>() - 8usize];
-    ["Offset of field: lore_file_dependency_remove_args_t::paths"]
-        [::std::mem::offset_of!(lore_file_dependency_remove_args_t, paths) - 0usize];
-    ["Offset of field: lore_file_dependency_remove_args_t::dependencies"]
-        [::std::mem::offset_of!(lore_file_dependency_remove_args_t, dependencies) - 16usize];
-    ["Offset of field: lore_file_dependency_remove_args_t::tags"]
-        [::std::mem::offset_of!(lore_file_dependency_remove_args_t, tags) - 32usize];
-    ["Offset of field: lore_file_dependency_remove_args_t::dep_counts"]
-        [::std::mem::offset_of!(lore_file_dependency_remove_args_t, dep_counts) - 48usize];
-    ["Offset of field: lore_file_dependency_remove_args_t::tag_counts"]
-        [::std::mem::offset_of!(lore_file_dependency_remove_args_t, tag_counts) - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dependency_remove_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dependency_remove_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dependency_remove_args_t>(),
+        80usize,
+        "Size of lore_file_dependency_remove_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dependency_remove_args_t>(),
+        8usize,
+        "Alignment of lore_file_dependency_remove_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dependency_remove_args_t::paths"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dependencies) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_dependency_remove_args_t::dependencies"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tags) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_dependency_remove_args_t::tags"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dep_counts) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_file_dependency_remove_args_t::dep_counts"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tag_counts) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_file_dependency_remove_args_t::tag_counts"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_file_dependency_list_args_t {
@@ -7147,59 +12697,116 @@ pub struct lore_file_dependency_list_args_t {
     pub tags: lore_string_array_t,
     pub depth_limit: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_file_dependency_list_args_t"]
-        [::std::mem::size_of::<lore_file_dependency_list_args_t>() - 64usize];
-    ["Alignment of lore_file_dependency_list_args_t"]
-        [::std::mem::align_of::<lore_file_dependency_list_args_t>() - 8usize];
-    ["Offset of field: lore_file_dependency_list_args_t::paths"]
-        [::std::mem::offset_of!(lore_file_dependency_list_args_t, paths) - 0usize];
-    ["Offset of field: lore_file_dependency_list_args_t::revision"]
-        [::std::mem::offset_of!(lore_file_dependency_list_args_t, revision) - 16usize];
-    ["Offset of field: lore_file_dependency_list_args_t::recursive"]
-        [::std::mem::offset_of!(lore_file_dependency_list_args_t, recursive) - 32usize];
-    ["Offset of field: lore_file_dependency_list_args_t::reverse"]
-        [::std::mem::offset_of!(lore_file_dependency_list_args_t, reverse) - 33usize];
-    ["Offset of field: lore_file_dependency_list_args_t::tags"]
-        [::std::mem::offset_of!(lore_file_dependency_list_args_t, tags) - 40usize];
-    ["Offset of field: lore_file_dependency_list_args_t::depth_limit"]
-        [::std::mem::offset_of!(lore_file_dependency_list_args_t, depth_limit) - 56usize];
-};
+#[test]
+fn bindgen_test_layout_lore_file_dependency_list_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_file_dependency_list_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_file_dependency_list_args_t>(),
+        64usize,
+        "Size of lore_file_dependency_list_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_file_dependency_list_args_t>(),
+        8usize,
+        "Alignment of lore_file_dependency_list_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_file_dependency_list_args_t::paths"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_file_dependency_list_args_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).recursive) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_file_dependency_list_args_t::recursive"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).reverse) as usize - ptr as usize },
+        33usize,
+        "Offset of field: lore_file_dependency_list_args_t::reverse"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).tags) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_file_dependency_list_args_t::tags"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).depth_limit) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_file_dependency_list_args_t::depth_limit"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_lock_file_acquire_args_t {
     pub paths: lore_string_array_t,
     pub branch: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_lock_file_acquire_args_t"]
-        [::std::mem::size_of::<lore_lock_file_acquire_args_t>() - 32usize];
-    ["Alignment of lore_lock_file_acquire_args_t"]
-        [::std::mem::align_of::<lore_lock_file_acquire_args_t>() - 8usize];
-    ["Offset of field: lore_lock_file_acquire_args_t::paths"]
-        [::std::mem::offset_of!(lore_lock_file_acquire_args_t, paths) - 0usize];
-    ["Offset of field: lore_lock_file_acquire_args_t::branch"]
-        [::std::mem::offset_of!(lore_lock_file_acquire_args_t, branch) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_lock_file_acquire_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_lock_file_acquire_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_lock_file_acquire_args_t>(),
+        32usize,
+        "Size of lore_lock_file_acquire_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_lock_file_acquire_args_t>(),
+        8usize,
+        "Alignment of lore_lock_file_acquire_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_lock_file_acquire_args_t::paths"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_lock_file_acquire_args_t::branch"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_lock_file_status_args_t {
     pub paths: lore_string_array_t,
     pub branch: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_lock_file_status_args_t"]
-        [::std::mem::size_of::<lore_lock_file_status_args_t>() - 32usize];
-    ["Alignment of lore_lock_file_status_args_t"]
-        [::std::mem::align_of::<lore_lock_file_status_args_t>() - 8usize];
-    ["Offset of field: lore_lock_file_status_args_t::paths"]
-        [::std::mem::offset_of!(lore_lock_file_status_args_t, paths) - 0usize];
-    ["Offset of field: lore_lock_file_status_args_t::branch"]
-        [::std::mem::offset_of!(lore_lock_file_status_args_t, branch) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_lock_file_status_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_lock_file_status_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_lock_file_status_args_t>(),
+        32usize,
+        "Size of lore_lock_file_status_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_lock_file_status_args_t>(),
+        8usize,
+        "Alignment of lore_lock_file_status_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_lock_file_status_args_t::paths"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_lock_file_status_args_t::branch"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_lock_file_query_args_t {
@@ -7207,19 +12814,37 @@ pub struct lore_lock_file_query_args_t {
     pub owner: lore_string_t,
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_lock_file_query_args_t"]
-        [::std::mem::size_of::<lore_lock_file_query_args_t>() - 48usize];
-    ["Alignment of lore_lock_file_query_args_t"]
-        [::std::mem::align_of::<lore_lock_file_query_args_t>() - 8usize];
-    ["Offset of field: lore_lock_file_query_args_t::branch"]
-        [::std::mem::offset_of!(lore_lock_file_query_args_t, branch) - 0usize];
-    ["Offset of field: lore_lock_file_query_args_t::owner"]
-        [::std::mem::offset_of!(lore_lock_file_query_args_t, owner) - 16usize];
-    ["Offset of field: lore_lock_file_query_args_t::path"]
-        [::std::mem::offset_of!(lore_lock_file_query_args_t, path) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_lock_file_query_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_lock_file_query_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_lock_file_query_args_t>(),
+        48usize,
+        "Size of lore_lock_file_query_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_lock_file_query_args_t>(),
+        8usize,
+        "Alignment of lore_lock_file_query_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_lock_file_query_args_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).owner) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_lock_file_query_args_t::owner"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_lock_file_query_args_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_lock_file_release_args_t {
@@ -7228,21 +12853,42 @@ pub struct lore_lock_file_release_args_t {
     pub owner: lore_string_t,
     pub owner_id: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_lock_file_release_args_t"]
-        [::std::mem::size_of::<lore_lock_file_release_args_t>() - 64usize];
-    ["Alignment of lore_lock_file_release_args_t"]
-        [::std::mem::align_of::<lore_lock_file_release_args_t>() - 8usize];
-    ["Offset of field: lore_lock_file_release_args_t::paths"]
-        [::std::mem::offset_of!(lore_lock_file_release_args_t, paths) - 0usize];
-    ["Offset of field: lore_lock_file_release_args_t::branch"]
-        [::std::mem::offset_of!(lore_lock_file_release_args_t, branch) - 16usize];
-    ["Offset of field: lore_lock_file_release_args_t::owner"]
-        [::std::mem::offset_of!(lore_lock_file_release_args_t, owner) - 32usize];
-    ["Offset of field: lore_lock_file_release_args_t::owner_id"]
-        [::std::mem::offset_of!(lore_lock_file_release_args_t, owner_id) - 48usize];
-};
+#[test]
+fn bindgen_test_layout_lore_lock_file_release_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_lock_file_release_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_lock_file_release_args_t>(),
+        64usize,
+        "Size of lore_lock_file_release_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_lock_file_release_args_t>(),
+        8usize,
+        "Alignment of lore_lock_file_release_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_lock_file_release_args_t::paths"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_lock_file_release_args_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).owner) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_lock_file_release_args_t::owner"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).owner_id) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_lock_file_release_args_t::owner_id"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_link_add_args_t {
@@ -7252,63 +12898,130 @@ pub struct lore_link_add_args_t {
     pub pin: lore_string_t,
     pub disable_branching: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_link_add_args_t"][::std::mem::size_of::<lore_link_add_args_t>() - 72usize];
-    ["Alignment of lore_link_add_args_t"][::std::mem::align_of::<lore_link_add_args_t>() - 8usize];
-    ["Offset of field: lore_link_add_args_t::link"]
-        [::std::mem::offset_of!(lore_link_add_args_t, link) - 0usize];
-    ["Offset of field: lore_link_add_args_t::link_path"]
-        [::std::mem::offset_of!(lore_link_add_args_t, link_path) - 16usize];
-    ["Offset of field: lore_link_add_args_t::source_path"]
-        [::std::mem::offset_of!(lore_link_add_args_t, source_path) - 32usize];
-    ["Offset of field: lore_link_add_args_t::pin"]
-        [::std::mem::offset_of!(lore_link_add_args_t, pin) - 48usize];
-    ["Offset of field: lore_link_add_args_t::disable_branching"]
-        [::std::mem::offset_of!(lore_link_add_args_t, disable_branching) - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_link_add_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_link_add_args_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_link_add_args_t>(),
+        72usize,
+        "Size of lore_link_add_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_link_add_args_t>(),
+        8usize,
+        "Alignment of lore_link_add_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_link_add_args_t::link"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link_path) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_link_add_args_t::link_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_path) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_link_add_args_t::source_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).pin) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_link_add_args_t::pin"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).disable_branching) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_link_add_args_t::disable_branching"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_link_remove_args_t {
     pub link_path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_link_remove_args_t"][::std::mem::size_of::<lore_link_remove_args_t>() - 16usize];
-    ["Alignment of lore_link_remove_args_t"]
-        [::std::mem::align_of::<lore_link_remove_args_t>() - 8usize];
-    ["Offset of field: lore_link_remove_args_t::link_path"]
-        [::std::mem::offset_of!(lore_link_remove_args_t, link_path) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_link_remove_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_link_remove_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_link_remove_args_t>(),
+        16usize,
+        "Size of lore_link_remove_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_link_remove_args_t>(),
+        8usize,
+        "Alignment of lore_link_remove_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_link_remove_args_t::link_path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_link_list_args_t {
     pub _unused: ::std::os::raw::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_link_list_args_t"][::std::mem::size_of::<lore_link_list_args_t>() - 4usize];
-    ["Alignment of lore_link_list_args_t"]
-        [::std::mem::align_of::<lore_link_list_args_t>() - 4usize];
-    ["Offset of field: lore_link_list_args_t::_unused"]
-        [::std::mem::offset_of!(lore_link_list_args_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_link_list_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_link_list_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_link_list_args_t>(),
+        4usize,
+        "Size of lore_link_list_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_link_list_args_t>(),
+        4usize,
+        "Alignment of lore_link_list_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_link_list_args_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_link_update_args_t {
     pub link_path: lore_string_t,
     pub pin: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_link_update_args_t"][::std::mem::size_of::<lore_link_update_args_t>() - 32usize];
-    ["Alignment of lore_link_update_args_t"]
-        [::std::mem::align_of::<lore_link_update_args_t>() - 8usize];
-    ["Offset of field: lore_link_update_args_t::link_path"]
-        [::std::mem::offset_of!(lore_link_update_args_t, link_path) - 0usize];
-    ["Offset of field: lore_link_update_args_t::pin"]
-        [::std::mem::offset_of!(lore_link_update_args_t, pin) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_link_update_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_link_update_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_link_update_args_t>(),
+        32usize,
+        "Size of lore_link_update_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_link_update_args_t>(),
+        8usize,
+        "Alignment of lore_link_update_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_link_update_args_t::link_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).pin) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_link_update_args_t::pin"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_clone_args_t {
@@ -7330,61 +13043,133 @@ pub struct lore_repository_clone_args_t {
     pub dependency_recursive: u8,
     pub dependency_depth_limit: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_clone_args_t"]
-        [::std::mem::size_of::<lore_repository_clone_args_t>() - 176usize];
-    ["Alignment of lore_repository_clone_args_t"]
-        [::std::mem::align_of::<lore_repository_clone_args_t>() - 8usize];
-    ["Offset of field: lore_repository_clone_args_t::repository_url"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, repository_url) - 0usize];
-    ["Offset of field: lore_repository_clone_args_t::revision"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, revision) - 16usize];
-    ["Offset of field: lore_repository_clone_args_t::view"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, view) - 32usize];
-    ["Offset of field: lore_repository_clone_args_t::bare"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, bare) - 48usize];
-    ["Offset of field: lore_repository_clone_args_t::virtually"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, virtually) - 49usize];
-    ["Offset of field: lore_repository_clone_args_t::direct_file_write"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, direct_file_write) - 50usize];
-    ["Offset of field: lore_repository_clone_args_t::direct_file_io"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, direct_file_io) - 51usize];
-    ["Offset of field: lore_repository_clone_args_t::layer"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, layer) - 56usize];
-    ["Offset of field: lore_repository_clone_args_t::layer_metadata"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, layer_metadata) - 72usize];
-    ["Offset of field: lore_repository_clone_args_t::prefetch"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, prefetch) - 88usize];
-    ["Offset of field: lore_repository_clone_args_t::use_shared_store"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, use_shared_store) - 104usize];
-    ["Offset of field: lore_repository_clone_args_t::shared_store_path"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, shared_store_path) - 112usize];
-    ["Offset of field: lore_repository_clone_args_t::no_tracking"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, no_tracking) - 128usize];
-    ["Offset of field: lore_repository_clone_args_t::root_files"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, root_files) - 136usize];
-    ["Offset of field: lore_repository_clone_args_t::dependency_tags"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, dependency_tags) - 152usize];
-    ["Offset of field: lore_repository_clone_args_t::dependency_recursive"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, dependency_recursive) - 168usize];
-    ["Offset of field: lore_repository_clone_args_t::dependency_depth_limit"]
-        [::std::mem::offset_of!(lore_repository_clone_args_t, dependency_depth_limit) - 172usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_clone_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_clone_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_clone_args_t>(),
+        176usize,
+        "Size of lore_repository_clone_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_clone_args_t>(),
+        8usize,
+        "Alignment of lore_repository_clone_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_url) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_clone_args_t::repository_url"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_clone_args_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).view) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_repository_clone_args_t::view"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).bare) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_repository_clone_args_t::bare"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).virtually) as usize - ptr as usize },
+        49usize,
+        "Offset of field: lore_repository_clone_args_t::virtually"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).direct_file_write) as usize - ptr as usize },
+        50usize,
+        "Offset of field: lore_repository_clone_args_t::direct_file_write"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).direct_file_io) as usize - ptr as usize },
+        51usize,
+        "Offset of field: lore_repository_clone_args_t::direct_file_io"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).layer) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_repository_clone_args_t::layer"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).layer_metadata) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_repository_clone_args_t::layer_metadata"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).prefetch) as usize - ptr as usize },
+        88usize,
+        "Offset of field: lore_repository_clone_args_t::prefetch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).use_shared_store) as usize - ptr as usize },
+        104usize,
+        "Offset of field: lore_repository_clone_args_t::use_shared_store"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).shared_store_path) as usize - ptr as usize },
+        112usize,
+        "Offset of field: lore_repository_clone_args_t::shared_store_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).no_tracking) as usize - ptr as usize },
+        128usize,
+        "Offset of field: lore_repository_clone_args_t::no_tracking"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).root_files) as usize - ptr as usize },
+        136usize,
+        "Offset of field: lore_repository_clone_args_t::root_files"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dependency_tags) as usize - ptr as usize },
+        152usize,
+        "Offset of field: lore_repository_clone_args_t::dependency_tags"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dependency_recursive) as usize - ptr as usize },
+        168usize,
+        "Offset of field: lore_repository_clone_args_t::dependency_recursive"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dependency_depth_limit) as usize - ptr as usize },
+        172usize,
+        "Offset of field: lore_repository_clone_args_t::dependency_depth_limit"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_info_args_t {
     pub repository_url: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_info_args_t"]
-        [::std::mem::size_of::<lore_repository_info_args_t>() - 16usize];
-    ["Alignment of lore_repository_info_args_t"]
-        [::std::mem::align_of::<lore_repository_info_args_t>() - 8usize];
-    ["Offset of field: lore_repository_info_args_t::repository_url"]
-        [::std::mem::offset_of!(lore_repository_info_args_t, repository_url) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_info_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_info_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_info_args_t>(),
+        16usize,
+        "Size of lore_repository_info_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_info_args_t>(),
+        8usize,
+        "Alignment of lore_repository_info_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_url) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_info_args_t::repository_url"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_dump_args_t {
@@ -7392,19 +13177,37 @@ pub struct lore_repository_dump_args_t {
     pub path: lore_string_t,
     pub max_depth: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_dump_args_t"]
-        [::std::mem::size_of::<lore_repository_dump_args_t>() - 40usize];
-    ["Alignment of lore_repository_dump_args_t"]
-        [::std::mem::align_of::<lore_repository_dump_args_t>() - 8usize];
-    ["Offset of field: lore_repository_dump_args_t::revision"]
-        [::std::mem::offset_of!(lore_repository_dump_args_t, revision) - 0usize];
-    ["Offset of field: lore_repository_dump_args_t::path"]
-        [::std::mem::offset_of!(lore_repository_dump_args_t, path) - 16usize];
-    ["Offset of field: lore_repository_dump_args_t::max_depth"]
-        [::std::mem::offset_of!(lore_repository_dump_args_t, max_depth) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_dump_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_dump_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_dump_args_t>(),
+        40usize,
+        "Size of lore_repository_dump_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_dump_args_t>(),
+        8usize,
+        "Alignment of lore_repository_dump_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_dump_args_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_dump_args_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).max_depth) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_repository_dump_args_t::max_depth"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_create_args_t {
@@ -7414,65 +13217,125 @@ pub struct lore_repository_create_args_t {
     pub use_shared_store: u8,
     pub shared_store_path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_create_args_t"]
-        [::std::mem::size_of::<lore_repository_create_args_t>() - 72usize];
-    ["Alignment of lore_repository_create_args_t"]
-        [::std::mem::align_of::<lore_repository_create_args_t>() - 8usize];
-    ["Offset of field: lore_repository_create_args_t::repository_url"]
-        [::std::mem::offset_of!(lore_repository_create_args_t, repository_url) - 0usize];
-    ["Offset of field: lore_repository_create_args_t::description"]
-        [::std::mem::offset_of!(lore_repository_create_args_t, description) - 16usize];
-    ["Offset of field: lore_repository_create_args_t::id"]
-        [::std::mem::offset_of!(lore_repository_create_args_t, id) - 32usize];
-    ["Offset of field: lore_repository_create_args_t::use_shared_store"]
-        [::std::mem::offset_of!(lore_repository_create_args_t, use_shared_store) - 48usize];
-    ["Offset of field: lore_repository_create_args_t::shared_store_path"]
-        [::std::mem::offset_of!(lore_repository_create_args_t, shared_store_path) - 56usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_create_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_create_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_create_args_t>(),
+        72usize,
+        "Size of lore_repository_create_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_create_args_t>(),
+        8usize,
+        "Alignment of lore_repository_create_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_url) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_create_args_t::repository_url"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).description) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_create_args_t::description"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_repository_create_args_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).use_shared_store) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_repository_create_args_t::use_shared_store"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).shared_store_path) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_repository_create_args_t::shared_store_path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_flush_args_t {
     pub _unused: ::std::os::raw::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_flush_args_t"]
-        [::std::mem::size_of::<lore_repository_flush_args_t>() - 4usize];
-    ["Alignment of lore_repository_flush_args_t"]
-        [::std::mem::align_of::<lore_repository_flush_args_t>() - 4usize];
-    ["Offset of field: lore_repository_flush_args_t::_unused"]
-        [::std::mem::offset_of!(lore_repository_flush_args_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_flush_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_flush_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_flush_args_t>(),
+        4usize,
+        "Size of lore_repository_flush_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_flush_args_t>(),
+        4usize,
+        "Alignment of lore_repository_flush_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_flush_args_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_gc_args_t {
     pub _unused: ::std::os::raw::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_gc_args_t"]
-        [::std::mem::size_of::<lore_repository_gc_args_t>() - 4usize];
-    ["Alignment of lore_repository_gc_args_t"]
-        [::std::mem::align_of::<lore_repository_gc_args_t>() - 4usize];
-    ["Offset of field: lore_repository_gc_args_t::_unused"]
-        [::std::mem::offset_of!(lore_repository_gc_args_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_gc_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_gc_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_gc_args_t>(),
+        4usize,
+        "Size of lore_repository_gc_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_gc_args_t>(),
+        4usize,
+        "Alignment of lore_repository_gc_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_gc_args_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_release_args_t {
     pub _unused: ::std::os::raw::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_release_args_t"]
-        [::std::mem::size_of::<lore_repository_release_args_t>() - 4usize];
-    ["Alignment of lore_repository_release_args_t"]
-        [::std::mem::align_of::<lore_repository_release_args_t>() - 4usize];
-    ["Offset of field: lore_repository_release_args_t::_unused"]
-        [::std::mem::offset_of!(lore_repository_release_args_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_release_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_release_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_release_args_t>(),
+        4usize,
+        "Size of lore_repository_release_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_release_args_t>(),
+        4usize,
+        "Alignment of lore_repository_release_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_release_args_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_layer_add_args_t {
@@ -7481,20 +13344,42 @@ pub struct lore_layer_add_args_t {
     pub source_path: lore_string_t,
     pub metadata: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_layer_add_args_t"][::std::mem::size_of::<lore_layer_add_args_t>() - 64usize];
-    ["Alignment of lore_layer_add_args_t"]
-        [::std::mem::align_of::<lore_layer_add_args_t>() - 8usize];
-    ["Offset of field: lore_layer_add_args_t::target_path"]
-        [::std::mem::offset_of!(lore_layer_add_args_t, target_path) - 0usize];
-    ["Offset of field: lore_layer_add_args_t::source_repository"]
-        [::std::mem::offset_of!(lore_layer_add_args_t, source_repository) - 16usize];
-    ["Offset of field: lore_layer_add_args_t::source_path"]
-        [::std::mem::offset_of!(lore_layer_add_args_t, source_path) - 32usize];
-    ["Offset of field: lore_layer_add_args_t::metadata"]
-        [::std::mem::offset_of!(lore_layer_add_args_t, metadata) - 48usize];
-};
+#[test]
+fn bindgen_test_layout_lore_layer_add_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_layer_add_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_layer_add_args_t>(),
+        64usize,
+        "Size of lore_layer_add_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_layer_add_args_t>(),
+        8usize,
+        "Alignment of lore_layer_add_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_layer_add_args_t::target_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_repository) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_layer_add_args_t::source_repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_path) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_layer_add_args_t::source_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).metadata) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_layer_add_args_t::metadata"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_layer_remove_args_t {
@@ -7502,46 +13387,89 @@ pub struct lore_layer_remove_args_t {
     pub source_repository: lore_string_t,
     pub purge: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_layer_remove_args_t"]
-        [::std::mem::size_of::<lore_layer_remove_args_t>() - 40usize];
-    ["Alignment of lore_layer_remove_args_t"]
-        [::std::mem::align_of::<lore_layer_remove_args_t>() - 8usize];
-    ["Offset of field: lore_layer_remove_args_t::target_path"]
-        [::std::mem::offset_of!(lore_layer_remove_args_t, target_path) - 0usize];
-    ["Offset of field: lore_layer_remove_args_t::source_repository"]
-        [::std::mem::offset_of!(lore_layer_remove_args_t, source_repository) - 16usize];
-    ["Offset of field: lore_layer_remove_args_t::purge"]
-        [::std::mem::offset_of!(lore_layer_remove_args_t, purge) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_layer_remove_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_layer_remove_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_layer_remove_args_t>(),
+        40usize,
+        "Size of lore_layer_remove_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_layer_remove_args_t>(),
+        8usize,
+        "Alignment of lore_layer_remove_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_layer_remove_args_t::target_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_repository) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_layer_remove_args_t::source_repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).purge) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_layer_remove_args_t::purge"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_layer_list_args_t {
     pub _unused: ::std::os::raw::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_layer_list_args_t"][::std::mem::size_of::<lore_layer_list_args_t>() - 4usize];
-    ["Alignment of lore_layer_list_args_t"]
-        [::std::mem::align_of::<lore_layer_list_args_t>() - 4usize];
-    ["Offset of field: lore_layer_list_args_t::_unused"]
-        [::std::mem::offset_of!(lore_layer_list_args_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_layer_list_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_layer_list_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_layer_list_args_t>(),
+        4usize,
+        "Size of lore_layer_list_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_layer_list_args_t>(),
+        4usize,
+        "Alignment of lore_layer_list_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_layer_list_args_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_list_args_t {
     pub url: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_list_args_t"]
-        [::std::mem::size_of::<lore_repository_list_args_t>() - 16usize];
-    ["Alignment of lore_repository_list_args_t"]
-        [::std::mem::align_of::<lore_repository_list_args_t>() - 8usize];
-    ["Offset of field: lore_repository_list_args_t::url"]
-        [::std::mem::offset_of!(lore_repository_list_args_t, url) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_list_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_list_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_list_args_t>(),
+        16usize,
+        "Size of lore_repository_list_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_list_args_t>(),
+        8usize,
+        "Alignment of lore_repository_list_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).url) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_list_args_t::url"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_status_args_t {
@@ -7554,63 +13482,126 @@ pub struct lore_repository_status_args_t {
     pub count: u8,
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_status_args_t"]
-        [::std::mem::size_of::<lore_repository_status_args_t>() - 24usize];
-    ["Alignment of lore_repository_status_args_t"]
-        [::std::mem::align_of::<lore_repository_status_args_t>() - 8usize];
-    ["Offset of field: lore_repository_status_args_t::staged"]
-        [::std::mem::offset_of!(lore_repository_status_args_t, staged) - 0usize];
-    ["Offset of field: lore_repository_status_args_t::scan"]
-        [::std::mem::offset_of!(lore_repository_status_args_t, scan) - 1usize];
-    ["Offset of field: lore_repository_status_args_t::check_dirty"]
-        [::std::mem::offset_of!(lore_repository_status_args_t, check_dirty) - 2usize];
-    ["Offset of field: lore_repository_status_args_t::reset"]
-        [::std::mem::offset_of!(lore_repository_status_args_t, reset) - 3usize];
-    ["Offset of field: lore_repository_status_args_t::sync_point"]
-        [::std::mem::offset_of!(lore_repository_status_args_t, sync_point) - 4usize];
-    ["Offset of field: lore_repository_status_args_t::revision_only"]
-        [::std::mem::offset_of!(lore_repository_status_args_t, revision_only) - 5usize];
-    ["Offset of field: lore_repository_status_args_t::count"]
-        [::std::mem::offset_of!(lore_repository_status_args_t, count) - 6usize];
-    ["Offset of field: lore_repository_status_args_t::paths"]
-        [::std::mem::offset_of!(lore_repository_status_args_t, paths) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_status_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_status_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_status_args_t>(),
+        24usize,
+        "Size of lore_repository_status_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_status_args_t>(),
+        8usize,
+        "Alignment of lore_repository_status_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).staged) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_status_args_t::staged"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).scan) as usize - ptr as usize },
+        1usize,
+        "Offset of field: lore_repository_status_args_t::scan"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).check_dirty) as usize - ptr as usize },
+        2usize,
+        "Offset of field: lore_repository_status_args_t::check_dirty"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).reset) as usize - ptr as usize },
+        3usize,
+        "Offset of field: lore_repository_status_args_t::reset"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).sync_point) as usize - ptr as usize },
+        4usize,
+        "Offset of field: lore_repository_status_args_t::sync_point"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_only) as usize - ptr as usize },
+        5usize,
+        "Offset of field: lore_repository_status_args_t::revision_only"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        6usize,
+        "Offset of field: lore_repository_status_args_t::count"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_repository_status_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_store_immutable_query_args_t {
     pub address: lore_string_t,
     pub recurse: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_store_immutable_query_args_t"]
-        [::std::mem::size_of::<lore_repository_store_immutable_query_args_t>() - 24usize];
-    ["Alignment of lore_repository_store_immutable_query_args_t"]
-        [::std::mem::align_of::<lore_repository_store_immutable_query_args_t>() - 8usize];
-    ["Offset of field: lore_repository_store_immutable_query_args_t::address"]
-        [::std::mem::offset_of!(lore_repository_store_immutable_query_args_t, address) - 0usize];
-    ["Offset of field: lore_repository_store_immutable_query_args_t::recurse"]
-        [::std::mem::offset_of!(lore_repository_store_immutable_query_args_t, recurse) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_store_immutable_query_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_store_immutable_query_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_store_immutable_query_args_t>(),
+        24usize,
+        "Size of lore_repository_store_immutable_query_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_store_immutable_query_args_t>(),
+        8usize,
+        "Alignment of lore_repository_store_immutable_query_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_store_immutable_query_args_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).recurse) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_store_immutable_query_args_t::recurse"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_verify_state_args_t {
     pub path: lore_string_t,
     pub heal: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_verify_state_args_t"]
-        [::std::mem::size_of::<lore_repository_verify_state_args_t>() - 24usize];
-    ["Alignment of lore_repository_verify_state_args_t"]
-        [::std::mem::align_of::<lore_repository_verify_state_args_t>() - 8usize];
-    ["Offset of field: lore_repository_verify_state_args_t::path"]
-        [::std::mem::offset_of!(lore_repository_verify_state_args_t, path) - 0usize];
-    ["Offset of field: lore_repository_verify_state_args_t::heal"]
-        [::std::mem::offset_of!(lore_repository_verify_state_args_t, heal) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_verify_state_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_verify_state_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_verify_state_args_t>(),
+        24usize,
+        "Size of lore_repository_verify_state_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_verify_state_args_t>(),
+        8usize,
+        "Alignment of lore_repository_verify_state_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_verify_state_args_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).heal) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_verify_state_args_t::heal"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_commit_args_t {
@@ -7622,41 +13613,83 @@ pub struct lore_revision_commit_args_t {
     pub layer_paths: lore_string_array_t,
     pub layer_messages: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_commit_args_t"]
-        [::std::mem::size_of::<lore_revision_commit_args_t>() - 112usize];
-    ["Alignment of lore_revision_commit_args_t"]
-        [::std::mem::align_of::<lore_revision_commit_args_t>() - 8usize];
-    ["Offset of field: lore_revision_commit_args_t::message"]
-        [::std::mem::offset_of!(lore_revision_commit_args_t, message) - 0usize];
-    ["Offset of field: lore_revision_commit_args_t::link"]
-        [::std::mem::offset_of!(lore_revision_commit_args_t, link) - 16usize];
-    ["Offset of field: lore_revision_commit_args_t::link_paths"]
-        [::std::mem::offset_of!(lore_revision_commit_args_t, link_paths) - 32usize];
-    ["Offset of field: lore_revision_commit_args_t::link_messages"]
-        [::std::mem::offset_of!(lore_revision_commit_args_t, link_messages) - 48usize];
-    ["Offset of field: lore_revision_commit_args_t::layer"]
-        [::std::mem::offset_of!(lore_revision_commit_args_t, layer) - 64usize];
-    ["Offset of field: lore_revision_commit_args_t::layer_paths"]
-        [::std::mem::offset_of!(lore_revision_commit_args_t, layer_paths) - 80usize];
-    ["Offset of field: lore_revision_commit_args_t::layer_messages"]
-        [::std::mem::offset_of!(lore_revision_commit_args_t, layer_messages) - 96usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_commit_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_commit_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_commit_args_t>(),
+        112usize,
+        "Size of lore_revision_commit_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_commit_args_t>(),
+        8usize,
+        "Alignment of lore_revision_commit_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).message) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_commit_args_t::message"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_commit_args_t::link"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link_paths) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_commit_args_t::link_paths"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).link_messages) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_revision_commit_args_t::link_messages"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).layer) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_revision_commit_args_t::layer"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).layer_paths) as usize - ptr as usize },
+        80usize,
+        "Offset of field: lore_revision_commit_args_t::layer_paths"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).layer_messages) as usize - ptr as usize },
+        96usize,
+        "Offset of field: lore_revision_commit_args_t::layer_messages"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_amend_args_t {
     pub message: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_amend_args_t"]
-        [::std::mem::size_of::<lore_revision_amend_args_t>() - 16usize];
-    ["Alignment of lore_revision_amend_args_t"]
-        [::std::mem::align_of::<lore_revision_amend_args_t>() - 8usize];
-    ["Offset of field: lore_revision_amend_args_t::message"]
-        [::std::mem::offset_of!(lore_revision_amend_args_t, message) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_amend_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_amend_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_amend_args_t>(),
+        16usize,
+        "Size of lore_revision_amend_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_amend_args_t>(),
+        8usize,
+        "Alignment of lore_revision_amend_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).message) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_amend_args_t::message"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_info_args_t {
@@ -7664,19 +13697,37 @@ pub struct lore_revision_info_args_t {
     pub delta: u8,
     pub metadata: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_info_args_t"]
-        [::std::mem::size_of::<lore_revision_info_args_t>() - 24usize];
-    ["Alignment of lore_revision_info_args_t"]
-        [::std::mem::align_of::<lore_revision_info_args_t>() - 8usize];
-    ["Offset of field: lore_revision_info_args_t::revision"]
-        [::std::mem::offset_of!(lore_revision_info_args_t, revision) - 0usize];
-    ["Offset of field: lore_revision_info_args_t::delta"]
-        [::std::mem::offset_of!(lore_revision_info_args_t, delta) - 16usize];
-    ["Offset of field: lore_revision_info_args_t::metadata"]
-        [::std::mem::offset_of!(lore_revision_info_args_t, metadata) - 17usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_info_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_info_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_info_args_t>(),
+        24usize,
+        "Size of lore_revision_info_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_info_args_t>(),
+        8usize,
+        "Alignment of lore_revision_info_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_info_args_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).delta) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_info_args_t::delta"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).metadata) as usize - ptr as usize },
+        17usize,
+        "Offset of field: lore_revision_info_args_t::metadata"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_diff_args_t {
@@ -7684,19 +13735,37 @@ pub struct lore_revision_diff_args_t {
     pub revision_target: lore_string_t,
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_diff_args_t"]
-        [::std::mem::size_of::<lore_revision_diff_args_t>() - 48usize];
-    ["Alignment of lore_revision_diff_args_t"]
-        [::std::mem::align_of::<lore_revision_diff_args_t>() - 8usize];
-    ["Offset of field: lore_revision_diff_args_t::revision_source"]
-        [::std::mem::offset_of!(lore_revision_diff_args_t, revision_source) - 0usize];
-    ["Offset of field: lore_revision_diff_args_t::revision_target"]
-        [::std::mem::offset_of!(lore_revision_diff_args_t, revision_target) - 16usize];
-    ["Offset of field: lore_revision_diff_args_t::paths"]
-        [::std::mem::offset_of!(lore_revision_diff_args_t, paths) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_diff_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_diff_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_diff_args_t>(),
+        48usize,
+        "Size of lore_revision_diff_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_diff_args_t>(),
+        8usize,
+        "Alignment of lore_revision_diff_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_source) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_diff_args_t::revision_source"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_target) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_diff_args_t::revision_target"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_diff_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_find_args_t {
@@ -7704,19 +13773,37 @@ pub struct lore_revision_find_args_t {
     pub value: lore_string_t,
     pub number: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_find_args_t"]
-        [::std::mem::size_of::<lore_revision_find_args_t>() - 40usize];
-    ["Alignment of lore_revision_find_args_t"]
-        [::std::mem::align_of::<lore_revision_find_args_t>() - 8usize];
-    ["Offset of field: lore_revision_find_args_t::key"]
-        [::std::mem::offset_of!(lore_revision_find_args_t, key) - 0usize];
-    ["Offset of field: lore_revision_find_args_t::value"]
-        [::std::mem::offset_of!(lore_revision_find_args_t, value) - 16usize];
-    ["Offset of field: lore_revision_find_args_t::number"]
-        [::std::mem::offset_of!(lore_revision_find_args_t, number) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_find_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_find_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_find_args_t>(),
+        40usize,
+        "Size of lore_revision_find_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_find_args_t>(),
+        8usize,
+        "Alignment of lore_revision_find_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_find_args_t::key"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).value) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_find_args_t::value"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).number) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_find_args_t::number"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_history_args_t {
@@ -7726,82 +13813,157 @@ pub struct lore_revision_history_args_t {
     pub length: u32,
     pub only_branch: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_history_args_t"]
-        [::std::mem::size_of::<lore_revision_history_args_t>() - 48usize];
-    ["Alignment of lore_revision_history_args_t"]
-        [::std::mem::align_of::<lore_revision_history_args_t>() - 8usize];
-    ["Offset of field: lore_revision_history_args_t::revision"]
-        [::std::mem::offset_of!(lore_revision_history_args_t, revision) - 0usize];
-    ["Offset of field: lore_revision_history_args_t::branch"]
-        [::std::mem::offset_of!(lore_revision_history_args_t, branch) - 16usize];
-    ["Offset of field: lore_revision_history_args_t::date"]
-        [::std::mem::offset_of!(lore_revision_history_args_t, date) - 32usize];
-    ["Offset of field: lore_revision_history_args_t::length"]
-        [::std::mem::offset_of!(lore_revision_history_args_t, length) - 40usize];
-    ["Offset of field: lore_revision_history_args_t::only_branch"]
-        [::std::mem::offset_of!(lore_revision_history_args_t, only_branch) - 44usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_history_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_history_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_history_args_t>(),
+        48usize,
+        "Size of lore_revision_history_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_history_args_t>(),
+        8usize,
+        "Alignment of lore_revision_history_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_history_args_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_history_args_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).date) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_history_args_t::date"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).length) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_revision_history_args_t::length"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).only_branch) as usize - ptr as usize },
+        44usize,
+        "Offset of field: lore_revision_history_args_t::only_branch"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_restore_args_t {
     pub message: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_restore_args_t"]
-        [::std::mem::size_of::<lore_revision_restore_args_t>() - 16usize];
-    ["Alignment of lore_revision_restore_args_t"]
-        [::std::mem::align_of::<lore_revision_restore_args_t>() - 8usize];
-    ["Offset of field: lore_revision_restore_args_t::message"]
-        [::std::mem::offset_of!(lore_revision_restore_args_t, message) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_restore_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_restore_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_restore_args_t>(),
+        16usize,
+        "Size of lore_revision_restore_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_restore_args_t>(),
+        8usize,
+        "Alignment of lore_revision_restore_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).message) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_restore_args_t::message"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_metadata_clear_args_t {
     pub _unused: ::std::os::raw::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_metadata_clear_args_t"]
-        [::std::mem::size_of::<lore_revision_metadata_clear_args_t>() - 4usize];
-    ["Alignment of lore_revision_metadata_clear_args_t"]
-        [::std::mem::align_of::<lore_revision_metadata_clear_args_t>() - 4usize];
-    ["Offset of field: lore_revision_metadata_clear_args_t::_unused"]
-        [::std::mem::offset_of!(lore_revision_metadata_clear_args_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_metadata_clear_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_metadata_clear_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_metadata_clear_args_t>(),
+        4usize,
+        "Size of lore_revision_metadata_clear_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_metadata_clear_args_t>(),
+        4usize,
+        "Alignment of lore_revision_metadata_clear_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_metadata_clear_args_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_metadata_get_args_t {
     pub key: lore_string_t,
     pub revision: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_metadata_get_args_t"]
-        [::std::mem::size_of::<lore_revision_metadata_get_args_t>() - 32usize];
-    ["Alignment of lore_revision_metadata_get_args_t"]
-        [::std::mem::align_of::<lore_revision_metadata_get_args_t>() - 8usize];
-    ["Offset of field: lore_revision_metadata_get_args_t::key"]
-        [::std::mem::offset_of!(lore_revision_metadata_get_args_t, key) - 0usize];
-    ["Offset of field: lore_revision_metadata_get_args_t::revision"]
-        [::std::mem::offset_of!(lore_revision_metadata_get_args_t, revision) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_metadata_get_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_metadata_get_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_metadata_get_args_t>(),
+        32usize,
+        "Size of lore_revision_metadata_get_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_metadata_get_args_t>(),
+        8usize,
+        "Alignment of lore_revision_metadata_get_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_metadata_get_args_t::key"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_metadata_get_args_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_metadata_list_args_t {
     pub revision: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_metadata_list_args_t"]
-        [::std::mem::size_of::<lore_revision_metadata_list_args_t>() - 16usize];
-    ["Alignment of lore_revision_metadata_list_args_t"]
-        [::std::mem::align_of::<lore_revision_metadata_list_args_t>() - 8usize];
-    ["Offset of field: lore_revision_metadata_list_args_t::revision"]
-        [::std::mem::offset_of!(lore_revision_metadata_list_args_t, revision) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_metadata_list_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_metadata_list_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_metadata_list_args_t>(),
+        16usize,
+        "Size of lore_revision_metadata_list_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_metadata_list_args_t>(),
+        8usize,
+        "Alignment of lore_revision_metadata_list_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_metadata_list_args_t::revision"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_metadata_set_args_t {
@@ -7809,19 +13971,37 @@ pub struct lore_revision_metadata_set_args_t {
     pub values: lore_string_array_t,
     pub formats: lore_metadata_type_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_metadata_set_args_t"]
-        [::std::mem::size_of::<lore_revision_metadata_set_args_t>() - 48usize];
-    ["Alignment of lore_revision_metadata_set_args_t"]
-        [::std::mem::align_of::<lore_revision_metadata_set_args_t>() - 8usize];
-    ["Offset of field: lore_revision_metadata_set_args_t::keys"]
-        [::std::mem::offset_of!(lore_revision_metadata_set_args_t, keys) - 0usize];
-    ["Offset of field: lore_revision_metadata_set_args_t::values"]
-        [::std::mem::offset_of!(lore_revision_metadata_set_args_t, values) - 16usize];
-    ["Offset of field: lore_revision_metadata_set_args_t::formats"]
-        [::std::mem::offset_of!(lore_revision_metadata_set_args_t, formats) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_metadata_set_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_metadata_set_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_metadata_set_args_t>(),
+        48usize,
+        "Size of lore_revision_metadata_set_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_metadata_set_args_t>(),
+        8usize,
+        "Alignment of lore_revision_metadata_set_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).keys) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_metadata_set_args_t::keys"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).values) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_metadata_set_args_t::values"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).formats) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_metadata_set_args_t::formats"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_sync_args_t {
@@ -7833,27 +14013,57 @@ pub struct lore_revision_sync_args_t {
     pub dependency_recursive: u8,
     pub dependency_depth_limit: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_sync_args_t"]
-        [::std::mem::size_of::<lore_revision_sync_args_t>() - 64usize];
-    ["Alignment of lore_revision_sync_args_t"]
-        [::std::mem::align_of::<lore_revision_sync_args_t>() - 8usize];
-    ["Offset of field: lore_revision_sync_args_t::revision"]
-        [::std::mem::offset_of!(lore_revision_sync_args_t, revision) - 0usize];
-    ["Offset of field: lore_revision_sync_args_t::forward_changes"]
-        [::std::mem::offset_of!(lore_revision_sync_args_t, forward_changes) - 16usize];
-    ["Offset of field: lore_revision_sync_args_t::reset"]
-        [::std::mem::offset_of!(lore_revision_sync_args_t, reset) - 17usize];
-    ["Offset of field: lore_revision_sync_args_t::root_files"]
-        [::std::mem::offset_of!(lore_revision_sync_args_t, root_files) - 24usize];
-    ["Offset of field: lore_revision_sync_args_t::dependency_tags"]
-        [::std::mem::offset_of!(lore_revision_sync_args_t, dependency_tags) - 40usize];
-    ["Offset of field: lore_revision_sync_args_t::dependency_recursive"]
-        [::std::mem::offset_of!(lore_revision_sync_args_t, dependency_recursive) - 56usize];
-    ["Offset of field: lore_revision_sync_args_t::dependency_depth_limit"]
-        [::std::mem::offset_of!(lore_revision_sync_args_t, dependency_depth_limit) - 60usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_sync_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_sync_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_sync_args_t>(),
+        64usize,
+        "Size of lore_revision_sync_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_sync_args_t>(),
+        8usize,
+        "Alignment of lore_revision_sync_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_sync_args_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).forward_changes) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_sync_args_t::forward_changes"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).reset) as usize - ptr as usize },
+        17usize,
+        "Offset of field: lore_revision_sync_args_t::reset"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).root_files) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_revision_sync_args_t::root_files"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dependency_tags) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_revision_sync_args_t::dependency_tags"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dependency_recursive) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_revision_sync_args_t::dependency_recursive"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dependency_depth_limit) as usize - ptr as usize },
+        60usize,
+        "Offset of field: lore_revision_sync_args_t::dependency_depth_limit"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_revert_args_t {
@@ -7861,103 +14071,193 @@ pub struct lore_revision_revert_args_t {
     pub message: lore_string_t,
     pub no_commit: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_revert_args_t"]
-        [::std::mem::size_of::<lore_revision_revert_args_t>() - 40usize];
-    ["Alignment of lore_revision_revert_args_t"]
-        [::std::mem::align_of::<lore_revision_revert_args_t>() - 8usize];
-    ["Offset of field: lore_revision_revert_args_t::revision"]
-        [::std::mem::offset_of!(lore_revision_revert_args_t, revision) - 0usize];
-    ["Offset of field: lore_revision_revert_args_t::message"]
-        [::std::mem::offset_of!(lore_revision_revert_args_t, message) - 16usize];
-    ["Offset of field: lore_revision_revert_args_t::no_commit"]
-        [::std::mem::offset_of!(lore_revision_revert_args_t, no_commit) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_revert_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_revert_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_revert_args_t>(),
+        40usize,
+        "Size of lore_revision_revert_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_revert_args_t>(),
+        8usize,
+        "Alignment of lore_revision_revert_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_revert_args_t::revision"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).message) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_revert_args_t::message"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).no_commit) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_revert_args_t::no_commit"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_revert_abort_args_t {
     pub _unused: ::std::os::raw::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_revert_abort_args_t"]
-        [::std::mem::size_of::<lore_revision_revert_abort_args_t>() - 4usize];
-    ["Alignment of lore_revision_revert_abort_args_t"]
-        [::std::mem::align_of::<lore_revision_revert_abort_args_t>() - 4usize];
-    ["Offset of field: lore_revision_revert_abort_args_t::_unused"]
-        [::std::mem::offset_of!(lore_revision_revert_abort_args_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_revert_abort_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_revert_abort_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_revert_abort_args_t>(),
+        4usize,
+        "Size of lore_revision_revert_abort_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_revert_abort_args_t>(),
+        4usize,
+        "Alignment of lore_revision_revert_abort_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_revert_abort_args_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_revert_unresolve_args_t {
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_revert_unresolve_args_t"]
-        [::std::mem::size_of::<lore_revision_revert_unresolve_args_t>() - 16usize];
-    ["Alignment of lore_revision_revert_unresolve_args_t"]
-        [::std::mem::align_of::<lore_revision_revert_unresolve_args_t>() - 8usize];
-    ["Offset of field: lore_revision_revert_unresolve_args_t::paths"]
-        [::std::mem::offset_of!(lore_revision_revert_unresolve_args_t, paths) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_revert_unresolve_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_revert_unresolve_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_revert_unresolve_args_t>(),
+        16usize,
+        "Size of lore_revision_revert_unresolve_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_revert_unresolve_args_t>(),
+        8usize,
+        "Alignment of lore_revision_revert_unresolve_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_revert_unresolve_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_revert_restart_args_t {
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_revert_restart_args_t"]
-        [::std::mem::size_of::<lore_revision_revert_restart_args_t>() - 16usize];
-    ["Alignment of lore_revision_revert_restart_args_t"]
-        [::std::mem::align_of::<lore_revision_revert_restart_args_t>() - 8usize];
-    ["Offset of field: lore_revision_revert_restart_args_t::paths"]
-        [::std::mem::offset_of!(lore_revision_revert_restart_args_t, paths) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_revert_restart_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_revert_restart_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_revert_restart_args_t>(),
+        16usize,
+        "Size of lore_revision_revert_restart_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_revert_restart_args_t>(),
+        8usize,
+        "Alignment of lore_revision_revert_restart_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_revert_restart_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_revert_resolve_args_t {
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_revert_resolve_args_t"]
-        [::std::mem::size_of::<lore_revision_revert_resolve_args_t>() - 16usize];
-    ["Alignment of lore_revision_revert_resolve_args_t"]
-        [::std::mem::align_of::<lore_revision_revert_resolve_args_t>() - 8usize];
-    ["Offset of field: lore_revision_revert_resolve_args_t::paths"]
-        [::std::mem::offset_of!(lore_revision_revert_resolve_args_t, paths) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_revert_resolve_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_revert_resolve_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_revert_resolve_args_t>(),
+        16usize,
+        "Size of lore_revision_revert_resolve_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_revert_resolve_args_t>(),
+        8usize,
+        "Alignment of lore_revision_revert_resolve_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_revert_resolve_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_revert_resolve_mine_args_t {
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_revert_resolve_mine_args_t"]
-        [::std::mem::size_of::<lore_revision_revert_resolve_mine_args_t>() - 16usize];
-    ["Alignment of lore_revision_revert_resolve_mine_args_t"]
-        [::std::mem::align_of::<lore_revision_revert_resolve_mine_args_t>() - 8usize];
-    ["Offset of field: lore_revision_revert_resolve_mine_args_t::paths"]
-        [::std::mem::offset_of!(lore_revision_revert_resolve_mine_args_t, paths) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_revert_resolve_mine_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_revert_resolve_mine_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_revert_resolve_mine_args_t>(),
+        16usize,
+        "Size of lore_revision_revert_resolve_mine_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_revert_resolve_mine_args_t>(),
+        8usize,
+        "Alignment of lore_revision_revert_resolve_mine_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_revert_resolve_mine_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_revert_resolve_theirs_args_t {
     pub paths: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_revert_resolve_theirs_args_t"]
-        [::std::mem::size_of::<lore_revision_revert_resolve_theirs_args_t>() - 16usize];
-    ["Alignment of lore_revision_revert_resolve_theirs_args_t"]
-        [::std::mem::align_of::<lore_revision_revert_resolve_theirs_args_t>() - 8usize];
-    ["Offset of field: lore_revision_revert_resolve_theirs_args_t::paths"]
-        [::std::mem::offset_of!(lore_revision_revert_resolve_theirs_args_t, paths) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_revert_resolve_theirs_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_revert_resolve_theirs_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_revert_resolve_theirs_args_t>(),
+        16usize,
+        "Size of lore_revision_revert_resolve_theirs_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_revert_resolve_theirs_args_t>(),
+        8usize,
+        "Alignment of lore_revision_revert_resolve_theirs_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).paths) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_revert_resolve_theirs_args_t::paths"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_shared_store_create_args_t {
@@ -7965,61 +14265,115 @@ pub struct lore_shared_store_create_args_t {
     pub path: lore_string_t,
     pub make_default: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_shared_store_create_args_t"]
-        [::std::mem::size_of::<lore_shared_store_create_args_t>() - 40usize];
-    ["Alignment of lore_shared_store_create_args_t"]
-        [::std::mem::align_of::<lore_shared_store_create_args_t>() - 8usize];
-    ["Offset of field: lore_shared_store_create_args_t::remote_url"]
-        [::std::mem::offset_of!(lore_shared_store_create_args_t, remote_url) - 0usize];
-    ["Offset of field: lore_shared_store_create_args_t::path"]
-        [::std::mem::offset_of!(lore_shared_store_create_args_t, path) - 16usize];
-    ["Offset of field: lore_shared_store_create_args_t::make_default"]
-        [::std::mem::offset_of!(lore_shared_store_create_args_t, make_default) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_shared_store_create_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_shared_store_create_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_shared_store_create_args_t>(),
+        40usize,
+        "Size of lore_shared_store_create_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_shared_store_create_args_t>(),
+        8usize,
+        "Alignment of lore_shared_store_create_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_url) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_shared_store_create_args_t::remote_url"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_shared_store_create_args_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).make_default) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_shared_store_create_args_t::make_default"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_shared_store_info_args_t {
     pub _unused: ::std::os::raw::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_shared_store_info_args_t"]
-        [::std::mem::size_of::<lore_shared_store_info_args_t>() - 4usize];
-    ["Alignment of lore_shared_store_info_args_t"]
-        [::std::mem::align_of::<lore_shared_store_info_args_t>() - 4usize];
-    ["Offset of field: lore_shared_store_info_args_t::_unused"]
-        [::std::mem::offset_of!(lore_shared_store_info_args_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_shared_store_info_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_shared_store_info_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_shared_store_info_args_t>(),
+        4usize,
+        "Size of lore_shared_store_info_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_shared_store_info_args_t>(),
+        4usize,
+        "Alignment of lore_shared_store_info_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_shared_store_info_args_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_shared_store_set_use_automatically_args_t {
     pub enabled: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_shared_store_set_use_automatically_args_t"]
-        [::std::mem::size_of::<lore_shared_store_set_use_automatically_args_t>() - 1usize];
-    ["Alignment of lore_shared_store_set_use_automatically_args_t"]
-        [::std::mem::align_of::<lore_shared_store_set_use_automatically_args_t>() - 1usize];
-    ["Offset of field: lore_shared_store_set_use_automatically_args_t::enabled"]
-        [::std::mem::offset_of!(lore_shared_store_set_use_automatically_args_t, enabled) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_shared_store_set_use_automatically_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_shared_store_set_use_automatically_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_shared_store_set_use_automatically_args_t>(),
+        1usize,
+        "Size of lore_shared_store_set_use_automatically_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_shared_store_set_use_automatically_args_t>(),
+        1usize,
+        "Alignment of lore_shared_store_set_use_automatically_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).enabled) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_shared_store_set_use_automatically_args_t::enabled"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_remote_config_t {
     pub remote_url: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_remote_config_t"]
-        [::std::mem::size_of::<lore_storage_remote_config_t>() - 16usize];
-    ["Alignment of lore_storage_remote_config_t"]
-        [::std::mem::align_of::<lore_storage_remote_config_t>() - 8usize];
-    ["Offset of field: lore_storage_remote_config_t::remote_url"]
-        [::std::mem::offset_of!(lore_storage_remote_config_t, remote_url) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_remote_config_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_remote_config_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_remote_config_t>(),
+        16usize,
+        "Size of lore_storage_remote_config_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_remote_config_t>(),
+        8usize,
+        "Alignment of lore_storage_remote_config_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_url) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_remote_config_t::remote_url"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_open_args_t {
@@ -8030,37 +14384,77 @@ pub struct lore_storage_open_args_t {
     pub cache_target_bytes: u64,
     pub cache_target_fragments: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_open_args_t"]
-        [::std::mem::size_of::<lore_storage_open_args_t>() - 64usize];
-    ["Alignment of lore_storage_open_args_t"]
-        [::std::mem::align_of::<lore_storage_open_args_t>() - 8usize];
-    ["Offset of field: lore_storage_open_args_t::repository_path"]
-        [::std::mem::offset_of!(lore_storage_open_args_t, repository_path) - 0usize];
-    ["Offset of field: lore_storage_open_args_t::in_memory"]
-        [::std::mem::offset_of!(lore_storage_open_args_t, in_memory) - 16usize];
-    ["Offset of field: lore_storage_open_args_t::remote_config"]
-        [::std::mem::offset_of!(lore_storage_open_args_t, remote_config) - 24usize];
-    ["Offset of field: lore_storage_open_args_t::has_remote_config"]
-        [::std::mem::offset_of!(lore_storage_open_args_t, has_remote_config) - 40usize];
-    ["Offset of field: lore_storage_open_args_t::cache_target_bytes"]
-        [::std::mem::offset_of!(lore_storage_open_args_t, cache_target_bytes) - 48usize];
-    ["Offset of field: lore_storage_open_args_t::cache_target_fragments"]
-        [::std::mem::offset_of!(lore_storage_open_args_t, cache_target_fragments) - 56usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_open_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_open_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_open_args_t>(),
+        64usize,
+        "Size of lore_storage_open_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_open_args_t>(),
+        8usize,
+        "Alignment of lore_storage_open_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_path) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_open_args_t::repository_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).in_memory) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_storage_open_args_t::in_memory"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_config) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_storage_open_args_t::remote_config"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).has_remote_config) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_storage_open_args_t::has_remote_config"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).cache_target_bytes) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_storage_open_args_t::cache_target_bytes"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).cache_target_fragments) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_storage_open_args_t::cache_target_fragments"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_store_t {
     pub handle_id: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_store_t"][::std::mem::size_of::<lore_store_t>() - 8usize];
-    ["Alignment of lore_store_t"][::std::mem::align_of::<lore_store_t>() - 8usize];
-    ["Offset of field: lore_store_t::handle_id"]
-        [::std::mem::offset_of!(lore_store_t, handle_id) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_store_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_store_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_store_t>(),
+        8usize,
+        "Size of lore_store_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_store_t>(),
+        8usize,
+        "Alignment of lore_store_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle_id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_store_t::handle_id"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_put_item_t {
@@ -8072,59 +14466,121 @@ pub struct lore_storage_put_item_t {
     pub local_cache: u8,
     pub fixed_size_chunk: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_put_item_t"][::std::mem::size_of::<lore_storage_put_item_t>() - 72usize];
-    ["Alignment of lore_storage_put_item_t"]
-        [::std::mem::align_of::<lore_storage_put_item_t>() - 8usize];
-    ["Offset of field: lore_storage_put_item_t::id"]
-        [::std::mem::offset_of!(lore_storage_put_item_t, id) - 0usize];
-    ["Offset of field: lore_storage_put_item_t::partition"]
-        [::std::mem::offset_of!(lore_storage_put_item_t, partition) - 8usize];
-    ["Offset of field: lore_storage_put_item_t::context"]
-        [::std::mem::offset_of!(lore_storage_put_item_t, context) - 24usize];
-    ["Offset of field: lore_storage_put_item_t::data"]
-        [::std::mem::offset_of!(lore_storage_put_item_t, data) - 40usize];
-    ["Offset of field: lore_storage_put_item_t::remote_write"]
-        [::std::mem::offset_of!(lore_storage_put_item_t, remote_write) - 56usize];
-    ["Offset of field: lore_storage_put_item_t::local_cache"]
-        [::std::mem::offset_of!(lore_storage_put_item_t, local_cache) - 57usize];
-    ["Offset of field: lore_storage_put_item_t::fixed_size_chunk"]
-        [::std::mem::offset_of!(lore_storage_put_item_t, fixed_size_chunk) - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_put_item_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_put_item_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_put_item_t>(),
+        72usize,
+        "Size of lore_storage_put_item_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_put_item_t>(),
+        8usize,
+        "Alignment of lore_storage_put_item_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_put_item_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).partition) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_put_item_t::partition"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).context) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_storage_put_item_t::context"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).data) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_storage_put_item_t::data"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_write) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_storage_put_item_t::remote_write"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local_cache) as usize - ptr as usize },
+        57usize,
+        "Offset of field: lore_storage_put_item_t::local_cache"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).fixed_size_chunk) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_storage_put_item_t::fixed_size_chunk"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_put_item_array_t {
     pub ptr: *const lore_storage_put_item_t,
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_put_item_array_t"]
-        [::std::mem::size_of::<lore_storage_put_item_array_t>() - 16usize];
-    ["Alignment of lore_storage_put_item_array_t"]
-        [::std::mem::align_of::<lore_storage_put_item_array_t>() - 8usize];
-    ["Offset of field: lore_storage_put_item_array_t::ptr"]
-        [::std::mem::offset_of!(lore_storage_put_item_array_t, ptr) - 0usize];
-    ["Offset of field: lore_storage_put_item_array_t::count"]
-        [::std::mem::offset_of!(lore_storage_put_item_array_t, count) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_put_item_array_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_put_item_array_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_put_item_array_t>(),
+        16usize,
+        "Size of lore_storage_put_item_array_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_put_item_array_t>(),
+        8usize,
+        "Alignment of lore_storage_put_item_array_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_put_item_array_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_put_item_array_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_put_args_t {
     pub handle: lore_store_t,
     pub items: lore_storage_put_item_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_put_args_t"][::std::mem::size_of::<lore_storage_put_args_t>() - 24usize];
-    ["Alignment of lore_storage_put_args_t"]
-        [::std::mem::align_of::<lore_storage_put_args_t>() - 8usize];
-    ["Offset of field: lore_storage_put_args_t::handle"]
-        [::std::mem::offset_of!(lore_storage_put_args_t, handle) - 0usize];
-    ["Offset of field: lore_storage_put_args_t::items"]
-        [::std::mem::offset_of!(lore_storage_put_args_t, items) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_put_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_put_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_put_args_t>(),
+        24usize,
+        "Size of lore_storage_put_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_put_args_t>(),
+        8usize,
+        "Alignment of lore_storage_put_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_put_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).items) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_put_args_t::items"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_get_item_t {
@@ -8134,83 +14590,163 @@ pub struct lore_storage_get_item_t {
     pub streaming: u8,
     pub local_cache: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_get_item_t"][::std::mem::size_of::<lore_storage_get_item_t>() - 80usize];
-    ["Alignment of lore_storage_get_item_t"]
-        [::std::mem::align_of::<lore_storage_get_item_t>() - 8usize];
-    ["Offset of field: lore_storage_get_item_t::id"]
-        [::std::mem::offset_of!(lore_storage_get_item_t, id) - 0usize];
-    ["Offset of field: lore_storage_get_item_t::partition"]
-        [::std::mem::offset_of!(lore_storage_get_item_t, partition) - 8usize];
-    ["Offset of field: lore_storage_get_item_t::address"]
-        [::std::mem::offset_of!(lore_storage_get_item_t, address) - 24usize];
-    ["Offset of field: lore_storage_get_item_t::streaming"]
-        [::std::mem::offset_of!(lore_storage_get_item_t, streaming) - 72usize];
-    ["Offset of field: lore_storage_get_item_t::local_cache"]
-        [::std::mem::offset_of!(lore_storage_get_item_t, local_cache) - 73usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_get_item_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_get_item_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_get_item_t>(),
+        80usize,
+        "Size of lore_storage_get_item_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_get_item_t>(),
+        8usize,
+        "Alignment of lore_storage_get_item_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_get_item_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).partition) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_get_item_t::partition"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_storage_get_item_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).streaming) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_storage_get_item_t::streaming"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local_cache) as usize - ptr as usize },
+        73usize,
+        "Offset of field: lore_storage_get_item_t::local_cache"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_get_item_array_t {
     pub ptr: *const lore_storage_get_item_t,
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_get_item_array_t"]
-        [::std::mem::size_of::<lore_storage_get_item_array_t>() - 16usize];
-    ["Alignment of lore_storage_get_item_array_t"]
-        [::std::mem::align_of::<lore_storage_get_item_array_t>() - 8usize];
-    ["Offset of field: lore_storage_get_item_array_t::ptr"]
-        [::std::mem::offset_of!(lore_storage_get_item_array_t, ptr) - 0usize];
-    ["Offset of field: lore_storage_get_item_array_t::count"]
-        [::std::mem::offset_of!(lore_storage_get_item_array_t, count) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_get_item_array_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_get_item_array_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_get_item_array_t>(),
+        16usize,
+        "Size of lore_storage_get_item_array_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_get_item_array_t>(),
+        8usize,
+        "Alignment of lore_storage_get_item_array_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_get_item_array_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_get_item_array_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_get_args_t {
     pub handle: lore_store_t,
     pub items: lore_storage_get_item_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_get_args_t"][::std::mem::size_of::<lore_storage_get_args_t>() - 24usize];
-    ["Alignment of lore_storage_get_args_t"]
-        [::std::mem::align_of::<lore_storage_get_args_t>() - 8usize];
-    ["Offset of field: lore_storage_get_args_t::handle"]
-        [::std::mem::offset_of!(lore_storage_get_args_t, handle) - 0usize];
-    ["Offset of field: lore_storage_get_args_t::items"]
-        [::std::mem::offset_of!(lore_storage_get_args_t, items) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_get_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_get_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_get_args_t>(),
+        24usize,
+        "Size of lore_storage_get_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_get_args_t>(),
+        8usize,
+        "Alignment of lore_storage_get_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_get_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).items) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_get_args_t::items"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_close_args_t {
     pub handle: lore_store_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_close_args_t"]
-        [::std::mem::size_of::<lore_storage_close_args_t>() - 8usize];
-    ["Alignment of lore_storage_close_args_t"]
-        [::std::mem::align_of::<lore_storage_close_args_t>() - 8usize];
-    ["Offset of field: lore_storage_close_args_t::handle"]
-        [::std::mem::offset_of!(lore_storage_close_args_t, handle) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_close_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_close_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_close_args_t>(),
+        8usize,
+        "Size of lore_storage_close_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_close_args_t>(),
+        8usize,
+        "Alignment of lore_storage_close_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_close_args_t::handle"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_flush_args_t {
     pub handle: lore_store_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_flush_args_t"]
-        [::std::mem::size_of::<lore_storage_flush_args_t>() - 8usize];
-    ["Alignment of lore_storage_flush_args_t"]
-        [::std::mem::align_of::<lore_storage_flush_args_t>() - 8usize];
-    ["Offset of field: lore_storage_flush_args_t::handle"]
-        [::std::mem::offset_of!(lore_storage_flush_args_t, handle) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_flush_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_flush_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_flush_args_t>(),
+        8usize,
+        "Size of lore_storage_flush_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_flush_args_t>(),
+        8usize,
+        "Alignment of lore_storage_flush_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_flush_args_t::handle"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_get_metadata_item_t {
@@ -8218,53 +14754,101 @@ pub struct lore_storage_get_metadata_item_t {
     pub partition: lore_partition_t,
     pub address: lore_address_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_get_metadata_item_t"]
-        [::std::mem::size_of::<lore_storage_get_metadata_item_t>() - 72usize];
-    ["Alignment of lore_storage_get_metadata_item_t"]
-        [::std::mem::align_of::<lore_storage_get_metadata_item_t>() - 8usize];
-    ["Offset of field: lore_storage_get_metadata_item_t::id"]
-        [::std::mem::offset_of!(lore_storage_get_metadata_item_t, id) - 0usize];
-    ["Offset of field: lore_storage_get_metadata_item_t::partition"]
-        [::std::mem::offset_of!(lore_storage_get_metadata_item_t, partition) - 8usize];
-    ["Offset of field: lore_storage_get_metadata_item_t::address"]
-        [::std::mem::offset_of!(lore_storage_get_metadata_item_t, address) - 24usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_get_metadata_item_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_get_metadata_item_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_get_metadata_item_t>(),
+        72usize,
+        "Size of lore_storage_get_metadata_item_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_get_metadata_item_t>(),
+        8usize,
+        "Alignment of lore_storage_get_metadata_item_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_get_metadata_item_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).partition) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_get_metadata_item_t::partition"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_storage_get_metadata_item_t::address"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_get_metadata_item_array_t {
     pub ptr: *const lore_storage_get_metadata_item_t,
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_get_metadata_item_array_t"]
-        [::std::mem::size_of::<lore_storage_get_metadata_item_array_t>() - 16usize];
-    ["Alignment of lore_storage_get_metadata_item_array_t"]
-        [::std::mem::align_of::<lore_storage_get_metadata_item_array_t>() - 8usize];
-    ["Offset of field: lore_storage_get_metadata_item_array_t::ptr"]
-        [::std::mem::offset_of!(lore_storage_get_metadata_item_array_t, ptr) - 0usize];
-    ["Offset of field: lore_storage_get_metadata_item_array_t::count"]
-        [::std::mem::offset_of!(lore_storage_get_metadata_item_array_t, count) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_get_metadata_item_array_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_get_metadata_item_array_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_get_metadata_item_array_t>(),
+        16usize,
+        "Size of lore_storage_get_metadata_item_array_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_get_metadata_item_array_t>(),
+        8usize,
+        "Alignment of lore_storage_get_metadata_item_array_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_get_metadata_item_array_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_get_metadata_item_array_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_get_metadata_args_t {
     pub handle: lore_store_t,
     pub items: lore_storage_get_metadata_item_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_get_metadata_args_t"]
-        [::std::mem::size_of::<lore_storage_get_metadata_args_t>() - 24usize];
-    ["Alignment of lore_storage_get_metadata_args_t"]
-        [::std::mem::align_of::<lore_storage_get_metadata_args_t>() - 8usize];
-    ["Offset of field: lore_storage_get_metadata_args_t::handle"]
-        [::std::mem::offset_of!(lore_storage_get_metadata_args_t, handle) - 0usize];
-    ["Offset of field: lore_storage_get_metadata_args_t::items"]
-        [::std::mem::offset_of!(lore_storage_get_metadata_args_t, items) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_get_metadata_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_get_metadata_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_get_metadata_args_t>(),
+        24usize,
+        "Size of lore_storage_get_metadata_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_get_metadata_args_t>(),
+        8usize,
+        "Alignment of lore_storage_get_metadata_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_get_metadata_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).items) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_get_metadata_args_t::items"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_obliterate_item_t {
@@ -8272,53 +14856,101 @@ pub struct lore_storage_obliterate_item_t {
     pub partition: lore_partition_t,
     pub address: lore_address_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_obliterate_item_t"]
-        [::std::mem::size_of::<lore_storage_obliterate_item_t>() - 72usize];
-    ["Alignment of lore_storage_obliterate_item_t"]
-        [::std::mem::align_of::<lore_storage_obliterate_item_t>() - 8usize];
-    ["Offset of field: lore_storage_obliterate_item_t::id"]
-        [::std::mem::offset_of!(lore_storage_obliterate_item_t, id) - 0usize];
-    ["Offset of field: lore_storage_obliterate_item_t::partition"]
-        [::std::mem::offset_of!(lore_storage_obliterate_item_t, partition) - 8usize];
-    ["Offset of field: lore_storage_obliterate_item_t::address"]
-        [::std::mem::offset_of!(lore_storage_obliterate_item_t, address) - 24usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_obliterate_item_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_obliterate_item_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_obliterate_item_t>(),
+        72usize,
+        "Size of lore_storage_obliterate_item_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_obliterate_item_t>(),
+        8usize,
+        "Alignment of lore_storage_obliterate_item_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_obliterate_item_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).partition) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_obliterate_item_t::partition"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_storage_obliterate_item_t::address"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_obliterate_item_array_t {
     pub ptr: *const lore_storage_obliterate_item_t,
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_obliterate_item_array_t"]
-        [::std::mem::size_of::<lore_storage_obliterate_item_array_t>() - 16usize];
-    ["Alignment of lore_storage_obliterate_item_array_t"]
-        [::std::mem::align_of::<lore_storage_obliterate_item_array_t>() - 8usize];
-    ["Offset of field: lore_storage_obliterate_item_array_t::ptr"]
-        [::std::mem::offset_of!(lore_storage_obliterate_item_array_t, ptr) - 0usize];
-    ["Offset of field: lore_storage_obliterate_item_array_t::count"]
-        [::std::mem::offset_of!(lore_storage_obliterate_item_array_t, count) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_obliterate_item_array_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_obliterate_item_array_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_obliterate_item_array_t>(),
+        16usize,
+        "Size of lore_storage_obliterate_item_array_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_obliterate_item_array_t>(),
+        8usize,
+        "Alignment of lore_storage_obliterate_item_array_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_obliterate_item_array_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_obliterate_item_array_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_obliterate_args_t {
     pub handle: lore_store_t,
     pub items: lore_storage_obliterate_item_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_obliterate_args_t"]
-        [::std::mem::size_of::<lore_storage_obliterate_args_t>() - 24usize];
-    ["Alignment of lore_storage_obliterate_args_t"]
-        [::std::mem::align_of::<lore_storage_obliterate_args_t>() - 8usize];
-    ["Offset of field: lore_storage_obliterate_args_t::handle"]
-        [::std::mem::offset_of!(lore_storage_obliterate_args_t, handle) - 0usize];
-    ["Offset of field: lore_storage_obliterate_args_t::items"]
-        [::std::mem::offset_of!(lore_storage_obliterate_args_t, items) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_obliterate_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_obliterate_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_obliterate_args_t>(),
+        24usize,
+        "Size of lore_storage_obliterate_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_obliterate_args_t>(),
+        8usize,
+        "Alignment of lore_storage_obliterate_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_obliterate_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).items) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_obliterate_args_t::items"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_copy_item_t {
@@ -8328,57 +14960,111 @@ pub struct lore_storage_copy_item_t {
     pub source_address: lore_address_t,
     pub target_context: lore_context_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_copy_item_t"]
-        [::std::mem::size_of::<lore_storage_copy_item_t>() - 104usize];
-    ["Alignment of lore_storage_copy_item_t"]
-        [::std::mem::align_of::<lore_storage_copy_item_t>() - 8usize];
-    ["Offset of field: lore_storage_copy_item_t::id"]
-        [::std::mem::offset_of!(lore_storage_copy_item_t, id) - 0usize];
-    ["Offset of field: lore_storage_copy_item_t::source_partition"]
-        [::std::mem::offset_of!(lore_storage_copy_item_t, source_partition) - 8usize];
-    ["Offset of field: lore_storage_copy_item_t::target_partition"]
-        [::std::mem::offset_of!(lore_storage_copy_item_t, target_partition) - 24usize];
-    ["Offset of field: lore_storage_copy_item_t::source_address"]
-        [::std::mem::offset_of!(lore_storage_copy_item_t, source_address) - 40usize];
-    ["Offset of field: lore_storage_copy_item_t::target_context"]
-        [::std::mem::offset_of!(lore_storage_copy_item_t, target_context) - 88usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_copy_item_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_copy_item_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_copy_item_t>(),
+        104usize,
+        "Size of lore_storage_copy_item_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_copy_item_t>(),
+        8usize,
+        "Alignment of lore_storage_copy_item_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_copy_item_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_partition) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_copy_item_t::source_partition"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target_partition) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_storage_copy_item_t::target_partition"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).source_address) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_storage_copy_item_t::source_address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).target_context) as usize - ptr as usize },
+        88usize,
+        "Offset of field: lore_storage_copy_item_t::target_context"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_copy_item_array_t {
     pub ptr: *const lore_storage_copy_item_t,
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_copy_item_array_t"]
-        [::std::mem::size_of::<lore_storage_copy_item_array_t>() - 16usize];
-    ["Alignment of lore_storage_copy_item_array_t"]
-        [::std::mem::align_of::<lore_storage_copy_item_array_t>() - 8usize];
-    ["Offset of field: lore_storage_copy_item_array_t::ptr"]
-        [::std::mem::offset_of!(lore_storage_copy_item_array_t, ptr) - 0usize];
-    ["Offset of field: lore_storage_copy_item_array_t::count"]
-        [::std::mem::offset_of!(lore_storage_copy_item_array_t, count) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_copy_item_array_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_copy_item_array_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_copy_item_array_t>(),
+        16usize,
+        "Size of lore_storage_copy_item_array_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_copy_item_array_t>(),
+        8usize,
+        "Alignment of lore_storage_copy_item_array_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_copy_item_array_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_copy_item_array_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_copy_args_t {
     pub handle: lore_store_t,
     pub items: lore_storage_copy_item_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_copy_args_t"]
-        [::std::mem::size_of::<lore_storage_copy_args_t>() - 24usize];
-    ["Alignment of lore_storage_copy_args_t"]
-        [::std::mem::align_of::<lore_storage_copy_args_t>() - 8usize];
-    ["Offset of field: lore_storage_copy_args_t::handle"]
-        [::std::mem::offset_of!(lore_storage_copy_args_t, handle) - 0usize];
-    ["Offset of field: lore_storage_copy_args_t::items"]
-        [::std::mem::offset_of!(lore_storage_copy_args_t, items) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_copy_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_copy_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_copy_args_t>(),
+        24usize,
+        "Size of lore_storage_copy_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_copy_args_t>(),
+        8usize,
+        "Alignment of lore_storage_copy_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_copy_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).items) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_copy_args_t::items"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_put_file_item_t {
@@ -8390,61 +15076,121 @@ pub struct lore_storage_put_file_item_t {
     pub local_cache: u8,
     pub fixed_size_chunk: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_put_file_item_t"]
-        [::std::mem::size_of::<lore_storage_put_file_item_t>() - 72usize];
-    ["Alignment of lore_storage_put_file_item_t"]
-        [::std::mem::align_of::<lore_storage_put_file_item_t>() - 8usize];
-    ["Offset of field: lore_storage_put_file_item_t::id"]
-        [::std::mem::offset_of!(lore_storage_put_file_item_t, id) - 0usize];
-    ["Offset of field: lore_storage_put_file_item_t::partition"]
-        [::std::mem::offset_of!(lore_storage_put_file_item_t, partition) - 8usize];
-    ["Offset of field: lore_storage_put_file_item_t::context"]
-        [::std::mem::offset_of!(lore_storage_put_file_item_t, context) - 24usize];
-    ["Offset of field: lore_storage_put_file_item_t::path"]
-        [::std::mem::offset_of!(lore_storage_put_file_item_t, path) - 40usize];
-    ["Offset of field: lore_storage_put_file_item_t::remote_write"]
-        [::std::mem::offset_of!(lore_storage_put_file_item_t, remote_write) - 56usize];
-    ["Offset of field: lore_storage_put_file_item_t::local_cache"]
-        [::std::mem::offset_of!(lore_storage_put_file_item_t, local_cache) - 57usize];
-    ["Offset of field: lore_storage_put_file_item_t::fixed_size_chunk"]
-        [::std::mem::offset_of!(lore_storage_put_file_item_t, fixed_size_chunk) - 64usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_put_file_item_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_put_file_item_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_put_file_item_t>(),
+        72usize,
+        "Size of lore_storage_put_file_item_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_put_file_item_t>(),
+        8usize,
+        "Alignment of lore_storage_put_file_item_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_put_file_item_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).partition) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_put_file_item_t::partition"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).context) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_storage_put_file_item_t::context"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_storage_put_file_item_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_write) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_storage_put_file_item_t::remote_write"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local_cache) as usize - ptr as usize },
+        57usize,
+        "Offset of field: lore_storage_put_file_item_t::local_cache"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).fixed_size_chunk) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_storage_put_file_item_t::fixed_size_chunk"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_put_file_item_array_t {
     pub ptr: *const lore_storage_put_file_item_t,
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_put_file_item_array_t"]
-        [::std::mem::size_of::<lore_storage_put_file_item_array_t>() - 16usize];
-    ["Alignment of lore_storage_put_file_item_array_t"]
-        [::std::mem::align_of::<lore_storage_put_file_item_array_t>() - 8usize];
-    ["Offset of field: lore_storage_put_file_item_array_t::ptr"]
-        [::std::mem::offset_of!(lore_storage_put_file_item_array_t, ptr) - 0usize];
-    ["Offset of field: lore_storage_put_file_item_array_t::count"]
-        [::std::mem::offset_of!(lore_storage_put_file_item_array_t, count) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_put_file_item_array_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_put_file_item_array_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_put_file_item_array_t>(),
+        16usize,
+        "Size of lore_storage_put_file_item_array_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_put_file_item_array_t>(),
+        8usize,
+        "Alignment of lore_storage_put_file_item_array_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_put_file_item_array_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_put_file_item_array_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_put_file_args_t {
     pub handle: lore_store_t,
     pub items: lore_storage_put_file_item_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_put_file_args_t"]
-        [::std::mem::size_of::<lore_storage_put_file_args_t>() - 24usize];
-    ["Alignment of lore_storage_put_file_args_t"]
-        [::std::mem::align_of::<lore_storage_put_file_args_t>() - 8usize];
-    ["Offset of field: lore_storage_put_file_args_t::handle"]
-        [::std::mem::offset_of!(lore_storage_put_file_args_t, handle) - 0usize];
-    ["Offset of field: lore_storage_put_file_args_t::items"]
-        [::std::mem::offset_of!(lore_storage_put_file_args_t, items) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_put_file_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_put_file_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_put_file_args_t>(),
+        24usize,
+        "Size of lore_storage_put_file_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_put_file_args_t>(),
+        8usize,
+        "Alignment of lore_storage_put_file_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_put_file_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).items) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_put_file_args_t::items"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_get_file_item_t {
@@ -8454,57 +15200,111 @@ pub struct lore_storage_get_file_item_t {
     pub path: lore_string_t,
     pub local_cache: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_get_file_item_t"]
-        [::std::mem::size_of::<lore_storage_get_file_item_t>() - 96usize];
-    ["Alignment of lore_storage_get_file_item_t"]
-        [::std::mem::align_of::<lore_storage_get_file_item_t>() - 8usize];
-    ["Offset of field: lore_storage_get_file_item_t::id"]
-        [::std::mem::offset_of!(lore_storage_get_file_item_t, id) - 0usize];
-    ["Offset of field: lore_storage_get_file_item_t::partition"]
-        [::std::mem::offset_of!(lore_storage_get_file_item_t, partition) - 8usize];
-    ["Offset of field: lore_storage_get_file_item_t::address"]
-        [::std::mem::offset_of!(lore_storage_get_file_item_t, address) - 24usize];
-    ["Offset of field: lore_storage_get_file_item_t::path"]
-        [::std::mem::offset_of!(lore_storage_get_file_item_t, path) - 72usize];
-    ["Offset of field: lore_storage_get_file_item_t::local_cache"]
-        [::std::mem::offset_of!(lore_storage_get_file_item_t, local_cache) - 88usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_get_file_item_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_get_file_item_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_get_file_item_t>(),
+        96usize,
+        "Size of lore_storage_get_file_item_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_get_file_item_t>(),
+        8usize,
+        "Alignment of lore_storage_get_file_item_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_get_file_item_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).partition) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_get_file_item_t::partition"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_storage_get_file_item_t::address"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        72usize,
+        "Offset of field: lore_storage_get_file_item_t::path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).local_cache) as usize - ptr as usize },
+        88usize,
+        "Offset of field: lore_storage_get_file_item_t::local_cache"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_get_file_item_array_t {
     pub ptr: *const lore_storage_get_file_item_t,
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_get_file_item_array_t"]
-        [::std::mem::size_of::<lore_storage_get_file_item_array_t>() - 16usize];
-    ["Alignment of lore_storage_get_file_item_array_t"]
-        [::std::mem::align_of::<lore_storage_get_file_item_array_t>() - 8usize];
-    ["Offset of field: lore_storage_get_file_item_array_t::ptr"]
-        [::std::mem::offset_of!(lore_storage_get_file_item_array_t, ptr) - 0usize];
-    ["Offset of field: lore_storage_get_file_item_array_t::count"]
-        [::std::mem::offset_of!(lore_storage_get_file_item_array_t, count) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_get_file_item_array_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_get_file_item_array_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_get_file_item_array_t>(),
+        16usize,
+        "Size of lore_storage_get_file_item_array_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_get_file_item_array_t>(),
+        8usize,
+        "Alignment of lore_storage_get_file_item_array_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_get_file_item_array_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_get_file_item_array_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_get_file_args_t {
     pub handle: lore_store_t,
     pub items: lore_storage_get_file_item_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_get_file_args_t"]
-        [::std::mem::size_of::<lore_storage_get_file_args_t>() - 24usize];
-    ["Alignment of lore_storage_get_file_args_t"]
-        [::std::mem::align_of::<lore_storage_get_file_args_t>() - 8usize];
-    ["Offset of field: lore_storage_get_file_args_t::handle"]
-        [::std::mem::offset_of!(lore_storage_get_file_args_t, handle) - 0usize];
-    ["Offset of field: lore_storage_get_file_args_t::items"]
-        [::std::mem::offset_of!(lore_storage_get_file_args_t, items) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_get_file_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_get_file_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_get_file_args_t>(),
+        24usize,
+        "Size of lore_storage_get_file_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_get_file_args_t>(),
+        8usize,
+        "Alignment of lore_storage_get_file_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_get_file_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).items) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_get_file_args_t::items"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_upload_item_t {
@@ -8512,109 +15312,205 @@ pub struct lore_storage_upload_item_t {
     pub partition: lore_partition_t,
     pub address: lore_address_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_upload_item_t"]
-        [::std::mem::size_of::<lore_storage_upload_item_t>() - 72usize];
-    ["Alignment of lore_storage_upload_item_t"]
-        [::std::mem::align_of::<lore_storage_upload_item_t>() - 8usize];
-    ["Offset of field: lore_storage_upload_item_t::id"]
-        [::std::mem::offset_of!(lore_storage_upload_item_t, id) - 0usize];
-    ["Offset of field: lore_storage_upload_item_t::partition"]
-        [::std::mem::offset_of!(lore_storage_upload_item_t, partition) - 8usize];
-    ["Offset of field: lore_storage_upload_item_t::address"]
-        [::std::mem::offset_of!(lore_storage_upload_item_t, address) - 24usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_upload_item_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_upload_item_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_upload_item_t>(),
+        72usize,
+        "Size of lore_storage_upload_item_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_upload_item_t>(),
+        8usize,
+        "Alignment of lore_storage_upload_item_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_upload_item_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).partition) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_upload_item_t::partition"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_storage_upload_item_t::address"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_upload_item_array_t {
     pub ptr: *const lore_storage_upload_item_t,
     pub count: usize,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_upload_item_array_t"]
-        [::std::mem::size_of::<lore_storage_upload_item_array_t>() - 16usize];
-    ["Alignment of lore_storage_upload_item_array_t"]
-        [::std::mem::align_of::<lore_storage_upload_item_array_t>() - 8usize];
-    ["Offset of field: lore_storage_upload_item_array_t::ptr"]
-        [::std::mem::offset_of!(lore_storage_upload_item_array_t, ptr) - 0usize];
-    ["Offset of field: lore_storage_upload_item_array_t::count"]
-        [::std::mem::offset_of!(lore_storage_upload_item_array_t, count) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_upload_item_array_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_upload_item_array_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_upload_item_array_t>(),
+        16usize,
+        "Size of lore_storage_upload_item_array_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_upload_item_array_t>(),
+        8usize,
+        "Alignment of lore_storage_upload_item_array_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).ptr) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_upload_item_array_t::ptr"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).count) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_upload_item_array_t::count"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_upload_args_t {
     pub handle: lore_store_t,
     pub items: lore_storage_upload_item_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_storage_upload_args_t"]
-        [::std::mem::size_of::<lore_storage_upload_args_t>() - 24usize];
-    ["Alignment of lore_storage_upload_args_t"]
-        [::std::mem::align_of::<lore_storage_upload_args_t>() - 8usize];
-    ["Offset of field: lore_storage_upload_args_t::handle"]
-        [::std::mem::offset_of!(lore_storage_upload_args_t, handle) - 0usize];
-    ["Offset of field: lore_storage_upload_args_t::items"]
-        [::std::mem::offset_of!(lore_storage_upload_args_t, items) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_storage_upload_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_storage_upload_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_storage_upload_args_t>(),
+        24usize,
+        "Size of lore_storage_upload_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_storage_upload_args_t>(),
+        8usize,
+        "Alignment of lore_storage_upload_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_storage_upload_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).items) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_storage_upload_args_t::items"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_service_start_args_t {
     pub _unused: ::std::os::raw::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_service_start_args_t"]
-        [::std::mem::size_of::<lore_service_start_args_t>() - 4usize];
-    ["Alignment of lore_service_start_args_t"]
-        [::std::mem::align_of::<lore_service_start_args_t>() - 4usize];
-    ["Offset of field: lore_service_start_args_t::_unused"]
-        [::std::mem::offset_of!(lore_service_start_args_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_service_start_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_service_start_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_service_start_args_t>(),
+        4usize,
+        "Size of lore_service_start_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_service_start_args_t>(),
+        4usize,
+        "Alignment of lore_service_start_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_service_start_args_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_service_stop_args_t {
     pub all: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_service_stop_args_t"]
-        [::std::mem::size_of::<lore_service_stop_args_t>() - 1usize];
-    ["Alignment of lore_service_stop_args_t"]
-        [::std::mem::align_of::<lore_service_stop_args_t>() - 1usize];
-    ["Offset of field: lore_service_stop_args_t::all"]
-        [::std::mem::offset_of!(lore_service_stop_args_t, all) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_service_stop_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_service_stop_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_service_stop_args_t>(),
+        1usize,
+        "Size of lore_service_stop_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_service_stop_args_t>(),
+        1usize,
+        "Alignment of lore_service_stop_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).all) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_service_stop_args_t::all"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_notification_subscribe_args_t {
     pub _unused: ::std::os::raw::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_notification_subscribe_args_t"]
-        [::std::mem::size_of::<lore_notification_subscribe_args_t>() - 4usize];
-    ["Alignment of lore_notification_subscribe_args_t"]
-        [::std::mem::align_of::<lore_notification_subscribe_args_t>() - 4usize];
-    ["Offset of field: lore_notification_subscribe_args_t::_unused"]
-        [::std::mem::offset_of!(lore_notification_subscribe_args_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_notification_subscribe_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_notification_subscribe_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_notification_subscribe_args_t>(),
+        4usize,
+        "Size of lore_notification_subscribe_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_notification_subscribe_args_t>(),
+        4usize,
+        "Alignment of lore_notification_subscribe_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_notification_subscribe_args_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_notification_unsubscribe_args_t {
     pub _unused: ::std::os::raw::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_notification_unsubscribe_args_t"]
-        [::std::mem::size_of::<lore_notification_unsubscribe_args_t>() - 4usize];
-    ["Alignment of lore_notification_unsubscribe_args_t"]
-        [::std::mem::align_of::<lore_notification_unsubscribe_args_t>() - 4usize];
-    ["Offset of field: lore_notification_unsubscribe_args_t::_unused"]
-        [::std::mem::offset_of!(lore_notification_unsubscribe_args_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_notification_unsubscribe_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_notification_unsubscribe_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_notification_unsubscribe_args_t>(),
+        4usize,
+        "Size of lore_notification_unsubscribe_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_notification_unsubscribe_args_t>(),
+        4usize,
+        "Alignment of lore_notification_unsubscribe_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_notification_unsubscribe_args_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_log_config_t {
@@ -8627,27 +15523,61 @@ pub struct lore_log_config_t {
     pub file_max_size: u32,
     pub file_max_count: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_log_config_t"][::std::mem::size_of::<lore_log_config_t>() - 56usize];
-    ["Alignment of lore_log_config_t"][::std::mem::align_of::<lore_log_config_t>() - 8usize];
-    ["Offset of field: lore_log_config_t::file"]
-        [::std::mem::offset_of!(lore_log_config_t, file) - 0usize];
-    ["Offset of field: lore_log_config_t::file_rolling"]
-        [::std::mem::offset_of!(lore_log_config_t, file_rolling) - 1usize];
-    ["Offset of field: lore_log_config_t::file_path"]
-        [::std::mem::offset_of!(lore_log_config_t, file_path) - 8usize];
-    ["Offset of field: lore_log_config_t::file_prefix"]
-        [::std::mem::offset_of!(lore_log_config_t, file_prefix) - 24usize];
-    ["Offset of field: lore_log_config_t::level"]
-        [::std::mem::offset_of!(lore_log_config_t, level) - 40usize];
-    ["Offset of field: lore_log_config_t::categories"]
-        [::std::mem::offset_of!(lore_log_config_t, categories) - 44usize];
-    ["Offset of field: lore_log_config_t::file_max_size"]
-        [::std::mem::offset_of!(lore_log_config_t, file_max_size) - 48usize];
-    ["Offset of field: lore_log_config_t::file_max_count"]
-        [::std::mem::offset_of!(lore_log_config_t, file_max_count) - 52usize];
-};
+#[test]
+fn bindgen_test_layout_lore_log_config_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_log_config_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_log_config_t>(),
+        56usize,
+        "Size of lore_log_config_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_log_config_t>(),
+        8usize,
+        "Alignment of lore_log_config_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_log_config_t::file"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_rolling) as usize - ptr as usize },
+        1usize,
+        "Offset of field: lore_log_config_t::file_rolling"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_path) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_log_config_t::file_path"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_prefix) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_log_config_t::file_prefix"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).level) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_log_config_t::level"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).categories) as usize - ptr as usize },
+        44usize,
+        "Offset of field: lore_log_config_t::categories"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_max_size) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_log_config_t::file_max_size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).file_max_count) as usize - ptr as usize },
+        52usize,
+        "Offset of field: lore_log_config_t::file_max_count"
+    );
+}
 pub type lore_alloc_fn = ::std::option::Option<
     unsafe extern "C" fn(align: usize, size: usize) -> *mut ::std::os::raw::c_void,
 >;
@@ -8668,15 +15598,27 @@ pub type lore_dealloc_fn =
 pub struct lore_repository_metadata_get_args_t {
     pub key: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_metadata_get_args_t"]
-        [::std::mem::size_of::<lore_repository_metadata_get_args_t>() - 16usize];
-    ["Alignment of lore_repository_metadata_get_args_t"]
-        [::std::mem::align_of::<lore_repository_metadata_get_args_t>() - 8usize];
-    ["Offset of field: lore_repository_metadata_get_args_t::key"]
-        [::std::mem::offset_of!(lore_repository_metadata_get_args_t, key) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_metadata_get_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_metadata_get_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_metadata_get_args_t>(),
+        16usize,
+        "Size of lore_repository_metadata_get_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_metadata_get_args_t>(),
+        8usize,
+        "Alignment of lore_repository_metadata_get_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_metadata_get_args_t::key"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_metadata_set_args_t {
@@ -8684,101 +15626,192 @@ pub struct lore_repository_metadata_set_args_t {
     pub values: lore_string_array_t,
     pub formats: lore_metadata_type_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_metadata_set_args_t"]
-        [::std::mem::size_of::<lore_repository_metadata_set_args_t>() - 48usize];
-    ["Alignment of lore_repository_metadata_set_args_t"]
-        [::std::mem::align_of::<lore_repository_metadata_set_args_t>() - 8usize];
-    ["Offset of field: lore_repository_metadata_set_args_t::keys"]
-        [::std::mem::offset_of!(lore_repository_metadata_set_args_t, keys) - 0usize];
-    ["Offset of field: lore_repository_metadata_set_args_t::values"]
-        [::std::mem::offset_of!(lore_repository_metadata_set_args_t, values) - 16usize];
-    ["Offset of field: lore_repository_metadata_set_args_t::formats"]
-        [::std::mem::offset_of!(lore_repository_metadata_set_args_t, formats) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_metadata_set_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_metadata_set_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_metadata_set_args_t>(),
+        48usize,
+        "Size of lore_repository_metadata_set_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_metadata_set_args_t>(),
+        8usize,
+        "Alignment of lore_repository_metadata_set_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).keys) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_metadata_set_args_t::keys"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).values) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_repository_metadata_set_args_t::values"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).formats) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_repository_metadata_set_args_t::formats"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_metadata_clear_args_t {
     pub keys: lore_string_array_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_metadata_clear_args_t"]
-        [::std::mem::size_of::<lore_repository_metadata_clear_args_t>() - 16usize];
-    ["Alignment of lore_repository_metadata_clear_args_t"]
-        [::std::mem::align_of::<lore_repository_metadata_clear_args_t>() - 8usize];
-    ["Offset of field: lore_repository_metadata_clear_args_t::keys"]
-        [::std::mem::offset_of!(lore_repository_metadata_clear_args_t, keys) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_metadata_clear_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_metadata_clear_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_metadata_clear_args_t>(),
+        16usize,
+        "Size of lore_repository_metadata_clear_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_metadata_clear_args_t>(),
+        8usize,
+        "Alignment of lore_repository_metadata_clear_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).keys) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_metadata_clear_args_t::keys"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_instance_list_args_t {
     pub _unused: ::std::os::raw::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_instance_list_args_t"]
-        [::std::mem::size_of::<lore_repository_instance_list_args_t>() - 4usize];
-    ["Alignment of lore_repository_instance_list_args_t"]
-        [::std::mem::align_of::<lore_repository_instance_list_args_t>() - 4usize];
-    ["Offset of field: lore_repository_instance_list_args_t::_unused"]
-        [::std::mem::offset_of!(lore_repository_instance_list_args_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_instance_list_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_instance_list_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_instance_list_args_t>(),
+        4usize,
+        "Size of lore_repository_instance_list_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_instance_list_args_t>(),
+        4usize,
+        "Alignment of lore_repository_instance_list_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_instance_list_args_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_instance_prune_args_t {
     pub _unused: ::std::os::raw::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_instance_prune_args_t"]
-        [::std::mem::size_of::<lore_repository_instance_prune_args_t>() - 4usize];
-    ["Alignment of lore_repository_instance_prune_args_t"]
-        [::std::mem::align_of::<lore_repository_instance_prune_args_t>() - 4usize];
-    ["Offset of field: lore_repository_instance_prune_args_t::_unused"]
-        [::std::mem::offset_of!(lore_repository_instance_prune_args_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_instance_prune_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_instance_prune_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_instance_prune_args_t>(),
+        4usize,
+        "Size of lore_repository_instance_prune_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_instance_prune_args_t>(),
+        4usize,
+        "Alignment of lore_repository_instance_prune_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_instance_prune_args_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_update_path_args_t {
     pub _unused: ::std::os::raw::c_int,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_update_path_args_t"]
-        [::std::mem::size_of::<lore_repository_update_path_args_t>() - 4usize];
-    ["Alignment of lore_repository_update_path_args_t"]
-        [::std::mem::align_of::<lore_repository_update_path_args_t>() - 4usize];
-    ["Offset of field: lore_repository_update_path_args_t::_unused"]
-        [::std::mem::offset_of!(lore_repository_update_path_args_t, _unused) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_update_path_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_update_path_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_update_path_args_t>(),
+        4usize,
+        "Size of lore_repository_update_path_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_update_path_args_t>(),
+        4usize,
+        "Alignment of lore_repository_update_path_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_update_path_args_t::_unused"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_repository_config_get_args_t {
     pub key: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_repository_config_get_args_t"]
-        [::std::mem::size_of::<lore_repository_config_get_args_t>() - 16usize];
-    ["Alignment of lore_repository_config_get_args_t"]
-        [::std::mem::align_of::<lore_repository_config_get_args_t>() - 8usize];
-    ["Offset of field: lore_repository_config_get_args_t::key"]
-        [::std::mem::offset_of!(lore_repository_config_get_args_t, key) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_repository_config_get_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_config_get_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_config_get_args_t>(),
+        16usize,
+        "Size of lore_repository_config_get_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_config_get_args_t>(),
+        8usize,
+        "Alignment of lore_repository_config_get_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_config_get_args_t::key"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_t {
     pub handle_id: u64,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_t"][::std::mem::size_of::<lore_revision_tree_t>() - 8usize];
-    ["Alignment of lore_revision_tree_t"][::std::mem::align_of::<lore_revision_tree_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_t::handle_id"]
-        [::std::mem::offset_of!(lore_revision_tree_t, handle_id) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_t>(),
+        8usize,
+        "Size of lore_revision_tree_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle_id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_t::handle_id"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_load_args_t {
@@ -8786,36 +15819,69 @@ pub struct lore_revision_tree_load_args_t {
     pub repository: lore_partition_t,
     pub revision_hash: lore_hash_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_load_args_t"]
-        [::std::mem::size_of::<lore_revision_tree_load_args_t>() - 56usize];
-    ["Alignment of lore_revision_tree_load_args_t"]
-        [::std::mem::align_of::<lore_revision_tree_load_args_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_load_args_t::store"]
-        [::std::mem::offset_of!(lore_revision_tree_load_args_t, store) - 0usize];
-    ["Offset of field: lore_revision_tree_load_args_t::repository"]
-        [::std::mem::offset_of!(lore_revision_tree_load_args_t, repository) - 8usize];
-    ["Offset of field: lore_revision_tree_load_args_t::revision_hash"]
-        [::std::mem::offset_of!(lore_revision_tree_load_args_t, revision_hash) - 24usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_load_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_load_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_load_args_t>(),
+        56usize,
+        "Size of lore_revision_tree_load_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_load_args_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_load_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).store) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_load_args_t::store"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_load_args_t::repository"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision_hash) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_revision_tree_load_args_t::revision_hash"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_close_args_t {
     pub id: u64,
     pub handle: lore_revision_tree_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_close_args_t"]
-        [::std::mem::size_of::<lore_revision_tree_close_args_t>() - 16usize];
-    ["Alignment of lore_revision_tree_close_args_t"]
-        [::std::mem::align_of::<lore_revision_tree_close_args_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_close_args_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_close_args_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_close_args_t::handle"]
-        [::std::mem::offset_of!(lore_revision_tree_close_args_t, handle) - 8usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_close_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_close_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_close_args_t>(),
+        16usize,
+        "Size of lore_revision_tree_close_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_close_args_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_close_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_close_args_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_close_args_t::handle"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_resolve_path_args_t {
@@ -8823,19 +15889,37 @@ pub struct lore_revision_tree_resolve_path_args_t {
     pub handle: lore_revision_tree_t,
     pub path: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_resolve_path_args_t"]
-        [::std::mem::size_of::<lore_revision_tree_resolve_path_args_t>() - 32usize];
-    ["Alignment of lore_revision_tree_resolve_path_args_t"]
-        [::std::mem::align_of::<lore_revision_tree_resolve_path_args_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_resolve_path_args_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_resolve_path_args_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_resolve_path_args_t::handle"]
-        [::std::mem::offset_of!(lore_revision_tree_resolve_path_args_t, handle) - 8usize];
-    ["Offset of field: lore_revision_tree_resolve_path_args_t::path"]
-        [::std::mem::offset_of!(lore_revision_tree_resolve_path_args_t, path) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_resolve_path_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_resolve_path_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_resolve_path_args_t>(),
+        32usize,
+        "Size of lore_revision_tree_resolve_path_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_resolve_path_args_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_resolve_path_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_resolve_path_args_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_resolve_path_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).path) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_tree_resolve_path_args_t::path"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_list_children_args_t {
@@ -8843,19 +15927,37 @@ pub struct lore_revision_tree_list_children_args_t {
     pub handle: lore_revision_tree_t,
     pub parent_node_id: lore_node_id_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_list_children_args_t"]
-        [::std::mem::size_of::<lore_revision_tree_list_children_args_t>() - 24usize];
-    ["Alignment of lore_revision_tree_list_children_args_t"]
-        [::std::mem::align_of::<lore_revision_tree_list_children_args_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_list_children_args_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_list_children_args_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_list_children_args_t::handle"]
-        [::std::mem::offset_of!(lore_revision_tree_list_children_args_t, handle) - 8usize];
-    ["Offset of field: lore_revision_tree_list_children_args_t::parent_node_id"]
-        [::std::mem::offset_of!(lore_revision_tree_list_children_args_t, parent_node_id) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_list_children_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_list_children_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_list_children_args_t>(),
+        24usize,
+        "Size of lore_revision_tree_list_children_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_list_children_args_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_list_children_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_list_children_args_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_list_children_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).parent_node_id) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_tree_list_children_args_t::parent_node_id"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_node_info_args_t {
@@ -8863,19 +15965,37 @@ pub struct lore_revision_tree_node_info_args_t {
     pub handle: lore_revision_tree_t,
     pub node_id: lore_node_id_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_node_info_args_t"]
-        [::std::mem::size_of::<lore_revision_tree_node_info_args_t>() - 24usize];
-    ["Alignment of lore_revision_tree_node_info_args_t"]
-        [::std::mem::align_of::<lore_revision_tree_node_info_args_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_node_info_args_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_node_info_args_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_node_info_args_t::handle"]
-        [::std::mem::offset_of!(lore_revision_tree_node_info_args_t, handle) - 8usize];
-    ["Offset of field: lore_revision_tree_node_info_args_t::node_id"]
-        [::std::mem::offset_of!(lore_revision_tree_node_info_args_t, node_id) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_node_info_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_node_info_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_node_info_args_t>(),
+        24usize,
+        "Size of lore_revision_tree_node_info_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_node_info_args_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_node_info_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_node_info_args_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_node_info_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).node_id) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_tree_node_info_args_t::node_id"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_node_path_args_t {
@@ -8883,19 +16003,37 @@ pub struct lore_revision_tree_node_path_args_t {
     pub handle: lore_revision_tree_t,
     pub node_id: lore_node_id_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_node_path_args_t"]
-        [::std::mem::size_of::<lore_revision_tree_node_path_args_t>() - 24usize];
-    ["Alignment of lore_revision_tree_node_path_args_t"]
-        [::std::mem::align_of::<lore_revision_tree_node_path_args_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_node_path_args_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_node_path_args_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_node_path_args_t::handle"]
-        [::std::mem::offset_of!(lore_revision_tree_node_path_args_t, handle) - 8usize];
-    ["Offset of field: lore_revision_tree_node_path_args_t::node_id"]
-        [::std::mem::offset_of!(lore_revision_tree_node_path_args_t, node_id) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_node_path_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_node_path_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_node_path_args_t>(),
+        24usize,
+        "Size of lore_revision_tree_node_path_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_node_path_args_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_node_path_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_node_path_args_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_node_path_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).node_id) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_tree_node_path_args_t::node_id"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_add_args_t {
@@ -8908,29 +16046,62 @@ pub struct lore_revision_tree_add_args_t {
     pub size: u64,
     pub address: lore_address_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_add_args_t"]
-        [::std::mem::size_of::<lore_revision_tree_add_args_t>() - 104usize];
-    ["Alignment of lore_revision_tree_add_args_t"]
-        [::std::mem::align_of::<lore_revision_tree_add_args_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_add_args_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_add_args_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_add_args_t::handle"]
-        [::std::mem::offset_of!(lore_revision_tree_add_args_t, handle) - 8usize];
-    ["Offset of field: lore_revision_tree_add_args_t::parent_node_id"]
-        [::std::mem::offset_of!(lore_revision_tree_add_args_t, parent_node_id) - 16usize];
-    ["Offset of field: lore_revision_tree_add_args_t::name"]
-        [::std::mem::offset_of!(lore_revision_tree_add_args_t, name) - 24usize];
-    ["Offset of field: lore_revision_tree_add_args_t::kind"]
-        [::std::mem::offset_of!(lore_revision_tree_add_args_t, kind) - 40usize];
-    ["Offset of field: lore_revision_tree_add_args_t::mode"]
-        [::std::mem::offset_of!(lore_revision_tree_add_args_t, mode) - 44usize];
-    ["Offset of field: lore_revision_tree_add_args_t::size"]
-        [::std::mem::offset_of!(lore_revision_tree_add_args_t, size) - 48usize];
-    ["Offset of field: lore_revision_tree_add_args_t::address"]
-        [::std::mem::offset_of!(lore_revision_tree_add_args_t, address) - 56usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_add_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_add_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_add_args_t>(),
+        104usize,
+        "Size of lore_revision_tree_add_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_add_args_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_add_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_add_args_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_add_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).parent_node_id) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_tree_add_args_t::parent_node_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).name) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_revision_tree_add_args_t::name"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).kind) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_revision_tree_add_args_t::kind"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).mode) as usize - ptr as usize },
+        44usize,
+        "Offset of field: lore_revision_tree_add_args_t::mode"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_revision_tree_add_args_t::size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        56usize,
+        "Offset of field: lore_revision_tree_add_args_t::address"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_delete_args_t {
@@ -8938,19 +16109,37 @@ pub struct lore_revision_tree_delete_args_t {
     pub handle: lore_revision_tree_t,
     pub node_id: lore_node_id_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_delete_args_t"]
-        [::std::mem::size_of::<lore_revision_tree_delete_args_t>() - 24usize];
-    ["Alignment of lore_revision_tree_delete_args_t"]
-        [::std::mem::align_of::<lore_revision_tree_delete_args_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_delete_args_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_delete_args_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_delete_args_t::handle"]
-        [::std::mem::offset_of!(lore_revision_tree_delete_args_t, handle) - 8usize];
-    ["Offset of field: lore_revision_tree_delete_args_t::node_id"]
-        [::std::mem::offset_of!(lore_revision_tree_delete_args_t, node_id) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_delete_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_delete_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_delete_args_t>(),
+        24usize,
+        "Size of lore_revision_tree_delete_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_delete_args_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_delete_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_delete_args_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_delete_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).node_id) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_tree_delete_args_t::node_id"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_modify_args_t {
@@ -8961,25 +16150,52 @@ pub struct lore_revision_tree_modify_args_t {
     pub size: u64,
     pub address: lore_address_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_modify_args_t"]
-        [::std::mem::size_of::<lore_revision_tree_modify_args_t>() - 80usize];
-    ["Alignment of lore_revision_tree_modify_args_t"]
-        [::std::mem::align_of::<lore_revision_tree_modify_args_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_modify_args_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_modify_args_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_modify_args_t::handle"]
-        [::std::mem::offset_of!(lore_revision_tree_modify_args_t, handle) - 8usize];
-    ["Offset of field: lore_revision_tree_modify_args_t::node_id"]
-        [::std::mem::offset_of!(lore_revision_tree_modify_args_t, node_id) - 16usize];
-    ["Offset of field: lore_revision_tree_modify_args_t::mode"]
-        [::std::mem::offset_of!(lore_revision_tree_modify_args_t, mode) - 20usize];
-    ["Offset of field: lore_revision_tree_modify_args_t::size"]
-        [::std::mem::offset_of!(lore_revision_tree_modify_args_t, size) - 24usize];
-    ["Offset of field: lore_revision_tree_modify_args_t::address"]
-        [::std::mem::offset_of!(lore_revision_tree_modify_args_t, address) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_modify_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_modify_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_modify_args_t>(),
+        80usize,
+        "Size of lore_revision_tree_modify_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_modify_args_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_modify_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_modify_args_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_modify_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).node_id) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_tree_modify_args_t::node_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).mode) as usize - ptr as usize },
+        20usize,
+        "Offset of field: lore_revision_tree_modify_args_t::mode"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).size) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_revision_tree_modify_args_t::size"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).address) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_tree_modify_args_t::address"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_move_args_t {
@@ -8989,23 +16205,47 @@ pub struct lore_revision_tree_move_args_t {
     pub destination_parent_id: lore_node_id_t,
     pub dst_name: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_move_args_t"]
-        [::std::mem::size_of::<lore_revision_tree_move_args_t>() - 40usize];
-    ["Alignment of lore_revision_tree_move_args_t"]
-        [::std::mem::align_of::<lore_revision_tree_move_args_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_move_args_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_move_args_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_move_args_t::handle"]
-        [::std::mem::offset_of!(lore_revision_tree_move_args_t, handle) - 8usize];
-    ["Offset of field: lore_revision_tree_move_args_t::node_id"]
-        [::std::mem::offset_of!(lore_revision_tree_move_args_t, node_id) - 16usize];
-    ["Offset of field: lore_revision_tree_move_args_t::destination_parent_id"]
-        [::std::mem::offset_of!(lore_revision_tree_move_args_t, destination_parent_id) - 20usize];
-    ["Offset of field: lore_revision_tree_move_args_t::dst_name"]
-        [::std::mem::offset_of!(lore_revision_tree_move_args_t, dst_name) - 24usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_move_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_move_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_move_args_t>(),
+        40usize,
+        "Size of lore_revision_tree_move_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_move_args_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_move_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_move_args_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_move_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).node_id) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_tree_move_args_t::node_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).destination_parent_id) as usize - ptr as usize },
+        20usize,
+        "Offset of field: lore_revision_tree_move_args_t::destination_parent_id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).dst_name) as usize - ptr as usize },
+        24usize,
+        "Offset of field: lore_revision_tree_move_args_t::dst_name"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_metadata_set_args_t {
@@ -9015,23 +16255,47 @@ pub struct lore_revision_tree_metadata_set_args_t {
     pub value: lore_string_t,
     pub format: u32,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_metadata_set_args_t"]
-        [::std::mem::size_of::<lore_revision_tree_metadata_set_args_t>() - 56usize];
-    ["Alignment of lore_revision_tree_metadata_set_args_t"]
-        [::std::mem::align_of::<lore_revision_tree_metadata_set_args_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_metadata_set_args_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_metadata_set_args_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_metadata_set_args_t::handle"]
-        [::std::mem::offset_of!(lore_revision_tree_metadata_set_args_t, handle) - 8usize];
-    ["Offset of field: lore_revision_tree_metadata_set_args_t::key"]
-        [::std::mem::offset_of!(lore_revision_tree_metadata_set_args_t, key) - 16usize];
-    ["Offset of field: lore_revision_tree_metadata_set_args_t::value"]
-        [::std::mem::offset_of!(lore_revision_tree_metadata_set_args_t, value) - 32usize];
-    ["Offset of field: lore_revision_tree_metadata_set_args_t::format"]
-        [::std::mem::offset_of!(lore_revision_tree_metadata_set_args_t, format) - 48usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_metadata_set_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_metadata_set_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_metadata_set_args_t>(),
+        56usize,
+        "Size of lore_revision_tree_metadata_set_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_metadata_set_args_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_metadata_set_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_metadata_set_args_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_metadata_set_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_tree_metadata_set_args_t::key"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).value) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_tree_metadata_set_args_t::value"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).format) as usize - ptr as usize },
+        48usize,
+        "Offset of field: lore_revision_tree_metadata_set_args_t::format"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_metadata_get_args_t {
@@ -9039,33 +16303,63 @@ pub struct lore_revision_tree_metadata_get_args_t {
     pub handle: lore_revision_tree_t,
     pub key: lore_string_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_metadata_get_args_t"]
-        [::std::mem::size_of::<lore_revision_tree_metadata_get_args_t>() - 32usize];
-    ["Alignment of lore_revision_tree_metadata_get_args_t"]
-        [::std::mem::align_of::<lore_revision_tree_metadata_get_args_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_metadata_get_args_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_metadata_get_args_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_metadata_get_args_t::handle"]
-        [::std::mem::offset_of!(lore_revision_tree_metadata_get_args_t, handle) - 8usize];
-    ["Offset of field: lore_revision_tree_metadata_get_args_t::key"]
-        [::std::mem::offset_of!(lore_revision_tree_metadata_get_args_t, key) - 16usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_metadata_get_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_metadata_get_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_metadata_get_args_t>(),
+        32usize,
+        "Size of lore_revision_tree_metadata_get_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_metadata_get_args_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_metadata_get_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_metadata_get_args_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_metadata_get_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).key) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_tree_metadata_get_args_t::key"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_commit_options_t {
     pub remote_write: u8,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_commit_options_t"]
-        [::std::mem::size_of::<lore_revision_tree_commit_options_t>() - 1usize];
-    ["Alignment of lore_revision_tree_commit_options_t"]
-        [::std::mem::align_of::<lore_revision_tree_commit_options_t>() - 1usize];
-    ["Offset of field: lore_revision_tree_commit_options_t::remote_write"]
-        [::std::mem::offset_of!(lore_revision_tree_commit_options_t, remote_write) - 0usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_commit_options_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_commit_options_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_commit_options_t>(),
+        1usize,
+        "Size of lore_revision_tree_commit_options_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_commit_options_t>(),
+        1usize,
+        "Alignment of lore_revision_tree_commit_options_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).remote_write) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_commit_options_t::remote_write"
+    );
+}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_revision_tree_commit_args_t {
@@ -9074,21 +16368,42 @@ pub struct lore_revision_tree_commit_args_t {
     pub branch: lore_branch_id_t,
     pub options: lore_revision_tree_commit_options_t,
 }
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of lore_revision_tree_commit_args_t"]
-        [::std::mem::size_of::<lore_revision_tree_commit_args_t>() - 40usize];
-    ["Alignment of lore_revision_tree_commit_args_t"]
-        [::std::mem::align_of::<lore_revision_tree_commit_args_t>() - 8usize];
-    ["Offset of field: lore_revision_tree_commit_args_t::id"]
-        [::std::mem::offset_of!(lore_revision_tree_commit_args_t, id) - 0usize];
-    ["Offset of field: lore_revision_tree_commit_args_t::handle"]
-        [::std::mem::offset_of!(lore_revision_tree_commit_args_t, handle) - 8usize];
-    ["Offset of field: lore_revision_tree_commit_args_t::branch"]
-        [::std::mem::offset_of!(lore_revision_tree_commit_args_t, branch) - 16usize];
-    ["Offset of field: lore_revision_tree_commit_args_t::options"]
-        [::std::mem::offset_of!(lore_revision_tree_commit_args_t, options) - 32usize];
-};
+#[test]
+fn bindgen_test_layout_lore_revision_tree_commit_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_tree_commit_args_t> =
+        ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_tree_commit_args_t>(),
+        40usize,
+        "Size of lore_revision_tree_commit_args_t"
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_tree_commit_args_t>(),
+        8usize,
+        "Alignment of lore_revision_tree_commit_args_t"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).id) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_tree_commit_args_t::id"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).handle) as usize - ptr as usize },
+        8usize,
+        "Offset of field: lore_revision_tree_commit_args_t::handle"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_tree_commit_args_t::branch"
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).options) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_tree_commit_args_t::options"
+    );
+}
 pub struct Lore {
     __library: ::libloading::Library,
     pub lore_event_type: unsafe extern "C" fn(event: *const lore_event_t) -> u32,
