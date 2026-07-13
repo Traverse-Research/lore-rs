@@ -8,6 +8,23 @@ pub use libloading;
 // README for the bindgen invocation that regenerates this file.
 include!("bindings.rs");
 
+mod capture;
+pub use capture::{capture, CapturedEvents};
+
+impl lore_string_t {
+    pub const EMPTY: Self = Self {
+        string: std::ptr::null(),
+        length: 0,
+    };
+
+    pub fn new(s: &std::ffi::CStr) -> Self {
+        Self {
+            string: s.as_ptr(),
+            length: s.to_bytes().len(),
+        }
+    }
+}
+
 impl Lore {
     /// Loads the Lore dynamic library from `path` and resolves all C API
     /// symbols.
@@ -20,16 +37,5 @@ impl Lore {
     /// ([`LORE_INTERFACE_VERSION`]).
     pub unsafe fn load<P: AsRef<std::ffi::OsStr>>(path: P) -> Result<Self, libloading::Error> {
         Self::new(path)
-    }
-
-    /// Loads the Lore dynamic library by its platform-specific default name
-    /// (`lore.dll`, `liblore.so` or `liblore.dylib`) from the system library
-    /// search path.
-    ///
-    /// # Safety
-    ///
-    /// See [`Self::load`].
-    pub unsafe fn load_default() -> Result<Self, libloading::Error> {
-        Self::new(libloading::library_filename("lore"))
     }
 }
