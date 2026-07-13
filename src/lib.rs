@@ -11,6 +11,15 @@ include!("bindings.rs");
 mod capture;
 pub use capture::{capture, CapturedEvents};
 
+/// Returns the platform-specific file name of the Lore dynamic library:
+/// `lore.dll` on Windows, `liblore.so` on Linux and `liblore.dylib` on macOS.
+///
+/// Join this onto a directory to build the path for [`Lore::load`], or pass it
+/// as-is to resolve the library from the system search path.
+pub fn library_filename() -> std::ffi::OsString {
+    libloading::library_filename("lore")
+}
+
 impl lore_string_t {
     pub const EMPTY: Self = Self {
         string: std::ptr::null(),
