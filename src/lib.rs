@@ -20,6 +20,13 @@ pub fn library_filename() -> std::ffi::OsString {
     libloading::library_filename("lore")
 }
 
+/// Path to the prebuilt `lore.dll` checked into this repository, built by the
+/// `generator` tool from the same `lore` submodule revision the bindings were
+/// generated from. Windows-only for now.
+pub const DLL_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/bin/lore.dll");
+
+pub const PDB_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/bin/lore.pdb");
+
 impl lore_string_t {
     pub const EMPTY: Self = Self {
         string: std::ptr::null(),
@@ -37,13 +44,6 @@ impl lore_string_t {
 impl Lore {
     /// Loads the Lore dynamic library from `path` and resolves all C API
     /// symbols.
-    ///
-    /// # Safety
-    ///
-    /// Loading a dynamic library executes its initialization routines; the
-    /// caller must ensure `path` refers to a trusted Lore library that matches
-    /// the interface version of the submodule's `lore-capi/lore.h`
-    /// ([`LORE_INTERFACE_VERSION`]).
     pub unsafe fn load<P: AsRef<std::ffi::OsStr>>(path: P) -> Result<Self, libloading::Error> {
         Self::new(path)
     }

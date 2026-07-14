@@ -46,31 +46,34 @@ fn main() {
     println!("wrote {}", out.display());
 
     // Build the lore dynamic library from the same submodule revision the
-    // bindings were generated from, and copy it into lib/ to be checked in.
+    // bindings were generated from, and copy it into bin/ to be checked in.
     // Only a release build for the moment; we can add debug if it becomes
     // necessary.
+    //
+    // CARGO_TARGET_DIR is forced so the copy below reads the same location
+    // cargo wrote to, regardless of a user-level target-dir override.
+    let target_dir = root.join("lore/target");
     let status = std::process::Command::new("cargo")
         .args(["build", "--release", "-p", "lore"])
+        .env("CARGO_TARGET_DIR", &target_dir)
         .current_dir(root.join("lore"))
         .status()
         .expect("failed to run cargo build in the lore submodule");
     assert!(status.success(), "building the lore dynamic library failed");
 
-    let lib_dir = root.join("lib");
-    std::fs::create_dir_all(&lib_dir).expect("failed to create lib/");
-    let dll = format!(
-        "{}lore{}",
-        std::env::consts::DLL_PREFIX,
-        std::env::consts::DLL_SUFFIX
-    );
+    // Destination must match the DLL_PATH/PDB_PATH consts in src/lib.rs; the
+    // generator can't reference those directly without depending on lore-sys,
+    // which would make it unbuildable exactly when bindings.rs needs fixing.
+    let bin_dir = root.join("bin");
+    std::fs::create_dir_all(&bin_dir).expect("failed to create bin/");
     // The .pdb only exists when the profile emits debug info; copy it when
     // present so debuggers get symbols matching the .dll.
-    for file in [dll.as_str(), "lore.pdb"] {
-        let src = root.join("lore/target/release").join(file);
+    for file in ["lore.dll", "lore.pdb"] {
+        let src = target_dir.join("release").join(file);
         if src.exists() {
-            let dest = lib_dir.join(file);
+            let dest = bin_dir.join(file);
             std::fs::copy(&src, &dest)
-                .unwrap_or_else(|e| panic!("failed to copy {} to lib/: {e}", src.display()));
+                .unwrap_or_else(|e| panic!("failed to copy {} to bin/: {e}", src.display()));
             println!("wrote {}", dest.display());
         }
     }
