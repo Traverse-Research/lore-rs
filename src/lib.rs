@@ -6,7 +6,8 @@ pub use libloading;
 
 // Pregenerated from lore/lore-capi/lore.h; see "Updating the bindings" in the
 // README for the bindgen invocation that regenerates this file.
-include!("bindings.rs");
+mod bindings;
+pub use bindings::*;
 
 mod capture;
 pub use capture::{capture, CapturedEvents};
