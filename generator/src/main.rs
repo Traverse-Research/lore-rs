@@ -61,7 +61,7 @@ fn main() {
         .expect("failed to run cargo build in the lore submodule");
     assert!(status.success(), "building the lore dynamic library failed");
 
-    // Destination must match the DLL_PATH/PDB_PATH consts in src/lib.rs; the
+    // Destination must match the prebuilt_*_path functions in src/lib.rs; the
     // generator can't reference those directly without depending on lore-sys,
     // which would make it unbuildable exactly when bindings.rs needs fixing.
     let bin_dir = root.join("bin");

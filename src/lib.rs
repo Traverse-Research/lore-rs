@@ -10,7 +10,7 @@ mod bindings;
 pub use bindings::*;
 
 mod capture;
-pub use capture::{capture, CapturedEvents};
+pub use capture::Event;
 
 /// Returns the platform-specific file name of the Lore dynamic library:
 /// `lore.dll` on Windows, `liblore.so` on Linux and `liblore.dylib` on macOS.
@@ -21,12 +21,18 @@ pub fn library_filename() -> std::ffi::OsString {
     libloading::library_filename("lore")
 }
 
-/// Path to the prebuilt `lore.dll` checked into this repository, built by the
-/// `generator` tool from the same `lore` submodule revision the bindings were
-/// generated from. Windows-only for now.
-pub const DLL_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/bin/lore.dll");
+/// Path to the prebuilt lore dynamic library checked into this repository,
+/// built by the `generator` tool from the same `lore` submodule revision the
+/// bindings were generated from. Only the Windows `lore.dll` is checked in for now.
+pub fn prebuilt_library_path() -> std::path::PathBuf {
+    std::path::Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "/bin")).join(library_filename())
+}
 
-pub const PDB_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/bin/lore.pdb");
+/// Path to the `.pdb` matching the prebuilt `lore.dll`; debuggers reject
+/// symbols from a different build than the library.
+pub fn prebuilt_pdb_path() -> std::path::PathBuf {
+    std::path::Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "/bin")).join("lore.pdb")
+}
 
 impl lore_string_t {
     pub const EMPTY: Self = Self {
@@ -40,6 +46,29 @@ impl lore_string_t {
             length: s.to_bytes().len(),
         }
     }
+
+    /// Copies the borrowed text into an owned [`String`].
+    ///
+    /// # Safety
+    ///
+    /// The string a lore event delivers is only valid while the callback that
+    /// delivered it runs.
+    pub unsafe fn to_string(&self) -> String {
+        const MAX_LENGTH: usize = 1 << 20;
+        if self.string.is_null() {
+            String::new()
+        } else if self.length > MAX_LENGTH {
+            format!(
+                "<corrupt lore string: ptr {:p}, length {:#x}>",
+                self.string, self.length
+            )
+        } else {
+            String::from_utf8_lossy(unsafe {
+                std::slice::from_raw_parts(self.string.cast::<u8>(), self.length)
+            })
+            .into_owned()
+        }
+    }
 }
 
 impl Lore {
@@ -47,5 +76,16 @@ impl Lore {
     /// symbols.
     pub unsafe fn load<P: AsRef<std::ffi::OsStr>>(path: P) -> Result<Self, libloading::Error> {
         Self::new(path)
+    }
+}
+
+impl Drop for Lore {
+    fn drop(&mut self) {
+        // Stop lore's worker threads before the library unloads; they would
+        // otherwise keep the process alive running unloaded code
+        let status = unsafe { self.lore_shutdown() };
+        if status != 0 {
+            log::error!(target: "lore", "lore_shutdown failed with status {status}");
+        }
     }
 }
