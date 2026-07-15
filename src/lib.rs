@@ -34,39 +34,42 @@ pub fn prebuilt_pdb_path() -> std::path::PathBuf {
     std::path::Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "/bin")).join("lore.pdb")
 }
 
+impl lore_string_array_t {
+    pub const EMPTY: Self = Self {
+        ptr: std::ptr::null(),
+        count: 0,
+    };
+}
+
 impl lore_string_t {
     pub const EMPTY: Self = Self {
         string: std::ptr::null(),
         length: 0,
     };
 
-    pub fn new(s: &std::ffi::CStr) -> Self {
+    /// Borrows `s`; lore copies the bytes before the call it is passed to
+    /// returns, and reads them by length, so no NUL terminator is needed.
+    pub fn new(s: &str) -> Self {
         Self {
-            string: s.as_ptr(),
-            length: s.to_bytes().len(),
+            string: s.as_ptr().cast(),
+            length: s.len(),
         }
     }
 
-    /// Copies the borrowed text into an owned [`String`].
+    /// The borrowed text.
     ///
     /// # Safety
     ///
     /// The string a lore event delivers is only valid while the callback that
     /// delivered it runs.
-    pub unsafe fn to_string(&self) -> String {
-        const MAX_LENGTH: usize = 1 << 20;
+    pub unsafe fn as_str(&self) -> &str {
         if self.string.is_null() {
-            String::new()
-        } else if self.length > MAX_LENGTH {
-            format!(
-                "<corrupt lore string: ptr {:p}, length {:#x}>",
-                self.string, self.length
-            )
+            ""
         } else {
-            String::from_utf8_lossy(unsafe {
+            std::str::from_utf8(unsafe {
                 std::slice::from_raw_parts(self.string.cast::<u8>(), self.length)
             })
-            .into_owned()
+            .unwrap_or("<non-utf8 lore string>")
         }
     }
 }
