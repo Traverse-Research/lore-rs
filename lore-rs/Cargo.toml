@@ -1,0 +1,16 @@
+[package]
+name = "lore-rs"
+version = "0.0.0"
+authors = ["Traverse Research"]
+edition = "2021"
+license = "MIT"
+homepage = "https://traverseresearch.nl"
+repository = "https://github.com/Traverse-Research/Lore-rs"
+description = "Ergonomic Rust wrapper around the raw lore-sys bindings for the Lore C API"
+categories = ["api-bindings"]
+keywords = ["lore", "bindings", "ffi", "version-control"]
+rust-version = "1.74"
+
+[dependencies]
+log = "0.4.4"
+lore-sys = { path = "../lore-sys" }

@@ -1,4 +1,5 @@
-﻿use crate::{
+use crate::as_str;
+use lore_sys::{
     lore_error_code_t, lore_event_id_t, lore_event_t, lore_file_action_t, lore_hash_t,
     lore_log_level_t, LORE_EVENT_COMPLETE, LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO,
     LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG,
@@ -65,21 +66,26 @@ pub enum Event<'a> {
 }
 
 impl<'a> Event<'a> {
+    /// # Safety
+    ///
+    /// `event` must be a valid Lore event whose tag matches the union variant
+    /// that is actually initialized, with any contained pointers valid for
+    /// `lifetime 'a`.
     pub unsafe fn from_raw(event: &'a lore_event_t) -> Self {
         let Ok(tag) = lore_event_id_t::try_from(event.tag) else {
             return Self::Other;
         };
 
-        let data = &event.__bindgen_anon_1;
         unsafe {
+            let data = &event.__bindgen_anon_1;
             match tag {
                 LORE_EVENT_LOG => Self::Log {
                     level: data.log.level,
-                    message: data.log.message.as_str().unwrap_or_default(),
+                    message: as_str(&data.log.message).unwrap_or_default(),
                 },
                 LORE_EVENT_ERROR => Self::Error {
                     error_type: data.error.error_type,
-                    message: data.error.error_inner.as_str().unwrap_or_default(),
+                    message: as_str(&data.error.error_inner).unwrap_or_default(),
                 },
                 LORE_EVENT_COMPLETE => Self::Complete {
                     status: data.complete.status,
@@ -89,35 +95,24 @@ impl<'a> Event<'a> {
                     context: data.file_info.context.data,
                 },
                 LORE_EVENT_FILE_STAGE_FILE => Self::FileStageFile {
-                    path: data.file_stage_file.path.as_str().unwrap_or_default(),
+                    path: as_str(&data.file_stage_file.path).unwrap_or_default(),
                     action: data.file_stage_file.action,
                 },
                 LORE_EVENT_FILE_UNSTAGE_FILE => Self::FileUnstageFile {
-                    path: data.file_unstage_file.path.as_str().unwrap_or_default(),
+                    path: as_str(&data.file_unstage_file.path).unwrap_or_default(),
                     action: data.file_unstage_file.action,
                 },
                 LORE_EVENT_REPOSITORY_STATUS_REVISION => Self::RepositoryStatusRevision {
-                    branch_name: data
-                        .repository_status_revision
-                        .branch_name
-                        .as_str()
+                    branch_name: as_str(&data.repository_status_revision.branch_name)
                         .unwrap_or_default(),
                 },
                 LORE_EVENT_REPOSITORY_STATUS_FILE => Self::RepositoryStatusFile {
-                    path: data
-                        .repository_status_file
-                        .path
-                        .as_str()
-                        .unwrap_or_default(),
+                    path: as_str(&data.repository_status_file.path).unwrap_or_default(),
                     action: data.repository_status_file.action,
                     staged: data.repository_status_file.flag_staged != 0,
                 },
                 LORE_EVENT_REPOSITORY_STATE_DUMP_NODE => Self::RepositoryStateDumpNode {
-                    path: data
-                        .repository_state_dump_node
-                        .name
-                        .as_str()
-                        .unwrap_or_default(),
+                    path: as_str(&data.repository_state_dump_node.name).unwrap_or_default(),
                 },
                 LORE_EVENT_REVISION_COMMIT_REVISION => Self::RevisionCommitRevision {
                     revision: data.revision_commit_revision.revision.data,

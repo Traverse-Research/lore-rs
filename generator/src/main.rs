@@ -10,8 +10,8 @@ fn main() {
         header.display()
     );
 
-    // Generate bindings with the same rust version as the lore-rs crate.
-    let manifest = std::fs::read_to_string(root.join("Cargo.toml")).unwrap();
+    // Generate bindings with the same rust version as the lore-sys crate.
+    let manifest = std::fs::read_to_string(root.join("lore-sys/Cargo.toml")).unwrap();
     let msrv = manifest
         .lines()
         .find_map(|line| line.strip_prefix("rust-version"))
@@ -31,9 +31,9 @@ fn main() {
         .generate()
         .expect("failed to generate bindings for lore.h");
 
-    let out = root.join("src/bindings.rs");
+    let out = root.join("lore-sys/src/bindings.rs");
     bindings
         .write_to_file(&out)
-        .expect("failed to write src/bindings.rs");
+        .expect("failed to write lore-sys/src/bindings.rs");
     println!("wrote {}", out.display());
 }

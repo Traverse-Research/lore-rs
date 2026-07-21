@@ -1,17 +1,4 @@
-[package]
-name = "lore-rs"
-version = "0.0.0"
-authors = ["Traverse Research"]
-edition = "2021"
-license = "MIT"
-homepage = "https://traverseresearch.nl"
-repository = "https://github.com/Traverse-Research/Lore-rs"
-description = "Rust bindings for the Lore C API (Epic Games' Lore version control), pregenerated with bindgen"
-include = ["src", "LICENSE"]
-categories = ["external-ffi-bindings", "api-bindings"]
-keywords = ["lore", "bindings", "ffi", "version-control"]
-rust-version = "1.74"
-
-[dependencies]
-libloading = "0.8"
-log = "0.4.4"
+[workspace]
+members = ["lore-rs", "lore-sys"]
+exclude = ["generator", "lore"]
+resolver = "2"
