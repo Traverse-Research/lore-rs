@@ -2,3 +2,6 @@
 members = ["lore-rs", "lore-sys"]
 exclude = ["generator", "lore"]
 resolver = "2"
+
+[workspace.dependencies]
+lore-sys = { path = "lore-sys" }

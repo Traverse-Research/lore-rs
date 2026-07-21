@@ -13,4 +13,4 @@ rust-version = "1.74"
 
 [dependencies]
 log = "0.4.4"
-lore-sys = { path = "../lore-sys" }
+lore-sys.workspace = true
