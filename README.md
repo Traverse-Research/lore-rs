@@ -12,13 +12,11 @@
 Rust bindings and some helper functions for the C API of [Lore], Epic Games' open source version
 control system.
 
-Lore itself is build in rust but for anyone wanting to link to it dynamically for whatever reason, you need to go through the C API. This crate contains the bindings and some helpers to make that more ergomic.
+Lore itself is build in rust but for anyone wanting to link to it dynamically for whatever reason, you need to go through the C API. The `lore-sys` crate contains the raw bindings; the `lore-rs` crate adds ergonomic wrappers on top.
 
 The raw bindings have been automatically generated using BindGen.
 
-
-A seperate branch also contains pregenerated dynamic library artifacts for Windows, MacOS and Linux, all release builds.
-
+precompiled Dlls are also available on the various `dll/` branches
 # Depedencies
 
 [Lore](https://github.com/EpicGames/lore)
@@ -37,6 +35,8 @@ let lore = unsafe { Lore::new("path/to/lore.dll") }?;
 After that you can call into the bindings.
 
 For the actual usage of Lore, you can see all the documentation regarding Lore [there](https://github.com/epicgames/lore)
+
+
 
 ## Updating the bindings
 Bump the [`lore`](lore) submodule to the desired revision and run the generator.
