@@ -1,4 +1,4 @@
-# 📖 lore-rs
+# lore-rs
 
 [![Actions Status](https://github.com/Traverse-Research/Lore-rust-bindings/actions/workflows/ci.yml/badge.svg)](https://github.com/Traverse-Research/Lore-rust-bindings/actions)
 [![Latest version](https://img.shields.io/crates/v/lore-sys.svg?logo=rust)](https://crates.io/crates/lore-sys)
@@ -21,19 +21,20 @@ A seperate branch also contains pregenerated dynamic library artifacts for Windo
 
 # Depedencies
 
-[Lore]: https://github.com/EpicGames/lore
-[bindgen]: https://crates.io/crates/bindgen
-[libloading]: https://crates.io/crates/libloading
+[Lore](https://github.com/EpicGames/lore)
+[bindgen](https://crates.io/crates/bindgen)
+[libloading](https://crates.io/crates/libloading)
 
 ## Usage
 
-Load the library and call into the C API:
+Loading the library:
 
 ```rust,no_run
 use lore_rs::Lore;
 
 let lore = unsafe { Lore::new("path/to/lore.dll") }.expect("failed to load Lore");
 ```
+After that you can call into the bindings.
 
 For the actual usage of Lore, you can see all the documentation regarding Lore [there](https://github.com/epicgames/lore)
 
