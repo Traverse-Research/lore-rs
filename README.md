@@ -32,7 +32,7 @@ Loading the library:
 ```rust,no_run
 use lore_rs::Lore;
 
-let lore = unsafe { Lore::new("path/to/lore.dll") }.expect("failed to load Lore");
+let lore = unsafe { Lore::new("path/to/lore.dll") }?;
 ```
 After that you can call into the bindings.
 
