@@ -59,7 +59,9 @@ jobs:
         shell: bash
         run: |
           rev=$(git -C lore rev-parse HEAD)
-          tag=$(git -C lore ls-remote --tags origin | awk -v rev="$rev" '$1 == rev { sub(".*refs/tags/", "", $2); print $2 }')
+          # Annotated tags list both the tag object and the peeled `tag^{}` commit;
+          # the submodule pin is the commit, so match that and strip the suffix.
+          tag=$(git -C lore ls-remote --tags origin | awk -v rev="$rev" '$1 == rev { sub(".*refs/tags/", "", $2); sub(/\^\{\}$/, "", $2); print $2; exit }')
           if [ -z "$tag" ]; then
             echo "::error::The lore submodule is not pinned to a release tag; no release binaries exist for it"
             exit 1
