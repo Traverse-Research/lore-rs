@@ -48,26 +48,36 @@ jobs:
         run: |
           test -z "$(git status --porcelain)" || (echo "::error::Generated bindings are different, please regenerate with 'cargo run --manifest-path generator/Cargo.toml'!"; git status; false)
 
-  version-tag:
-    name: Check LORE_VERSION_TAG matches the lore submodule
+  lore-version:
+    name: Check LORE_VERSION matches the lore submodule tag
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
         with:
           submodules: true
-      - name: Compare LORE_VERSION_TAG against the submodule version
+      - name: Compare LORE_VERSION against the tag of the pinned submodule revision
         shell: bash
         run: |
-          version=$(grep -m1 '^version = ' lore/Cargo.toml | cut -d'"' -f2)
-          case "$version" in
-            *-nightly*)
-              echo "::warning::The lore submodule is pinned to a nightly ($version)"
-              tag="v$version-$(git -C lore rev-parse --short=7 HEAD)" ;;
-            *)
-              tag="v$version" ;;
-          esac
-          const=$(grep 'const LORE_VERSION_TAG' lore-bin/src/lib.rs | cut -d'"' -f2)
-          if [ "$const" != "$tag" ]; then
-            echo "::error::LORE_VERSION_TAG in lore-bin/src/lib.rs is '$const' but the lore submodule is at '$tag'"
+          rev=$(git -C lore rev-parse HEAD)
+          tag=$(git -C lore ls-remote --tags origin | awk -v rev="$rev" '$1 == rev { sub(".*refs/tags/", "", $2); print $2 }')
+          if [ -z "$tag" ]; then
+            echo "::error::The lore submodule is not pinned to a release tag; no release binaries exist for it"
             exit 1
           fi
+          const=$(grep 'const LORE_VERSION:' lore-bin/src/lib.rs | cut -d'"' -f2)
+          if [ "v$const" != "$tag" ]; then
+            echo "::error::LORE_VERSION in lore-bin/src/lib.rs is '$const' but the lore submodule is pinned to '$tag'"
+            exit 1
+          fi
+
+  fetch-binary:
+    name: Fetch binary on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Run the network fetch test
+        run: cargo test --package lore-bin -- --ignored
