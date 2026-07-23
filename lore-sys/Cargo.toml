@@ -13,4 +13,4 @@ keywords = ["lore", "bindings", "ffi", "version-control"]
 rust-version = "1.74"
 
 [dependencies]
-libloading = "0.8"
+libloading = "0.9"
