@@ -1,0 +1,46 @@
+name: Build binaries
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Build ${{ matrix.target }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            binary: lore.dll
+            asset: lore-x86_64-pc-windows-msvc.dll
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            binary: liblore.so
+            asset: liblore-x86_64-unknown-linux-gnu.so
+          # arm64 runners are free only for public repos; re-enable when the repo goes public
+          # - os: ubuntu-24.04-arm
+          #   target: aarch64-unknown-linux-gnu
+          #   binary: liblore.so
+          #   asset: liblore-aarch64-unknown-linux-gnu.so
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            binary: liblore.dylib
+            asset: liblore-aarch64-apple-darwin.dylib
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+      - name: Build lore cdylib
+        run: cargo build --release --manifest-path lore/Cargo.toml -p lore --target ${{ matrix.target }}
+      - name: Attach binary to release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp "lore/target/${{ matrix.target }}/release/${{ matrix.binary }}" "${{ matrix.asset }}"
+          gh release upload "${{ github.event.release.tag_name }}" "${{ matrix.asset }}" --clobber

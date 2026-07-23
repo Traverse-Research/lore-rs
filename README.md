@@ -16,7 +16,7 @@ Lore itself is build in rust but for anyone wanting to link to it dynamically fo
 
 The raw bindings have been automatically generated using BindGen.
 
-precompiled Dlls are also available on the various `dll/` branches
+Precompiled libraries are attached as assets to the [GitHub releases](https://github.com/Traverse-Research/Lore-rust-bindings/releases) of this repository. Download the one for your target, rename it to its plain name (`lore.dll` / `liblore.so` / `liblore.dylib`), and place it where the OS loader or your `Lore::new(path)` call can find it.
 # Depedencies
 
 [Lore](https://github.com/EpicGames/lore)
