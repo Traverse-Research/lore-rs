@@ -47,3 +47,27 @@ jobs:
         shell: bash
         run: |
           test -z "$(git status --porcelain)" || (echo "::error::Generated bindings are different, please regenerate with 'cargo run --manifest-path generator/Cargo.toml'!"; git status; false)
+
+  version-tag:
+    name: Check LORE_VERSION_TAG matches the lore submodule
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+      - name: Compare LORE_VERSION_TAG against the submodule version
+        shell: bash
+        run: |
+          version=$(grep -m1 '^version = ' lore/Cargo.toml | cut -d'"' -f2)
+          case "$version" in
+            *-nightly*)
+              echo "::warning::The lore submodule is pinned to a nightly ($version)"
+              tag="v$version-$(git -C lore rev-parse --short=7 HEAD)" ;;
+            *)
+              tag="v$version" ;;
+          esac
+          const=$(grep 'const LORE_VERSION_TAG' lore-bin/src/lib.rs | cut -d'"' -f2)
+          if [ "$const" != "$tag" ]; then
+            echo "::error::LORE_VERSION_TAG in lore-bin/src/lib.rs is '$const' but the lore submodule is at '$tag'"
+            exit 1
+          fi

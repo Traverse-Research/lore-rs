@@ -1,5 +1,5 @@
 [workspace]
-members = ["lore-rs", "lore-sys"]
+members = ["lore-bin", "lore-rs", "lore-sys"]
 exclude = ["generator", "lore"]
 resolver = "2"
 

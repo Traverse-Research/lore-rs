@@ -10,7 +10,6 @@ fn main() {
         header.display()
     );
 
-    // Generate bindings with the same rust version as the lore-sys crate.
     let manifest = std::fs::read_to_string(root.join("lore-sys/Cargo.toml")).unwrap();
     let msrv = manifest
         .lines()

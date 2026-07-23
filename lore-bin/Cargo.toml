@@ -1,0 +1,11 @@
+[package]
+name = "lore-bin"
+version = "0.0.0"
+authors = ["Traverse Research"]
+edition = "2021"
+license = "MIT"
+rust-version = "1.74"
+homepage = "https://traverseresearch.nl"
+repository = "https://github.com/Traverse-Research/Lore-rust-bindings"
+description = "Downloads the prebuilt Lore shared library from this repository's GitHub releases, for use in build scripts"
+publish = false
