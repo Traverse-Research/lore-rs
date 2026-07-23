@@ -7,30 +7,30 @@ pub const LORE_LOG_LEVEL_DEBUG: lore_log_level_t = 2;
 pub const LORE_LOG_LEVEL_INFO: lore_log_level_t = 3;
 pub const LORE_LOG_LEVEL_WARN: lore_log_level_t = 4;
 pub const LORE_LOG_LEVEL_ERROR: lore_log_level_t = 5;
-pub type lore_log_level_t = ::std::os::raw::c_int;
+pub type lore_log_level_t = ::std::os::raw::c_uint;
 pub const LORE_BRANCH_LOCATION_LOCAL: lore_branch_location_t = 0;
 pub const LORE_BRANCH_LOCATION_REMOTE: lore_branch_location_t = 1;
-pub type lore_branch_location_t = ::std::os::raw::c_int;
+pub type lore_branch_location_t = ::std::os::raw::c_uint;
 pub const LORE_FILE_ACTION_KEEP: lore_file_action_t = 0;
 pub const LORE_FILE_ACTION_ADD: lore_file_action_t = 1;
 pub const LORE_FILE_ACTION_DELETE: lore_file_action_t = 2;
 pub const LORE_FILE_ACTION_MOVE: lore_file_action_t = 3;
 pub const LORE_FILE_ACTION_COPY: lore_file_action_t = 4;
-pub type lore_file_action_t = ::std::os::raw::c_int;
+pub type lore_file_action_t = ::std::os::raw::c_uint;
 pub const LORE_NODE_TYPE_DIRECTORY: lore_node_type_t = 0;
 pub const LORE_NODE_TYPE_FILE: lore_node_type_t = 1;
 pub const LORE_NODE_TYPE_LINK: lore_node_type_t = 2;
-pub type lore_node_type_t = ::std::os::raw::c_int;
+pub type lore_node_type_t = ::std::os::raw::c_uint;
 pub const LORE_ERROR_CODE_NONE: lore_error_code_t = 0;
 pub const LORE_ERROR_CODE_INVALID_ARGUMENTS: lore_error_code_t = 1;
 pub const LORE_ERROR_CODE_ADDRESS_NOT_FOUND: lore_error_code_t = 2;
 pub const LORE_ERROR_CODE_INTERNAL: lore_error_code_t = 3;
 pub const LORE_ERROR_CODE_SLOW_DOWN: lore_error_code_t = 4;
-pub type lore_error_code_t = ::std::os::raw::c_int;
+pub type lore_error_code_t = ::std::os::raw::c_uint;
 pub const LORE_METADATA_TYPE_BINARY: lore_metadata_type_t = 0;
 pub const LORE_METADATA_TYPE_NUMERIC: lore_metadata_type_t = 1;
 pub const LORE_METADATA_TYPE_STRING: lore_metadata_type_t = 2;
-pub type lore_metadata_type_t = ::std::os::raw::c_int;
+pub type lore_metadata_type_t = ::std::os::raw::c_uint;
 pub const LORE_KEY_TYPE_UNTYPED: lore_key_type_t = 0;
 pub const LORE_KEY_TYPE_BRANCH_METADATA: lore_key_type_t = 1;
 pub const LORE_KEY_TYPE_BRANCH_ID: lore_key_type_t = 2;
@@ -38,7 +38,7 @@ pub const LORE_KEY_TYPE_BRANCH_LATEST_POINTER: lore_key_type_t = 3;
 pub const LORE_KEY_TYPE_REPOSITORY_METADATA: lore_key_type_t = 4;
 pub const LORE_KEY_TYPE_REPOSITORY_ID: lore_key_type_t = 5;
 pub const LORE_KEY_TYPE_INSTANCE: lore_key_type_t = 6;
-pub type lore_key_type_t = ::std::os::raw::c_int;
+pub type lore_key_type_t = ::std::os::raw::c_uint;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_progress_event_data_t {
@@ -392,7 +392,7 @@ pub const LORE_METADATA_CONTEXT: lore_metadata_tag_t = 3;
 pub const LORE_METADATA_HASH: lore_metadata_tag_t = 4;
 pub const LORE_METADATA_NUMERIC: lore_metadata_tag_t = 5;
 pub const LORE_METADATA_STRING: lore_metadata_tag_t = 6;
-pub type lore_metadata_tag_t = ::std::os::raw::c_int;
+pub type lore_metadata_tag_t = ::std::os::raw::c_uint;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct lore_metadata_t {
@@ -9845,7 +9845,7 @@ pub const LORE_EVENT_EVICTION_END: lore_event_id_t = 222;
 pub const LORE_EVENT_COMPACTION_BEGIN: lore_event_id_t = 223;
 pub const LORE_EVENT_COMPACTION_PROGRESS: lore_event_id_t = 224;
 pub const LORE_EVENT_COMPACTION_END: lore_event_id_t = 225;
-pub type lore_event_id_t = ::std::os::raw::c_int;
+pub type lore_event_id_t = ::std::os::raw::c_uint;
 pub type lore_event_tag_t = u32;
 #[repr(C)]
 #[derive(Copy, Clone)]
