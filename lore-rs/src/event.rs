@@ -1,11 +1,11 @@
 use crate::as_str;
 use lore_sys::{
-    lore_error_code_t, lore_event_id_t, lore_event_t, lore_file_action_t, lore_hash_t,
-    lore_log_level_t, LORE_EVENT_COMPLETE, LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO,
-    LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG,
-    LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_FILE,
-    LORE_EVENT_REPOSITORY_STATUS_REVISION, LORE_EVENT_REVISION_COMMIT_REVISION,
-    LORE_EVENT_STORAGE_GET_DATA, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
+    lore_error_code_t, lore_event_t, lore_file_action_t, lore_hash_t, lore_log_level_t,
+    LORE_EVENT_COMPLETE, LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_FILE,
+    LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_STATE_DUMP_NODE,
+    LORE_EVENT_REPOSITORY_STATUS_FILE, LORE_EVENT_REPOSITORY_STATUS_REVISION,
+    LORE_EVENT_REVISION_COMMIT_REVISION, LORE_EVENT_STORAGE_GET_DATA,
+    LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
 };
 
 /// One event decoded from lore's tagged event union. Borrows from the raw
@@ -72,9 +72,7 @@ impl<'a> Event<'a> {
     /// that is actually initialized, with any contained pointers valid for
     /// `lifetime 'a`.
     pub unsafe fn from_raw(event: &'a lore_event_t) -> Self {
-        let Ok(tag) = lore_event_id_t::try_from(event.tag) else {
-            return Self::Other;
-        };
+        let tag = event.tag;
 
         unsafe {
             let data = &event.__bindgen_anon_1;

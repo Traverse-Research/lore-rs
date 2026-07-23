@@ -1,5 +1,6 @@
-on:
+on:  
   push:
+    branches: [main]
   pull_request:
 
 jobs:
@@ -27,6 +28,30 @@ jobs:
       - name: Cargo check
         run: cargo check --workspace --all-targets
 
+  lore-version-matches-submodule:
+    name: Check LORE_VERSION matches the lore submodule
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+      - name: Compare LORE_VERSION against the tag of the pinned submodule revision
+        shell: bash
+        run: |
+          rev=$(git -C lore rev-parse HEAD)
+          # Annotated tags list both the tag object and the peeled `tag^{}` commit;
+          # the submodule pin is the commit, so match that and strip the suffix.
+          tag=$(git -C lore ls-remote --tags origin | awk -v rev="$rev" '$1 == rev { sub(".*refs/tags/", "", $2); sub(/\^\{\}$/, "", $2); print $2; exit }')
+          if [ -z "$tag" ]; then
+            echo "::error::The lore submodule is not pinned to a release tag; no release binaries exist for it"
+            exit 1
+          fi
+          const=$(grep 'const LORE_VERSION:' lore-bin/src/lib.rs | cut -d'"' -f2)
+          if [ "v$const" != "$tag" ]; then
+            echo "::error::LORE_VERSION in lore-bin/src/lib.rs is '$const' but the lore submodule is pinned to '$tag'"
+            exit 1
+          fi
+
   generate-bindings:
     name: Generate bindings
     runs-on: ubuntu-latest
@@ -48,30 +73,8 @@ jobs:
         run: |
           test -z "$(git status --porcelain)" || (echo "::error::Generated bindings are different, please regenerate with 'cargo run --manifest-path generator/Cargo.toml'!"; git status; false)
 
-  lore-version:
-    name: Check LORE_VERSION matches the lore submodule tag
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          submodules: true
-      - name: Compare LORE_VERSION against the tag of the pinned submodule revision
-        shell: bash
-        run: |
-          rev=$(git -C lore rev-parse HEAD)
-          tag=$(git -C lore ls-remote --tags origin | awk -v rev="$rev" '$1 == rev { sub(".*refs/tags/", "", $2); print $2 }')
-          if [ -z "$tag" ]; then
-            echo "::error::The lore submodule is not pinned to a release tag; no release binaries exist for it"
-            exit 1
-          fi
-          const=$(grep 'const LORE_VERSION:' lore-bin/src/lib.rs | cut -d'"' -f2)
-          if [ "v$const" != "$tag" ]; then
-            echo "::error::LORE_VERSION in lore-bin/src/lib.rs is '$const' but the lore submodule is pinned to '$tag'"
-            exit 1
-          fi
-
-  fetch-binary:
-    name: Fetch binary on ${{ matrix.os }}
+  test:
+    name: Test on ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
