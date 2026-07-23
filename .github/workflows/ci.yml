@@ -28,29 +28,8 @@ jobs:
       - name: Cargo check
         run: cargo check --workspace --all-targets
 
-  generate-bindings:
-    name: Generate bindings
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          submodules: true
-      - name: Clean bindings
-        run: rm lore-sys/src/bindings.rs
-      - name: Generate bindings
-        run: cargo run --manifest-path generator/Cargo.toml
-      - name: Upload bindings
-        uses: actions/upload-artifact@v7
-        with:
-          name: bindings
-          path: lore-sys/src/bindings.rs
-      - name: Diff generated Rust code
-        shell: bash
-        run: |
-          test -z "$(git status --porcelain)" || (echo "::error::Generated bindings are different, please regenerate with 'cargo run --manifest-path generator/Cargo.toml'!"; git status; false)
-
-  lore-version:
-    name: Check LORE_VERSION matches the lore submodule tag
+  lore-version-matches-submodule:
+    name: Check LORE_VERSION matches the lore submodule
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -73,8 +52,29 @@ jobs:
             exit 1
           fi
 
-  fetch-binary:
-    name: Fetch binary on ${{ matrix.os }}
+  generate-bindings:
+    name: Generate bindings
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+      - name: Clean bindings
+        run: rm lore-sys/src/bindings.rs
+      - name: Generate bindings
+        run: cargo run --manifest-path generator/Cargo.toml
+      - name: Upload bindings
+        uses: actions/upload-artifact@v7
+        with:
+          name: bindings
+          path: lore-sys/src/bindings.rs
+      - name: Diff generated Rust code
+        shell: bash
+        run: |
+          test -z "$(git status --porcelain)" || (echo "::error::Generated bindings are different, please regenerate with 'cargo run --manifest-path generator/Cargo.toml'!"; git status; false)
+
+  test:
+    name: Test on ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
