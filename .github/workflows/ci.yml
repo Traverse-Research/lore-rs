@@ -13,8 +13,6 @@ jobs:
         run: cargo fmt --all -- --check
       - name: Cargo clippy
         run: cargo clippy --workspace --all-targets -- -D warnings
-      - name: Cargo test
-        run: cargo test --workspace
 
   rust-msrv:
     name: Build-test MSRV (1.74) with minimal crate dependencies
@@ -89,9 +87,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        os: [windows-latest, ubuntu-latest, ubuntu-24.04-arm, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
+      - name: Cargo test
+        run: cargo test --workspace
       - name: Run the network fetch test
         run: cargo test --package lore-bin -- --ignored
