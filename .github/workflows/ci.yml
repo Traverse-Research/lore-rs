@@ -54,6 +54,17 @@ jobs:
 
   generate-bindings:
     name: Generate bindings
+    # Bindings are host-dependent: a C enum's underlying type is `int` on
+    # MSVC but `unsigned int` on Linux (when no enumerator is negative), so
+    # this must run on the same platform the committed bindings are
+    # regenerated on.
+    #
+    # Using these Windows-generated bindings on other targets is still sound:
+    # the divergence is only the signedness of 32-bit enum types, which have
+    # the same size and alignment either way, and every enumerator is a small
+    # non-negative value whose bit pattern both readings agree on. `c_int` is
+    # `i32` on every supported target, so the committed bindings compile
+    # identically everywhere.
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v7
