@@ -1,8 +1,7 @@
 use std::path::PathBuf;
 
-// The Lore release to download binaries from. Must match the tag the `lore`
-// submodule is pinned to (the submodule's own manifest lies about this:
-// Epic bumps it past the release before tagging); CI verifies this.
+/// The Lore release to download binaries from. Must match the tag the `lore`
+/// submodule is pinned to, CI verifies this.
 const LORE_VERSION: &str = "0.8.5";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -31,19 +30,26 @@ impl Target {
     }
 }
 
+/// The file name of the Lore dynamic library on the given target, as the OS
+/// loader expects it (e.g. what to name the copy placed next to your
+/// executable).
+pub fn library_file_name(target: Target) -> &'static str {
+    match target {
+        Target::WindowsX86_64 => "lore.dll",
+        Target::LinuxX86_64 | Target::LinuxAarch64 => "liblore.so",
+        Target::MacOsAarch64 => "liblore.dylib",
+    }
+}
+
 /// Downloads the prebuilt Lore library archive from the Lore GitHub release
 /// matching the `lore` submodule, extracts it into `OUT_DIR` and returns the
 /// path to the contained library.
 pub fn fetch_binary(target: Target) -> PathBuf {
-    let (library, triple, archive_ext) = match target {
-        Target::WindowsX86_64 => ("lore.dll", "x86_64-pc-windows-msvc", "zip"),
-        Target::LinuxX86_64 => ("liblore.so", "x86_64-unknown-linux-gnu", "tar.gz"),
-        Target::LinuxAarch64 => (
-            "liblore.so",
-            "aarch64-unknown-linux-gnu-neoverse-512tvb",
-            "tar.gz",
-        ),
-        Target::MacOsAarch64 => ("liblore.dylib", "aarch64-apple-darwin", "tar.gz"),
+    let (triple, archive_ext) = match target {
+        Target::WindowsX86_64 => ("x86_64-pc-windows-msvc", "zip"),
+        Target::LinuxX86_64 => ("x86_64-unknown-linux-gnu", "tar.gz"),
+        Target::LinuxAarch64 => ("aarch64-unknown-linux-gnu-neoverse-512tvb", "tar.gz"),
+        Target::MacOsAarch64 => ("aarch64-apple-darwin", "tar.gz"),
     };
 
     let url = format!(
@@ -61,6 +67,12 @@ pub fn fetch_binary(target: Target) -> PathBuf {
             "--silent",
             "--show-error",
             "--location",
+            "--retry",
+            "3",
+            "--connect-timeout",
+            "30",
+            "--max-time",
+            "300",
             "--output",
         ])
         .arg(&archive)
@@ -78,13 +90,13 @@ pub fn fetch_binary(target: Target) -> PathBuf {
         PathBuf::from("tar")
     };
 
-    let status = std::process::Command::new(tar)
+    let status = std::process::Command::new(&tar)
         .arg("-xf")
         .arg(&archive)
         .arg("-C")
         .arg(&out_dir)
         .status()
-        .unwrap_or_else(|e| panic!("failed to run tar: {e}"));
+        .unwrap_or_else(|e| panic!("failed to run {}: {e}", tar.display()));
 
     assert!(
         status.success(),
@@ -92,7 +104,7 @@ pub fn fetch_binary(target: Target) -> PathBuf {
         archive.display()
     );
 
-    out_dir.join(library)
+    out_dir.join(library_file_name(target))
 }
 
 #[cfg(test)]
