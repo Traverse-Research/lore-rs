@@ -30,9 +30,7 @@ impl Target {
     }
 }
 
-/// The file name of the Lore dynamic library on the given target, as the OS
-/// loader expects it (e.g. what to name the copy placed next to your
-/// executable).
+/// The file name of the Lore dynamic library on the given target.
 pub fn library_file_name(target: Target) -> &'static str {
     match target {
         Target::WindowsX86_64 => "lore.dll",
