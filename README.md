@@ -76,7 +76,6 @@ the [Lore documentation](https://github.com/EpicGames/lore).
 [Lore releases]: https://github.com/EpicGames/lore/releases
 
 
-
 ## Updating the bindings
 
 Updating to a new Lore version is three steps, all of which CI verifies stay
@@ -100,6 +99,8 @@ in sync:
    ```sh
    cargo run --manifest-path generator/Cargo.toml
    ```
+This should be done on linux as the bindings differ slightly per platform.
+
 
 Commit the submodule bump, the version constant and the regenerated
 `lore-sys/src/bindings.rs` together. CI fails if `LORE_VERSION` doesn't match
