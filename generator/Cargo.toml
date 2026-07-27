@@ -6,4 +6,4 @@ publish = false
 description = "Regenerates src/bindings.rs from the lore submodule's C API header"
 
 [dependencies]
-bindgen = "0.72"
+bindgen = { version = "0.72", features = ["prettyplease"] }

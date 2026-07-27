@@ -19,6 +19,8 @@ fn main() {
 
     let bindings = bindgen::Builder::default()
         .header(header.to_str().unwrap())
+        .clang_arg("-fparse-all-comments")
+        .formatter(bindgen::Formatter::Prettyplease)
         .rust_target(
             msrv.parse()
                 .unwrap_or_else(|e| panic!("unsupported rust-version {msrv:?}: {e}")),
