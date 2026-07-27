@@ -6,32 +6,57 @@ use lore_sys::{lore_string_array_t, lore_string_t};
 mod event;
 pub use event::Event;
 
-pub const EMPTY_STRING: lore_string_t = lore_string_t {
+pub const LORE_EMPTY_STRING: lore_string_t = lore_string_t {
     string: std::ptr::null(),
     length: 0,
 };
 
-pub const EMPTY_STRING_ARRAY: lore_string_array_t = lore_string_array_t {
+pub const LORE_EMPTY_STRING_ARRAY: lore_string_array_t = lore_string_array_t {
     ptr: std::ptr::null(),
     count: 0,
 };
 
-pub fn from_str(s: &str) -> lore_string_t {
-    lore_string_t {
-        string: s.as_ptr().cast(),
-        length: s.len(),
+pub fn error_code_name(code: lore_sys::lore_error_code_t) -> &'static str {
+    match code {
+        lore_sys::LORE_ERROR_CODE_NONE => "none",
+        lore_sys::LORE_ERROR_CODE_INVALID_ARGUMENTS => "invalid arguments",
+        lore_sys::LORE_ERROR_CODE_ADDRESS_NOT_FOUND => "address not found",
+        lore_sys::LORE_ERROR_CODE_INTERNAL => "internal error",
+        lore_sys::LORE_ERROR_CODE_SLOW_DOWN => "slow down (rate limited)",
+        _ => "unknown error code",
     }
 }
 
-/// # Safety
-///
-/// The raw string must either have a null pointer or point to a buffer valid
-/// for reads of `length` bytes for the duration of the borrow.
-pub unsafe fn as_str(s: &lore_string_t) -> Result<&str, std::str::Utf8Error> {
-    if s.string.is_null() {
-        return Ok("");
+pub trait LoreStringExt {
+    /// The returned struct borrows `s` through a raw pointer without a
+    /// lifetime; `s` must stay alive for as long as the result is used.
+    fn from_str(s: &str) -> Self;
+
+    /// A null pointer is deliberately conflated with the empty string.
+    ///
+    /// # Safety
+    ///
+    /// The string must either have a null pointer or point to a buffer valid
+    /// for reads of `length` bytes for the duration of the borrow.
+    unsafe fn try_to_str(&self) -> Result<&str, std::str::Utf8Error>;
+}
+
+impl LoreStringExt for lore_string_t {
+    fn from_str(s: &str) -> Self {
+        Self {
+            string: s.as_ptr().cast(),
+            length: s.len(),
+        }
     }
-    std::str::from_utf8(unsafe { std::slice::from_raw_parts(s.string.cast::<u8>(), s.length) })
+
+    unsafe fn try_to_str(&self) -> Result<&str, std::str::Utf8Error> {
+        if self.string.is_null() {
+            return Ok("");
+        }
+        std::str::from_utf8(unsafe {
+            std::slice::from_raw_parts(self.string.cast::<u8>(), self.length)
+        })
+    }
 }
 
 /// Owning wrapper around the loaded Lore library. The raw functions are
@@ -47,6 +72,9 @@ impl Lore {
     /// bindings were generated for; loading it executes the library's
     /// initialization code, and mismatched function signatures are undefined
     /// behaviour on any later call.
+    ///
+    /// Create at most one `Lore` per process: instances share the loaded
+    /// library, and dropping one shuts it down for all of them.
     pub unsafe fn new<P: AsRef<std::ffi::OsStr>>(path: P) -> Result<Self, libloading::Error> {
         Ok(Self(unsafe { lore_sys::Lore::new(path)? }))
     }
