@@ -14,13 +14,13 @@ pub const LORE_LOG_LEVEL_WARN: lore_log_level_t = 4;
 /// Errors.
 pub const LORE_LOG_LEVEL_ERROR: lore_log_level_t = 5;
 /// Severity level of a log message.
-pub type lore_log_level_t = ::std::os::raw::c_int;
+pub type lore_log_level_t = ::std::os::raw::c_uint;
 /// A branch held locally.
 pub const LORE_BRANCH_LOCATION_LOCAL: lore_branch_location_t = 0;
 /// A branch held on the server.
 pub const LORE_BRANCH_LOCATION_REMOTE: lore_branch_location_t = 1;
 /// Where a branch is located.
-pub type lore_branch_location_t = ::std::os::raw::c_int;
+pub type lore_branch_location_t = ::std::os::raw::c_uint;
 /// The file is unchanged.
 pub const LORE_FILE_ACTION_KEEP: lore_file_action_t = 0;
 /// The file was added.
@@ -32,7 +32,7 @@ pub const LORE_FILE_ACTION_MOVE: lore_file_action_t = 3;
 /// The file was copied from another path.
 pub const LORE_FILE_ACTION_COPY: lore_file_action_t = 4;
 /// The change applied to a file.
-pub type lore_file_action_t = ::std::os::raw::c_int;
+pub type lore_file_action_t = ::std::os::raw::c_uint;
 /// A directory.
 pub const LORE_NODE_TYPE_DIRECTORY: lore_node_type_t = 0;
 /// A file.
@@ -40,7 +40,7 @@ pub const LORE_NODE_TYPE_FILE: lore_node_type_t = 1;
 /// A symbolic link.
 pub const LORE_NODE_TYPE_LINK: lore_node_type_t = 2;
 /// The kind of a tracked node.
-pub type lore_node_type_t = ::std::os::raw::c_int;
+pub type lore_node_type_t = ::std::os::raw::c_uint;
 /// No error; the operation succeeded.
 pub const LORE_ERROR_CODE_NONE: lore_error_code_t = 0;
 /// The arguments supplied to the operation were invalid.
@@ -60,7 +60,7 @@ pub const LORE_ERROR_CODE_SLOW_DOWN: lore_error_code_t = 4;
  detail. Variants overlap with the general library error code where they
  share a meaning.
 */
-pub type lore_error_code_t = ::std::os::raw::c_int;
+pub type lore_error_code_t = ::std::os::raw::c_uint;
 /// A block of raw bytes.
 pub const LORE_METADATA_TYPE_BINARY: lore_metadata_type_t = 0;
 /// An unsigned integer value.
@@ -68,7 +68,7 @@ pub const LORE_METADATA_TYPE_NUMERIC: lore_metadata_type_t = 1;
 /// A string value.
 pub const LORE_METADATA_TYPE_STRING: lore_metadata_type_t = 2;
 /// The kind of value held by a metadata entry.
-pub type lore_metadata_type_t = ::std::os::raw::c_int;
+pub type lore_metadata_type_t = ::std::os::raw::c_uint;
 /// Key has no specific type.
 pub const LORE_KEY_TYPE_UNTYPED: lore_key_type_t = 0;
 /// Key refers to branch metadata.
@@ -84,7 +84,7 @@ pub const LORE_KEY_TYPE_REPOSITORY_ID: lore_key_type_t = 5;
 /// Key refers to a repository instance.
 pub const LORE_KEY_TYPE_INSTANCE: lore_key_type_t = 6;
 /// Kind of value a stored key refers to.
-pub type lore_key_type_t = ::std::os::raw::c_int;
+pub type lore_key_type_t = ::std::os::raw::c_uint;
 /// Data for a generic progress event.
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -512,7 +512,7 @@ pub const LORE_METADATA_NUMERIC: lore_metadata_tag_t = 5;
 /// A string value.
 pub const LORE_METADATA_STRING: lore_metadata_tag_t = 6;
 /// A metadata value, tagged by the kind of value it holds.
-pub type lore_metadata_tag_t = ::std::os::raw::c_int;
+pub type lore_metadata_tag_t = ::std::os::raw::c_uint;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct lore_metadata_t {
@@ -11325,7 +11325,7 @@ pub const LORE_EVENT_COMPACTION_PROGRESS: lore_event_id_t = 224;
 pub const LORE_EVENT_COMPACTION_END: lore_event_id_t = 225;
 /** An event delivered to a callback. Each variant names a kind of event and
  carries the data for that event.*/
-pub type lore_event_id_t = ::std::os::raw::c_int;
+pub type lore_event_id_t = ::std::os::raw::c_uint;
 pub type lore_event_tag_t = u32;
 #[repr(C)]
 #[derive(Copy, Clone)]
