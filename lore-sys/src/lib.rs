@@ -5,5 +5,6 @@
 
 pub use libloading;
 
+#[rustfmt::skip]
 mod bindings;
 pub use bindings::*;
