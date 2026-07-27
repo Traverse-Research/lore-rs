@@ -6,16 +6,6 @@ use lore_sys::{lore_string_array_t, lore_string_t};
 mod event;
 pub use event::Event;
 
-pub const LORE_EMPTY_STRING: lore_string_t = lore_string_t {
-    string: std::ptr::null(),
-    length: 0,
-};
-
-pub const LORE_EMPTY_STRING_ARRAY: lore_string_array_t = lore_string_array_t {
-    ptr: std::ptr::null(),
-    count: 0,
-};
-
 pub fn error_code_name(code: lore_sys::lore_error_code_t) -> &'static str {
     match code {
         lore_sys::LORE_ERROR_CODE_NONE => "none",
@@ -28,6 +18,8 @@ pub fn error_code_name(code: lore_sys::lore_error_code_t) -> &'static str {
 }
 
 pub trait LoreStringExt {
+    const EMPTY: Self;
+
     /// The returned struct borrows `s` through a raw pointer without a
     /// lifetime; `s` must stay alive for as long as the result is used.
     fn from_str(s: &str) -> Self;
@@ -42,6 +34,11 @@ pub trait LoreStringExt {
 }
 
 impl LoreStringExt for lore_string_t {
+    const EMPTY: Self = Self {
+        string: std::ptr::null(),
+        length: 0,
+    };
+
     fn from_str(s: &str) -> Self {
         Self {
             string: s.as_ptr().cast(),
@@ -57,6 +54,17 @@ impl LoreStringExt for lore_string_t {
             std::slice::from_raw_parts(self.string.cast::<u8>(), self.length)
         })
     }
+}
+
+pub trait LoreStringArrayExt {
+    const EMPTY: Self;
+}
+
+impl LoreStringArrayExt for lore_string_array_t {
+    const EMPTY: Self = Self {
+        ptr: std::ptr::null(),
+        count: 0,
+    };
 }
 
 /// Owning wrapper around the loaded Lore library. The raw functions are
