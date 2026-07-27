@@ -16,8 +16,6 @@ pub const LORE_EMPTY_STRING_ARRAY: lore_string_array_t = lore_string_array_t {
     count: 0,
 };
 
-/// Human-readable name for a [`lore_sys::lore_error_code_t`] carried by
-/// per-item/per-call completion events.
 pub fn error_code_name(code: lore_sys::lore_error_code_t) -> &'static str {
     match code {
         lore_sys::LORE_ERROR_CODE_NONE => "none",
