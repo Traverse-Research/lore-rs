@@ -54,13 +54,24 @@ jobs:
 
   generate-bindings:
     name: Generate bindings
+    # Bindings are host-dependent: a C enum's underlying type is `int` on
+    # MSVC but `unsigned int` on Linux (when no enumerator is negative), so
+    # the committed bindings are canonically generated on Linux and this job
+    # must match. Regenerate locally under Linux (e.g. WSL) too.
+    #
+    # Using these Linux-generated bindings on other targets is still sound:
+    # the divergence is only the signedness of 32-bit enum types, which have
+    # the same size and alignment either way, and every enumerator is a small
+    # non-negative value whose bit pattern both readings agree on. `c_uint`
+    # is `u32` on every supported target, so the committed bindings compile
+    # identically everywhere.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
         with:
           submodules: true
-      - name: Clean bindings
-        run: rm lore-sys/src/bindings.rs
+      - name: Move committed bindings aside
+        run: mv lore-sys/src/bindings.rs committed-bindings.rs
       - name: Generate bindings
         run: cargo run --manifest-path generator/Cargo.toml
       - name: Upload bindings
@@ -71,7 +82,7 @@ jobs:
       - name: Diff generated Rust code
         shell: bash
         run: |
-          test -z "$(git status --porcelain)" || (echo "::error::Generated bindings are different, please regenerate with 'cargo run --manifest-path generator/Cargo.toml'!"; git status; false)
+          diff -u committed-bindings.rs lore-sys/src/bindings.rs || (echo "::error::Generated bindings are different, please regenerate with 'cargo run --manifest-path generator/Cargo.toml'!"; false)
 
   test:
     name: Test on ${{ matrix.os }}
