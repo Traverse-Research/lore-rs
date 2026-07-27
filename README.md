@@ -99,7 +99,8 @@ in sync:
    ```sh
    cargo run --manifest-path generator/Cargo.toml
    ```
-This should be done on linux as the bindings differ slightly per platform.
+   
+This should be done on Linux as the bindings differ slightly per platform.
 
 
 Commit the submodule bump, the version constant and the regenerated
