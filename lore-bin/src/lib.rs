@@ -14,18 +14,19 @@ pub enum Target {
 
 impl Target {
     /// Returns the target cargo is compiling for, from the environment
-    /// variables that cargo sets for build scripts.
-    pub fn from_build_env() -> Self {
+    /// variables that cargo sets for build scripts, or [`None`] if Lore ships
+    /// no binaries for it.
+    pub fn from_build_env() -> Option<Self> {
         let os = std::env::var("CARGO_CFG_TARGET_OS")
             .expect("CARGO_CFG_TARGET_OS not set (are you in a build script?)");
         let arch = std::env::var("CARGO_CFG_TARGET_ARCH")
             .expect("CARGO_CFG_TARGET_ARCH not set (are you in a build script?)");
         match (os.as_str(), arch.as_str()) {
-            ("windows", "x86_64") => Self::WindowsX86_64,
-            ("linux", "x86_64") => Self::LinuxX86_64,
-            ("linux", "aarch64") => Self::LinuxAarch64,
-            ("macos", "aarch64") => Self::MacOsAarch64,
-            (os, arch) => panic!("no Lore binaries for {os}/{arch}"),
+            ("windows", "x86_64") => Some(Self::WindowsX86_64),
+            ("linux", "x86_64") => Some(Self::LinuxX86_64),
+            ("linux", "aarch64") => Some(Self::LinuxAarch64),
+            ("macos", "aarch64") => Some(Self::MacOsAarch64),
+            _ => None,
         }
     }
 }
