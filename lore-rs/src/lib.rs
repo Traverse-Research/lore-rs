@@ -3,6 +3,12 @@ pub use lore_sys::libloading;
 
 use lore_sys::{lore_string_array_t, lore_string_t};
 
+mod call;
+pub use call::{
+    call_with_callback, repository_info, revision_tree_close, revision_tree_load, storage_close,
+    storage_open, GlobalArgs, LoreError, RepositoryInfoArgs, StorageOpenArgs,
+};
+
 mod event;
 pub use event::Event;
 
