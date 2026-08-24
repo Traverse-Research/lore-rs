@@ -5,8 +5,9 @@ use lore_sys::{lore_string_array_t, lore_string_t};
 
 mod call;
 pub use call::{
-    call_with_callback, repository_info, revision_tree_close, revision_tree_load, storage_close,
-    storage_open, GlobalArgs, LoreError, RepositoryInfoArgs, StorageOpenArgs,
+    call_with_callback, file_info, repository_info, revision_tree_close, revision_tree_load,
+    storage_close, storage_get, storage_open, FileInfoArgs, GlobalArgs, LoreError,
+    RepositoryInfoArgs, StorageGetArgs, StorageGetItem, StorageOpenArgs,
 };
 
 mod event;

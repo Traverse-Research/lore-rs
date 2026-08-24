@@ -1,8 +1,10 @@
-use crate::{Event, LoreStringExt};
+use crate::{Event, LoreStringArrayExt, LoreStringExt};
 use lore_sys::{
-    lore_event_callback_config_t, lore_event_t, lore_event_tag_t, lore_global_args_t,
-    lore_repository_info_args_t, lore_revision_tree_close_args_t, lore_revision_tree_load_args_t,
-    lore_storage_close_args_t, lore_storage_open_args_t, lore_storage_remote_config_t,
+    lore_address_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
+    lore_file_info_args_t, lore_global_args_t, lore_partition_t, lore_repository_info_args_t,
+    lore_revision_tree_close_args_t, lore_revision_tree_load_args_t, lore_storage_close_args_t,
+    lore_storage_get_args_t, lore_storage_get_item_array_t, lore_storage_get_item_t,
+    lore_storage_open_args_t, lore_storage_remote_config_t, lore_store_t, lore_string_array_t,
     lore_string_t, LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
 };
 
@@ -179,6 +181,18 @@ impl FailureContext {
     }
 }
 
+/// Runs one Lore operation, decoding every event it emits into [`Event`] and
+/// handing it to `callback`. The per-command functions below are thin calls
+/// onto this; reach for it directly only for a command that has no wrapper yet.
+///
+/// # Safety
+///
+/// `lore_function` must be an entry point of the loaded library that takes
+/// `Args` as its arguments struct — pairing one command's function with
+/// another's arguments is undefined behaviour. It must also be a **synchronous**
+/// entry point (`lore_x`, not `lore_x_async`): this hands Lore a pointer to a
+/// context on the caller's stack, which is only sound while the call has not
+/// returned.
 pub unsafe fn call_with_callback<Args, Callback>(
     lore_function: unsafe extern "C" fn(
         *const lore_global_args_t,
@@ -286,6 +300,66 @@ pub fn repository_info(
     unsafe { call_with_callback(lore.lore_repository_info, globals, &args.to_raw(), callback) }
 }
 
+/// Arguments for [`file_info`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct FileInfoArgs<'a> {
+    /// Paths to report on, relative to the repository root.
+    pub paths: &'a [&'a str],
+    /// Revision to report on; empty is the revision the repository is on.
+    pub revision: &'a str,
+    /// Also report the hash and size of the file on the local filesystem.
+    pub local: bool,
+    /// Also report the repository size with filters applied.
+    pub filtered: bool,
+}
+
+impl FileInfoArgs<'_> {
+    /// The paths as Lore's own string type. Kept separate from [`Self::to_raw`]
+    /// because the array has to outlive the call, and a `to_raw` that built it
+    /// could only hand back a borrow of its own temporary.
+    fn raw_paths(self) -> Vec<lore_string_t> {
+        self.paths.iter().copied().map(raw_str).collect()
+    }
+
+    /// The raw struct to hand to Lore, borrowing `paths` and the same text
+    /// `self` does.
+    fn to_raw(self, paths: &[lore_string_t]) -> lore_file_info_args_t {
+        lore_file_info_args_t {
+            paths: if paths.is_empty() {
+                lore_string_array_t::EMPTY
+            } else {
+                lore_string_array_t {
+                    ptr: paths.as_ptr(),
+                    count: paths.len(),
+                }
+            },
+            revision: raw_str(self.revision),
+            local: u8::from(self.local),
+            filtered: u8::from(self.filtered),
+        }
+    }
+}
+
+/// Reports what the repository holds at each path — content hash, context and
+/// size — without reading any content.
+///
+/// One [`Event::FileInfo`] arrives per path. A path the revision does not hold
+/// is reported through [`Event::Error`], not by the absence of an event.
+///
+/// This corresponds to `lore_sys::Lore::lore_file_info`.
+pub fn file_info(
+    lore: &crate::Lore,
+    globals: GlobalArgs<'_>,
+    args: FileInfoArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let paths = args.raw_paths();
+
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `paths` and `args`, both of which live across the call.
+    unsafe { call_with_callback(lore.lore_file_info, globals, &args.to_raw(&paths), callback) }
+}
+
 /// Arguments for [`storage_open`].
 #[derive(Debug, Default, Clone, Copy)]
 pub struct StorageOpenArgs<'a> {
@@ -331,6 +405,105 @@ pub fn storage_open(
     // SAFETY: the entry point is the loaded library's own, and the raw struct
     // borrows from `args`, which lives across the call.
     unsafe { call_with_callback(lore.lore_storage_open, globals, &args.to_raw(), callback) }
+}
+
+/// One buffer for [`storage_get`] to read.
+#[derive(Debug, Clone, Copy)]
+pub struct StorageGetItem {
+    /// Caller-chosen id, echoed back in every event for this item. What tells
+    /// the events of one item from another's when a call reads several.
+    pub id: u64,
+    /// Partition to read from, which is a repository id. The zero partition is
+    /// rejected.
+    pub partition: lore_partition_t,
+    /// Content address to read, as [`Event::FileInfo`] reports it.
+    pub address: lore_address_t,
+    /// Deliver one [`Event::StorageGetData`] per leaf fragment instead of a
+    /// single reassembled buffer, so peak memory follows the fragment size
+    /// rather than the content size.
+    pub streaming: bool,
+    /// Keep bytes fetched from a remote in the local store even when the
+    /// producer did not flag them for local caching.
+    pub local_cache: bool,
+}
+
+impl StorageGetItem {
+    /// The raw struct to hand to Lore. Carries no pointers, so it borrows
+    /// nothing.
+    fn to_raw(self) -> lore_storage_get_item_t {
+        lore_storage_get_item_t {
+            id: self.id,
+            partition: self.partition,
+            address: self.address,
+            streaming: u8::from(self.streaming),
+            local_cache: u8::from(self.local_cache),
+        }
+    }
+}
+
+/// Arguments for [`storage_get`].
+#[derive(Debug, Clone, Copy)]
+pub struct StorageGetArgs<'a> {
+    /// Handle from [`storage_open`].
+    pub handle: lore_store_t,
+    /// Buffers to read. Each runs independently and emits its own events.
+    pub items: &'a [StorageGetItem],
+}
+
+impl StorageGetArgs<'_> {
+    /// The items as Lore's own type, kept out of [`Self::to_raw`] for the same
+    /// reason as [`FileInfoArgs::raw_paths`].
+    fn raw_items(self) -> Vec<lore_storage_get_item_t> {
+        self.items
+            .iter()
+            .copied()
+            .map(StorageGetItem::to_raw)
+            .collect()
+    }
+
+    /// The raw struct to hand to Lore, borrowing `items`.
+    fn to_raw(self, items: &[lore_storage_get_item_t]) -> lore_storage_get_args_t {
+        lore_storage_get_args_t {
+            handle: self.handle,
+            items: lore_storage_get_item_array_t {
+                ptr: if items.is_empty() {
+                    std::ptr::null()
+                } else {
+                    items.as_ptr()
+                },
+                count: items.len(),
+            },
+        }
+    }
+}
+
+/// Reads content-addressed buffers.
+///
+/// Each item emits [`Event::StorageGetHeader`] with the size of the
+/// reassembled content, then that content as one or more
+/// [`Event::StorageGetData`], then [`Event::StorageGetItemComplete`] carrying
+/// its outcome. The payload bytes are valid only for the duration of the
+/// callback that carries them.
+///
+/// This corresponds to `lore_sys::Lore::lore_storage_get`.
+pub fn storage_get(
+    lore: &crate::Lore,
+    globals: GlobalArgs<'_>,
+    args: StorageGetArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let items = args.raw_items();
+
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `items`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_storage_get,
+            globals,
+            &args.to_raw(&items),
+            callback,
+        )
+    }
 }
 
 /// Releases a store handle.
@@ -462,6 +635,81 @@ mod tests {
         assert!(raw.correlation_id.string.is_null(), "unset is null");
         assert_eq!(raw.offline, 1);
         assert_eq!(raw.force, 0);
+    }
+
+    #[test]
+    fn file_info_args_conversion() {
+        let args = FileInfoArgs {
+            paths: &["models/a.gltf", "models/b.bin"],
+            local: true,
+            ..Default::default()
+        };
+        let paths = args.raw_paths();
+        let raw = args.to_raw(&paths);
+
+        assert_eq!(raw.paths.count, 2);
+        assert_eq!(
+            raw.paths.ptr,
+            paths.as_ptr(),
+            "borrows the array it was given"
+        );
+        assert_eq!(unsafe { paths[1].try_to_str() }, Ok("models/b.bin"));
+        assert!(raw.revision.string.is_null(), "unset is null");
+        assert_eq!(raw.local, 1);
+        assert_eq!(raw.filtered, 0);
+    }
+
+    #[test]
+    fn file_info_args_without_paths_pass_an_empty_array() {
+        let args = FileInfoArgs::default();
+        let paths = args.raw_paths();
+        let raw = args.to_raw(&paths);
+
+        // An empty `Vec` has a dangling pointer, which is not what "no paths"
+        // should reach Lore as.
+        assert!(raw.paths.ptr.is_null());
+        assert_eq!(raw.paths.count, 0);
+    }
+
+    #[test]
+    fn storage_get_args_conversion() {
+        let item = StorageGetItem {
+            id: 7,
+            partition: lore_partition_t { data: [1; 16] },
+            address: lore_address_t {
+                hash: lore_sys::lore_hash_t { data: [2; 32] },
+                context: lore_sys::lore_context_t { data: [3; 16] },
+            },
+            streaming: false,
+            local_cache: true,
+        };
+        let args = StorageGetArgs {
+            handle: lore_store_t { handle_id: 42 },
+            items: &[item],
+        };
+        let items = args.raw_items();
+        let raw = args.to_raw(&items);
+
+        assert_eq!(raw.handle.handle_id, 42);
+        assert_eq!(raw.items.count, 1);
+        assert_eq!(raw.items.ptr, items.as_ptr());
+        assert_eq!(items[0].id, 7);
+        assert_eq!(items[0].address.hash.data, [2; 32]);
+        assert_eq!(items[0].streaming, 0);
+        assert_eq!(items[0].local_cache, 1);
+    }
+
+    #[test]
+    fn storage_get_args_without_items_pass_an_empty_array() {
+        let args = StorageGetArgs {
+            handle: lore_store_t { handle_id: 1 },
+            items: &[],
+        };
+        let items = args.raw_items();
+        let raw = args.to_raw(&items);
+
+        assert!(raw.items.ptr.is_null());
+        assert_eq!(raw.items.count, 0);
     }
 
     #[test]

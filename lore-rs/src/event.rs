@@ -9,7 +9,7 @@ use lore_sys::{
     LORE_EVENT_REVISION_COMMIT_REVISION, LORE_EVENT_REVISION_TREE_CHILD,
     LORE_EVENT_REVISION_TREE_LOADED, LORE_EVENT_REVISION_TREE_NODE_INFO,
     LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE, LORE_EVENT_STORAGE_GET_DATA,
-    LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
+    LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
 };
 
 /// One event decoded from lore's tagged event union. Borrows from the raw
@@ -111,6 +111,12 @@ pub enum Event<'a> {
     },
     StorageOpened {
         handle_id: u64,
+    },
+    StorageGetHeader {
+        id: u64,
+        address: lore_address_t,
+        /// Size of the item's reassembled content, before any data arrives.
+        size_content: u64,
     },
     StorageGetData {
         offset: u64,
@@ -228,6 +234,11 @@ impl<'a> Event<'a> {
                 },
                 LORE_EVENT_STORAGE_OPENED => Self::StorageOpened {
                     handle_id: data.storage_opened.handle_id,
+                },
+                LORE_EVENT_STORAGE_GET_HEADER => Self::StorageGetHeader {
+                    id: data.storage_get_header.id,
+                    address: data.storage_get_header.address,
+                    size_content: data.storage_get_header.size_content,
                 },
                 LORE_EVENT_STORAGE_GET_DATA => Self::StorageGetData {
                     offset: data.storage_get_data.offset,
