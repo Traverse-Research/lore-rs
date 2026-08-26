@@ -1,15 +1,15 @@
 use crate::LoreStringExt;
 use lore_sys::{
-    lore_address_t, lore_branch_id_t, lore_context_t, lore_error_code_t, lore_event_id_t,
-    lore_event_t, lore_event_tag_t, lore_file_action_t, lore_hash_t, lore_log_level_t,
-    lore_node_id_t, lore_repository_id_t, LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
-    LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG,
+    lore_address_t, lore_branch_id_t, lore_context_t, lore_error_code_t, lore_event_t,
+    lore_event_tag_t, lore_file_action_t, lore_hash_t, lore_log_level_t, lore_node_id_t,
+    lore_repository_id_t, LORE_EVENT_COMPLETE, LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO,
+    LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG,
     LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_STATE_DUMP_NODE,
     LORE_EVENT_REPOSITORY_STATUS_FILE, LORE_EVENT_REPOSITORY_STATUS_REVISION,
     LORE_EVENT_REVISION_COMMIT_REVISION, LORE_EVENT_REVISION_TREE_CHILD,
     LORE_EVENT_REVISION_TREE_LOADED, LORE_EVENT_REVISION_TREE_NODE_INFO,
     LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE, LORE_EVENT_STORAGE_GET_DATA,
-    LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
+    LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
 };
 
 /// One event decoded from lore's tagged event union. Borrows from the raw
@@ -31,6 +31,8 @@ pub enum Event<'a> {
     },
     Complete {
         status: i32,
+        /// The failure's message, empty when the call succeeded.
+        error: &'a str,
     },
     FileInfo {
         path: &'a str,
@@ -110,6 +112,12 @@ pub enum Event<'a> {
     StorageOpened {
         handle_id: u64,
     },
+    StorageGetHeader {
+        id: u64,
+        address: lore_address_t,
+        /// Size of the item's reassembled content, before any data arrives.
+        size_content: u64,
+    },
     StorageGetData {
         offset: u64,
         bytes: &'a [u8],
@@ -134,7 +142,7 @@ impl<'a> Event<'a> {
 
         unsafe {
             let data = &event.__bindgen_anon_1;
-            Ok(match tag as lore_event_id_t {
+            Ok(match tag {
                 LORE_EVENT_LOG => Self::Log {
                     level: data.log.level,
                     message: data.log.message.try_to_str()?,
@@ -145,6 +153,7 @@ impl<'a> Event<'a> {
                 },
                 LORE_EVENT_COMPLETE => Self::Complete {
                     status: data.complete.status,
+                    error: data.complete.error.message.try_to_str()?,
                 },
                 LORE_EVENT_FILE_INFO => Self::FileInfo {
                     path: data.file_info.path.try_to_str()?,
@@ -225,6 +234,11 @@ impl<'a> Event<'a> {
                 },
                 LORE_EVENT_STORAGE_OPENED => Self::StorageOpened {
                     handle_id: data.storage_opened.handle_id,
+                },
+                LORE_EVENT_STORAGE_GET_HEADER => Self::StorageGetHeader {
+                    id: data.storage_get_header.id,
+                    address: data.storage_get_header.address,
+                    size_content: data.storage_get_header.size_content,
                 },
                 LORE_EVENT_STORAGE_GET_DATA => Self::StorageGetData {
                     offset: data.storage_get_data.offset,

@@ -80,26 +80,34 @@ pub fn fetch_binary(target: Target) -> PathBuf {
         .unwrap_or_else(|e| panic!("failed to run curl: {e}"));
     assert!(status.success(), "curl failed to download {url}");
 
-    // Windows ships bsdtar in System32, which also extracts zip. Resolve it
-    // explicitly: PATH may find GNU tar first (e.g. Git Bash), which cannot.
-    let tar = if cfg!(windows) {
+    // Windows ships bsdtar in System32, which extracts both zip and tar.gz.
+    // Resolve it explicitly: PATH may find GNU tar first (e.g. Git Bash),
+    // which cannot read zip. GNU tar on other hosts cannot either, so when
+    // cross-compiling to Windows from Linux/macOS extract the zip with unzip.
+    let mut extract = if cfg!(windows) {
         let system_root = std::env::var("SystemRoot").unwrap_or_else(|_| "C:\\Windows".into());
-        PathBuf::from(system_root).join("System32\\tar.exe")
+        let mut cmd =
+            std::process::Command::new(PathBuf::from(system_root).join("System32\\tar.exe"));
+        cmd.arg("-xf").arg(&archive).arg("-C").arg(&out_dir);
+        cmd
+    } else if archive_ext == "zip" {
+        let mut cmd = std::process::Command::new("unzip");
+        cmd.arg("-o").arg(&archive).arg("-d").arg(&out_dir);
+        cmd
     } else {
-        PathBuf::from("tar")
+        let mut cmd = std::process::Command::new("tar");
+        cmd.arg("-xf").arg(&archive).arg("-C").arg(&out_dir);
+        cmd
     };
 
-    let status = std::process::Command::new(&tar)
-        .arg("-xf")
-        .arg(&archive)
-        .arg("-C")
-        .arg(&out_dir)
+    let status = extract
         .status()
-        .unwrap_or_else(|e| panic!("failed to run {}: {e}", tar.display()));
+        .unwrap_or_else(|e| panic!("failed to run {:?}: {e}", extract.get_program()));
 
     assert!(
         status.success(),
-        "tar failed to extract {}",
+        "{:?} failed to extract {}",
+        extract.get_program(),
         archive.display()
     );
 
