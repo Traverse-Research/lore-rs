@@ -10,6 +10,7 @@ use lore_sys::{
     LORE_EVENT_REVISION_TREE_LOADED, LORE_EVENT_REVISION_TREE_NODE_INFO,
     LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE, LORE_EVENT_STORAGE_GET_DATA,
     LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
+    LORE_LOG_LEVEL_ERROR, LORE_LOG_LEVEL_INFO, LORE_LOG_LEVEL_TRACE, LORE_LOG_LEVEL_WARN,
 };
 
 /// One event decoded from lore's tagged event union. Borrows from the raw
@@ -254,4 +255,23 @@ impl<'a> Event<'a> {
             })
         }
     }
+}
+
+/// Forwards an [`Event::Log`] to the `log` crate, ignoring anything else. Call
+/// it from a callback to report what Lore says while a call runs; the events a
+/// callback does not match on are otherwise dropped.
+pub fn log_event(event: &Result<Event<'_>, std::str::Utf8Error>) {
+    let Ok(Event::Log { level, message }) = event else {
+        return;
+    };
+
+    let level = match *level {
+        LORE_LOG_LEVEL_ERROR => log::Level::Error,
+        LORE_LOG_LEVEL_WARN => log::Level::Warn,
+        LORE_LOG_LEVEL_INFO => log::Level::Info,
+        LORE_LOG_LEVEL_TRACE => log::Level::Trace,
+        _ => log::Level::Debug,
+    };
+
+    log::log!(target: "lore", level, "{message}");
 }

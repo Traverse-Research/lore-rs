@@ -11,7 +11,7 @@ pub use call::{
 };
 
 mod event;
-pub use event::Event;
+pub use event::{log_event, Event};
 
 pub fn error_code_name(code: lore_sys::lore_error_code_t) -> &'static str {
     match code {
