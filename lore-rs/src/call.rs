@@ -2,10 +2,12 @@ use crate::{Event, LoreStringArrayExt, LoreStringExt};
 use lore_sys::{
     lore_address_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
     lore_file_info_args_t, lore_global_args_t, lore_partition_t, lore_repository_info_args_t,
-    lore_revision_tree_close_args_t, lore_revision_tree_load_args_t, lore_storage_close_args_t,
-    lore_storage_get_args_t, lore_storage_get_item_array_t, lore_storage_get_item_t,
-    lore_storage_open_args_t, lore_storage_remote_config_t, lore_store_t, lore_string_array_t,
-    lore_string_t, LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
+    lore_repository_status_args_t, lore_revision_tree_close_args_t, lore_revision_tree_load_args_t,
+    lore_revision_tree_node_info_args_t, lore_revision_tree_resolve_path_args_t,
+    lore_revision_tree_t, lore_storage_close_args_t, lore_storage_get_args_t,
+    lore_storage_get_item_array_t, lore_storage_get_item_t, lore_storage_open_args_t,
+    lore_storage_remote_config_t, lore_store_t, lore_string_array_t, lore_string_t,
+    LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
 };
 
 /// A Lore call that returned a non-zero status, with whatever the operation
@@ -341,10 +343,17 @@ impl FileInfoArgs<'_> {
 }
 
 /// Reports what the repository holds at each path — content hash, context and
-/// size — without reading any content.
+/// size.
 ///
 /// One [`Event::FileInfo`] arrives per path. A path the revision does not hold
 /// is reported through [`Event::Error`], not by the absence of an event.
+///
+/// Not a metadata-only call, whatever `local` is set to. Lore deserializes the
+/// revision state on every call, and reports whether a path is modified by
+/// stat-ing the working-tree file and hashing all of it when its size matches
+/// the revision's. Reach for [`revision_tree_resolve_path`] and
+/// [`revision_tree_node_info`] against a loaded tree to look up an address
+/// without any of that.
 ///
 /// This corresponds to `lore_sys::Lore::lore_file_info`.
 pub fn file_info(
@@ -520,6 +529,84 @@ pub fn storage_close(
     unsafe { call_with_callback(lore.lore_storage_close, globals, &args, callback) }
 }
 
+/// Arguments for [`repository_status`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct RepositoryStatusArgs<'a> {
+    /// Paths to report on; empty reports on the whole repository.
+    pub paths: &'a [&'a str],
+    /// Include the staged state in the report.
+    pub staged: bool,
+    /// Walk the filesystem under each path and refresh every dirty flag.
+    pub scan: bool,
+    /// Re-examine the files already marked dirty, without a full scan.
+    pub check_dirty: bool,
+    /// Clear the tracked dirty state.
+    pub reset: bool,
+    /// Report the last revision merged in from the parent branch.
+    pub sync_point: bool,
+    /// Report only [`Event::RepositoryStatusRevision`], no per-file events.
+    pub revision_only: bool,
+    /// Report the number of changed files rather than the files themselves.
+    pub count: bool,
+}
+
+impl RepositoryStatusArgs<'_> {
+    /// The paths as Lore's own string type, separate from [`Self::to_raw`] for
+    /// the reason [`FileInfoArgs::raw_paths`] is.
+    fn raw_paths(self) -> Vec<lore_string_t> {
+        self.paths.iter().copied().map(raw_str).collect()
+    }
+
+    /// The raw struct to hand to Lore, borrowing `paths`.
+    fn to_raw(self, paths: &[lore_string_t]) -> lore_repository_status_args_t {
+        lore_repository_status_args_t {
+            staged: u8::from(self.staged),
+            scan: u8::from(self.scan),
+            check_dirty: u8::from(self.check_dirty),
+            reset: u8::from(self.reset),
+            sync_point: u8::from(self.sync_point),
+            revision_only: u8::from(self.revision_only),
+            count: u8::from(self.count),
+            paths: if paths.is_empty() {
+                lore_string_array_t::EMPTY
+            } else {
+                lore_string_array_t {
+                    ptr: paths.as_ptr(),
+                    count: paths.len(),
+                }
+            },
+        }
+    }
+}
+
+/// Reports where a repository stands: the revision and branch it is on, and
+/// what has changed against them.
+///
+/// [`Event::RepositoryStatusRevision`] carries the revision the repository is
+/// on, which is the one to hand [`revision_tree_load`] to read that same
+/// revision. With `scan` and `check_dirty` left off no filesystem read happens
+/// beyond the dirty flags already recorded.
+///
+/// This corresponds to `lore_sys::Lore::lore_repository_status`.
+pub fn repository_status(
+    lore: &crate::Lore,
+    globals: GlobalArgs<'_>,
+    args: RepositoryStatusArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let paths = args.raw_paths();
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `paths` and `args`, which both live across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_repository_status,
+            globals,
+            &args.to_raw(&paths),
+            callback,
+        )
+    }
+}
+
 /// Loads the directory tree of a revision.
 ///
 /// This corresponds to `lore_sys::Lore::lore_revision_tree_load`.
@@ -532,6 +619,73 @@ pub fn revision_tree_load(
     // SAFETY: the entry point is the loaded library's own, and the arguments
     // hold no pointers.
     unsafe { call_with_callback(lore.lore_revision_tree_load, globals, &args, callback) }
+}
+
+/// Arguments for [`revision_tree_resolve_path`]. No [`Default`]: there is no
+/// meaningful tree handle to default to.
+#[derive(Debug, Clone, Copy)]
+pub struct RevisionTreeResolvePathArgs<'a> {
+    /// Echoed back on the event, to tell concurrent calls apart.
+    pub id: u64,
+    /// The tree to resolve against.
+    pub handle: lore_revision_tree_t,
+    /// Path relative to the tree root; empty resolves to the root node.
+    pub path: &'a str,
+}
+
+impl RevisionTreeResolvePathArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_revision_tree_resolve_path_args_t {
+        lore_revision_tree_resolve_path_args_t {
+            id: self.id,
+            handle: self.handle,
+            path: raw_str(self.path),
+        }
+    }
+}
+
+/// Resolves a path in a loaded revision tree to the node that holds it.
+///
+/// Answered from the loaded tree: no filesystem read, and no revision state
+/// deserialized per call the way [`file_info`] does it. One
+/// [`Event::RevisionTreeResolvePathComplete`] concludes the call, carrying
+/// either the node or the reason there is none in its `error_code`.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_tree_resolve_path`.
+pub fn revision_tree_resolve_path(
+    lore: &crate::Lore,
+    globals: GlobalArgs<'_>,
+    args: RevisionTreeResolvePathArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_tree_resolve_path,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// Reports one node of a loaded revision tree: its address, size and kind.
+///
+/// Answered from the loaded tree, like [`revision_tree_resolve_path`]. One
+/// [`Event::RevisionTreeNodeInfo`] concludes the call, carrying the failure in
+/// its `error_code` when there is one.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_tree_node_info`.
+pub fn revision_tree_node_info(
+    lore: &crate::Lore,
+    globals: GlobalArgs<'_>,
+    args: lore_revision_tree_node_info_args_t,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the arguments
+    // hold no pointers.
+    unsafe { call_with_callback(lore.lore_revision_tree_node_info, globals, &args, callback) }
 }
 
 /// Releases a revision-tree handle.

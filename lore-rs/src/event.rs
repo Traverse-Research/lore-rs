@@ -62,6 +62,8 @@ pub enum Event<'a> {
     },
     RepositoryStatusRevision {
         branch_name: &'a str,
+        /// The revision the repository is on.
+        revision: lore_hash_t,
     },
     RepositoryStatusFile {
         path: &'a str,
@@ -183,6 +185,7 @@ impl<'a> Event<'a> {
                 },
                 LORE_EVENT_REPOSITORY_STATUS_REVISION => Self::RepositoryStatusRevision {
                     branch_name: data.repository_status_revision.branch_name.try_to_str()?,
+                    revision: data.repository_status_revision.revision,
                 },
                 LORE_EVENT_REPOSITORY_STATUS_FILE => Self::RepositoryStatusFile {
                     path: data.repository_status_file.path.try_to_str()?,
