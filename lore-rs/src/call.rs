@@ -8,14 +8,14 @@ use crate::{Event, GlobalArgs, LoreError};
 use lore_sys::{
     lore_address_t, lore_branch_info_args_t, lore_event_callback_config_t, lore_event_t,
     lore_event_tag_t, lore_file_info_args_t, lore_global_args_t, lore_partition_t,
-    lore_repository_info_args_t, lore_repository_status_args_t, lore_revision_tree_close_args_t,
-    lore_revision_tree_info_args_t, lore_revision_tree_list_children_args_t,
-    lore_revision_tree_load_args_t, lore_revision_tree_node_info_args_t,
-    lore_revision_tree_node_path_args_t, lore_revision_tree_resolve_path_args_t,
-    lore_revision_tree_t, lore_storage_close_args_t, lore_storage_get_args_t,
-    lore_storage_get_item_array_t, lore_storage_get_item_t, lore_storage_open_args_t,
-    lore_storage_remote_config_t, lore_store_t, lore_string_t, LORE_EVENT_COMPLETE,
-    LORE_EVENT_ERROR,
+    lore_repository_info_args_t, lore_repository_status_args_t, lore_revision_info_args_t,
+    lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
+    lore_revision_tree_list_children_args_t, lore_revision_tree_load_args_t,
+    lore_revision_tree_node_info_args_t, lore_revision_tree_node_path_args_t,
+    lore_revision_tree_resolve_path_args_t, lore_revision_tree_t, lore_storage_close_args_t,
+    lore_storage_get_args_t, lore_storage_get_item_array_t, lore_storage_get_item_t,
+    lore_storage_open_args_t, lore_storage_remote_config_t, lore_store_t, lore_string_t,
+    LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
 };
 
 /// Why a call failed, collected from the events that conclude it. Follows the
@@ -281,6 +281,60 @@ pub fn branch_info(
     unsafe {
         call_with_callback(
             lore.lore_branch_info,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`revision_info`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct RevisionInfoArgs<'a> {
+    /// The revision to report on, in any form Lore resolves: a full hash,
+    /// `branch@LATEST`, `branch@<number>`, or `@LATEST` for the branch the
+    /// instance is on. Empty is the revision the instance is on.
+    pub revision: &'a str,
+    /// Also report the changes against the parent revision.
+    pub delta: bool,
+    /// Also report the revision's metadata entries.
+    pub metadata: bool,
+}
+
+impl RevisionInfoArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_revision_info_args_t {
+        lore_revision_info_args_t {
+            revision: raw_str(self.revision),
+            delta: u8::from(self.delta),
+            metadata: u8::from(self.metadata),
+        }
+    }
+}
+
+/// Resolves a revision signature and reports the revision: its hash, number
+/// and parents on [`Event::RevisionInfo`].
+///
+/// `branch@LATEST` is resolved the way Lore itself does it: the local tip
+/// unless the remote's is strictly ahead of it, decided by walking the
+/// history between the two. A branch with nothing on it resolves to the zero
+/// hash. A repository verb: `globals.repository_path` must hold a `.lore`
+/// directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_info`.
+pub fn revision_info(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: RevisionInfoArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_info,
             command,
             globals,
             &args.to_raw(),

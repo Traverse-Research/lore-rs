@@ -7,13 +7,13 @@ use lore_sys::{
     LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_DATA,
     LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_FILE,
     LORE_EVENT_REPOSITORY_STATUS_REVISION, LORE_EVENT_REVISION_COMMIT_REVISION,
-    LORE_EVENT_REVISION_TREE_CHILD, LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE,
-    LORE_EVENT_REVISION_TREE_INFO, LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN,
-    LORE_EVENT_REVISION_TREE_LOADED, LORE_EVENT_REVISION_TREE_NODE_INFO,
-    LORE_EVENT_REVISION_TREE_NODE_PATH, LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE,
-    LORE_EVENT_STORAGE_GET_DATA, LORE_EVENT_STORAGE_GET_HEADER,
-    LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED, LORE_LOG_LEVEL_ERROR,
-    LORE_LOG_LEVEL_INFO, LORE_LOG_LEVEL_TRACE, LORE_LOG_LEVEL_WARN,
+    LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_TREE_CHILD,
+    LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE, LORE_EVENT_REVISION_TREE_INFO,
+    LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN, LORE_EVENT_REVISION_TREE_LOADED,
+    LORE_EVENT_REVISION_TREE_NODE_INFO, LORE_EVENT_REVISION_TREE_NODE_PATH,
+    LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE, LORE_EVENT_STORAGE_GET_DATA,
+    LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
+    LORE_LOG_LEVEL_ERROR, LORE_LOG_LEVEL_INFO, LORE_LOG_LEVEL_TRACE, LORE_LOG_LEVEL_WARN,
 };
 
 /// One event decoded from lore's tagged event union. Borrows from the raw
@@ -112,6 +112,15 @@ pub enum Event<'a> {
     RevisionCommitRevision {
         revision: [u8; 32],
         revision_number: u64,
+    },
+    RevisionInfo {
+        repository: lore_repository_id_t,
+        /// Zero when the signature resolved to no revision.
+        revision: lore_hash_t,
+        revision_number: u64,
+        /// The direct parent, then the other parent of a merge; zero where
+        /// there is none.
+        parents: [lore_hash_t; 2],
     },
     RevisionTreeLoaded {
         handle_id: u64,
@@ -286,6 +295,12 @@ impl<'a> Event<'a> {
                 LORE_EVENT_REVISION_COMMIT_REVISION => Self::RevisionCommitRevision {
                     revision: data.revision_commit_revision.revision.data,
                     revision_number: data.revision_commit_revision.revision_number,
+                },
+                LORE_EVENT_REVISION_INFO => Self::RevisionInfo {
+                    repository: data.revision_info.repository,
+                    revision: data.revision_info.revision,
+                    revision_number: data.revision_info.revision_number,
+                    parents: data.revision_info.parent,
                 },
                 LORE_EVENT_REVISION_TREE_LOADED => Self::RevisionTreeLoaded {
                     handle_id: data.revision_tree_loaded.handle_id,

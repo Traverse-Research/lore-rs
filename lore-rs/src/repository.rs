@@ -1,6 +1,6 @@
 use crate::{
     BranchId, BranchInfoArgs, Event, GlobalArgs, Lore, LoreError, RepositoryId, RepositoryInfoArgs,
-    Revision,
+    Revision, RevisionInfoArgs,
 };
 
 /// A local repository instance — the directory holding `.lore` — together
@@ -122,6 +122,86 @@ impl Repository {
 
         Ok(info)
     }
+
+    /// Resolves a revision signature the way Lore itself does, and reports
+    /// the revision it names.
+    ///
+    /// `signature` takes every form Lore's CLI accepts: a full hash,
+    /// `branch@LATEST`, `branch@<number>`, or `@LATEST` for the branch the
+    /// instance is on. For `@LATEST` Lore compares the local tip with the
+    /// remote's by walking the history between them: the remote wins only
+    /// when it is strictly ahead, so unpushed local commits are never hidden
+    /// and a stale instance never wins over the server. [`GlobalArgs::local`]
+    /// or `offline` restricts that to the local tip, `remote` to the server's.
+    ///
+    /// [`None`] when the signature resolves to no revision at all, which is a
+    /// branch with nothing on it. A signature Lore cannot resolve is an error.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_revision_info`.
+    pub fn revision(&self, signature: &str) -> Result<Option<RevisionInfo>, LoreError> {
+        const COMMAND: &str = "revision::info";
+        let mut info = None;
+
+        crate::call::revision_info(
+            self.lore,
+            COMMAND,
+            &self.globals,
+            RevisionInfoArgs {
+                revision: signature,
+                delta: false,
+                metadata: false,
+            },
+            |event| {
+                crate::log_event(&event);
+
+                if let Ok(Event::RevisionInfo {
+                    repository,
+                    revision,
+                    revision_number,
+                    parents,
+                }) = event
+                {
+                    info = Some(RevisionInfo {
+                        repository: RepositoryId::from_raw(repository),
+                        revision: Revision::from_raw(revision),
+                        number: revision_number,
+                        parents: [
+                            Revision::from_raw(parents[0]),
+                            Revision::from_raw(parents[1]),
+                        ],
+                    });
+                }
+            },
+        )?;
+
+        let info = info.ok_or(LoreError::MissingEvent {
+            command: COMMAND,
+            expected: "revision_info",
+        })?;
+
+        Ok(Some(info).filter(|info| !info.revision.is_zero()))
+    }
+}
+
+/// A resolved revision, from [`Repository::revision`].
+#[derive(Debug, Clone)]
+pub struct RevisionInfo {
+    pub repository: RepositoryId,
+    pub revision: Revision,
+    /// Lore's sequential number of the revision on its branch.
+    pub number: u64,
+    parents: [Revision; 2],
+}
+
+impl RevisionInfo {
+    /// The parent revisions: none for an initial revision, one normally, two
+    /// for a merge.
+    pub fn parents(&self) -> impl Iterator<Item = Revision> + '_ {
+        self.parents
+            .iter()
+            .copied()
+            .filter(|parent| !parent.is_zero())
+    }
 }
 
 impl Lore {
@@ -234,6 +314,12 @@ fn repository_info(
 /// The revisions a branch may not have are behind accessors that return
 /// [`None`] for Lore's all-zero "none", so no zero identifier is ever handed
 /// out: [`Self::latest`], [`Self::latest_remote`], [`Self::branch_point`].
+///
+/// The two tips are reported as Lore holds them, not reconciled. They differ
+/// whenever the instance has commits the server has not seen, or the server
+/// has commits the instance has not synced, and telling those apart takes the
+/// history between them. [`Repository::revision`] with `name@LATEST` is Lore's
+/// own answer to "which one should I read".
 #[derive(Debug, Clone)]
 pub struct BranchInfo {
     pub id: BranchId,
@@ -250,8 +336,8 @@ pub struct BranchInfo {
 }
 
 impl BranchInfo {
-    /// Tip in the local mutable store. [`None`] when this repository has
-    /// never had the branch locally.
+    /// Tip in the instance's local store: the last revision committed or
+    /// synced here. [`None`] when the instance has never had the branch.
     pub fn latest(&self) -> Option<Revision> {
         Some(self.latest).filter(|revision| !revision.is_zero())
     }
@@ -267,14 +353,5 @@ impl BranchInfo {
     pub fn branch_point(&self) -> Option<(BranchId, Revision)> {
         (!self.parent.is_zero() && !self.branch_point.is_zero())
             .then_some((self.parent, self.branch_point))
-    }
-
-    /// The revision to read, preferring the server's tip over the local
-    /// store's — which is what a branch committed locally but never pushed
-    /// reports.
-    ///
-    /// [`None`] when the branch exists with nothing on it.
-    pub fn tip(&self) -> Option<Revision> {
-        self.latest_remote().or_else(|| self.latest())
     }
 }

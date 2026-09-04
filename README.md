@@ -81,8 +81,9 @@ let lore = unsafe { lore_rs::load("path/to/lore.dll") }?;
 // What the server knows about the repository; needs no local checkout.
 let info = lore.repository_info(&GlobalArgs::default(), "lore://host:41337/project")?;
 
-// A local repository instance: a directory holding `.lore`. Repository and
-// branch commands run against it.
+// A local repository instance: a directory holding `.lore`. Repository,
+// branch and revision commands run against it. `main@LATEST` resolves the
+// way Lore's own CLI does: the local tip unless the server is strictly ahead.
 let repository = Repository::new(
     lore,
     GlobalArgs {
@@ -91,9 +92,9 @@ let repository = Repository::new(
     },
 );
 let tip = repository
-    .branch(&info.default_branch_name)?
-    .tip()
-    .expect("the branch points at a revision");
+    .revision(&format!("{}@LATEST", info.default_branch_name))?
+    .expect("the branch points at a revision")
+    .revision;
 
 // Lore's storage API: a store is opened by location and serves any
 // repository, so every read names the one it is about.
