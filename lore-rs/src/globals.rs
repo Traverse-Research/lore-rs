@@ -131,12 +131,14 @@ mod tests {
 
     #[test]
     fn global_args_conversion() {
-        let raw = GlobalArgs {
+        // Bound to a variable: the raw struct borrows the strings through
+        // pointers without a lifetime, so the `GlobalArgs` must outlive it.
+        let globals = GlobalArgs {
             repository_path: "/repo".into(),
             offline: true,
             ..Default::default()
-        }
-        .to_raw();
+        };
+        let raw = globals.to_raw();
         assert_eq!(unsafe { raw.repository_path.try_to_str() }, Ok("/repo"));
         assert!(raw.correlation_id.string.is_null(), "unset is null");
         assert_eq!(raw.offline, 1);
