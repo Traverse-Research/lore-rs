@@ -1,116 +1,54 @@
+//! Rust bindings for the C API of [Lore], Epic Games' version control system.
+//!
+//! Three layers, each usable on its own:
+//!
+//! 1. [`lore_sys`]: the generated bindings, 263 function pointers loaded from
+//!    the shared library. Every struct and constant of `lore.h`.
+//! 2. [`call`]: one safe function per Lore command, still shaped like the C
+//!    API — arguments in, [`Event`]s out through a callback — plus
+//!    [`call_with_callback`] for the commands without a function yet.
+//! 3. Handle types that return data: [`Lore`] for the process-level
+//!    operations, [`Repository`] for the commands that run against a local
+//!    repository instance, and [`Store`] with [`RevisionTree`] for Lore's
+//!    storage API, which is independent of any instance.
+//!
+//! Every call takes a [`GlobalArgs`], Lore's `lore_global_args_t`, whose
+//! defaults are Lore's own.
+//!
+//! [Lore]: https://github.com/EpicGames/lore
+
 pub use lore_sys;
 pub use lore_sys::libloading;
 
-use lore_sys::{lore_string_array_t, lore_string_t};
-
-mod call;
+pub mod call;
 pub use call::{
-    branch_info, call_with_callback, file_info, repository_info, repository_status,
-    revision_tree_close, revision_tree_load, revision_tree_node_info, revision_tree_resolve_path,
-    storage_close, storage_get, storage_open, BranchInfoArgs, FileInfoArgs, GlobalArgs, LoreError,
-    RepositoryInfoArgs, RepositoryStatusArgs, RevisionTreeResolvePathArgs, StorageGetArgs,
-    StorageGetItem, StorageOpenArgs,
+    call_with_callback, BranchInfoArgs, FileInfoArgs, RepositoryInfoArgs, RepositoryStatusArgs,
+    RevisionTreeResolvePathArgs, StorageGetArgs, StorageGetItem, StorageOpenArgs,
 };
+
+mod string;
+pub use string::{LoreStringArrayExt, LoreStringExt};
+
+mod globals;
+pub use globals::GlobalArgs;
 
 mod event;
 pub use event::{log_event, Event};
 
-pub fn error_code_name(code: lore_sys::lore_error_code_t) -> &'static str {
-    match code {
-        lore_sys::LORE_ERROR_CODE_NONE => "none",
-        lore_sys::LORE_ERROR_CODE_INVALID_ARGUMENTS => "invalid arguments",
-        lore_sys::LORE_ERROR_CODE_ADDRESS_NOT_FOUND => "address not found",
-        lore_sys::LORE_ERROR_CODE_INTERNAL => "internal error",
-        lore_sys::LORE_ERROR_CODE_SLOW_DOWN => "slow down (rate limited)",
-        _ => "unknown error code",
-    }
-}
+mod error;
+pub use error::{ErrorCode, LoreError};
 
-pub trait LoreStringExt {
-    const EMPTY: Self;
+mod types;
+pub use types::{Address, BranchId, ContextId, NodeId, NodeKind, RepositoryId, Revision};
 
-    /// The returned struct borrows `s` through a raw pointer without a
-    /// lifetime; `s` must stay alive for as long as the result is used.
-    fn from_str(s: &str) -> Self;
+mod library;
+pub use library::{load, LogConfig, Lore};
 
-    /// A null pointer is deliberately conflated with the empty string.
-    ///
-    /// # Safety
-    ///
-    /// The string must either have a null pointer or point to a buffer valid
-    /// for reads of `length` bytes for the duration of the borrow.
-    unsafe fn try_to_str(&self) -> Result<&str, std::str::Utf8Error>;
-}
+mod repository;
+pub use repository::{BranchInfo, Repository, RepositoryInfo};
 
-impl LoreStringExt for lore_string_t {
-    const EMPTY: Self = Self {
-        string: std::ptr::null(),
-        length: 0,
-    };
+mod store;
+pub use store::{CacheTargets, Store, StoreLocation, StoreOptions};
 
-    fn from_str(s: &str) -> Self {
-        Self {
-            string: s.as_ptr().cast(),
-            length: s.len(),
-        }
-    }
-
-    unsafe fn try_to_str(&self) -> Result<&str, std::str::Utf8Error> {
-        if self.string.is_null() {
-            return Ok("");
-        }
-        std::str::from_utf8(unsafe {
-            std::slice::from_raw_parts(self.string.cast::<u8>(), self.length)
-        })
-    }
-}
-
-pub trait LoreStringArrayExt {
-    const EMPTY: Self;
-}
-
-impl LoreStringArrayExt for lore_string_array_t {
-    const EMPTY: Self = Self {
-        ptr: std::ptr::null(),
-        count: 0,
-    };
-}
-
-/// Owning wrapper around the loaded Lore library. The raw functions are
-/// reachable through [`Deref`](std::ops::Deref).
-pub struct Lore(lore_sys::Lore);
-
-impl Lore {
-    /// See [`lore_sys::Lore::new`].
-    ///
-    /// # Safety
-    ///
-    /// `path` must refer to a Lore dynamic library matching the version these
-    /// bindings were generated for; loading it executes the library's
-    /// initialization code, and mismatched function signatures are undefined
-    /// behaviour on any later call.
-    ///
-    /// Create at most one `Lore` per process: instances share the loaded
-    /// library, and dropping one shuts it down for all of them.
-    pub unsafe fn new<P: AsRef<std::ffi::OsStr>>(path: P) -> Result<Self, libloading::Error> {
-        Ok(Self(unsafe { lore_sys::Lore::new(path)? }))
-    }
-}
-
-impl std::ops::Deref for Lore {
-    type Target = lore_sys::Lore;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl Drop for Lore {
-    fn drop(&mut self) {
-        // Stop lore's worker threads before the library unloads.
-        let status = unsafe { self.0.lore_shutdown() };
-        if status != 0 {
-            log::error!(target: "lore", "lore_shutdown failed with status {status}");
-        }
-    }
-}
+mod revision_tree;
+pub use revision_tree::{Child, Node, RevisionTree, TreeInfo};

@@ -48,9 +48,7 @@ load it from is up to you; `lore_bin::library_file_name(target)` gives the
 file name the OS loader expects. Then load it at runtime:
 
 ```rust,no_run
-use lore_rs::Lore;
-
-let lore = unsafe { Lore::new("path/to/lore.dll") }?;
+let lore = unsafe { lore_rs::load("path/to/lore.dll") }?;
 ```
 
 **B - provide your own copy**
@@ -60,17 +58,63 @@ target from the [Lore releases] yourself, extract it, and load the library
 from wherever you put it:
 
 ```rust,no_run
-use lore_rs::Lore;
-
-let lore = unsafe { Lore::new("your/path/to/lore.dll") }?;
+let lore = unsafe { lore_rs::load("your/path/to/lore.dll") }?;
 ```
 
 Either way, the library must match the version these bindings were generated
 for (`LORE_VERSION` in [`lore-bin`](lore-bin/src/lib.rs)); a mismatch is
 undefined behaviour.
 
-After that you can call into the bindings. For the usage of Lore itself, see
-the [Lore documentation](https://github.com/EpicGames/lore).
+`load` may be called any number of times and hands back the same library.
+Lore is process-global: it is never unloaded, and `Lore::shutdown` is a
+deliberate, final act rather than something a value's drop could do.
+
+Three layers sit on top of each other: the raw `lore_sys` bindings, one safe
+function per command in `lore_rs::call`, and handle types that return data.
+Reading one file out of a repository with the handle types looks like this:
+
+```rust,no_run
+use lore_rs::{GlobalArgs, Repository, Store, StoreLocation, StoreOptions};
+
+let lore = unsafe { lore_rs::load("path/to/lore.dll") }?;
+
+// What the server knows about the repository; needs no local checkout.
+let info = lore.repository_info(&GlobalArgs::default(), "lore://host:41337/project")?;
+
+// A local repository instance: a directory holding `.lore`. Repository and
+// branch commands run against it.
+let repository = Repository::new(
+    lore,
+    GlobalArgs {
+        repository_path: "path/to/checkout".into(),
+        ..Default::default()
+    },
+);
+let tip = repository
+    .branch(&info.default_branch_name)?
+    .tip()
+    .expect("the branch points at a revision");
+
+// Lore's storage API: a store is opened by location and serves any
+// repository, so every read names the one it is about.
+let store = Store::open(
+    lore,
+    &GlobalArgs::default(),
+    StoreOptions {
+        location: StoreLocation::OnDisk("path/to/checkout".into()),
+        remote_url: Some("lore://host:41337".into()),
+        local_cache: true,
+        ..Default::default()
+    },
+)?;
+let tree = store.load_revision_tree(info.id, tip)?;
+let node = tree.node_at("models/a.gltf")?;
+let bytes = store.get(tree.repository(), node.address)?;
+```
+
+Everything the handle types do not cover is reachable through `lore_rs::call`,
+and everything else through the raw `lore_sys` functions on `Lore`. For the
+usage of Lore itself, see the [Lore documentation](https://github.com/EpicGames/lore).
 
 [Lore]: https://github.com/EpicGames/lore
 [Lore releases]: https://github.com/EpicGames/lore/releases
