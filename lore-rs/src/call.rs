@@ -1,143 +1,22 @@
-use crate::{Event, LoreStringArrayExt, LoreStringExt};
+//! One function per Lore command, each still shaped like the C API: arguments
+//! in, events out through a callback. This is the escape hatch for the
+//! commands the handle types in this crate do not cover, which is most of
+//! them.
+
+use crate::string::{raw_str, raw_str_array};
+use crate::{Event, GlobalArgs, LoreError};
 use lore_sys::{
-    lore_address_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
-    lore_file_info_args_t, lore_global_args_t, lore_partition_t, lore_repository_info_args_t,
-    lore_revision_tree_close_args_t, lore_revision_tree_load_args_t, lore_storage_close_args_t,
+    lore_address_t, lore_branch_info_args_t, lore_event_callback_config_t, lore_event_t,
+    lore_event_tag_t, lore_file_info_args_t, lore_global_args_t, lore_partition_t,
+    lore_repository_info_args_t, lore_repository_status_args_t, lore_revision_info_args_t,
+    lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
+    lore_revision_tree_list_children_args_t, lore_revision_tree_load_args_t,
+    lore_revision_tree_node_info_args_t, lore_revision_tree_node_path_args_t,
+    lore_revision_tree_resolve_path_args_t, lore_revision_tree_t, lore_storage_close_args_t,
     lore_storage_get_args_t, lore_storage_get_item_array_t, lore_storage_get_item_t,
-    lore_storage_open_args_t, lore_storage_remote_config_t, lore_store_t, lore_string_array_t,
-    lore_string_t, LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
+    lore_storage_open_args_t, lore_storage_remote_config_t, lore_store_t, lore_string_t,
+    LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
 };
-
-/// A Lore call that returned a non-zero status, with whatever the operation
-/// said about why. Mirrors `LoreError` in Epic's Go, Python and C# SDKs.
-#[derive(Debug)]
-pub struct LoreError {
-    /// The status code the entry point returned.
-    pub status: i32,
-    /// The messages of every `LORE_EVENT_ERROR` the call emitted, or the
-    /// message of the failed `LORE_EVENT_COMPLETE` when it emitted none.
-    /// Empty when the call failed before emitting any event, in which case the
-    /// status code is all Lore reports.
-    pub messages: Vec<String>,
-}
-
-impl std::fmt::Display for LoreError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "lore call failed with status {}", self.status)?;
-        if !self.messages.is_empty() {
-            write!(f, ": {}", self.messages.join("; "))?;
-        }
-        Ok(())
-    }
-}
-
-impl std::error::Error for LoreError {}
-
-/// Options shared by every Lore operation, the equivalent of
-/// `lore_global_args_t` with Rust types.
-///
-/// [`Default`] is the all-zero configuration the other Lore SDKs default to;
-/// zero means "use the library default" for the numeric fields. Set only what
-/// you need:
-///
-/// ```
-/// # use lore_rs::GlobalArgs;
-/// let globals = GlobalArgs {
-///     repository_path: "/path/to/repository",
-///     offline: true,
-///     ..Default::default()
-/// };
-/// ```
-///
-/// Strings are borrowed rather than owned, so no field can outlive the data it
-/// points at, which is what keeps the per-command functions safe to call.
-#[derive(Debug, Default, Clone, Copy)]
-pub struct GlobalArgs<'a> {
-    /// Repository path.
-    pub repository_path: &'a str,
-    /// Correlation ID.
-    pub correlation_id: &'a str,
-    /// Identity to use.
-    pub identity: &'a str,
-    /// Force the operation if possible.
-    pub force: bool,
-    /// Run the operation without connecting to the server.
-    pub offline: bool,
-    /// Use only local data.
-    pub local: bool,
-    /// Use only remote data.
-    pub remote: bool,
-    /// Report what would have been changed without touching the file system.
-    pub dry_run: bool,
-    /// Avoid recording last access timestamps in the data stores.
-    pub no_atime: bool,
-    /// Maximum number of parallel connections for bulk data transfer.
-    pub max_connections: u32,
-    /// Search limit when iterating revisions.
-    pub search_limit: u32,
-    /// Allow matching the nearest revision when no perfect match exists.
-    pub search_nearest: bool,
-    /// Prevent the automatic incremental GC for this operation.
-    pub no_gc: bool,
-    /// Use in-memory stores instead of the file-backed ones.
-    pub in_memory: bool,
-    /// Maximum number of files processed in parallel.
-    pub file_count_limit: u64,
-    /// Maximum total size of all files processed in parallel.
-    pub file_size_limit: u64,
-    /// Maximum number of parallel compression tasks.
-    pub compress_task_limit: u64,
-    /// Keep store references alive after the call completes, so consecutive
-    /// calls in one process skip repeated store open/close cycles.
-    pub store_keep_alive: bool,
-    /// How long to keep store references alive. Only used with
-    /// `store_keep_alive`; zero means the library default of 10 seconds.
-    pub store_keep_alive_seconds: u64,
-    /// Force syncing data to the storage media during store flush.
-    pub sync_data: bool,
-    /// Cache fragment payloads fetched from a remote in the local store.
-    pub cache: bool,
-}
-
-impl GlobalArgs<'_> {
-    /// The raw struct to hand to Lore. Borrows from `self`.
-    fn to_raw(self) -> lore_global_args_t {
-        lore_global_args_t {
-            repository_path: raw_str(self.repository_path),
-            correlation_id: raw_str(self.correlation_id),
-            identity: raw_str(self.identity),
-            force: u8::from(self.force),
-            offline: u8::from(self.offline),
-            local: u8::from(self.local),
-            remote: u8::from(self.remote),
-            dry_run: u8::from(self.dry_run),
-            no_atime: u8::from(self.no_atime),
-            max_connections: self.max_connections,
-            search_limit: self.search_limit,
-            search_nearest: u8::from(self.search_nearest),
-            no_gc: u8::from(self.no_gc),
-            in_memory: u8::from(self.in_memory),
-            file_count_limit: self.file_count_limit,
-            file_size_limit: self.file_size_limit,
-            compress_task_limit: self.compress_task_limit,
-            store_keep_alive: u8::from(self.store_keep_alive),
-            store_keep_alive_seconds: self.store_keep_alive_seconds,
-            sync_data: u8::from(self.sync_data),
-            cache: u8::from(self.cache),
-        }
-    }
-}
-
-/// An empty string is passed as a null pointer rather than as a pointer to
-/// zero bytes, so that Lore cannot tell "unset" and "set to the empty string"
-/// apart. The other Lore SDKs do the same.
-pub(crate) fn raw_str(string: &str) -> lore_string_t {
-    if string.is_empty() {
-        lore_string_t::EMPTY
-    } else {
-        lore_string_t::from_str(string)
-    }
-}
 
 /// Why a call failed, collected from the events that conclude it. Follows the
 /// other SDKs: an explicit error event always wins over the message the
@@ -159,8 +38,10 @@ impl FailureContext {
             }) => self.errors.push(format!("{error_type}: {message}")),
             // Lore puts the reason a failed call failed on its completion, but
             // leaves it empty when the operation reported no detail.
-            Ok(Event::Complete { status, error }) if *status != 0 && !error.is_empty() => {
-                self.complete = Some((*error).to_owned());
+            Ok(Event::Complete {
+                status, message, ..
+            }) if *status != 0 && !message.is_empty() => {
+                self.complete = Some((*message).to_owned());
             }
             // Only a terminal event that failed to decode says something about
             // the call as a whole. A malformed path in one of a hundred
@@ -185,6 +66,25 @@ impl FailureContext {
 /// handing it to `callback`. The per-command functions below are thin calls
 /// onto this; reach for it directly only for a command that has no wrapper yet.
 ///
+/// # Threading
+///
+/// Lore runs the callback on one of its own worker threads while this call
+/// blocks; the synchronous entry points do not return before the final `End`
+/// event has been delivered. That is why `callback` must be [`Send`]. Events of
+/// one call arrive one at a time, so the closure is never run concurrently
+/// with itself.
+///
+/// The callback must not call back into Lore on the handle the call is about:
+/// Lore's own contract says re-entering the storage API from a callback can
+/// deadlock against its in-flight accounting. Record what you need and act
+/// after the call returns. Dropping a [`Store`](crate::Store) or
+/// [`RevisionTree`](crate::RevisionTree) inside a callback is such a call.
+///
+/// A panic inside `callback` is caught on Lore's thread, the callback is not
+/// invoked for the rest of the call, and the panic resumes on the calling
+/// thread once the call has returned. Letting it unwind through the C frame
+/// would abort the process.
+///
 /// # Safety
 ///
 /// `lore_function` must be an entry point of the loaded library that takes
@@ -199,7 +99,8 @@ pub unsafe fn call_with_callback<Args, Callback>(
         *const Args,
         lore_event_callback_config_t,
     ) -> i32,
-    globals: GlobalArgs<'_>,
+    command: &'static str,
+    globals: &GlobalArgs,
     args: &Args,
     callback: Callback,
 ) -> Result<(), LoreError>
@@ -212,6 +113,9 @@ where
     struct Context<Callback> {
         callback: Callback,
         failure: FailureContext,
+        /// The first panic the callback raised, to resume on the caller's
+        /// thread. Once set, the callback is not invoked again.
+        panic: Option<Box<dyn std::any::Any + Send>>,
     }
 
     /// Lore expects a plain C function; to avoid writing one per call site we
@@ -235,12 +139,23 @@ where
             (event.tag, Event::from_raw(event))
         };
         context.failure.record(tag, &event);
-        (context.callback)(event);
+
+        if context.panic.is_some() {
+            return;
+        }
+        // Nothing here observes a half-updated closure after a panic: the
+        // closure is never called again, and the panic is resumed before the
+        // caller can look at anything the closure wrote.
+        let callback = std::panic::AssertUnwindSafe(|| (context.callback)(event));
+        if let Err(payload) = std::panic::catch_unwind(callback) {
+            context.panic = Some(payload);
+        }
     }
 
     let mut context = Context {
         callback,
         failure: FailureContext::default(),
+        panic: None,
     };
 
     // SAFETY: `lore_function`'s own type guarantees it takes global arguments
@@ -258,12 +173,17 @@ where
         )
     };
 
+    if let Some(payload) = context.panic.take() {
+        std::panic::resume_unwind(payload);
+    }
+
     if status == 0 {
         Ok(())
     } else {
         // A call that fails before emitting any event (bad arguments, dead
         // connection) reports the failure only through its status code.
-        Err(LoreError {
+        Err(LoreError::Call {
+            command,
             status,
             messages: context.failure.into_messages(),
         })
@@ -273,7 +193,8 @@ where
 /// Arguments for [`repository_info`].
 #[derive(Debug, Default, Clone, Copy)]
 pub struct RepositoryInfoArgs<'a> {
-    /// URL of the remote repository to query.
+    /// URL of the remote repository to query, as `lore://host:port/name`.
+    /// Empty asks about the repository `globals.repository_path` holds.
     pub repository_url: &'a str,
 }
 
@@ -286,18 +207,140 @@ impl RepositoryInfoArgs<'_> {
     }
 }
 
-/// Queries a remote repository's metadata.
+/// Queries a repository's metadata.
+///
+/// With a URL this needs no local repository at all; Lore runs it against
+/// in-memory stores. With an empty URL Lore assembles one from the
+/// `.lore/config.toml` and `.lore/id` under `globals.repository_path`, and
+/// with `globals.local` set it answers from that repository's own stores
+/// instead of asking the server.
 ///
 /// This corresponds to `lore_sys::Lore::lore_repository_info`.
 pub fn repository_info(
     lore: &crate::Lore,
-    globals: GlobalArgs<'_>,
+    command: &'static str,
+    globals: &GlobalArgs,
     args: RepositoryInfoArgs<'_>,
     callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
 ) -> Result<(), LoreError> {
     // SAFETY: the entry point is the loaded library's own, and the raw struct
     // borrows from `args`, which lives across the call.
-    unsafe { call_with_callback(lore.lore_repository_info, globals, &args.to_raw(), callback) }
+    unsafe {
+        call_with_callback(
+            lore.lore_repository_info,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`branch_info`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct BranchInfoArgs<'a> {
+    /// Branch to report on; empty is the branch the repository is on.
+    pub branch: &'a str,
+}
+
+impl BranchInfoArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_branch_info_args_t {
+        lore_branch_info_args_t {
+            branch: raw_str(self.branch),
+        }
+    }
+}
+
+/// Reports one branch: what it is, and which revision it points at.
+///
+/// [`Event::BranchInfo`] carries the tip twice. `latest` is what the local
+/// mutable store holds, `latest_remote` what the remote says; either is the
+/// zero hash when that side has nothing — no remote configured, an offline
+/// call, a branch created but never pushed, or a branch this repository has
+/// never had locally. Resolving the tip to read means preferring
+/// `latest_remote` and falling back to `latest`.
+///
+/// A branch the local store does not know is looked up on the remote by name,
+/// so a name that has never been materialized here still resolves.
+///
+/// A repository verb: `globals.repository_path` must hold a `.lore`
+/// directory, and the remote it reports on is that repository's own, from its
+/// `.lore/config.toml`.
+///
+/// This corresponds to `lore_sys::Lore::lore_branch_info`.
+pub fn branch_info(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: BranchInfoArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_branch_info,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`revision_info`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct RevisionInfoArgs<'a> {
+    /// The revision to report on, in any form Lore resolves: a full hash,
+    /// `branch@LATEST`, `branch@<number>`, or `@LATEST` for the branch the
+    /// instance is on. Empty is the revision the instance is on.
+    pub revision: &'a str,
+    /// Also report the changes against the parent revision.
+    pub delta: bool,
+    /// Also report the revision's metadata entries.
+    pub metadata: bool,
+}
+
+impl RevisionInfoArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_revision_info_args_t {
+        lore_revision_info_args_t {
+            revision: raw_str(self.revision),
+            delta: u8::from(self.delta),
+            metadata: u8::from(self.metadata),
+        }
+    }
+}
+
+/// Resolves a revision signature and reports the revision: its hash, number
+/// and parents on [`Event::RevisionInfo`].
+///
+/// `branch@LATEST` is resolved the way Lore itself does it: the local tip
+/// unless the remote's is strictly ahead of it, decided by walking the
+/// history between the two. A branch with nothing on it resolves to the zero
+/// hash. A repository verb: `globals.repository_path` must hold a `.lore`
+/// directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_info`.
+pub fn revision_info(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: RevisionInfoArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_info,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
 }
 
 /// Arguments for [`file_info`].
@@ -325,14 +368,7 @@ impl FileInfoArgs<'_> {
     /// `self` does.
     fn to_raw(self, paths: &[lore_string_t]) -> lore_file_info_args_t {
         lore_file_info_args_t {
-            paths: if paths.is_empty() {
-                lore_string_array_t::EMPTY
-            } else {
-                lore_string_array_t {
-                    ptr: paths.as_ptr(),
-                    count: paths.len(),
-                }
-            },
+            paths: raw_str_array(paths),
             revision: raw_str(self.revision),
             local: u8::from(self.local),
             filtered: u8::from(self.filtered),
@@ -341,15 +377,23 @@ impl FileInfoArgs<'_> {
 }
 
 /// Reports what the repository holds at each path — content hash, context and
-/// size — without reading any content.
+/// size.
 ///
 /// One [`Event::FileInfo`] arrives per path. A path the revision does not hold
 /// is reported through [`Event::Error`], not by the absence of an event.
 ///
+/// Not a metadata-only call, whatever `local` is set to. Lore deserializes the
+/// revision state on every call, and reports whether a path is modified by
+/// stat-ing the working-tree file and hashing all of it when its size matches
+/// the revision's. Reach for [`revision_tree_resolve_path`] and
+/// [`revision_tree_node_info`] against a loaded tree to look up an address
+/// without any of that.
+///
 /// This corresponds to `lore_sys::Lore::lore_file_info`.
 pub fn file_info(
     lore: &crate::Lore,
-    globals: GlobalArgs<'_>,
+    command: &'static str,
+    globals: &GlobalArgs,
     args: FileInfoArgs<'_>,
     callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
 ) -> Result<(), LoreError> {
@@ -357,7 +401,15 @@ pub fn file_info(
 
     // SAFETY: the entry point is the loaded library's own, and the raw struct
     // borrows from `paths` and `args`, both of which live across the call.
-    unsafe { call_with_callback(lore.lore_file_info, globals, &args.to_raw(&paths), callback) }
+    unsafe {
+        call_with_callback(
+            lore.lore_file_info,
+            command,
+            globals,
+            &args.to_raw(&paths),
+            callback,
+        )
+    }
 }
 
 /// Arguments for [`storage_open`].
@@ -393,18 +445,28 @@ impl StorageOpenArgs<'_> {
     }
 }
 
-/// Opens a store.
+/// Opens a store. See [`Store::open`](crate::Store::open) for what Lore binds
+/// into the handle at this point.
 ///
 /// This corresponds to `lore_sys::Lore::lore_storage_open`.
 pub fn storage_open(
     lore: &crate::Lore,
-    globals: GlobalArgs<'_>,
+    command: &'static str,
+    globals: &GlobalArgs,
     args: StorageOpenArgs<'_>,
     callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
 ) -> Result<(), LoreError> {
     // SAFETY: the entry point is the loaded library's own, and the raw struct
     // borrows from `args`, which lives across the call.
-    unsafe { call_with_callback(lore.lore_storage_open, globals, &args.to_raw(), callback) }
+    unsafe {
+        call_with_callback(
+            lore.lore_storage_open,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
 }
 
 /// One buffer for [`storage_get`] to read.
@@ -446,7 +508,8 @@ impl StorageGetItem {
 pub struct StorageGetArgs<'a> {
     /// Handle from [`storage_open`].
     pub handle: lore_store_t,
-    /// Buffers to read. Each runs independently and emits its own events.
+    /// Buffers to read. Each runs independently and emits its own events,
+    /// all carrying the item's `id`.
     pub items: &'a [StorageGetItem],
 }
 
@@ -485,10 +548,14 @@ impl StorageGetArgs<'_> {
 /// its outcome. The payload bytes are valid only for the duration of the
 /// callback that carries them.
 ///
+/// Any failed item makes the whole call return non-zero; the item's own
+/// outcome is on its [`Event::StorageGetItemComplete`].
+///
 /// This corresponds to `lore_sys::Lore::lore_storage_get`.
 pub fn storage_get(
     lore: &crate::Lore,
-    globals: GlobalArgs<'_>,
+    command: &'static str,
+    globals: &GlobalArgs,
     args: StorageGetArgs<'_>,
     callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
 ) -> Result<(), LoreError> {
@@ -499,6 +566,7 @@ pub fn storage_get(
     unsafe {
         call_with_callback(
             lore.lore_storage_get,
+            command,
             globals,
             &args.to_raw(&items),
             callback,
@@ -506,18 +574,92 @@ pub fn storage_get(
     }
 }
 
-/// Releases a store handle.
+/// Releases a store handle. Lore does not wait for the flush this spawns.
 ///
 /// This corresponds to `lore_sys::Lore::lore_storage_close`.
 pub fn storage_close(
     lore: &crate::Lore,
-    globals: GlobalArgs<'_>,
+    command: &'static str,
+    globals: &GlobalArgs,
     args: lore_storage_close_args_t,
     callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
 ) -> Result<(), LoreError> {
     // SAFETY: the entry point is the loaded library's own, and the arguments
     // hold no pointers.
-    unsafe { call_with_callback(lore.lore_storage_close, globals, &args, callback) }
+    unsafe { call_with_callback(lore.lore_storage_close, command, globals, &args, callback) }
+}
+
+/// Arguments for [`repository_status`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct RepositoryStatusArgs<'a> {
+    /// Paths to report on; empty reports on the whole repository.
+    pub paths: &'a [&'a str],
+    /// Include the staged state in the report.
+    pub staged: bool,
+    /// Walk the filesystem under each path and refresh every dirty flag.
+    pub scan: bool,
+    /// Re-examine the files already marked dirty, without a full scan.
+    pub check_dirty: bool,
+    /// Clear the tracked dirty state.
+    pub reset: bool,
+    /// Report the last revision merged in from the parent branch.
+    pub sync_point: bool,
+    /// Report only [`Event::RepositoryStatusRevision`], no per-file events.
+    pub revision_only: bool,
+    /// Report the number of changed files rather than the files themselves.
+    pub count: bool,
+}
+
+impl RepositoryStatusArgs<'_> {
+    /// The paths as Lore's own string type, separate from [`Self::to_raw`] for
+    /// the reason [`FileInfoArgs::raw_paths`] is.
+    fn raw_paths(self) -> Vec<lore_string_t> {
+        self.paths.iter().copied().map(raw_str).collect()
+    }
+
+    /// The raw struct to hand to Lore, borrowing `paths`.
+    fn to_raw(self, paths: &[lore_string_t]) -> lore_repository_status_args_t {
+        lore_repository_status_args_t {
+            staged: u8::from(self.staged),
+            scan: u8::from(self.scan),
+            check_dirty: u8::from(self.check_dirty),
+            reset: u8::from(self.reset),
+            sync_point: u8::from(self.sync_point),
+            revision_only: u8::from(self.revision_only),
+            count: u8::from(self.count),
+            paths: raw_str_array(paths),
+        }
+    }
+}
+
+/// Reports where a repository stands: the revision and branch it is on, and
+/// what has changed against them.
+///
+/// [`Event::RepositoryStatusRevision`] carries the revision the repository is
+/// on, which is the one to hand [`revision_tree_load`] to read that same
+/// revision. With `scan` and `check_dirty` left off no filesystem read happens
+/// beyond the dirty flags already recorded.
+///
+/// This corresponds to `lore_sys::Lore::lore_repository_status`.
+pub fn repository_status(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: RepositoryStatusArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let paths = args.raw_paths();
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `paths` and `args`, which both live across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_repository_status,
+            command,
+            globals,
+            &args.to_raw(&paths),
+            callback,
+        )
+    }
 }
 
 /// Loads the directory tree of a revision.
@@ -525,13 +667,178 @@ pub fn storage_close(
 /// This corresponds to `lore_sys::Lore::lore_revision_tree_load`.
 pub fn revision_tree_load(
     lore: &crate::Lore,
-    globals: GlobalArgs<'_>,
+    command: &'static str,
+    globals: &GlobalArgs,
     args: lore_revision_tree_load_args_t,
     callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
 ) -> Result<(), LoreError> {
     // SAFETY: the entry point is the loaded library's own, and the arguments
     // hold no pointers.
-    unsafe { call_with_callback(lore.lore_revision_tree_load, globals, &args, callback) }
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_tree_load,
+            command,
+            globals,
+            &args,
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`revision_tree_resolve_path`]. No [`Default`]: there is no
+/// meaningful tree handle to default to.
+#[derive(Debug, Clone, Copy)]
+pub struct RevisionTreeResolvePathArgs<'a> {
+    /// Echoed back on the event, to tell concurrent calls apart.
+    pub id: u64,
+    /// The tree to resolve against.
+    pub handle: lore_revision_tree_t,
+    /// Path relative to the tree root; empty resolves to the root node.
+    pub path: &'a str,
+}
+
+impl RevisionTreeResolvePathArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_revision_tree_resolve_path_args_t {
+        lore_revision_tree_resolve_path_args_t {
+            id: self.id,
+            handle: self.handle,
+            path: raw_str(self.path),
+        }
+    }
+}
+
+/// Resolves a path in a loaded revision tree to the node that holds it.
+///
+/// Answered from the loaded tree: no filesystem read, and no revision state
+/// deserialized per call the way [`file_info`] does it. One
+/// [`Event::RevisionTreeResolvePathComplete`] concludes the call, carrying
+/// either the node or the reason there is none in its `error_code`. A path that
+/// crosses a sub-repository link resolves in the link's target tree, which the
+/// event names through its `repository` and `revision`.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_tree_resolve_path`.
+pub fn revision_tree_resolve_path(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: RevisionTreeResolvePathArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_tree_resolve_path,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// Reports one node of a loaded revision tree: its address, size and kind.
+///
+/// Answered from the loaded tree, like [`revision_tree_resolve_path`]. One
+/// [`Event::RevisionTreeNodeInfo`] concludes the call, carrying the failure in
+/// its `error_code` when there is one.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_tree_node_info`.
+pub fn revision_tree_node_info(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: lore_revision_tree_node_info_args_t,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the arguments
+    // hold no pointers.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_tree_node_info,
+            command,
+            globals,
+            &args,
+            callback,
+        )
+    }
+}
+
+/// Streams the children of a directory node.
+///
+/// One [`Event::RevisionTreeListChildrenBegin`] first, carrying the outcome
+/// and the tree the children belong to — a link's target tree when the parent
+/// is a sub-repository link — then one [`Event::RevisionTreeChild`] per entry.
+/// An empty directory emits none before the completion.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_tree_list_children`.
+pub fn revision_tree_list_children(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: lore_revision_tree_list_children_args_t,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the arguments
+    // hold no pointers.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_tree_list_children,
+            command,
+            globals,
+            &args,
+            callback,
+        )
+    }
+}
+
+/// Reconstructs the path of a node by walking its parents. One
+/// [`Event::RevisionTreeNodePath`] concludes the call.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_tree_node_path`.
+pub fn revision_tree_node_path(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: lore_revision_tree_node_path_args_t,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the arguments
+    // hold no pointers.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_tree_node_path,
+            command,
+            globals,
+            &args,
+            callback,
+        )
+    }
+}
+
+/// Reports the loaded revision itself: parents, author and creation time. One
+/// [`Event::RevisionTreeInfo`] concludes the call.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_tree_info`.
+pub fn revision_tree_info(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: lore_revision_tree_info_args_t,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the arguments
+    // hold no pointers.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_tree_info,
+            command,
+            globals,
+            &args,
+            callback,
+        )
+    }
 }
 
 /// Releases a revision-tree handle.
@@ -539,18 +846,28 @@ pub fn revision_tree_load(
 /// This corresponds to `lore_sys::Lore::lore_revision_tree_close`.
 pub fn revision_tree_close(
     lore: &crate::Lore,
-    globals: GlobalArgs<'_>,
+    command: &'static str,
+    globals: &GlobalArgs,
     args: lore_revision_tree_close_args_t,
     callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
 ) -> Result<(), LoreError> {
     // SAFETY: the entry point is the loaded library's own, and the arguments
     // hold no pointers.
-    unsafe { call_with_callback(lore.lore_revision_tree_close, globals, &args, callback) }
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_tree_close,
+            command,
+            globals,
+            &args,
+            callback,
+        )
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::LoreStringExt;
     use lore_sys::LORE_EVENT_LOG;
 
     /// Plays back the events its `args` carry, then returns the scripted
@@ -585,10 +902,22 @@ mod tests {
         unsafe {
             call_with_callback(
                 scripted,
-                GlobalArgs::default(),
+                "test::scripted",
+                &GlobalArgs::default(),
                 &Script { events, status },
                 callback,
             )
+        }
+    }
+
+    /// The status and messages of a `LoreError::Call`, which is what every
+    /// failure below produces.
+    fn call_failure(error: LoreError) -> (i32, Vec<String>) {
+        match error {
+            LoreError::Call {
+                status, messages, ..
+            } => (status, messages),
+            other => panic!("expected a call failure, got {other:?}"),
         }
     }
 
@@ -624,20 +953,6 @@ mod tests {
     }
 
     #[test]
-    fn global_args_conversion() {
-        let raw = GlobalArgs {
-            repository_path: "/repo",
-            offline: true,
-            ..Default::default()
-        }
-        .to_raw();
-        assert_eq!(unsafe { raw.repository_path.try_to_str() }, Ok("/repo"));
-        assert!(raw.correlation_id.string.is_null(), "unset is null");
-        assert_eq!(raw.offline, 1);
-        assert_eq!(raw.force, 0);
-    }
-
-    #[test]
     fn file_info_args_conversion() {
         let args = FileInfoArgs {
             paths: &["models/a.gltf", "models/b.bin"],
@@ -669,6 +984,48 @@ mod tests {
         // should reach Lore as.
         assert!(raw.paths.ptr.is_null());
         assert_eq!(raw.paths.count, 0);
+    }
+
+    #[test]
+    fn branch_info_args_conversion() {
+        let raw = BranchInfoArgs { branch: "main" }.to_raw();
+        assert_eq!(unsafe { raw.branch.try_to_str() }, Ok("main"));
+    }
+
+    #[test]
+    fn branch_info_args_without_a_branch_pass_a_null_pointer() {
+        // An empty branch means "the one the repository is on", which lore
+        // tells from unset rather than from a pointer to zero bytes.
+        let raw = BranchInfoArgs::default().to_raw();
+        assert!(raw.branch.string.is_null());
+        assert_eq!(raw.branch.length, 0);
+    }
+
+    #[test]
+    fn a_branch_info_event_decodes_both_tips() {
+        let mut event: lore_event_t = unsafe { std::mem::zeroed() };
+        event.tag = lore_sys::LORE_EVENT_BRANCH_INFO as lore_event_tag_t;
+        event.__bindgen_anon_1.branch_info.name = lore_string_t::from_str("main");
+        event.__bindgen_anon_1.branch_info.latest = lore_sys::lore_hash_t { data: [1; 32] };
+        event.__bindgen_anon_1.branch_info.latest_remote = lore_sys::lore_hash_t { data: [2; 32] };
+        event.__bindgen_anon_1.branch_info.archived = 1;
+
+        let mut seen = None;
+        run(&[event], 0, |event| {
+            if let Ok(Event::BranchInfo {
+                name,
+                latest,
+                latest_remote,
+                archived,
+                ..
+            }) = event
+            {
+                seen = Some((name.to_owned(), latest.data, latest_remote.data, archived));
+            }
+        })
+        .unwrap();
+
+        assert_eq!(seen, Some(("main".to_owned(), [1; 32], [2; 32], true)));
     }
 
     #[test]
@@ -729,26 +1086,24 @@ mod tests {
     fn error_events_win_over_the_completion_message_in_a_failure() {
         let events = [error_event(7, "it broke"), complete_event(5, "fallback")];
         let error = run(&events, 5, |_| {}).unwrap_err();
-        assert_eq!(error.status, 5);
-        assert_eq!(error.messages, ["7: it broke"]);
         assert_eq!(
             error.to_string(),
-            "lore call failed with status 5: 7: it broke"
+            "`test::scripted` failed with status 5: 7: it broke"
         );
+        assert_eq!(call_failure(error), (5, vec!["7: it broke".to_owned()]));
     }
 
     #[test]
     fn the_completion_message_describes_a_failure_without_error_events() {
         let error = run(&[complete_event(3, "no such branch")], 3, |_| {}).unwrap_err();
-        assert_eq!(error.messages, ["no such branch"]);
+        assert_eq!(call_failure(error).1, ["no such branch"]);
     }
 
     #[test]
     fn a_failure_before_any_event_reports_only_its_status() {
         let error = run(&[], 2, |_| {}).unwrap_err();
-        assert_eq!(error.status, 2);
-        assert!(error.messages.is_empty());
-        assert_eq!(error.to_string(), "lore call failed with status 2");
+        assert_eq!(error.to_string(), "`test::scripted` failed with status 2");
+        assert_eq!(call_failure(error), (2, vec![]));
     }
 
     #[test]
@@ -762,8 +1117,9 @@ mod tests {
         let mut event = error_event(7, "");
         event.__bindgen_anon_1.error.error_inner = invalid_utf8();
         let error = run(&[event], 1, |_| {}).unwrap_err();
-        assert_eq!(error.messages.len(), 1);
-        assert!(error.messages[0].contains("invalid UTF-8"), "{error}");
+        let messages = call_failure(error).1;
+        assert_eq!(messages.len(), 1);
+        assert!(messages[0].contains("invalid UTF-8"), "{messages:?}");
     }
 
     #[test]
@@ -773,6 +1129,6 @@ mod tests {
         let mut callback_saw_it = false;
         let error = run(&[event], 1, |event| callback_saw_it |= event.is_err()).unwrap_err();
         assert!(callback_saw_it);
-        assert!(error.messages.is_empty());
+        assert!(call_failure(error).1.is_empty());
     }
 }
