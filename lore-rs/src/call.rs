@@ -1,13 +1,13 @@
 use crate::{Event, LoreStringArrayExt, LoreStringExt};
 use lore_sys::{
-    lore_address_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
-    lore_file_info_args_t, lore_global_args_t, lore_partition_t, lore_repository_info_args_t,
-    lore_repository_status_args_t, lore_revision_tree_close_args_t, lore_revision_tree_load_args_t,
-    lore_revision_tree_node_info_args_t, lore_revision_tree_resolve_path_args_t,
-    lore_revision_tree_t, lore_storage_close_args_t, lore_storage_get_args_t,
-    lore_storage_get_item_array_t, lore_storage_get_item_t, lore_storage_open_args_t,
-    lore_storage_remote_config_t, lore_store_t, lore_string_array_t, lore_string_t,
-    LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
+    lore_address_t, lore_branch_info_args_t, lore_event_callback_config_t, lore_event_t,
+    lore_event_tag_t, lore_file_info_args_t, lore_global_args_t, lore_partition_t,
+    lore_repository_info_args_t, lore_repository_status_args_t, lore_revision_tree_close_args_t,
+    lore_revision_tree_load_args_t, lore_revision_tree_node_info_args_t,
+    lore_revision_tree_resolve_path_args_t, lore_revision_tree_t, lore_storage_close_args_t,
+    lore_storage_get_args_t, lore_storage_get_item_array_t, lore_storage_get_item_t,
+    lore_storage_open_args_t, lore_storage_remote_config_t, lore_store_t, lore_string_array_t,
+    lore_string_t, LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
 };
 
 /// A Lore call that returned a non-zero status, with whatever the operation
@@ -300,6 +300,50 @@ pub fn repository_info(
     // SAFETY: the entry point is the loaded library's own, and the raw struct
     // borrows from `args`, which lives across the call.
     unsafe { call_with_callback(lore.lore_repository_info, globals, &args.to_raw(), callback) }
+}
+
+/// Arguments for [`branch_info`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct BranchInfoArgs<'a> {
+    /// Branch to report on; empty is the branch the repository is on.
+    pub branch: &'a str,
+}
+
+impl BranchInfoArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_branch_info_args_t {
+        lore_branch_info_args_t {
+            branch: raw_str(self.branch),
+        }
+    }
+}
+
+/// Reports one branch: what it is, and which revision it points at.
+///
+/// [`Event::BranchInfo`] carries the tip twice. `latest` is what the local
+/// mutable store holds, `latest_remote` what the remote says; either is the
+/// zero hash when that side has nothing — no remote configured, an offline
+/// call, a branch created but never pushed, or a branch this repository has
+/// never had locally. Resolving the tip to read means preferring
+/// `latest_remote` and falling back to `latest`.
+///
+/// A branch the local store does not know is looked up on the remote by name,
+/// so a name that has never been materialized here still resolves.
+///
+/// Unlike [`repository_info`], this needs a repository: `globals`'
+/// `repository_path` must name one, and the remote it reports on is that
+/// repository's own, from its `.lore/config.toml` — not one this call takes.
+///
+/// This corresponds to `lore_sys::Lore::lore_branch_info`.
+pub fn branch_info(
+    lore: &crate::Lore,
+    globals: GlobalArgs<'_>,
+    args: BranchInfoArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe { call_with_callback(lore.lore_branch_info, globals, &args.to_raw(), callback) }
 }
 
 /// Arguments for [`file_info`].
@@ -823,6 +867,48 @@ mod tests {
         // should reach Lore as.
         assert!(raw.paths.ptr.is_null());
         assert_eq!(raw.paths.count, 0);
+    }
+
+    #[test]
+    fn branch_info_args_conversion() {
+        let raw = BranchInfoArgs { branch: "main" }.to_raw();
+        assert_eq!(unsafe { raw.branch.try_to_str() }, Ok("main"));
+    }
+
+    #[test]
+    fn branch_info_args_without_a_branch_pass_a_null_pointer() {
+        // An empty branch means "the one the repository is on", which lore
+        // tells from unset rather than from a pointer to zero bytes.
+        let raw = BranchInfoArgs::default().to_raw();
+        assert!(raw.branch.string.is_null());
+        assert_eq!(raw.branch.length, 0);
+    }
+
+    #[test]
+    fn a_branch_info_event_decodes_both_tips() {
+        let mut event: lore_event_t = unsafe { std::mem::zeroed() };
+        event.tag = lore_sys::LORE_EVENT_BRANCH_INFO as lore_event_tag_t;
+        event.__bindgen_anon_1.branch_info.name = lore_string_t::from_str("main");
+        event.__bindgen_anon_1.branch_info.latest = lore_sys::lore_hash_t { data: [1; 32] };
+        event.__bindgen_anon_1.branch_info.latest_remote = lore_sys::lore_hash_t { data: [2; 32] };
+        event.__bindgen_anon_1.branch_info.archived = 1;
+
+        let mut seen = None;
+        run(&[event], 0, |event| {
+            if let Ok(Event::BranchInfo {
+                name,
+                latest,
+                latest_remote,
+                archived,
+                ..
+            }) = event
+            {
+                seen = Some((name.to_owned(), latest.data, latest_remote.data, archived));
+            }
+        })
+        .unwrap();
+
+        assert_eq!(seen, Some(("main".to_owned(), [1; 32], [2; 32], true)));
     }
 
     #[test]

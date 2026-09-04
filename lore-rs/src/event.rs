@@ -2,8 +2,8 @@ use crate::LoreStringExt;
 use lore_sys::{
     lore_address_t, lore_branch_id_t, lore_context_t, lore_error_code_t, lore_event_t,
     lore_event_tag_t, lore_file_action_t, lore_hash_t, lore_log_level_t, lore_node_id_t,
-    lore_repository_id_t, LORE_EVENT_COMPLETE, LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO,
-    LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG,
+    lore_repository_id_t, LORE_EVENT_BRANCH_INFO, LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
+    LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG,
     LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_STATE_DUMP_NODE,
     LORE_EVENT_REPOSITORY_STATUS_FILE, LORE_EVENT_REPOSITORY_STATUS_REVISION,
     LORE_EVENT_REVISION_COMMIT_REVISION, LORE_EVENT_REVISION_TREE_CHILD,
@@ -34,6 +34,25 @@ pub enum Event<'a> {
         status: i32,
         /// The failure's message, empty when the call succeeded.
         error: &'a str,
+    },
+    /// The `stack` of branch points the raw event also carries is not decoded:
+    /// it is an array, which no variant here has needed yet, and
+    /// [`Self::BranchInfo::branch_point`] is its first entry.
+    BranchInfo {
+        id: lore_branch_id_t,
+        name: &'a str,
+        category: &'a str,
+        /// Tip in the local mutable store, zero when there is none.
+        latest: lore_hash_t,
+        /// Tip on the remote, zero when there is no remote to ask or nothing
+        /// has been pushed.
+        latest_remote: lore_hash_t,
+        parent: lore_branch_id_t,
+        /// Revision on `parent` this branch was created from.
+        branch_point: lore_hash_t,
+        creator: &'a str,
+        created: u64,
+        archived: bool,
     },
     FileInfo {
         path: &'a str,
@@ -157,6 +176,18 @@ impl<'a> Event<'a> {
                 LORE_EVENT_COMPLETE => Self::Complete {
                     status: data.complete.status,
                     error: data.complete.error.message.try_to_str()?,
+                },
+                LORE_EVENT_BRANCH_INFO => Self::BranchInfo {
+                    id: data.branch_info.id,
+                    name: data.branch_info.name.try_to_str()?,
+                    category: data.branch_info.category.try_to_str()?,
+                    latest: data.branch_info.latest,
+                    latest_remote: data.branch_info.latest_remote,
+                    parent: data.branch_info.parent,
+                    branch_point: data.branch_info.branch_point,
+                    creator: data.branch_info.creator.try_to_str()?,
+                    created: data.branch_info.created,
+                    archived: data.branch_info.archived != 0,
                 },
                 LORE_EVENT_FILE_INFO => Self::FileInfo {
                     path: data.file_info.path.try_to_str()?,

@@ -5,11 +5,11 @@ use lore_sys::{lore_string_array_t, lore_string_t};
 
 mod call;
 pub use call::{
-    call_with_callback, file_info, repository_info, repository_status, revision_tree_close,
-    revision_tree_load, revision_tree_node_info, revision_tree_resolve_path, storage_close,
-    storage_get, storage_open, FileInfoArgs, GlobalArgs, LoreError, RepositoryInfoArgs,
-    RepositoryStatusArgs, RevisionTreeResolvePathArgs, StorageGetArgs, StorageGetItem,
-    StorageOpenArgs,
+    branch_info, call_with_callback, file_info, repository_info, repository_status,
+    revision_tree_close, revision_tree_load, revision_tree_node_info, revision_tree_resolve_path,
+    storage_close, storage_get, storage_open, BranchInfoArgs, FileInfoArgs, GlobalArgs, LoreError,
+    RepositoryInfoArgs, RepositoryStatusArgs, RevisionTreeResolvePathArgs, StorageGetArgs,
+    StorageGetItem, StorageOpenArgs,
 };
 
 mod event;
