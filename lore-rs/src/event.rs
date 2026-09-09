@@ -2,7 +2,8 @@ use crate::LoreStringExt;
 use lore_sys::{
     lore_address_t, lore_branch_id_t, lore_context_t, lore_error_code_t, lore_event_t,
     lore_event_tag_t, lore_file_action_t, lore_hash_t, lore_log_level_t, lore_node_id_t,
-    lore_repository_id_t, LORE_EVENT_BRANCH_INFO, LORE_EVENT_COMPLETE, LORE_EVENT_END,
+    lore_repository_id_t, LORE_EVENT_AUTH_IDENTITY, LORE_EVENT_AUTH_URL, LORE_EVENT_AUTH_USER_INFO,
+    LORE_EVENT_AUTH_USER_TOKEN, LORE_EVENT_BRANCH_INFO, LORE_EVENT_COMPLETE, LORE_EVENT_END,
     LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_FILE,
     LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_DATA,
     LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_FILE,
@@ -52,6 +53,47 @@ pub enum Event<'a> {
     /// The last event of a call, after [`Self::Complete`]. Nothing arrives
     /// after it.
     End,
+    /// Where to go to log in, from an interactive login asked not to open a
+    /// browser. No function in [`call`](crate::call) emits this yet.
+    AuthUrl {
+        url: &'a str,
+    },
+    /// Who Lore resolved an identity to. Concludes a successful login.
+    AuthUserInfo {
+        id: &'a str,
+        /// The token's `preferred_username`, its `name`, or `id`, whichever
+        /// Lore has first, so never empty.
+        name: &'a str,
+    },
+    /// An identity together with its token. No function in
+    /// [`call`](crate::call) emits this yet.
+    AuthUserToken {
+        id: &'a str,
+        name: &'a str,
+        /// A credential: a callback that logs its events unfiltered logs this.
+        token: &'a str,
+        preferred_username: &'a str,
+        service_account: bool,
+        /// **Milliseconds** since the Unix epoch — unlike the `created` fields
+        /// elsewhere, which are seconds. Zero when Lore cannot say.
+        expires: u64,
+    },
+    /// One entry of the token store.
+    AuthIdentity {
+        auth_url: &'a str,
+        /// Empty for an authentication token, a repository id for an
+        /// authorization one.
+        resource: &'a str,
+        user_id: &'a str,
+        /// Acceptable root domains as one `", "`-joined string. Empty means
+        /// unrestricted rather than none.
+        authorized_domains: &'a str,
+        /// **Milliseconds** since the Unix epoch — unlike the `created` fields
+        /// elsewhere, which are seconds. Zero when Lore cannot say.
+        expires: u64,
+        /// Empty unless the call asked for tokens.
+        token: &'a str,
+    },
     /// The `stack` of branch points the raw event also carries is not decoded:
     /// it is an array, which no variant here has needed yet, and
     /// [`Self::BranchInfo::branch_point`] is its first entry.
@@ -243,6 +285,29 @@ impl<'a> Event<'a> {
                     message: data.complete.error.message.try_to_str()?,
                 },
                 LORE_EVENT_END => Self::End,
+                LORE_EVENT_AUTH_URL => Self::AuthUrl {
+                    url: data.auth_url.url.try_to_str()?,
+                },
+                LORE_EVENT_AUTH_USER_INFO => Self::AuthUserInfo {
+                    id: data.auth_user_info.id.try_to_str()?,
+                    name: data.auth_user_info.name.try_to_str()?,
+                },
+                LORE_EVENT_AUTH_USER_TOKEN => Self::AuthUserToken {
+                    id: data.auth_user_token.id.try_to_str()?,
+                    name: data.auth_user_token.name.try_to_str()?,
+                    token: data.auth_user_token.token.try_to_str()?,
+                    preferred_username: data.auth_user_token.preferred_username.try_to_str()?,
+                    service_account: data.auth_user_token.flag_service_account != 0,
+                    expires: data.auth_user_token.expires,
+                },
+                LORE_EVENT_AUTH_IDENTITY => Self::AuthIdentity {
+                    auth_url: data.auth_identity.auth_url.try_to_str()?,
+                    resource: data.auth_identity.resource.try_to_str()?,
+                    user_id: data.auth_identity.user_id.try_to_str()?,
+                    authorized_domains: data.auth_identity.authorized_domains.try_to_str()?,
+                    expires: data.auth_identity.expires,
+                    token: data.auth_identity.token.try_to_str()?,
+                },
                 LORE_EVENT_BRANCH_INFO => Self::BranchInfo {
                     id: data.branch_info.id,
                     name: data.branch_info.name.try_to_str()?,

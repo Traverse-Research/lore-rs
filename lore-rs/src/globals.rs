@@ -17,7 +17,7 @@ use crate::string::raw_str;
 /// };
 /// ```
 ///
-/// Not every field means something to every call. Lore has three families of
+/// Not every field means something to every call. Lore has four families of
 /// verbs, and the docs on each field say which of them read it:
 ///
 /// - **Repository verbs** (`repository_*`, `branch_*`, `file_*`, `revision_*`,
@@ -31,6 +31,10 @@ use crate::string::raw_str;
 /// - **Revision-tree verbs** (`revision_tree_*`) read nothing here beyond
 ///   `identity` and `correlation_id`; the loaded tree already knows its store,
 ///   repository and revision.
+/// - **Auth verbs** (`auth_*`) read `repository_path` only to resolve a server
+///   the arguments did not name, and write a token store that is per OS user
+///   rather than part of any repository. See
+///   [`Lore::auth_login_with_token`](crate::Lore::auth_login_with_token).
 ///
 /// Empty strings reach Lore as null pointers, which is how it spells "unset".
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -40,9 +44,11 @@ pub struct GlobalArgs {
     pub repository_path: String,
     /// Echoed back in Lore's logs, for correlating one caller's calls.
     pub correlation_id: String,
-    /// Identity to authenticate with. Unset means the identity Lore resolves
-    /// itself, from the repository config or the auth cache. Storage handles
-    /// bind it at open.
+    /// Identity to authenticate with, as
+    /// [`UserInfo::id`](crate::UserInfo::id) reports it. Unset means the
+    /// identity Lore resolves itself, from the repository config or the token
+    /// store a [login](crate::Lore::auth_login_with_token) writes. Storage
+    /// handles bind it at open.
     pub identity: String,
     /// Force the operation if possible.
     pub force: bool,

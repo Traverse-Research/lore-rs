@@ -6,16 +6,17 @@
 use crate::string::{raw_str, raw_str_array};
 use crate::{Event, GlobalArgs, LoreError};
 use lore_sys::{
-    lore_address_t, lore_branch_info_args_t, lore_event_callback_config_t, lore_event_t,
-    lore_event_tag_t, lore_file_info_args_t, lore_global_args_t, lore_partition_t,
-    lore_repository_info_args_t, lore_repository_status_args_t, lore_revision_info_args_t,
-    lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
-    lore_revision_tree_list_children_args_t, lore_revision_tree_load_args_t,
-    lore_revision_tree_node_info_args_t, lore_revision_tree_node_path_args_t,
-    lore_revision_tree_resolve_path_args_t, lore_revision_tree_t, lore_storage_close_args_t,
-    lore_storage_get_args_t, lore_storage_get_item_array_t, lore_storage_get_item_t,
-    lore_storage_open_args_t, lore_storage_remote_config_t, lore_store_t, lore_string_t,
-    LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
+    lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t,
+    lore_event_callback_config_t, lore_event_t, lore_event_tag_t, lore_file_info_args_t,
+    lore_global_args_t, lore_partition_t, lore_repository_info_args_t,
+    lore_repository_status_args_t, lore_revision_info_args_t, lore_revision_tree_close_args_t,
+    lore_revision_tree_info_args_t, lore_revision_tree_list_children_args_t,
+    lore_revision_tree_load_args_t, lore_revision_tree_node_info_args_t,
+    lore_revision_tree_node_path_args_t, lore_revision_tree_resolve_path_args_t,
+    lore_revision_tree_t, lore_storage_close_args_t, lore_storage_get_args_t,
+    lore_storage_get_item_array_t, lore_storage_get_item_t, lore_storage_open_args_t,
+    lore_storage_remote_config_t, lore_store_t, lore_string_t, LORE_EVENT_COMPLETE,
+    LORE_EVENT_ERROR,
 };
 
 /// Why a call failed, collected from the events that conclude it. Follows the
@@ -187,6 +188,81 @@ where
             status,
             messages: context.failure.into_messages(),
         })
+    }
+}
+
+/// Arguments for [`auth_login_with_token`].
+// `Debug` is written out below rather than derived: `token` is a credential,
+// and a derive would put it in any log line that formats these arguments.
+#[derive(Default, Clone, Copy)]
+pub struct AuthLoginWithTokenArgs<'a> {
+    /// Server to log in against, as `lore://host:port`. Empty resolves it from
+    /// the `.lore/config.toml` under `globals.repository_path`.
+    pub remote_url: &'a str,
+    pub token: &'a str,
+    /// `"lore"` for a token that already is a Lore JWT, which Lore validates
+    /// and stores as it stands. Anything else — `"eg1"`, `"api-key"` — is
+    /// handed to the auth service's exchange, which answers with one.
+    pub token_type: &'a str,
+    /// Auth service with its scheme, as `ucs-auth://auth.example.com`. Set,
+    /// this skips asking the server which auth service to use, and the token
+    /// is validated against this domain instead. Required when there is no
+    /// server to ask.
+    pub auth_url: &'a str,
+}
+
+impl std::fmt::Debug for AuthLoginWithTokenArgs<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("AuthLoginWithTokenArgs")
+            .field("remote_url", &self.remote_url)
+            .field("token", &"[token]")
+            .field("token_type", &self.token_type)
+            .field("auth_url", &self.auth_url)
+            .finish()
+    }
+}
+
+impl AuthLoginWithTokenArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_auth_login_with_token_args_t {
+        lore_auth_login_with_token_args_t {
+            remote_url: raw_str(self.remote_url),
+            token: raw_str(self.token),
+            token_type: raw_str(self.token_type),
+            auth_url: raw_str(self.auth_url),
+        }
+    }
+}
+
+/// Logs in with a token obtained elsewhere, storing the Lore token it is
+/// exchanged for on [`Event::AuthUserInfo`], which a success always emits.
+///
+/// The token store this writes is per OS user, not per process or per
+/// repository: it is the same one Lore's own CLI reads and writes, and a login
+/// here outlives the process that made it.
+///
+/// With `args.auth_url` empty Lore asks the server for its environment to find
+/// the auth service, so the login needs that server reachable even though the
+/// exchange itself happens elsewhere.
+///
+/// This corresponds to `lore_sys::Lore::lore_auth_login_with_token`.
+pub fn auth_login_with_token(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: AuthLoginWithTokenArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_auth_login_with_token,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
     }
 }
 
@@ -950,6 +1026,99 @@ mod tests {
             string: INVALID.as_ptr().cast(),
             length: INVALID.len(),
         }
+    }
+
+    #[test]
+    fn auth_login_with_token_args_conversion() {
+        // The shape a login against the repository's own server takes: only
+        // the token and its type, the two URLs left to Lore to resolve, which
+        // it tells from unset rather than from a pointer to zero bytes.
+        let raw = AuthLoginWithTokenArgs {
+            token: "eg1~token",
+            token_type: "eg1",
+            ..Default::default()
+        }
+        .to_raw();
+
+        assert_eq!(unsafe { raw.token.try_to_str() }, Ok("eg1~token"));
+        assert_eq!(unsafe { raw.token_type.try_to_str() }, Ok("eg1"));
+        assert!(raw.remote_url.string.is_null());
+        assert!(raw.auth_url.string.is_null());
+    }
+
+    #[test]
+    fn auth_login_with_token_args_do_not_print_the_token() {
+        let printed = format!(
+            "{:?}",
+            AuthLoginWithTokenArgs {
+                token: "eg1~token",
+                token_type: "eg1",
+                ..Default::default()
+            }
+        );
+
+        assert!(!printed.contains("eg1~token"), "{printed}");
+        assert!(printed.contains("eg1"), "the type is not a secret");
+    }
+
+    #[test]
+    fn an_auth_user_info_event_decodes_the_identity() {
+        let mut event: lore_event_t = unsafe { std::mem::zeroed() };
+        event.tag = lore_sys::LORE_EVENT_AUTH_USER_INFO as lore_event_tag_t;
+        event.__bindgen_anon_1.auth_user_info.id = lore_string_t::from_str("user-id");
+        event.__bindgen_anon_1.auth_user_info.name = lore_string_t::from_str("Some One");
+
+        let mut seen = None;
+        run(&[event], 0, |event| {
+            if let Ok(Event::AuthUserInfo { id, name }) = event {
+                seen = Some((id.to_owned(), name.to_owned()));
+            }
+        })
+        .unwrap();
+
+        assert_eq!(seen, Some(("user-id".to_owned(), "Some One".to_owned())));
+    }
+
+    #[test]
+    fn an_auth_identity_event_decodes_its_resource_and_expiry() {
+        let mut event: lore_event_t = unsafe { std::mem::zeroed() };
+        event.tag = lore_sys::LORE_EVENT_AUTH_IDENTITY as lore_event_tag_t;
+        event.__bindgen_anon_1.auth_identity.user_id = lore_string_t::from_str("user-id");
+        event.__bindgen_anon_1.auth_identity.authorized_domains =
+            lore_string_t::from_str("example.com, auth.example.com");
+        event.__bindgen_anon_1.auth_identity.expires = 1_700_000_000_000;
+
+        let mut seen = None;
+        run(&[event], 0, |event| {
+            if let Ok(Event::AuthIdentity {
+                resource,
+                user_id,
+                authorized_domains,
+                expires,
+                ..
+            }) = event
+            {
+                seen = Some((
+                    resource.to_owned(),
+                    user_id.to_owned(),
+                    authorized_domains.to_owned(),
+                    expires,
+                ));
+            }
+        })
+        .unwrap();
+
+        // An empty resource is an authentication token, and the expiry is
+        // milliseconds, passed on as Lore reports it.
+        assert_eq!(
+            seen,
+            Some((
+                String::new(),
+                "user-id".to_owned(),
+                "example.com, auth.example.com".to_owned(),
+                1_700_000_000_000,
+            ))
+        );
     }
 
     #[test]

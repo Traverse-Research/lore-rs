@@ -8,9 +8,11 @@
 //!    API — arguments in, [`Event`]s out through a callback — plus
 //!    [`call_with_callback`] for the commands without a function yet.
 //! 3. Handle types that return data: [`Lore`] for the process-level
-//!    operations, [`Repository`] for the commands that run against a local
-//!    repository instance, and [`Store`] with [`RevisionTree`] for Lore's
-//!    storage API, which is independent of any instance.
+//!    operations, including the [login](Lore::auth_login_with_token) every
+//!    other call authenticates with, [`Repository`] for the commands that run
+//!    against a local repository instance, and [`Store`] with
+//!    [`RevisionTree`] for Lore's storage API, which is independent of any
+//!    instance.
 //!
 //! Every call takes a [`GlobalArgs`], Lore's `lore_global_args_t`, whose
 //! defaults are Lore's own.
@@ -22,8 +24,9 @@ pub use lore_sys::libloading;
 
 pub mod call;
 pub use call::{
-    call_with_callback, BranchInfoArgs, FileInfoArgs, RepositoryInfoArgs, RepositoryStatusArgs,
-    RevisionInfoArgs, RevisionTreeResolvePathArgs, StorageGetArgs, StorageGetItem, StorageOpenArgs,
+    call_with_callback, AuthLoginWithTokenArgs, BranchInfoArgs, FileInfoArgs, RepositoryInfoArgs,
+    RepositoryStatusArgs, RevisionInfoArgs, RevisionTreeResolvePathArgs, StorageGetArgs,
+    StorageGetItem, StorageOpenArgs,
 };
 
 mod string;
@@ -43,6 +46,9 @@ pub use types::{Address, BranchId, ContextId, NodeId, NodeKind, RepositoryId, Re
 
 mod library;
 pub use library::{load, LogConfig, Lore};
+
+mod auth;
+pub use auth::UserInfo;
 
 mod repository;
 pub use repository::{BranchInfo, Repository, RepositoryInfo, RevisionInfo};
