@@ -13,12 +13,12 @@ use lore_sys::{
     lore_revision_tree_info_args_t, lore_revision_tree_list_children_args_t,
     lore_revision_tree_load_args_t, lore_revision_tree_node_info_args_t,
     lore_revision_tree_node_path_args_t, lore_revision_tree_resolve_path_args_t,
-    lore_revision_tree_t, lore_storage_close_args_t, lore_storage_get_args_t,
-    lore_storage_get_item_array_t, lore_storage_get_item_t, lore_storage_get_metadata_args_t,
-    lore_storage_get_metadata_item_array_t, lore_storage_get_metadata_item_t,
-    lore_storage_open_args_t, lore_storage_put_args_t, lore_storage_put_item_array_t,
-    lore_storage_put_item_t, lore_storage_remote_config_t, lore_store_t, lore_string_t,
-    LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
+    lore_revision_tree_t, lore_storage_close_args_t, lore_storage_flush_args_t,
+    lore_storage_get_args_t, lore_storage_get_item_array_t, lore_storage_get_item_t,
+    lore_storage_get_metadata_args_t, lore_storage_get_metadata_item_array_t,
+    lore_storage_get_metadata_item_t, lore_storage_open_args_t, lore_storage_put_args_t,
+    lore_storage_put_item_array_t, lore_storage_put_item_t, lore_storage_remote_config_t,
+    lore_store_t, lore_string_t, LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
 };
 
 /// Why a call failed, collected from the events that conclude it. Follows the
@@ -888,6 +888,27 @@ pub fn storage_close(
     // SAFETY: the entry point is the loaded library's own, and the arguments
     // hold no pointers.
     unsafe { call_with_callback(lore.lore_storage_close, command, globals, &args, callback) }
+}
+
+/// Flushes a store's pending writes to its backing media and waits for them,
+/// honoring `globals.sync_data`. Emits no events of its own; the completion is
+/// the whole answer.
+///
+/// This is the immutable and the mutable store behind the handle, both of
+/// them, so it covers everything pending there rather than only what this
+/// handle wrote. An in-memory store has nothing to flush and succeeds.
+///
+/// This corresponds to `lore_sys::Lore::lore_storage_flush`.
+pub fn storage_flush(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: lore_storage_flush_args_t,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the arguments
+    // hold no pointers.
+    unsafe { call_with_callback(lore.lore_storage_flush, command, globals, &args, callback) }
 }
 
 /// Arguments for [`repository_status`].

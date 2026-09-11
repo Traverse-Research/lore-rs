@@ -1,6 +1,9 @@
 use std::io::Write;
 
-use lore_sys::{lore_error_code_t, lore_fragment_t, lore_storage_close_args_t, lore_store_t};
+use lore_sys::{
+    lore_error_code_t, lore_fragment_t, lore_storage_close_args_t, lore_storage_flush_args_t,
+    lore_store_t,
+};
 
 use crate::{
     Address, ContextId, ErrorCode, Event, GlobalArgs, Lore, LoreError, RepositoryId, Revision,
@@ -10,6 +13,7 @@ use crate::{
 
 const PUT: &str = "storage::put";
 const METADATA: &str = "storage::get_metadata";
+const FLUSH: &str = "storage::flush";
 
 /// Soft caps on the local store. Zero for either selects Lore's default; zero
 /// for **both** leaves the evictor and compactor unspawned, so the store grows
@@ -112,6 +116,15 @@ pub struct PutItem<'a> {
 /// [`Self::put`].
 ///
 /// `Send + Sync`; Lore allows concurrent operations on one handle.
+///
+/// # Making writes stick
+///
+/// [`put`](Self::put) returns when Lore has the bytes, not when they are on
+/// disk. Either call [`flush`](Self::flush), or end the process with
+/// [`Lore::shutdown`], which waits for the flush that dropping a handle
+/// starts. Do neither and a process that writes and exits can lose what it
+/// wrote. Getting the bytes to the *server* is a separate question again,
+/// decided per item by [`PutOptions::remote_write`].
 pub struct Store {
     lore: &'static Lore,
     globals: GlobalArgs,
@@ -365,6 +378,40 @@ impl Store {
     /// this is [`Self::metadata`] without the fragment it found.
     pub fn exists(&self, repository: RepositoryId, address: Address) -> Result<bool, LoreError> {
         Ok(self.metadata(repository, address)?.is_some())
+    }
+
+    /// Waits for what this store has written to reach the disk.
+    /// [`GlobalArgs::sync_data`] decides whether Lore also forces the media
+    /// to sync it.
+    ///
+    /// Call it where a write has to be safe before something else happens:
+    /// at the end of a cook, before reporting success, before exiting.
+    ///
+    /// Dropping a `Store` starts a flush too, and [`Lore::shutdown`] waits
+    /// for it, so dropping every handle and then shutting down is durable as
+    /// well. The difference is the error: Lore throws away what the flush on
+    /// the drop path reports, and this one hands it back, so a disk that
+    /// filled up is silent there and an `Err` here.
+    ///
+    /// Two things this does not do. It sends nothing to the server — that is
+    /// [`PutOptions::remote_write`], chosen per item when the write is made.
+    /// And it is not limited to this handle's own writes: handles on one
+    /// [`OnDisk`](StoreLocation::OnDisk) location share the store underneath,
+    /// so this flushes whatever is pending in it. An
+    /// [`InMemory`](StoreLocation::InMemory) store has nothing to flush and
+    /// succeeds.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_storage_flush`.
+    pub fn flush(&self) -> Result<(), LoreError> {
+        crate::call::storage_flush(
+            self.lore,
+            FLUSH,
+            &self.globals,
+            lore_storage_flush_args_t {
+                handle: self.handle,
+            },
+            |event| crate::log_event(&event),
+        )
     }
 
     /// Reads one address in full, fetching from the server whatever this store
@@ -634,8 +681,10 @@ fn metadata_outcome(
 
 impl Drop for Store {
     /// Closes the handle. Lore spawns the store's flush rather than waiting
-    /// for it; see [`Lore::shutdown`] for what that means at process exit. A
-    /// failure to close is logged, since nothing can act on it here.
+    /// for it; see [`Lore::shutdown`] for what that means at process exit,
+    /// and [`Store::flush`] for a durability point that reports its own
+    /// failure. A failure to close is logged, since nothing can act on it
+    /// here.
     fn drop(&mut self) {
         let result = crate::call::storage_close(
             self.lore,
