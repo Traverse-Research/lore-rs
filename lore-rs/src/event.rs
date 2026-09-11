@@ -14,7 +14,8 @@ use lore_sys::{
     LORE_EVENT_REVISION_TREE_NODE_INFO, LORE_EVENT_REVISION_TREE_NODE_PATH,
     LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE, LORE_EVENT_STORAGE_GET_DATA,
     LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
-    LORE_LOG_LEVEL_ERROR, LORE_LOG_LEVEL_INFO, LORE_LOG_LEVEL_TRACE, LORE_LOG_LEVEL_WARN,
+    LORE_EVENT_STORAGE_PUT_ITEM_COMPLETE, LORE_LOG_LEVEL_ERROR, LORE_LOG_LEVEL_INFO,
+    LORE_LOG_LEVEL_TRACE, LORE_LOG_LEVEL_WARN,
 };
 
 /// One event decoded from lore's tagged event union. Borrows from the raw
@@ -235,6 +236,14 @@ pub enum Event<'a> {
     StorageOpened {
         handle_id: u64,
     },
+    /// The terminal event of a put item, success or failure. Also concludes
+    /// a `put_file` item.
+    StoragePutItemComplete {
+        id: u64,
+        /// The item's address on success, zero on failure.
+        address: lore_address_t,
+        error_code: lore_error_code_t,
+    },
     StorageGetHeader {
         id: u64,
         address: lore_address_t,
@@ -435,6 +444,11 @@ impl<'a> Event<'a> {
                 },
                 LORE_EVENT_STORAGE_OPENED => Self::StorageOpened {
                     handle_id: data.storage_opened.handle_id,
+                },
+                LORE_EVENT_STORAGE_PUT_ITEM_COMPLETE => Self::StoragePutItemComplete {
+                    id: data.storage_put_item_complete.id,
+                    address: data.storage_put_item_complete.address,
+                    error_code: data.storage_put_item_complete.error_code,
                 },
                 LORE_EVENT_STORAGE_GET_HEADER => Self::StorageGetHeader {
                     id: data.storage_get_header.id,
