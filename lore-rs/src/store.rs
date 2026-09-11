@@ -1,13 +1,15 @@
 use std::io::Write;
 
-use lore_sys::{lore_error_code_t, lore_storage_close_args_t, lore_store_t};
+use lore_sys::{lore_error_code_t, lore_fragment_t, lore_storage_close_args_t, lore_store_t};
 
 use crate::{
     Address, ContextId, ErrorCode, Event, GlobalArgs, Lore, LoreError, RepositoryId, Revision,
-    RevisionTree, StorageGetArgs, StorageGetItem, StorageOpenArgs, StoragePutArgs, StoragePutItem,
+    RevisionTree, StorageGetArgs, StorageGetItem, StorageGetMetadataArgs, StorageGetMetadataItem,
+    StorageOpenArgs, StoragePutArgs, StoragePutItem,
 };
 
 const PUT: &str = "storage::put";
+const METADATA: &str = "storage::get_metadata";
 
 /// Soft caps on the local store. Zero for either selects Lore's default; zero
 /// for **both** leaves the evictor and compactor unspawned, so the store grows
@@ -63,6 +65,30 @@ pub struct PutOptions {
     /// Cap on the leaf fragment size a large buffer is split into; zero lets
     /// Lore choose. Ignored below Lore's fragmentation threshold.
     pub fixed_size_chunk: u64,
+}
+
+/// What a store holds for one address, without its bytes.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub struct FragmentInfo {
+    /// Size of the content once reassembled and decompressed, which is how
+    /// many bytes [`Store::get`] of this address answers with.
+    pub size_content: u64,
+    /// Size of the payload as stored, which differs from `size_content` when
+    /// Lore compressed the content or split it into fragments.
+    pub size_payload: u32,
+    /// Lore's fragment flags as it reports them. The C API names none of the
+    /// bits, so neither does this.
+    pub flags: u32,
+}
+
+impl FragmentInfo {
+    pub(crate) const fn from_raw(raw: lore_fragment_t) -> Self {
+        Self {
+            size_content: raw.size_content,
+            size_payload: raw.size_payload,
+            flags: raw.flags,
+        }
+    }
 }
 
 /// One buffer for [`Store::put`] to store.
@@ -282,6 +308,63 @@ impl Store {
         );
 
         put_outcomes(completions, result)
+    }
+
+    /// What this store holds for `address`, without fetching its bytes, or
+    /// [`None`] when neither this store nor the server has it.
+    ///
+    /// `repository` is the partition the lookup is authorized against, the
+    /// same rule as [`Self::get`]. Lore probes the local store and falls
+    /// through to the server, so this answers whether the handle can reach
+    /// the content rather than whether it is already here; `globals.local`
+    /// confines it to the local store, `globals.remote` to the server.
+    /// Nothing is cached either way, there being no bytes to cache.
+    ///
+    /// The zero hash is content Lore always has, and answers with an empty
+    /// fragment — the same address [`Self::get`] reads as an empty buffer and
+    /// [`Self::put`] returns for one.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_storage_get_metadata`.
+    pub fn metadata(
+        &self,
+        repository: RepositoryId,
+        address: Address,
+    ) -> Result<Option<FragmentInfo>, LoreError> {
+        let mut completion: Option<(lore_fragment_t, lore_error_code_t)> = None;
+
+        let result = crate::call::storage_get_metadata(
+            self.lore,
+            METADATA,
+            &self.globals,
+            StorageGetMetadataArgs {
+                handle: self.handle,
+                items: &[StorageGetMetadataItem {
+                    id: 0,
+                    partition: repository.to_raw(),
+                    address: address.to_raw(),
+                }],
+            },
+            |event| {
+                crate::log_event(&event);
+
+                if let Ok(Event::StorageGetMetadataItemComplete {
+                    fragment,
+                    error_code,
+                    ..
+                }) = event
+                {
+                    completion = Some((fragment, error_code));
+                }
+            },
+        );
+
+        metadata_outcome(completion, result)
+    }
+
+    /// Whether this store can reach the content at `address`. Reads no bytes:
+    /// this is [`Self::metadata`] without the fragment it found.
+    pub fn exists(&self, repository: RepositoryId, address: Address) -> Result<bool, LoreError> {
+        Ok(self.metadata(repository, address)?.is_some())
     }
 
     /// Reads one address in full, fetching from the server whatever this store
@@ -522,6 +605,31 @@ fn put_outcomes(
     }
 
     Ok(outcomes)
+}
+
+/// Turns what a metadata lookup reported into the fragment it found, folding
+/// a miss to [`None`] rather than an error.
+fn metadata_outcome(
+    completion: Option<(lore_fragment_t, lore_error_code_t)>,
+    result: Result<(), LoreError>,
+) -> Result<Option<FragmentInfo>, LoreError> {
+    let Some((fragment, code)) = completion else {
+        result?;
+        return Err(LoreError::MissingEvent {
+            command: METADATA,
+            expected: "storage_get_metadata_item_complete",
+        });
+    };
+
+    // A miss is this call's answer rather than its failure, and it is also
+    // what failed the call, so the call's own error goes with it.
+    if ErrorCode::from_raw(code) == Some(ErrorCode::AddressNotFound) {
+        return Ok(None);
+    }
+
+    LoreError::resolve(METADATA, result, Some(code))?;
+
+    Ok(Some(FragmentInfo::from_raw(fragment)))
 }
 
 impl Drop for Store {

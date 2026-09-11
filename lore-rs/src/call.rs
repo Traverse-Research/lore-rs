@@ -14,10 +14,11 @@ use lore_sys::{
     lore_revision_tree_load_args_t, lore_revision_tree_node_info_args_t,
     lore_revision_tree_node_path_args_t, lore_revision_tree_resolve_path_args_t,
     lore_revision_tree_t, lore_storage_close_args_t, lore_storage_get_args_t,
-    lore_storage_get_item_array_t, lore_storage_get_item_t, lore_storage_open_args_t,
-    lore_storage_put_args_t, lore_storage_put_item_array_t, lore_storage_put_item_t,
-    lore_storage_remote_config_t, lore_store_t, lore_string_t, LORE_EVENT_COMPLETE,
-    LORE_EVENT_ERROR,
+    lore_storage_get_item_array_t, lore_storage_get_item_t, lore_storage_get_metadata_args_t,
+    lore_storage_get_metadata_item_array_t, lore_storage_get_metadata_item_t,
+    lore_storage_open_args_t, lore_storage_put_args_t, lore_storage_put_item_array_t,
+    lore_storage_put_item_t, lore_storage_remote_config_t, lore_store_t, lore_string_t,
+    LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
 };
 
 /// Why a call failed, collected from the events that conclude it. Follows the
@@ -767,6 +768,105 @@ pub fn storage_get(
     unsafe {
         call_with_callback(
             lore.lore_storage_get,
+            command,
+            globals,
+            &args.to_raw(&items),
+            callback,
+        )
+    }
+}
+
+/// One address for [`storage_get_metadata`] to look up.
+#[derive(Debug, Clone, Copy)]
+pub struct StorageGetMetadataItem {
+    /// Caller-chosen id, echoed back on the item's
+    /// [`Event::StorageGetMetadataItemComplete`].
+    pub id: u64,
+    /// Partition to look up in, which is a repository id. The zero partition
+    /// is rejected, as this item's own outcome rather than the call's.
+    pub partition: lore_partition_t,
+    /// Content address to look up.
+    pub address: lore_address_t,
+}
+
+impl StorageGetMetadataItem {
+    /// The raw struct to hand to Lore. Carries no pointers, so it borrows
+    /// nothing.
+    fn to_raw(self) -> lore_storage_get_metadata_item_t {
+        lore_storage_get_metadata_item_t {
+            id: self.id,
+            partition: self.partition,
+            address: self.address,
+        }
+    }
+}
+
+/// Arguments for [`storage_get_metadata`].
+#[derive(Debug, Clone, Copy)]
+pub struct StorageGetMetadataArgs<'a> {
+    /// Handle from [`storage_open`].
+    pub handle: lore_store_t,
+    /// Addresses to look up. Each runs independently and completes on its
+    /// own, carrying the item's `id`.
+    pub items: &'a [StorageGetMetadataItem],
+}
+
+impl StorageGetMetadataArgs<'_> {
+    /// The items as Lore's own type, kept out of [`Self::to_raw`] for the same
+    /// reason as [`FileInfoArgs::raw_paths`].
+    fn raw_items(self) -> Vec<lore_storage_get_metadata_item_t> {
+        self.items
+            .iter()
+            .copied()
+            .map(StorageGetMetadataItem::to_raw)
+            .collect()
+    }
+
+    /// The raw struct to hand to Lore, borrowing `items`.
+    fn to_raw(
+        self,
+        items: &[lore_storage_get_metadata_item_t],
+    ) -> lore_storage_get_metadata_args_t {
+        lore_storage_get_metadata_args_t {
+            handle: self.handle,
+            items: lore_storage_get_metadata_item_array_t {
+                ptr: if items.is_empty() {
+                    std::ptr::null()
+                } else {
+                    items.as_ptr()
+                },
+                count: items.len(),
+            },
+        }
+    }
+}
+
+/// Reports what a store holds for content addresses, without their bytes.
+///
+/// Each item emits one [`Event::StorageGetMetadataItemComplete`] carrying the
+/// fragment and its own outcome, and nothing else: no header, no data. Lore
+/// probes the local store and falls through to the remote, and caches nothing
+/// of what it finds there, since there are no bytes to cache.
+///
+/// An address neither side holds completes with
+/// [`ErrorCode::AddressNotFound`](crate::ErrorCode::AddressNotFound), which
+/// like any other failed item makes the whole call return non-zero.
+///
+/// This corresponds to `lore_sys::Lore::lore_storage_get_metadata`.
+pub fn storage_get_metadata(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: StorageGetMetadataArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let items = args.raw_items();
+
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `items`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_storage_get_metadata,
             command,
             globals,
             &args.to_raw(&items),
