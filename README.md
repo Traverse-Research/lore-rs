@@ -71,10 +71,11 @@ deliberate, final act rather than something a value's drop could do.
 
 Three layers sit on top of each other: the raw `lore_sys` bindings, one safe
 function per command in `lore_rs::call`, and handle types that return data.
-Reading one file out of a repository with the handle types looks like this:
+Reading one file out of a repository, and storing content back, looks like
+this:
 
 ```rust,no_run
-use lore_rs::{GlobalArgs, Repository, Store, StoreLocation, StoreOptions};
+use lore_rs::{GlobalArgs, PutItem, Repository, Store, StoreLocation, StoreOptions};
 
 let lore = unsafe { lore_rs::load("path/to/lore.dll") }?;
 
@@ -111,6 +112,14 @@ let store = Store::open(
 let tree = store.load_revision_tree(info.id, tip)?;
 let node = tree.node_at("models/a.gltf")?;
 let bytes = store.get(tree.repository(), node.address)?;
+
+// Writing goes through the same handle. Nothing in the repository points at
+// the address afterwards, so it is the caller's to keep.
+let address = store.put(PutItem {
+    repository: info.id,
+    data: b"cooked output",
+    ..Default::default()
+})?;
 ```
 
 Everything the handle types do not cover is reachable through `lore_rs::call`,
