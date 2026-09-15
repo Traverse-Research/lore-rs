@@ -37,19 +37,36 @@ use crate::string::raw_str;
 ///   [`Lore::auth_login_with_token`](crate::Lore::auth_login_with_token).
 ///
 /// Empty strings reach Lore as null pointers, which is how it spells "unset".
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[derive(Clone, Default, PartialEq, Eq)]
 pub struct GlobalArgs {
     /// The local repository instance: the directory holding `.lore`. Read by
     /// the repository verbs only.
     pub repository_path: String,
+    /// Directory relative paths in this call are resolved against. Set it
+    /// when the call may run on another process, such as the Lore service,
+    /// whose own working directory is unrelated to the caller's. Empty
+    /// resolves relative paths against the calling process's own working
+    /// directory.
+    pub working_directory: String,
     /// Echoed back in Lore's logs, for correlating one caller's calls.
     pub correlation_id: String,
     /// Identity to authenticate with, as
     /// [`UserInfo::id`](crate::UserInfo::id) reports it. Unset means the
     /// identity Lore resolves itself, from the repository config or the token
     /// store a [login](crate::Lore::auth_login_with_token) writes. Storage
-    /// handles bind it at open.
+    /// handles bind it at open. Must be left empty when `identity_token` or
+    /// `access_token` is set, since external-credential mode reads the
+    /// identity from the token instead.
     pub identity: String,
+    /// Authentication token to use instead of the one held in the secure
+    /// token store, for CI runs and stateless services. Authorization tokens
+    /// are exchanged from it as they are needed. A credential: never logged
+    /// or printed, see the redacted [`Debug`] impl below.
+    pub identity_token: String,
+    /// Authorization token to use instead of exchanging one with the auth
+    /// service; given this, no token exchange is performed. A credential:
+    /// never logged or printed, see the redacted [`Debug`] impl below.
+    pub access_token: String,
     /// Force the operation if possible.
     pub force: bool,
     /// Run the operation without connecting to the server.
@@ -62,8 +79,6 @@ pub struct GlobalArgs {
     pub remote: bool,
     /// Report what would have been changed without touching the file system.
     pub dry_run: bool,
-    /// Avoid recording last access timestamps in the data stores.
-    pub no_atime: bool,
     /// Allow matching the nearest revision when no perfect match exists.
     pub search_nearest: bool,
     /// Prevent the automatic incremental GC for this operation. At
@@ -98,6 +113,50 @@ pub struct GlobalArgs {
     /// How long `store_keep_alive` keeps stores open; zero is Lore's default
     /// of ten seconds.
     pub store_keep_alive_seconds: u64,
+    /// How much a call reports about what it cost. `0` reports nothing and
+    /// keeps no per-fragment counters, `1` reports one statistics event when
+    /// the call finishes, and `2` adds an event per stored fragment, which is
+    /// the price of that level. A level above the highest known behaves as the
+    /// highest known.
+    pub stats: u32,
+    /// How often a call emits progress events, in milliseconds. Applies
+    /// whatever `stats` is set to. Zero is Lore's default.
+    pub event_interval_ms: u64,
+}
+
+// Written out rather than derived: `identity_token` and `access_token` are
+// credentials, and a derive would put them in any log line that formats
+// these arguments.
+impl std::fmt::Debug for GlobalArgs {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("GlobalArgs")
+            .field("repository_path", &self.repository_path)
+            .field("working_directory", &self.working_directory)
+            .field("correlation_id", &self.correlation_id)
+            .field("identity", &self.identity)
+            .field("identity_token", &"[token]")
+            .field("access_token", &"[token]")
+            .field("force", &self.force)
+            .field("offline", &self.offline)
+            .field("local", &self.local)
+            .field("remote", &self.remote)
+            .field("dry_run", &self.dry_run)
+            .field("search_nearest", &self.search_nearest)
+            .field("no_gc", &self.no_gc)
+            .field("in_memory", &self.in_memory)
+            .field("store_keep_alive", &self.store_keep_alive)
+            .field("sync_data", &self.sync_data)
+            .field("cache", &self.cache)
+            .field("max_connections", &self.max_connections)
+            .field("search_limit", &self.search_limit)
+            .field("file_count_limit", &self.file_count_limit)
+            .field("file_size_limit", &self.file_size_limit)
+            .field("compress_task_limit", &self.compress_task_limit)
+            .field("store_keep_alive_seconds", &self.store_keep_alive_seconds)
+            .field("stats", &self.stats)
+            .field("event_interval_ms", &self.event_interval_ms)
+            .finish()
+    }
 }
 
 impl GlobalArgs {
@@ -106,14 +165,16 @@ impl GlobalArgs {
     pub(crate) fn to_raw(&self) -> lore_global_args_t {
         lore_global_args_t {
             repository_path: raw_str(&self.repository_path),
+            working_directory: raw_str(&self.working_directory),
             correlation_id: raw_str(&self.correlation_id),
             identity: raw_str(&self.identity),
+            identity_token: raw_str(&self.identity_token),
+            access_token: raw_str(&self.access_token),
             force: u8::from(self.force),
             offline: u8::from(self.offline),
             local: u8::from(self.local),
             remote: u8::from(self.remote),
             dry_run: u8::from(self.dry_run),
-            no_atime: u8::from(self.no_atime),
             max_connections: self.max_connections,
             search_limit: self.search_limit,
             search_nearest: u8::from(self.search_nearest),
@@ -126,6 +187,8 @@ impl GlobalArgs {
             store_keep_alive_seconds: self.store_keep_alive_seconds,
             sync_data: u8::from(self.sync_data),
             cache: u8::from(self.cache),
+            stats: self.stats,
+            event_interval_ms: self.event_interval_ms,
         }
     }
 }
@@ -151,5 +214,20 @@ mod tests {
         assert_eq!(raw.force, 0);
         assert_eq!(raw.cache, 0, "the default is Lore's all-zero configuration");
         assert_eq!(raw.store_keep_alive, 0);
+    }
+
+    #[test]
+    fn global_args_do_not_print_the_tokens() {
+        let printed = format!(
+            "{:?}",
+            GlobalArgs {
+                identity_token: "eg1~identity-token".into(),
+                access_token: "eg1~access-token".into(),
+                ..Default::default()
+            }
+        );
+
+        assert!(!printed.contains("eg1~identity-token"), "{printed}");
+        assert!(!printed.contains("eg1~access-token"), "{printed}");
     }
 }
