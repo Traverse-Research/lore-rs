@@ -54,6 +54,12 @@ pub struct StoreOptions {
     /// address is a round trip. Lore's storage API takes this per read item;
     /// the store applies it to every read it makes.
     pub local_cache: bool,
+    /// Skip re-hashing a loaded payload to check it against the address it
+    /// was read from. Off, every byte of every read is verified, which is the
+    /// right default for a store nothing else vouches for. Set it when a layer
+    /// of your own already assures integrity, such as a store scrubbed on a
+    /// schedule.
+    pub skip_verify: bool,
 }
 
 /// What Lore should do with one buffer beyond storing it. All-zero is Lore's
@@ -172,6 +178,7 @@ impl Store {
                 repository_path,
                 in_memory,
                 remote_url: options.remote_url.as_deref(),
+                skip_verify: options.skip_verify,
                 cache_target_bytes: options.cache_targets.bytes,
                 cache_target_fragments: options.cache_targets.fragments,
             },
@@ -306,6 +313,7 @@ impl Store {
                     id,
                     address,
                     error_code,
+                    ..
                 }) = event
                 {
                     // An id from outside the batch leaves the item it was
@@ -608,6 +616,9 @@ impl Store {
             id: 0,
             partition: repository.to_raw(),
             address: address.to_raw(),
+            // A zeroed offset/length pair reads the whole content.
+            offset: 0,
+            length: 0,
             streaming,
             local_cache: self.local_cache,
         }

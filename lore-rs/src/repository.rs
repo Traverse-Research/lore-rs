@@ -75,7 +75,10 @@ impl Repository {
             self.lore,
             COMMAND,
             &self.globals,
-            BranchInfoArgs { branch: name },
+            BranchInfoArgs {
+                branch: name,
+                link: "",
+            },
             |event| {
                 crate::log_event(&event);
 
@@ -238,7 +241,8 @@ pub struct RepositoryInfo {
     pub default_branch: BranchId,
     pub default_branch_name: String,
     pub creator: String,
-    /// Seconds since the Unix epoch.
+    /// **Milliseconds** since the Unix epoch — unlike a branch's `created`,
+    /// which is seconds.
     pub created: u64,
     /// The server as Lore resolved it out of the URL, which is not
     /// necessarily the string that went in.

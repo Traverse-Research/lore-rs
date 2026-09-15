@@ -55,7 +55,7 @@ impl std::fmt::Debug for Lore {
 }
 
 impl Lore {
-    /// The version the loaded library reports for itself, such as `0.8.5`.
+    /// The version the loaded library reports for itself, such as `0.10.0`.
     /// Compare it with the release the bindings were generated for when a
     /// mismatch would be surprising; the bindings themselves cannot tell.
     pub fn version(&self) -> &str {
