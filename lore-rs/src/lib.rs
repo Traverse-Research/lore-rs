@@ -26,8 +26,9 @@ pub mod call;
 pub use call::{
     call_with_callback, AuthLoginWithTokenArgs, BranchInfoArgs, FileInfoArgs, RepositoryInfoArgs,
     RepositoryStatusArgs, RevisionInfoArgs, RevisionTreeResolvePathArgs, StorageGetArgs,
-    StorageGetItem, StorageGetMetadataArgs, StorageGetMetadataItem, StorageOpenArgs,
-    StoragePutArgs, StoragePutItem,
+    StorageGetItem, StorageGetMetadataArgs, StorageGetMetadataItem, StorageGetResolvedArgs,
+    StorageGetResolvedItem, StorageOpenArgs, StoragePutArgs, StoragePutItem,
+    StoragePutResolvedArgs, StoragePutResolvedItem,
 };
 
 mod string;
@@ -43,7 +44,9 @@ mod error;
 pub use error::{ErrorCode, LoreError};
 
 mod types;
-pub use types::{Address, BranchId, ContextId, NodeId, NodeKind, RepositoryId, Revision};
+pub use types::{
+    Address, BranchId, ContextId, NodeId, NodeKind, RepositoryId, ResolveKey, Revision,
+};
 
 mod library;
 pub use library::{load, LogConfig, Lore};
@@ -56,7 +59,8 @@ pub use repository::{BranchInfo, Repository, RepositoryInfo, RevisionInfo};
 
 mod store;
 pub use store::{
-    CacheTargets, FragmentInfo, PutItem, PutOptions, Store, StoreLocation, StoreOptions,
+    CacheTargets, FragmentInfo, PutItem, PutOptions, PutResolvedItem, PutResolvedOutcome, Resolved,
+    Store, StoreLocation, StoreOptions,
 };
 
 mod revision_tree;
