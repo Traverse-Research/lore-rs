@@ -8,17 +8,21 @@ use crate::{Event, GlobalArgs, LoreError};
 use lore_sys::{
     lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t, lore_bytes_mut_t,
     lore_bytes_t, lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
-    lore_file_info_args_t, lore_global_args_t, lore_partition_t, lore_repository_info_args_t,
-    lore_repository_status_args_t, lore_revision_info_args_t, lore_revision_tree_close_args_t,
-    lore_revision_tree_info_args_t, lore_revision_tree_list_children_args_t,
-    lore_revision_tree_load_args_t, lore_revision_tree_node_info_args_t,
-    lore_revision_tree_node_path_args_t, lore_revision_tree_resolve_path_args_t,
-    lore_revision_tree_t, lore_storage_close_args_t, lore_storage_flush_args_t,
-    lore_storage_get_args_t, lore_storage_get_item_array_t, lore_storage_get_item_t,
-    lore_storage_get_metadata_args_t, lore_storage_get_metadata_item_array_t,
-    lore_storage_get_metadata_item_t, lore_storage_open_args_t, lore_storage_put_args_t,
-    lore_storage_put_item_array_t, lore_storage_put_item_t, lore_storage_remote_config_t,
-    lore_store_t, lore_string_t, LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
+    lore_file_info_args_t, lore_global_args_t, lore_hash_t, lore_partition_t,
+    lore_repository_info_args_t, lore_repository_status_args_t, lore_revision_info_args_t,
+    lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
+    lore_revision_tree_list_children_args_t, lore_revision_tree_load_args_t,
+    lore_revision_tree_node_info_args_t, lore_revision_tree_node_path_args_t,
+    lore_revision_tree_resolve_path_args_t, lore_revision_tree_t, lore_storage_close_args_t,
+    lore_storage_flush_args_t, lore_storage_get_args_t, lore_storage_get_item_array_t,
+    lore_storage_get_item_t, lore_storage_get_metadata_args_t,
+    lore_storage_get_metadata_item_array_t, lore_storage_get_metadata_item_t,
+    lore_storage_get_resolved_args_t, lore_storage_get_resolved_item_array_t,
+    lore_storage_get_resolved_item_t, lore_storage_open_args_t, lore_storage_put_args_t,
+    lore_storage_put_item_array_t, lore_storage_put_item_t, lore_storage_put_resolved_args_t,
+    lore_storage_put_resolved_item_array_t, lore_storage_put_resolved_item_t,
+    lore_storage_remote_config_t, lore_store_t, lore_string_t, LORE_EVENT_COMPLETE,
+    LORE_EVENT_ERROR,
 };
 
 /// Why a call failed, collected from the events that conclude it. Follows the
@@ -679,6 +683,142 @@ pub fn storage_put(
     }
 }
 
+/// One buffer for [`storage_put_resolved`] to store and publish a key for.
+///
+/// Same borrowing rules as [`StoragePutItem`]: `data` must stay valid until
+/// the item's completion fires.
+#[derive(Debug, Clone, Copy)]
+pub struct StoragePutResolvedItem<'a> {
+    /// Caller-chosen id, echoed back on the item's
+    /// [`Event::StoragePutItemComplete`].
+    pub id: u64,
+    /// Partition to write to, which is a repository id. The zero partition is
+    /// rejected, as this item's own outcome rather than the call's.
+    pub partition: lore_partition_t,
+    /// Mutable key to publish the stored hash under. A zero key is rejected,
+    /// as this item's own outcome rather than the call's.
+    pub key: lore_hash_t,
+    /// Dedup tag stored alongside the content hash in the resulting address,
+    /// and the context a later [`storage_get_resolved`] must read the key at.
+    pub context: lore_context_t,
+    /// The bytes to hash, store and publish `key` for. A zero-length buffer
+    /// **removes** `key`'s mapping instead of publishing one.
+    pub data: &'a [u8],
+    /// Also publish the content and the mapping to the remote; ignored
+    /// without a remote, or offline/local.
+    pub remote_write: bool,
+    /// Tag the fragments so every later remote read of them is cached
+    /// locally, whatever the reader asked for.
+    pub local_cache: bool,
+    /// Cap on the leaf fragment size a large buffer is split into; zero lets
+    /// Lore choose.
+    pub fixed_size_chunk: u64,
+}
+
+impl StoragePutResolvedItem<'_> {
+    /// The raw struct to hand to Lore, borrowing the same bytes `self` does.
+    fn to_raw(self) -> lore_storage_put_resolved_item_t {
+        lore_storage_put_resolved_item_t {
+            id: self.id,
+            partition: self.partition,
+            key: self.key,
+            context: self.context,
+            data: lore_bytes_t {
+                // An empty slice's pointer is dangling, which is not what "no
+                // bytes" should reach Lore as.
+                ptr: if self.data.is_empty() {
+                    std::ptr::null()
+                } else {
+                    self.data.as_ptr().cast()
+                },
+                len: self.data.len(),
+            },
+            remote_write: u8::from(self.remote_write),
+            local_cache: u8::from(self.local_cache),
+            fixed_size_chunk: self.fixed_size_chunk,
+        }
+    }
+}
+
+/// Arguments for [`storage_put_resolved`].
+#[derive(Debug, Clone, Copy)]
+pub struct StoragePutResolvedArgs<'a> {
+    /// Handle from [`storage_open`].
+    pub handle: lore_store_t,
+    /// Buffers to store and keys to publish for them. Each runs independently
+    /// and completes on its own, carrying the item's `id`.
+    pub items: &'a [StoragePutResolvedItem<'a>],
+}
+
+impl StoragePutResolvedArgs<'_> {
+    /// The items as Lore's own type, kept out of [`Self::to_raw`] for the same
+    /// reason as [`FileInfoArgs::raw_paths`].
+    fn raw_items(self) -> Vec<lore_storage_put_resolved_item_t> {
+        self.items
+            .iter()
+            .copied()
+            .map(StoragePutResolvedItem::to_raw)
+            .collect()
+    }
+
+    /// The raw struct to hand to Lore, borrowing `items`.
+    fn to_raw(
+        self,
+        items: &[lore_storage_put_resolved_item_t],
+    ) -> lore_storage_put_resolved_args_t {
+        lore_storage_put_resolved_args_t {
+            handle: self.handle,
+            items: lore_storage_put_resolved_item_array_t {
+                ptr: if items.is_empty() {
+                    std::ptr::null()
+                } else {
+                    items.as_ptr()
+                },
+                count: items.len(),
+            },
+        }
+    }
+}
+
+/// Stores content-addressed buffers and publishes a mutable key naming each,
+/// in one round trip: `storage_put` followed by a mutable-store publish,
+/// fused server-side. The key is published under `LORE_KEY_TYPE_RESOLVE`,
+/// readable back by [`storage_get_resolved`], and only once the content is
+/// stored — so a key published this way never resolves to content that is
+/// not there.
+///
+/// Each item emits one [`Event::StoragePutItemComplete`] carrying the address
+/// its bytes landed at, and its own outcome. Publishing is last-writer-wins:
+/// two callers publishing the same key concurrently both succeed, and the key
+/// ends up naming whichever content was published second.
+///
+/// Any failed item makes the whole call return non-zero, with a message that
+/// counts the failures rather than naming one.
+///
+/// This corresponds to `lore_sys::Lore::lore_storage_put_resolved`.
+pub fn storage_put_resolved(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: StoragePutResolvedArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let items = args.raw_items();
+
+    // SAFETY: the entry point is the loaded library's own; the raw struct
+    // borrows from `items`, and those borrow the caller's buffers. Both live
+    // across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_storage_put_resolved,
+            command,
+            globals,
+            &args.to_raw(&items),
+            callback,
+        )
+    }
+}
+
 /// One buffer for [`storage_get`] to read.
 #[derive(Debug, Clone, Copy)]
 pub struct StorageGetItem {
@@ -793,6 +933,128 @@ pub fn storage_get(
     unsafe {
         call_with_callback(
             lore.lore_storage_get,
+            command,
+            globals,
+            &args.to_raw(&items),
+            callback,
+        )
+    }
+}
+
+/// One key for [`storage_get_resolved`] to resolve and read.
+#[derive(Debug, Clone, Copy)]
+pub struct StorageGetResolvedItem {
+    /// Caller-chosen id, echoed back in every event for this item.
+    pub id: u64,
+    /// Partition to resolve and read within, which is a repository id. The
+    /// zero partition is rejected.
+    pub partition: lore_partition_t,
+    /// Mutable key to resolve, always read as `LORE_KEY_TYPE_RESOLVE`.
+    pub key: lore_hash_t,
+    /// Paired with the resolved hash to address the immutable read; the
+    /// mutable store yields only a hash.
+    pub context: lore_context_t,
+    /// Deliver one [`Event::StorageGetData`] per leaf fragment instead of a
+    /// single reassembled buffer, so peak memory follows the fragment size
+    /// rather than the content size.
+    pub streaming: bool,
+    /// Keep bytes fetched from a remote in the local store even when the
+    /// producer did not flag them for local caching.
+    pub local_cache: bool,
+}
+
+impl StorageGetResolvedItem {
+    /// The raw struct to hand to Lore. Its only pointer is the empty
+    /// `data_out`, so it borrows nothing.
+    fn to_raw(self) -> lore_storage_get_resolved_item_t {
+        lore_storage_get_resolved_item_t {
+            id: self.id,
+            partition: self.partition,
+            key: self.key,
+            context: self.context,
+            streaming: u8::from(self.streaming),
+            local_cache: u8::from(self.local_cache),
+            // No caller-supplied buffer, which is what selects delivery
+            // through `Event::StorageGetData`.
+            data_out: lore_bytes_mut_t {
+                ptr: std::ptr::null_mut(),
+                len: 0,
+            },
+        }
+    }
+}
+
+/// Arguments for [`storage_get_resolved`].
+#[derive(Debug, Clone, Copy)]
+pub struct StorageGetResolvedArgs<'a> {
+    /// Handle from [`storage_open`].
+    pub handle: lore_store_t,
+    /// Keys to resolve and read. Each runs independently and emits its own
+    /// events, all carrying the item's `id`.
+    pub items: &'a [StorageGetResolvedItem],
+}
+
+impl StorageGetResolvedArgs<'_> {
+    /// The items as Lore's own type, kept out of [`Self::to_raw`] for the same
+    /// reason as [`FileInfoArgs::raw_paths`].
+    fn raw_items(self) -> Vec<lore_storage_get_resolved_item_t> {
+        self.items
+            .iter()
+            .copied()
+            .map(StorageGetResolvedItem::to_raw)
+            .collect()
+    }
+
+    /// The raw struct to hand to Lore, borrowing `items`.
+    fn to_raw(
+        self,
+        items: &[lore_storage_get_resolved_item_t],
+    ) -> lore_storage_get_resolved_args_t {
+        lore_storage_get_resolved_args_t {
+            handle: self.handle,
+            items: lore_storage_get_resolved_item_array_t {
+                ptr: if items.is_empty() {
+                    std::ptr::null()
+                } else {
+                    items.as_ptr()
+                },
+                count: items.len(),
+            },
+        }
+    }
+}
+
+/// Resolves mutable keys and reads the content they name, in one round trip:
+/// `storage_mutable_load` followed by `storage_get`, performed server-side.
+/// The keys are read under `LORE_KEY_TYPE_RESOLVE`, which is what
+/// [`storage_put_resolved`] publishes.
+///
+/// The `address` on every event is the *resolved* address, so a caller can
+/// learn the key-to-hash mapping from the event stream. A key with no
+/// mapping, or one naming absent content, reports
+/// [`ErrorCode::AddressNotFound`](crate::ErrorCode::AddressNotFound) on the
+/// item's [`Event::StorageGetItemComplete`], which then carries a zero
+/// address.
+///
+/// Otherwise the same event sequence as [`storage_get`]:
+/// [`Event::StorageGetHeader`], then the content as one or more
+/// [`Event::StorageGetData`], then [`Event::StorageGetItemComplete`].
+///
+/// This corresponds to `lore_sys::Lore::lore_storage_get_resolved`.
+pub fn storage_get_resolved(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: StorageGetResolvedArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let items = args.raw_items();
+
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `items`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_storage_get_resolved,
             command,
             globals,
             &args.to_raw(&items),

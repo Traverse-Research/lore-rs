@@ -51,12 +51,14 @@ macro_rules! identifier {
                 format!("{self:.8}")
             }
 
+            // One of `from_raw`/`to_raw` is unused for an identifier only
+            // ever handed out (a branch id) or only ever supplied (a resolve
+            // key), which the macro cannot know per instantiation.
+            #[allow(dead_code)]
             pub(crate) const fn from_raw(raw: $raw) -> Self {
                 Self(raw.data)
             }
 
-            // Unused for the identifiers Lore only ever hands out, such as
-            // a branch id, which the macro cannot know per instantiation.
             #[allow(dead_code)]
             pub(crate) const fn to_raw(self) -> $raw {
                 $raw { data: self.0 }
@@ -96,6 +98,17 @@ identifier!(
     /// A revision, by the hash of its content. [`Self::ZERO`] is Lore's "no
     /// revision" — what a branch with nothing on it reports as its tip.
     Revision,
+    lore_hash_t,
+    32
+);
+
+identifier!(
+    /// A mutable key naming content for another system — an asset id, a
+    /// build id, anything that already hashes to 32 bytes. Read and
+    /// published only under `LORE_KEY_TYPE_RESOLVE`, by
+    /// [`Store::get_resolved`](crate::Store::get_resolved) and
+    /// [`Store::put_resolved`](crate::Store::put_resolved).
+    ResolveKey,
     lore_hash_t,
     32
 );
