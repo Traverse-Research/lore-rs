@@ -1,19 +1,20 @@
 use crate::LoreStringExt;
 use lore_sys::{
     lore_address_t, lore_branch_id_t, lore_context_t, lore_error_code_t, lore_event_t,
-    lore_event_tag_t, lore_file_action_t, lore_hash_t, lore_log_level_t, lore_node_id_t,
-    lore_repository_id_t, LORE_EVENT_AUTH_IDENTITY, LORE_EVENT_AUTH_URL, LORE_EVENT_AUTH_USER_INFO,
-    LORE_EVENT_AUTH_USER_TOKEN, LORE_EVENT_BRANCH_INFO, LORE_EVENT_COMPLETE, LORE_EVENT_END,
-    LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_FILE,
-    LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_DATA,
-    LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_FILE,
-    LORE_EVENT_REPOSITORY_STATUS_REVISION, LORE_EVENT_REVISION_COMMIT_REVISION,
-    LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_TREE_CHILD,
+    lore_event_tag_t, lore_file_action_t, lore_fragment_t, lore_hash_t, lore_log_level_t,
+    lore_node_id_t, lore_repository_id_t, LORE_EVENT_AUTH_IDENTITY, LORE_EVENT_AUTH_URL,
+    LORE_EVENT_AUTH_USER_INFO, LORE_EVENT_AUTH_USER_TOKEN, LORE_EVENT_BRANCH_INFO,
+    LORE_EVENT_COMPLETE, LORE_EVENT_END, LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO,
+    LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG,
+    LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_STATE_DUMP_NODE,
+    LORE_EVENT_REPOSITORY_STATUS_FILE, LORE_EVENT_REPOSITORY_STATUS_REVISION,
+    LORE_EVENT_REVISION_COMMIT_REVISION, LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_TREE_CHILD,
     LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE, LORE_EVENT_REVISION_TREE_INFO,
     LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN, LORE_EVENT_REVISION_TREE_LOADED,
     LORE_EVENT_REVISION_TREE_NODE_INFO, LORE_EVENT_REVISION_TREE_NODE_PATH,
     LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE, LORE_EVENT_STORAGE_GET_DATA,
-    LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
+    LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE,
+    LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
     LORE_EVENT_STORAGE_PUT_ITEM_COMPLETE, LORE_LOG_LEVEL_ERROR, LORE_LOG_LEVEL_INFO,
     LORE_LOG_LEVEL_TRACE, LORE_LOG_LEVEL_WARN,
 };
@@ -262,6 +263,16 @@ pub enum Event<'a> {
         address: lore_address_t,
         error_code: lore_error_code_t,
     },
+    /// The terminal event of a metadata lookup, success or failure. Carries
+    /// no bytes, and no other event precedes it.
+    StorageGetMetadataItemComplete {
+        id: u64,
+        /// The item's address on success, zero on failure.
+        address: lore_address_t,
+        /// What the store holds for the address; zeroed on failure.
+        fragment: lore_fragment_t,
+        error_code: lore_error_code_t,
+    },
     /// Event kinds without a mapped variant (yet), add them here as needed
     Other {
         tag: lore_event_tag_t,
@@ -468,6 +479,14 @@ impl<'a> Event<'a> {
                     address: data.storage_get_item_complete.address,
                     error_code: data.storage_get_item_complete.error_code,
                 },
+                LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE => {
+                    Self::StorageGetMetadataItemComplete {
+                        id: data.storage_get_metadata_item_complete.id,
+                        address: data.storage_get_metadata_item_complete.address,
+                        fragment: data.storage_get_metadata_item_complete.fragment,
+                        error_code: data.storage_get_metadata_item_complete.error_code,
+                    }
+                }
                 _ => Self::Other { tag },
             })
         }
