@@ -6,15 +6,16 @@
 use crate::string::{raw_str, raw_str_array};
 use crate::{Event, GlobalArgs, LoreError};
 use lore_sys::{
-    lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t,
-    lore_event_callback_config_t, lore_event_t, lore_event_tag_t, lore_file_info_args_t,
-    lore_global_args_t, lore_partition_t, lore_repository_info_args_t,
+    lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t, lore_bytes_t,
+    lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
+    lore_file_info_args_t, lore_global_args_t, lore_partition_t, lore_repository_info_args_t,
     lore_repository_status_args_t, lore_revision_info_args_t, lore_revision_tree_close_args_t,
     lore_revision_tree_info_args_t, lore_revision_tree_list_children_args_t,
     lore_revision_tree_load_args_t, lore_revision_tree_node_info_args_t,
     lore_revision_tree_node_path_args_t, lore_revision_tree_resolve_path_args_t,
     lore_revision_tree_t, lore_storage_close_args_t, lore_storage_get_args_t,
     lore_storage_get_item_array_t, lore_storage_get_item_t, lore_storage_open_args_t,
+    lore_storage_put_args_t, lore_storage_put_item_array_t, lore_storage_put_item_t,
     lore_storage_remote_config_t, lore_store_t, lore_string_t, LORE_EVENT_COMPLETE,
     LORE_EVENT_ERROR,
 };
@@ -540,6 +541,130 @@ pub fn storage_open(
             command,
             globals,
             &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// One buffer for [`storage_put`] to store.
+///
+/// Lore borrows `data` rather than copying it, and requires the bytes to stay
+/// valid until the item's completion fires. The lifetime is what holds that:
+/// [`storage_put`] does not return before its last event.
+#[derive(Debug, Clone, Copy)]
+pub struct StoragePutItem<'a> {
+    /// Caller-chosen id, echoed back on the item's
+    /// [`Event::StoragePutItemComplete`]. What tells the completions of one
+    /// item from another's when a call writes several.
+    pub id: u64,
+    /// Partition to write to, which is a repository id. The zero partition is
+    /// rejected, as this item's own outcome rather than the call's.
+    pub partition: lore_partition_t,
+    /// Which file the bytes belong to, stored next to the content hash in the
+    /// resulting address.
+    pub context: lore_context_t,
+    /// The bytes to hash and store. Empty stores nothing and completes with
+    /// the zero hash.
+    pub data: &'a [u8],
+    /// Also write the content to the server; ignored without a remote.
+    pub remote_write: bool,
+    /// Tag the fragments so every later remote read of them is cached
+    /// locally, whatever the reader asked for.
+    pub local_cache: bool,
+    /// Cap on the leaf fragment size a large buffer is split into; zero lets
+    /// Lore choose.
+    pub fixed_size_chunk: u64,
+}
+
+impl StoragePutItem<'_> {
+    /// The raw struct to hand to Lore, borrowing the same bytes `self` does.
+    fn to_raw(self) -> lore_storage_put_item_t {
+        lore_storage_put_item_t {
+            id: self.id,
+            partition: self.partition,
+            context: self.context,
+            data: lore_bytes_t {
+                // An empty slice's pointer is dangling, which is not what "no
+                // bytes" should reach Lore as.
+                ptr: if self.data.is_empty() {
+                    std::ptr::null()
+                } else {
+                    self.data.as_ptr().cast()
+                },
+                len: self.data.len(),
+            },
+            remote_write: u8::from(self.remote_write),
+            local_cache: u8::from(self.local_cache),
+            fixed_size_chunk: self.fixed_size_chunk,
+        }
+    }
+}
+
+/// Arguments for [`storage_put`].
+#[derive(Debug, Clone, Copy)]
+pub struct StoragePutArgs<'a> {
+    /// Handle from [`storage_open`].
+    pub handle: lore_store_t,
+    /// Buffers to store. Each runs independently and completes on its own,
+    /// carrying the item's `id`.
+    pub items: &'a [StoragePutItem<'a>],
+}
+
+impl StoragePutArgs<'_> {
+    /// The items as Lore's own type, kept out of [`Self::to_raw`] for the same
+    /// reason as [`FileInfoArgs::raw_paths`].
+    fn raw_items(self) -> Vec<lore_storage_put_item_t> {
+        self.items
+            .iter()
+            .copied()
+            .map(StoragePutItem::to_raw)
+            .collect()
+    }
+
+    /// The raw struct to hand to Lore, borrowing `items`.
+    fn to_raw(self, items: &[lore_storage_put_item_t]) -> lore_storage_put_args_t {
+        lore_storage_put_args_t {
+            handle: self.handle,
+            items: lore_storage_put_item_array_t {
+                ptr: if items.is_empty() {
+                    std::ptr::null()
+                } else {
+                    items.as_ptr()
+                },
+                count: items.len(),
+            },
+        }
+    }
+}
+
+/// Stores content-addressed buffers.
+///
+/// Each item is hashed and written independently and emits one
+/// [`Event::StoragePutItemComplete`] carrying the address its bytes landed at
+/// and its own outcome, which is an error code and nothing more.
+///
+/// Any failed item makes the whole call return non-zero, with a message that
+/// counts the failures rather than naming one.
+///
+/// This corresponds to `lore_sys::Lore::lore_storage_put`.
+pub fn storage_put(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: StoragePutArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let items = args.raw_items();
+
+    // SAFETY: the entry point is the loaded library's own; the raw struct
+    // borrows from `items`, and those borrow the caller's buffers. Both live
+    // across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_storage_put,
+            command,
+            globals,
+            &args.to_raw(&items),
             callback,
         )
     }

@@ -3,9 +3,11 @@ use std::io::Write;
 use lore_sys::{lore_error_code_t, lore_storage_close_args_t, lore_store_t};
 
 use crate::{
-    Address, Event, GlobalArgs, Lore, LoreError, RepositoryId, Revision, RevisionTree,
-    StorageGetArgs, StorageGetItem, StorageOpenArgs,
+    Address, ContextId, ErrorCode, Event, GlobalArgs, Lore, LoreError, RepositoryId, Revision,
+    RevisionTree, StorageGetArgs, StorageGetItem, StorageOpenArgs, StoragePutArgs, StoragePutItem,
 };
+
+const PUT: &str = "storage::put";
 
 /// Soft caps on the local store. Zero for either selects Lore's default; zero
 /// for **both** leaves the evictor and compactor unspawned, so the store grows
@@ -48,11 +50,40 @@ pub struct StoreOptions {
     pub local_cache: bool,
 }
 
+/// What Lore should do with one buffer beyond storing it. All-zero is Lore's
+/// own default.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub struct PutOptions {
+    /// Also write the content to the server. Ignored on a handle without a
+    /// `remote_url`, so a put that succeeded offline is durable here only.
+    pub remote_write: bool,
+    /// Tag the fragments so every later remote read of them is kept locally,
+    /// whatever the reader asked for.
+    pub local_cache: bool,
+    /// Cap on the leaf fragment size a large buffer is split into; zero lets
+    /// Lore choose. Ignored below Lore's fragmentation threshold.
+    pub fixed_size_chunk: u64,
+}
+
+/// One buffer for [`Store::put`] to store.
+#[derive(Debug, Default, Clone, Copy)]
+pub struct PutItem<'a> {
+    /// The partition to write to, which is what a later read of it is
+    /// authorized against; see [`Store::get`]. [`RepositoryId::ZERO`] is
+    /// rejected.
+    pub repository: RepositoryId,
+    /// Which file the bytes belong to, the context half of their [`Address`].
+    pub context: ContextId,
+    pub data: &'a [u8],
+    pub options: PutOptions,
+}
+
 /// An open content-addressed store, closed on drop.
 ///
 /// The handle is repository-agnostic: it is bound to a location and
-/// optionally a server, and every read names the repository it is about,
-/// because an [`Address`] alone does not. See [`Self::get`].
+/// optionally a server, and every read and write names the repository it is
+/// about, because an [`Address`] alone does not. See [`Self::get`] and
+/// [`Self::put`].
 ///
 /// `Send + Sync`; Lore allows concurrent operations on one handle.
 pub struct Store {
@@ -161,6 +192,96 @@ impl Store {
         revision: Revision,
     ) -> Result<RevisionTree, LoreError> {
         crate::revision_tree::load(self, repository, revision)
+    }
+
+    /// Stores one buffer, and returns the address it landed at: the hash of
+    /// the bytes together with [`PutItem::context`]. An empty buffer stores
+    /// nothing and answers with the zero hash.
+    ///
+    /// **A put creates no revision-tree entry.** Nothing in the repository
+    /// points at the address afterwards, so the caller has to keep it — in a
+    /// mutable key, an index of its own, or a commit — or the content is
+    /// written and unreachable.
+    ///
+    /// Nothing is flushed by the time this returns: closing a store only
+    /// *spawns* its flush, so a process that writes and exits can lose what
+    /// it wrote. See [`Lore::shutdown`](crate::Lore::shutdown).
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_storage_put` with one item.
+    pub fn put(&self, item: PutItem<'_>) -> Result<Address, LoreError> {
+        self.put_many(&[item])?
+            .into_iter()
+            .next()
+            .ok_or(LoreError::MissingEvent {
+                command: PUT,
+                expected: "storage_put_item_complete",
+            })?
+    }
+
+    /// Stores several buffers in one call, which Lore hashes and writes
+    /// concurrently: one FFI round trip rather than one per object. The
+    /// results come back in the order the items were given.
+    ///
+    /// **One failed item does not fail the call.** The outer error is left
+    /// for what goes wrong with the call as a whole, and what one item alone
+    /// can fail at is inside, so a batch of a thousand with one bad entry
+    /// still returns nine hundred and ninety-nine addresses.
+    ///
+    /// Same rules as [`Self::put`] otherwise.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_storage_put`.
+    pub fn put_many(
+        &self,
+        items: &[PutItem<'_>],
+    ) -> Result<Vec<Result<Address, LoreError>>, LoreError> {
+        let raw_items = items
+            .iter()
+            .enumerate()
+            .map(|(index, item)| StoragePutItem {
+                // The position is the id, so a completion lands back in its
+                // own item's slot however Lore interleaves them.
+                id: index as u64,
+                partition: item.repository.to_raw(),
+                context: item.context.to_raw(),
+                data: item.data,
+                remote_write: item.options.remote_write,
+                local_cache: item.options.local_cache,
+                fixed_size_chunk: item.options.fixed_size_chunk,
+            })
+            .collect::<Vec<_>>();
+
+        let mut completions: Vec<Option<(Address, lore_error_code_t)>> = vec![None; items.len()];
+
+        let result = crate::call::storage_put(
+            self.lore,
+            PUT,
+            &self.globals,
+            StoragePutArgs {
+                handle: self.handle,
+                items: &raw_items,
+            },
+            |event| {
+                crate::log_event(&event);
+
+                if let Ok(Event::StoragePutItemComplete {
+                    id,
+                    address,
+                    error_code,
+                }) = event
+                {
+                    // An id from outside the batch leaves the item it was
+                    // meant for unreported, which fails the batch below.
+                    if let Some(slot) = usize::try_from(id)
+                        .ok()
+                        .and_then(|index| completions.get_mut(index))
+                    {
+                        *slot = Some((Address::from_raw(address), error_code));
+                    }
+                }
+            },
+        );
+
+        put_outcomes(completions, result)
     }
 
     /// Reads one address in full, fetching from the server whatever this store
@@ -361,6 +482,46 @@ impl Store {
             local_cache: self.local_cache,
         }
     }
+}
+
+/// Folds what a put reported into one result per item, in the order the items
+/// were given. Kept out of the event callback, which cannot fail the call.
+fn put_outcomes(
+    completions: Vec<Option<(Address, lore_error_code_t)>>,
+    result: Result<(), LoreError>,
+) -> Result<Vec<Result<Address, LoreError>>, LoreError> {
+    // Nothing was said about a missing item, so whatever went wrong with the
+    // call stands for the batch.
+    if completions.iter().any(Option::is_none) {
+        result?;
+        return Err(LoreError::MissingEvent {
+            command: PUT,
+            expected: "storage_put_item_complete",
+        });
+    }
+
+    let outcomes: Vec<Result<Address, LoreError>> = completions
+        .into_iter()
+        .flatten()
+        .map(|(address, code)| match ErrorCode::from_raw(code) {
+            None => Ok(address),
+            // A put's messages belong to the call and only count its failed
+            // items, so an item's code is all there is to report.
+            Some(code) => Err(LoreError::Failed {
+                command: PUT,
+                code,
+                messages: Vec::new(),
+            }),
+        })
+        .collect();
+
+    // A call failure the items already account for gives way to them. One no
+    // item accounts for is all there is to report.
+    if outcomes.iter().all(Result::is_ok) {
+        result?;
+    }
+
+    Ok(outcomes)
 }
 
 impl Drop for Store {

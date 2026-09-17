@@ -26,7 +26,7 @@ pub mod call;
 pub use call::{
     call_with_callback, AuthLoginWithTokenArgs, BranchInfoArgs, FileInfoArgs, RepositoryInfoArgs,
     RepositoryStatusArgs, RevisionInfoArgs, RevisionTreeResolvePathArgs, StorageGetArgs,
-    StorageGetItem, StorageOpenArgs,
+    StorageGetItem, StorageOpenArgs, StoragePutArgs, StoragePutItem,
 };
 
 mod string;
@@ -54,7 +54,7 @@ mod repository;
 pub use repository::{BranchInfo, Repository, RepositoryInfo, RevisionInfo};
 
 mod store;
-pub use store::{CacheTargets, Store, StoreLocation, StoreOptions};
+pub use store::{CacheTargets, PutItem, PutOptions, Store, StoreLocation, StoreOptions};
 
 mod revision_tree;
 pub use revision_tree::{Child, Node, RevisionTree, TreeInfo};
