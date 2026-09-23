@@ -6,13 +6,16 @@ use lore_sys::{
 };
 
 use crate::{
-    Address, ContextId, ErrorCode, Event, GlobalArgs, Lore, LoreError, RepositoryId, Revision,
-    RevisionTree, StorageGetArgs, StorageGetItem, StorageGetMetadataArgs, StorageGetMetadataItem,
-    StorageOpenArgs, StoragePutArgs, StoragePutItem,
+    Address, ContextId, ErrorCode, Event, GlobalArgs, Lore, LoreError, RepositoryId, ResolveKey,
+    Revision, RevisionTree, StorageGetArgs, StorageGetItem, StorageGetMetadataArgs,
+    StorageGetMetadataItem, StorageGetResolvedArgs, StorageGetResolvedItem, StorageOpenArgs,
+    StoragePutArgs, StoragePutItem, StoragePutResolvedArgs, StoragePutResolvedItem,
 };
 
 const PUT: &str = "storage::put";
+const PUT_RESOLVED: &str = "storage::put_resolved";
 const METADATA: &str = "storage::get_metadata";
+const GET_RESOLVED: &str = "storage::get_resolved";
 const FLUSH: &str = "storage::flush";
 
 /// Soft caps on the local store. Zero for either selects Lore's default; zero
@@ -112,6 +115,51 @@ pub struct PutItem<'a> {
     pub context: ContextId,
     pub data: &'a [u8],
     pub options: PutOptions,
+}
+
+/// One buffer for [`Store::put_resolved`] to store and publish a key for.
+#[derive(Debug, Default, Clone, Copy)]
+pub struct PutResolvedItem<'a> {
+    /// The partition to write to, which is what a later
+    /// [`Store::get_resolved`] is authorized against.
+    /// [`RepositoryId::ZERO`] is rejected.
+    pub repository: RepositoryId,
+    /// The mutable key to publish the stored content under, always under
+    /// `LORE_KEY_TYPE_RESOLVE`. The zero key is rejected.
+    pub key: ResolveKey,
+    /// Which file the bytes belong to: the context half of the resulting
+    /// [`Address`], and the context [`Store::get_resolved`] must read `key`
+    /// at.
+    pub context: ContextId,
+    /// The bytes to hash, store and publish `key` for. Empty **removes**
+    /// `key`'s mapping instead of publishing one, reported back as the zero
+    /// address on [`PutResolvedOutcome::address`].
+    pub data: &'a [u8],
+    pub options: PutOptions,
+}
+
+/// What [`Store::put_resolved`] reported for the key it published.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct PutResolvedOutcome {
+    /// The content `key` now resolves to; the zero hash when
+    /// [`PutResolvedItem::data`] was empty.
+    pub address: Address,
+    /// Whether the local store holds the mapping.
+    pub stored_local: bool,
+    /// Whether the mapping reached the remote, or was already durable there.
+    /// Check this, not whether the call succeeded, to confirm the key is
+    /// visible to other clients: a remote write that fails still succeeds
+    /// here if the local write landed.
+    pub stored_remote: bool,
+}
+
+/// What resolving a mutable key answered: the address it resolved to,
+/// together with what the read produced.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Resolved<T> {
+    /// The address the key resolved to.
+    pub address: Address,
+    pub data: T,
 }
 
 /// An open content-addressed store, closed on drop.
@@ -331,6 +379,68 @@ impl Store {
         put_outcomes(completions, result)
     }
 
+    /// Stores one buffer and publishes a mutable key naming it, in one call:
+    /// [`Self::put`] followed by a mutable-store publish, fused server-side.
+    /// The mapping is written only once the content is stored, so `item.key`
+    /// never resolves to content that is not there — [`Self::get_resolved`]
+    /// reads it back.
+    ///
+    /// Publishing is last-writer-wins: two callers publishing the same key
+    /// concurrently both succeed, and it ends up naming whichever content was
+    /// published second, with no signal to the first publisher that it was
+    /// overwritten. Detecting a lost update needs [`Self::put`] followed by a
+    /// compare-and-swap instead, which this exists to avoid the round trip
+    /// for.
+    ///
+    /// Same durability rules as [`Self::put`]: nothing is flushed by the time
+    /// this returns.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_storage_put_resolved` with
+    /// one item.
+    pub fn put_resolved(&self, item: PutResolvedItem<'_>) -> Result<PutResolvedOutcome, LoreError> {
+        let mut completion: Option<(Address, lore_error_code_t, bool, bool)> = None;
+
+        let result = crate::call::storage_put_resolved(
+            self.lore,
+            PUT_RESOLVED,
+            &self.globals,
+            StoragePutResolvedArgs {
+                handle: self.handle,
+                items: &[StoragePutResolvedItem {
+                    id: 0,
+                    partition: item.repository.to_raw(),
+                    key: item.key.to_raw(),
+                    context: item.context.to_raw(),
+                    data: item.data,
+                    remote_write: item.options.remote_write,
+                    local_cache: item.options.local_cache,
+                    fixed_size_chunk: item.options.fixed_size_chunk,
+                }],
+            },
+            |event| {
+                crate::log_event(&event);
+
+                if let Ok(Event::StoragePutItemComplete {
+                    address,
+                    error_code,
+                    stored_local,
+                    stored_remote,
+                    ..
+                }) = event
+                {
+                    completion = Some((
+                        Address::from_raw(address),
+                        error_code,
+                        stored_local,
+                        stored_remote,
+                    ));
+                }
+            },
+        );
+
+        put_resolved_outcome(completion, result)
+    }
+
     /// What this store holds for `address`, without fetching its bytes, or
     /// [`None`] when neither this store nor the server has it.
     ///
@@ -527,6 +637,118 @@ impl Store {
         Ok(data)
     }
 
+    /// Resolves a mutable key and reads the content it names, in one call:
+    /// [`Self::get`] without first having to learn the address `key` resolves
+    /// to. `key` is read under `LORE_KEY_TYPE_RESOLVE`, which is what
+    /// [`Self::put_resolved`] publishes.
+    ///
+    /// The address `key` resolved to comes back alongside the bytes — this is
+    /// the only way to learn the key-to-hash mapping, since Lore does not
+    /// otherwise expose it. Same `repository`, buffering and size-check rules
+    /// as [`Self::get`]. A key with no mapping, or one naming absent content,
+    /// is [`LoreError::Failed`] with
+    /// [`ErrorCode::AddressNotFound`](crate::ErrorCode::AddressNotFound),
+    /// same as [`Self::get`].
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_storage_get_resolved`.
+    pub fn get_resolved(
+        &self,
+        repository: RepositoryId,
+        key: ResolveKey,
+        context: ContextId,
+    ) -> Result<Resolved<Vec<u8>>, LoreError> {
+        let mut data: Option<Vec<u8>> = None;
+        // See `Self::get` for what these track.
+        let mut covered = 0u64;
+        let mut end = 0u64;
+        let mut overflow = None;
+        let mut resolved: Option<Address> = None;
+        let mut outcome: Option<lore_error_code_t> = None;
+
+        let result = crate::call::storage_get_resolved(
+            self.lore,
+            GET_RESOLVED,
+            &self.globals,
+            StorageGetResolvedArgs {
+                handle: self.handle,
+                items: &[StorageGetResolvedItem {
+                    id: 0,
+                    partition: repository.to_raw(),
+                    key: key.to_raw(),
+                    context: context.to_raw(),
+                    streaming: false,
+                    local_cache: self.local_cache,
+                }],
+            },
+            |event| {
+                crate::log_event(&event);
+
+                match event {
+                    Ok(Event::StorageGetHeader { size_content, .. }) => {
+                        data = Some(vec![0u8; size_content as usize]);
+                    }
+                    Ok(Event::StorageGetData { offset, bytes, .. }) => {
+                        let length = bytes.len() as u64;
+                        let Some(buffer) = data.as_mut() else {
+                            overflow = Some(offset.saturating_add(length));
+                            return;
+                        };
+                        let size = buffer.len() as u64;
+                        let Some(range_end) = offset
+                            .checked_add(length)
+                            .filter(|range_end| *range_end <= size)
+                        else {
+                            overflow = Some(offset.saturating_add(length));
+                            return;
+                        };
+
+                        buffer[offset as usize..range_end as usize].copy_from_slice(bytes);
+                        covered += length;
+                        end = end.max(range_end);
+                    }
+                    Ok(Event::StorageGetItemComplete {
+                        address,
+                        error_code,
+                        ..
+                    }) => {
+                        resolved = Some(Address::from_raw(address));
+                        outcome = Some(error_code);
+                    }
+                    _ => {}
+                }
+            },
+        );
+        LoreError::resolve(GET_RESOLVED, result, outcome)?;
+
+        let data = data.ok_or(LoreError::MissingEvent {
+            command: GET_RESOLVED,
+            expected: "storage_get_header",
+        })?;
+        let size = data.len() as u64;
+
+        if let Some(over) = overflow {
+            return Err(LoreError::SizeMismatch {
+                command: GET_RESOLVED,
+                expected: size,
+                covered: over,
+            });
+        }
+        if covered != size || end != size {
+            return Err(LoreError::SizeMismatch {
+                command: GET_RESOLVED,
+                expected: size,
+                covered: covered.min(end),
+            });
+        }
+
+        let address = resolved.ok_or(LoreError::MissingEvent {
+            command: GET_RESOLVED,
+            expected: "storage_get_item_complete",
+        })?;
+
+        Ok(Resolved { address, data })
+    }
+
     /// Reads one address into `sink`, one Lore fragment at a time, and
     /// returns how many bytes that was. Peak memory follows the fragment size
     /// rather than the content size, which is the point for the large files
@@ -696,6 +918,29 @@ fn metadata_outcome(
     LoreError::resolve(METADATA, result, Some(code))?;
 
     Ok(Some(FragmentInfo::from_raw(fragment)))
+}
+
+/// Turns what a resolved put reported into its outcome, or fails the call
+/// when nothing was said about the item.
+fn put_resolved_outcome(
+    completion: Option<(Address, lore_error_code_t, bool, bool)>,
+    result: Result<(), LoreError>,
+) -> Result<PutResolvedOutcome, LoreError> {
+    let Some((address, code, stored_local, stored_remote)) = completion else {
+        result?;
+        return Err(LoreError::MissingEvent {
+            command: PUT_RESOLVED,
+            expected: "storage_put_item_complete",
+        });
+    };
+
+    LoreError::resolve(PUT_RESOLVED, result, Some(code))?;
+
+    Ok(PutResolvedOutcome {
+        address,
+        stored_local,
+        stored_remote,
+    })
 }
 
 impl Drop for Store {
