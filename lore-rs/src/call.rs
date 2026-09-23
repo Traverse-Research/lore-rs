@@ -9,17 +9,18 @@ use lore_sys::{
     lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t, lore_bytes_mut_t,
     lore_bytes_t, lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
     lore_file_info_args_t, lore_global_args_t, lore_hash_t, lore_partition_t,
-    lore_repository_info_args_t, lore_repository_status_args_t, lore_revision_info_args_t,
-    lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
-    lore_revision_tree_list_children_args_t, lore_revision_tree_load_args_t,
-    lore_revision_tree_node_info_args_t, lore_revision_tree_node_path_args_t,
-    lore_revision_tree_resolve_path_args_t, lore_revision_tree_t, lore_storage_close_args_t,
-    lore_storage_flush_args_t, lore_storage_get_args_t, lore_storage_get_item_array_t,
-    lore_storage_get_item_t, lore_storage_get_metadata_args_t,
-    lore_storage_get_metadata_item_array_t, lore_storage_get_metadata_item_t,
-    lore_storage_get_resolved_args_t, lore_storage_get_resolved_item_array_t,
-    lore_storage_get_resolved_item_t, lore_storage_open_args_t, lore_storage_put_args_t,
-    lore_storage_put_item_array_t, lore_storage_put_item_t, lore_storage_put_resolved_args_t,
+    lore_repository_info_args_t, lore_repository_instance_list_args_t,
+    lore_repository_status_args_t, lore_revision_info_args_t, lore_revision_tree_close_args_t,
+    lore_revision_tree_info_args_t, lore_revision_tree_list_children_args_t,
+    lore_revision_tree_load_args_t, lore_revision_tree_node_info_args_t,
+    lore_revision_tree_node_path_args_t, lore_revision_tree_resolve_path_args_t,
+    lore_revision_tree_t, lore_storage_close_args_t, lore_storage_flush_args_t,
+    lore_storage_get_args_t, lore_storage_get_item_array_t, lore_storage_get_item_t,
+    lore_storage_get_metadata_args_t, lore_storage_get_metadata_item_array_t,
+    lore_storage_get_metadata_item_t, lore_storage_get_resolved_args_t,
+    lore_storage_get_resolved_item_array_t, lore_storage_get_resolved_item_t,
+    lore_storage_open_args_t, lore_storage_put_args_t, lore_storage_put_item_array_t,
+    lore_storage_put_item_t, lore_storage_put_resolved_args_t,
     lore_storage_put_resolved_item_array_t, lore_storage_put_resolved_item_t,
     lore_storage_remote_config_t, lore_store_t, lore_string_t, LORE_EVENT_COMPLETE,
     LORE_EVENT_ERROR,
@@ -1266,6 +1267,37 @@ pub fn repository_status(
             command,
             globals,
             &args.to_raw(&paths),
+            callback,
+        )
+    }
+}
+
+/// Lists the checkouts registered for a repository, one
+/// [`Event::RepositoryInstance`] each, live ones first and then stale ones.
+///
+/// Opens the repository at `globals.repository_path` read-only to do so, and
+/// that open is what gives a checkout its `.lore/instance` when it has none:
+/// recovered from the local stores if they still know this path, generated
+/// otherwise. Nothing past the open needs branch state, so unlike
+/// [`repository_status`] this succeeds on a `.lore` holding only `id` and
+/// `config.toml`.
+///
+/// This corresponds to `lore_sys::Lore::lore_repository_instance_list`.
+pub fn repository_instance_list(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let args = lore_repository_instance_list_args_t { _unused: 0 };
+    // SAFETY: the entry point is the loaded library's own, and the arguments
+    // hold no pointers.
+    unsafe {
+        call_with_callback(
+            lore.lore_repository_instance_list,
+            command,
+            globals,
+            &args,
             callback,
         )
     }

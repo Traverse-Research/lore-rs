@@ -1,14 +1,15 @@
 use crate::LoreStringExt;
 use lore_sys::{
     lore_address_t, lore_branch_id_t, lore_context_t, lore_error_code_t, lore_event_t,
-    lore_event_tag_t, lore_file_action_t, lore_fragment_t, lore_hash_t, lore_log_level_t,
-    lore_node_id_t, lore_repository_id_t, LORE_EVENT_AUTH_IDENTITY, LORE_EVENT_AUTH_URL,
-    LORE_EVENT_AUTH_USER_INFO, LORE_EVENT_AUTH_USER_TOKEN, LORE_EVENT_BRANCH_INFO,
-    LORE_EVENT_COMPLETE, LORE_EVENT_END, LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO,
-    LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG,
-    LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_STATE_DUMP_NODE,
-    LORE_EVENT_REPOSITORY_STATUS_FILE, LORE_EVENT_REPOSITORY_STATUS_REVISION,
-    LORE_EVENT_REVISION_COMMIT_REVISION, LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_TREE_CHILD,
+    lore_event_tag_t, lore_file_action_t, lore_fragment_t, lore_hash_t, lore_instance_id_t,
+    lore_log_level_t, lore_node_id_t, lore_repository_id_t, LORE_EVENT_AUTH_IDENTITY,
+    LORE_EVENT_AUTH_URL, LORE_EVENT_AUTH_USER_INFO, LORE_EVENT_AUTH_USER_TOKEN,
+    LORE_EVENT_BRANCH_INFO, LORE_EVENT_COMPLETE, LORE_EVENT_END, LORE_EVENT_ERROR,
+    LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG,
+    LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_INSTANCE,
+    LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_FILE,
+    LORE_EVENT_REPOSITORY_STATUS_REVISION, LORE_EVENT_REVISION_COMMIT_REVISION,
+    LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_TREE_CHILD,
     LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE, LORE_EVENT_REVISION_TREE_INFO,
     LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN, LORE_EVENT_REVISION_TREE_LOADED,
     LORE_EVENT_REVISION_TREE_NODE_INFO, LORE_EVENT_REVISION_TREE_NODE_PATH,
@@ -140,6 +141,18 @@ pub enum Event<'a> {
         creator: &'a str,
         /// **Milliseconds** since the Unix epoch.
         created: u64,
+    },
+    /// One registered checkout of the repository, from `instance_list`.
+    RepositoryInstance {
+        instance_id: lore_instance_id_t,
+        path: &'a str,
+        /// The branch the checkout is on; empty when it has none.
+        branch_name: &'a str,
+        branch: lore_branch_id_t,
+        revision: lore_hash_t,
+        /// Zero for a live checkout, otherwise why the registration no longer
+        /// describes one; see [`InstanceStaleness`](crate::InstanceStaleness).
+        stale: u8,
     },
     RepositoryStatusRevision {
         branch_name: &'a str,
@@ -372,6 +385,14 @@ impl<'a> Event<'a> {
                     default_branch_name: data.repository_data.default_branch_name.try_to_str()?,
                     creator: data.repository_data.creator.try_to_str()?,
                     created: data.repository_data.created,
+                },
+                LORE_EVENT_REPOSITORY_INSTANCE => Self::RepositoryInstance {
+                    instance_id: data.repository_instance.instance_id,
+                    path: data.repository_instance.path.try_to_str()?,
+                    branch_name: data.repository_instance.branch_name.try_to_str()?,
+                    branch: data.repository_instance.branch,
+                    revision: data.repository_instance.revision,
+                    stale: data.repository_instance.stale,
                 },
                 LORE_EVENT_REPOSITORY_STATUS_REVISION => Self::RepositoryStatusRevision {
                     branch_name: data.repository_status_revision.branch_name.try_to_str()?,
