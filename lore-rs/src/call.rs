@@ -6,19 +6,23 @@
 use crate::string::{raw_str, raw_str_array};
 use crate::{Event, GlobalArgs, LoreError};
 use lore_sys::{
-    lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t, lore_bytes_t,
-    lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
-    lore_file_info_args_t, lore_global_args_t, lore_partition_t, lore_repository_info_args_t,
-    lore_repository_status_args_t, lore_revision_info_args_t, lore_revision_tree_close_args_t,
-    lore_revision_tree_info_args_t, lore_revision_tree_list_children_args_t,
-    lore_revision_tree_load_args_t, lore_revision_tree_node_info_args_t,
-    lore_revision_tree_node_path_args_t, lore_revision_tree_resolve_path_args_t,
-    lore_revision_tree_t, lore_storage_close_args_t, lore_storage_flush_args_t,
-    lore_storage_get_args_t, lore_storage_get_item_array_t, lore_storage_get_item_t,
-    lore_storage_get_metadata_args_t, lore_storage_get_metadata_item_array_t,
-    lore_storage_get_metadata_item_t, lore_storage_open_args_t, lore_storage_put_args_t,
-    lore_storage_put_item_array_t, lore_storage_put_item_t, lore_storage_remote_config_t,
-    lore_store_t, lore_string_t, LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
+    lore_address_t, lore_auth_login_with_token_args_t, lore_branch_archive_args_t,
+    lore_branch_create_args_t, lore_branch_info_args_t, lore_branch_list_args_t,
+    lore_branch_push_args_t, lore_branch_switch_args_t, lore_bytes_t, lore_context_t,
+    lore_event_callback_config_t, lore_event_t, lore_event_tag_t, lore_file_info_args_t,
+    lore_file_stage_args_t, lore_file_unstage_args_t, lore_global_args_t, lore_partition_t,
+    lore_repository_clone_args_t, lore_repository_info_args_t, lore_repository_status_args_t,
+    lore_revision_commit_args_t, lore_revision_history_args_t, lore_revision_info_args_t,
+    lore_revision_sync_args_t, lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
+    lore_revision_tree_list_children_args_t, lore_revision_tree_load_args_t,
+    lore_revision_tree_node_info_args_t, lore_revision_tree_node_path_args_t,
+    lore_revision_tree_resolve_path_args_t, lore_revision_tree_t, lore_storage_close_args_t,
+    lore_storage_flush_args_t, lore_storage_get_args_t, lore_storage_get_item_array_t,
+    lore_storage_get_item_t, lore_storage_get_metadata_args_t,
+    lore_storage_get_metadata_item_array_t, lore_storage_get_metadata_item_t,
+    lore_storage_open_args_t, lore_storage_put_args_t, lore_storage_put_item_array_t,
+    lore_storage_put_item_t, lore_storage_remote_config_t, lore_store_t, lore_string_t,
+    LORE_EVENT_COMPLETE, LORE_EVENT_ERROR,
 };
 
 /// Why a call failed, collected from the events that conclude it. Follows the
@@ -916,7 +920,8 @@ pub fn storage_flush(
 pub struct RepositoryStatusArgs<'a> {
     /// Paths to report on; empty reports on the whole repository.
     pub paths: &'a [&'a str],
-    /// Include the staged state in the report.
+    /// Include the staged state in the report. Without it only `scan`
+    /// reports files.
     pub staged: bool,
     /// Walk the filesystem under each path and refresh every dirty flag.
     pub scan: bool,
@@ -928,7 +933,8 @@ pub struct RepositoryStatusArgs<'a> {
     pub sync_point: bool,
     /// Report only [`Event::RepositoryStatusRevision`], no per-file events.
     pub revision_only: bool,
-    /// Report the number of changed files rather than the files themselves.
+    /// Also report the size of the tree, filtered by the view: the staged
+    /// state when there is one, the current revision otherwise.
     pub count: bool,
 }
 
@@ -1181,6 +1187,665 @@ pub fn revision_tree_close(
             command,
             globals,
             &args,
+            callback,
+        )
+    }
+}
+
+/// A slice of text as Lore's own string type, for the array fields. Kept apart
+/// from the `to_raw` that points at it, which borrows the result.
+fn raw_strs(strs: &[&str]) -> Vec<lore_string_t> {
+    strs.iter().copied().map(raw_str).collect()
+}
+
+/// Arguments for [`repository_clone`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct RepositoryCloneArgs<'a> {
+    /// The repository to clone, as `lore://host:port/name`.
+    pub repository_url: &'a str,
+    /// Revision to clone; empty is the tip of the default branch.
+    pub revision: &'a str,
+    /// Client-side view filter to use.
+    pub view: &'a str,
+    /// Clone without any files: only the `.lore` instance is written.
+    pub bare: bool,
+    /// Clone virtually, through a split-write filesystem.
+    pub virtually: bool,
+    /// Write files directly.
+    pub direct_file_write: bool,
+    /// Use direct file I/O instead of memory-mapping files.
+    pub direct_file_io: bool,
+    /// Layer module.
+    pub layer: &'a str,
+    /// Layer metadata key to link revisions with.
+    pub layer_metadata: &'a str,
+    /// File listing the files to prefetch.
+    pub prefetch: &'a str,
+    /// Use the shared store instead of a local immutable store.
+    pub use_shared_store: bool,
+    /// Path of the shared store; empty is the default.
+    pub shared_store_path: &'a str,
+    /// Clone without local repository tracking, with memory-only stores.
+    pub no_tracking: bool,
+    /// Root files for a dependency-based selective clone; empty clones every
+    /// file.
+    pub root_files: &'a [&'a str],
+    /// Tags to filter dependencies by during resolution.
+    pub dependency_tags: &'a [&'a str],
+    /// Follow transitive dependencies recursively.
+    pub dependency_recursive: bool,
+    /// Deepest dependency traversal; zero is unlimited.
+    pub dependency_depth_limit: u32,
+}
+
+impl RepositoryCloneArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the text `self` does and the
+    /// two arrays passed in.
+    fn to_raw(
+        self,
+        root_files: &[lore_string_t],
+        dependency_tags: &[lore_string_t],
+    ) -> lore_repository_clone_args_t {
+        lore_repository_clone_args_t {
+            repository_url: raw_str(self.repository_url),
+            revision: raw_str(self.revision),
+            view: raw_str(self.view),
+            bare: u8::from(self.bare),
+            virtually: u8::from(self.virtually),
+            direct_file_write: u8::from(self.direct_file_write),
+            direct_file_io: u8::from(self.direct_file_io),
+            layer: raw_str(self.layer),
+            layer_metadata: raw_str(self.layer_metadata),
+            prefetch: raw_str(self.prefetch),
+            use_shared_store: u8::from(self.use_shared_store),
+            shared_store_path: raw_str(self.shared_store_path),
+            no_tracking: u8::from(self.no_tracking),
+            root_files: raw_str_array(root_files),
+            dependency_tags: raw_str_array(dependency_tags),
+            dependency_recursive: u8::from(self.dependency_recursive),
+            dependency_depth_limit: self.dependency_depth_limit,
+        }
+    }
+}
+
+/// Clones a repository into `globals.repository_path`. A success ends with
+/// [`Event::RepositoryCloneEnd`], carrying the branch and revision that were
+/// checked out.
+///
+/// This corresponds to `lore_sys::Lore::lore_repository_clone`.
+pub fn repository_clone(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: RepositoryCloneArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let root_files = raw_strs(args.root_files);
+    let dependency_tags = raw_strs(args.dependency_tags);
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args` and the two arrays, which all live across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_repository_clone,
+            command,
+            globals,
+            &args.to_raw(&root_files, &dependency_tags),
+            callback,
+        )
+    }
+}
+
+/// What [`file_stage`] does with a path that differs from the tracked one only
+/// in case: `case_change` in `lore_file_stage_args_t`.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub enum CaseChange {
+    /// Refuse to stage it.
+    #[default]
+    Error,
+    /// Keep the tracked case, renaming the file on disk to match it.
+    Keep,
+    /// Stage the new case as a rename in the repository.
+    Rename,
+}
+
+impl CaseChange {
+    fn to_raw(self) -> u32 {
+        match self {
+            Self::Error => 0,
+            Self::Keep => 1,
+            Self::Rename => 2,
+        }
+    }
+}
+
+/// Arguments for [`file_stage`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct FileStageArgs<'a> {
+    /// Paths to stage. A relative path is taken against the process's working
+    /// directory, not `repository_path`; empty or `.` is the repository root.
+    /// A directory stages the files under it that Lore already tracks as
+    /// dirty, or every changed file with `scan` set.
+    pub paths: &'a [&'a str],
+    pub case_change: CaseChange,
+    /// Walk the filesystem under each directory path rather than relying on
+    /// the dirty flags Lore holds. No effect on file paths.
+    pub scan: bool,
+}
+
+impl FileStageArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing `paths`.
+    fn to_raw(self, paths: &[lore_string_t]) -> lore_file_stage_args_t {
+        lore_file_stage_args_t {
+            paths: raw_str_array(paths),
+            case_change: self.case_change.to_raw(),
+            scan: u8::from(self.scan),
+        }
+    }
+}
+
+/// Stages files for the next commit, reporting one [`Event::FileStageFile`]
+/// per file whose staged state changed, with the change Lore recorded for it.
+/// Lore works out the kind of change itself: a rename arrives as a delete and
+/// an add, and a move only for a change of case. A repository verb:
+/// `globals.repository_path` must hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_file_stage`.
+pub fn file_stage(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: FileStageArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let paths = raw_strs(args.paths);
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `paths` and `args`, which both live across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_file_stage,
+            command,
+            globals,
+            &args.to_raw(&paths),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`file_unstage`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct FileUnstageArgs<'a> {
+    /// Paths to take out of the staged state, resolved as
+    /// [`FileStageArgs::paths`] are.
+    pub paths: &'a [&'a str],
+}
+
+impl FileUnstageArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing `paths`.
+    fn to_raw(self, paths: &[lore_string_t]) -> lore_file_unstage_args_t {
+        lore_file_unstage_args_t {
+            paths: raw_str_array(paths),
+        }
+    }
+}
+
+/// Takes staged changes out of the next commit, reporting one
+/// [`Event::FileUnstageFile`] per file it unstages. The working tree is left
+/// as it is. A repository verb: `globals.repository_path` must hold a `.lore`
+/// directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_file_unstage`.
+pub fn file_unstage(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: FileUnstageArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let paths = raw_strs(args.paths);
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `paths` and `args`, which both live across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_file_unstage,
+            command,
+            globals,
+            &args.to_raw(&paths),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`revision_commit`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct RevisionCommitArgs<'a> {
+    pub message: &'a str,
+    /// Commit only this linked repository, by its mount path relative to the
+    /// repository root.
+    pub link: &'a str,
+    /// Linked repositories that get a message of their own, by mount path.
+    pub link_paths: &'a [&'a str],
+    /// The message for each of `link_paths`, in the same order.
+    pub link_messages: &'a [&'a str],
+    /// Commit only this layer, by its mount path relative to the repository
+    /// root.
+    pub layer: &'a str,
+    /// Layers that get a message of their own, by mount path.
+    pub layer_paths: &'a [&'a str],
+    /// The message for each of `layer_paths`, in the same order.
+    pub layer_messages: &'a [&'a str],
+    /// Emit write statistics per fragment during the commit.
+    pub stats: bool,
+}
+
+impl RevisionCommitArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the text `self` does and the
+    /// four arrays passed in.
+    fn to_raw(
+        self,
+        link_paths: &[lore_string_t],
+        link_messages: &[lore_string_t],
+        layer_paths: &[lore_string_t],
+        layer_messages: &[lore_string_t],
+    ) -> lore_revision_commit_args_t {
+        lore_revision_commit_args_t {
+            message: raw_str(self.message),
+            link: raw_str(self.link),
+            link_paths: raw_str_array(link_paths),
+            link_messages: raw_str_array(link_messages),
+            layer: raw_str(self.layer),
+            layer_paths: raw_str_array(layer_paths),
+            layer_messages: raw_str_array(layer_messages),
+            stats: u8::from(self.stats),
+        }
+    }
+}
+
+/// Commits the staged changes as new revisions on the branch the instance is
+/// on, one [`Event::RevisionCommitRevision`] per repository that got one: its
+/// linked repositories, the repository itself and its layers. With
+/// [`GlobalArgs::force`] and nothing staged it succeeds with none. The commit
+/// is local until [`branch_push`]. A repository verb: `globals.repository_path` must
+/// hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_commit`.
+pub fn revision_commit(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: RevisionCommitArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let link_paths = raw_strs(args.link_paths);
+    let link_messages = raw_strs(args.link_messages);
+    let layer_paths = raw_strs(args.layer_paths);
+    let layer_messages = raw_strs(args.layer_messages);
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args` and the four arrays, which all live across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_commit,
+            command,
+            globals,
+            &args.to_raw(&link_paths, &link_messages, &layer_paths, &layer_messages),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`branch_push`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct BranchPushArgs<'a> {
+    /// Branch to push; empty is the branch the instance is on.
+    pub branch: &'a str,
+    /// Let the server fast-forward when its tip has moved on since the last
+    /// sync, rather than refusing the push.
+    pub fast_forward_merge: bool,
+}
+
+impl BranchPushArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_branch_push_args_t {
+        lore_branch_push_args_t {
+            branch: raw_str(self.branch),
+            fast_forward_merge: u8::from(self.fast_forward_merge),
+        }
+    }
+}
+
+/// Pushes a branch and its local revisions to the remote, creating the branch
+/// there on its first push, with one [`Event::BranchPush`] per repository
+/// pushed: the repository itself, its layers and its linked repositories. A
+/// repository verb: `globals.repository_path` must hold a `.lore` directory,
+/// and the remote is the one in its `.lore/config.toml`.
+///
+/// This corresponds to `lore_sys::Lore::lore_branch_push`.
+pub fn branch_push(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: BranchPushArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_branch_push,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`branch_switch`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct BranchSwitchArgs<'a> {
+    /// Branch to switch to.
+    pub branch: &'a str,
+    /// Revision on that branch to check out; empty is its tip.
+    pub revision: &'a str,
+    /// Overwrite locally modified files with the incoming revision rather
+    /// than refusing to switch over them.
+    pub reset: bool,
+    /// Move the instance's anchor without touching or verifying files.
+    pub bare: bool,
+}
+
+impl BranchSwitchArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_branch_switch_args_t {
+        lore_branch_switch_args_t {
+            branch: raw_str(self.branch),
+            revision: raw_str(self.revision),
+            reset: u8::from(self.reset),
+            bare: u8::from(self.bare),
+        }
+    }
+}
+
+/// Switches the working tree to another branch, realizing the file changes
+/// between the two revisions, and concludes with [`Event::BranchSwitchEnd`].
+/// Along the way it emits the events [`revision_sync`] does. A repository
+/// verb: `globals.repository_path` must hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_branch_switch`.
+pub fn branch_switch(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: BranchSwitchArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_branch_switch,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`revision_sync`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct RevisionSyncArgs<'a> {
+    /// Revision to synchronize to; empty is the tip of the branch the
+    /// instance is on.
+    pub revision: &'a str,
+    /// Fast-forward and keep local changes when syncing to a local revision.
+    pub forward_changes: bool,
+    /// Overwrite locally modified files with the incoming revision.
+    pub reset: bool,
+    /// Root files for a dependency-based selective sync; empty syncs every
+    /// file.
+    pub root_files: &'a [&'a str],
+    /// Tags to filter dependencies by during resolution.
+    pub dependency_tags: &'a [&'a str],
+    /// Follow transitive dependencies recursively.
+    pub dependency_recursive: bool,
+    /// Deepest dependency traversal; zero is unlimited.
+    pub dependency_depth_limit: u32,
+}
+
+impl RevisionSyncArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the text `self` does and the
+    /// two arrays passed in.
+    fn to_raw(
+        self,
+        root_files: &[lore_string_t],
+        dependency_tags: &[lore_string_t],
+    ) -> lore_revision_sync_args_t {
+        lore_revision_sync_args_t {
+            revision: raw_str(self.revision),
+            forward_changes: u8::from(self.forward_changes),
+            reset: u8::from(self.reset),
+            root_files: raw_str_array(root_files),
+            dependency_tags: raw_str_array(dependency_tags),
+            dependency_recursive: u8::from(self.dependency_recursive),
+            dependency_depth_limit: self.dependency_depth_limit,
+        }
+    }
+}
+
+/// Synchronizes the working tree to a revision, merging when the branch has
+/// diverged from it. Reports the target on [`Event::RevisionSyncTarget`] and
+/// the resulting revision on [`Event::RevisionSyncRevision`]. A repository
+/// verb: `globals.repository_path` must hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_sync`.
+pub fn revision_sync(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: RevisionSyncArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let root_files = raw_strs(args.root_files);
+    let dependency_tags = raw_strs(args.dependency_tags);
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args` and the two arrays, which all live across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_sync,
+            command,
+            globals,
+            &args.to_raw(&root_files, &dependency_tags),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`branch_create`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct BranchCreateArgs<'a> {
+    pub branch: &'a str,
+    /// Lore's free-form grouping of branches; empty is Lore's default.
+    pub category: &'a str,
+    /// Explicit branch id as 32 hex characters. Empty, or anything else, lets
+    /// Lore mint one.
+    pub id: &'a str,
+}
+
+impl BranchCreateArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_branch_create_args_t {
+        lore_branch_create_args_t {
+            branch: raw_str(self.branch),
+            category: raw_str(self.category),
+            id: raw_str(self.id),
+        }
+    }
+}
+
+/// Creates a branch at the revision the instance is on and moves the instance
+/// onto it, leaving the files as they are. Lore reports one
+/// [`Event::BranchCreate`] for the repository and one per layer, and only when
+/// the branch points at a revision: a branch created on an empty branch emits
+/// none. The branch is local until its first [`branch_push`]. A repository verb:
+/// `globals.repository_path` must hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_branch_create`.
+pub fn branch_create(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: BranchCreateArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_branch_create,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`branch_archive`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct BranchArchiveArgs<'a> {
+    /// A branch name, or its id as 32 hex characters.
+    pub branch: &'a str,
+}
+
+impl BranchArchiveArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_branch_archive_args_t {
+        lore_branch_archive_args_t {
+            branch: raw_str(self.branch),
+        }
+    }
+}
+
+/// Archives a branch, which is what Lore has in place of deleting one: the
+/// branch stops being listed unless archived branches are asked for, and its
+/// history stays. Lore reports it on [`Event::BranchArchive`].
+///
+/// This corresponds to `lore_sys::Lore::lore_branch_archive`.
+pub fn branch_archive(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: BranchArchiveArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_branch_archive,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`branch_list`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct BranchListArgs {
+    /// Also list the local branches that have been archived.
+    pub archived: bool,
+}
+
+impl BranchListArgs {
+    /// The raw struct to hand to Lore.
+    fn to_raw(self) -> lore_branch_list_args_t {
+        lore_branch_list_args_t {
+            archived: u8::from(self.archived),
+        }
+    }
+}
+
+/// Lists the branches the instance and its remote know, one
+/// [`Event::BranchListEntry`] each: the local ones, then the archived ones when
+/// asked for, then the remote's. A branch that exists on both sides is
+/// reported twice, once per location. A repository verb:
+/// `globals.repository_path` must hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_branch_list`.
+pub fn branch_list(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: BranchListArgs,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // is plain data.
+    unsafe {
+        call_with_callback(
+            lore.lore_branch_list,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`revision_history`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct RevisionHistoryArgs<'a> {
+    /// Revision to start from; empty is the revision the instance is on.
+    pub revision: &'a str,
+    /// Start from this branch's tip instead of `revision`, which must then be
+    /// empty. The walk still continues onto other branches unless
+    /// `only_branch` is set.
+    pub branch: &'a str,
+    /// Stop at revisions committed before this time, in milliseconds since the
+    /// Unix epoch as Lore records it; zero disables it.
+    pub date: u64,
+    /// Most revisions to report; zero is Lore's default of 100.
+    pub length: u32,
+    /// Stop where the history crosses onto another branch.
+    pub only_branch: bool,
+}
+
+impl RevisionHistoryArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_revision_history_args_t {
+        lore_revision_history_args_t {
+            revision: raw_str(self.revision),
+            branch: raw_str(self.branch),
+            date: self.date,
+            length: self.length,
+            only_branch: u8::from(self.only_branch),
+        }
+    }
+}
+
+/// Walks the history back from a revision along its first parents, newest
+/// first, one [`Event::RevisionHistoryEntry`] per revision after a single
+/// [`Event::RevisionHistory`]. A repository verb:
+/// `globals.repository_path` must hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_history`.
+pub fn revision_history(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: RevisionHistoryArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_history,
+            command,
+            globals,
+            &args.to_raw(),
             callback,
         )
     }
