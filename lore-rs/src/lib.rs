@@ -24,10 +24,12 @@ pub use lore_sys::libloading;
 
 pub mod call;
 pub use call::{
-    call_with_callback, AuthLoginWithTokenArgs, BranchInfoArgs, FileInfoArgs, RepositoryInfoArgs,
-    RepositoryStatusArgs, RevisionInfoArgs, RevisionTreeResolvePathArgs, StorageGetArgs,
-    StorageGetItem, StorageGetMetadataArgs, StorageGetMetadataItem, StorageOpenArgs,
-    StoragePutArgs, StoragePutItem,
+    call_with_callback, AuthLoginWithTokenArgs, BranchArchiveArgs, BranchCreateArgs,
+    BranchInfoArgs, BranchListArgs, BranchPushArgs, BranchSwitchArgs, CaseChange, FileInfoArgs,
+    FileStageArgs, FileUnstageArgs, RepositoryCloneArgs, RepositoryInfoArgs, RepositoryStatusArgs,
+    RevisionCommitArgs, RevisionHistoryArgs, RevisionInfoArgs, RevisionSyncArgs,
+    RevisionTreeResolvePathArgs, StorageGetArgs, StorageGetItem, StorageGetMetadataArgs,
+    StorageGetMetadataItem, StorageOpenArgs, StoragePutArgs, StoragePutItem,
 };
 
 mod string;
@@ -52,7 +54,12 @@ mod auth;
 pub use auth::UserInfo;
 
 mod repository;
-pub use repository::{BranchInfo, Repository, RepositoryInfo, RevisionInfo};
+pub use repository::{
+    BranchCreated, BranchEntry, BranchInfo, BranchLocation, CloneCount, Cloned, Commit,
+    CommitCount, FileAction, FileChange, History, HistoryEntry, Push, Pushed, Repository,
+    RepositoryInfo, RevisionInfo, StageCount, Staged, Status, StatusCount, StatusFile,
+    StatusSummary, Switched, Sync, SyncRevision, UnstageCount, Unstaged, Uploaded,
+};
 
 mod store;
 pub use store::{
