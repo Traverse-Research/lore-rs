@@ -579,10 +579,17 @@ impl<'a> Event<'a> {
                     name: data.branch_list_entry.name.try_to_str()?,
                     category: data.branch_list_entry.category.try_to_str()?,
                     latest: data.branch_list_entry.latest,
-                    stack: raw_slice(
-                        data.branch_list_entry.stack.ptr,
-                        data.branch_list_entry.stack.count,
-                    ),
+                    stack: {
+                        // Lore hands out a null pointer for an empty array,
+                        // which `from_raw_parts` does not accept even at
+                        // length zero.
+                        let stack = &data.branch_list_entry.stack;
+                        if stack.ptr.is_null() || stack.count == 0 {
+                            &[]
+                        } else {
+                            std::slice::from_raw_parts(stack.ptr, stack.count)
+                        }
+                    },
                     creator: data.branch_list_entry.creator.try_to_str()?,
                     created: data.branch_list_entry.created,
                     is_current: data.branch_list_entry.is_current != 0,
@@ -883,21 +890,4 @@ pub fn log_event(event: &Result<Event<'_>, std::str::Utf8Error>) {
     };
 
     log::log!(target: "lore", level, "{message}");
-}
-
-/// A C array as a slice. Lore may hand out a null pointer for an empty array,
-/// which [`std::slice::from_raw_parts`] does not accept even at length zero.
-///
-/// # Safety
-///
-/// Unless `ptr` is null or `count` is zero, `ptr` must point at `count`
-/// initialized values that stay valid for `'a`.
-unsafe fn raw_slice<'a, T>(ptr: *const T, count: usize) -> &'a [T] {
-    if ptr.is_null() || count == 0 {
-        &[]
-    } else {
-        // SAFETY: the caller guarantees `ptr` points at `count` values that
-        // live for `'a`, and it is not null.
-        unsafe { std::slice::from_raw_parts(ptr, count) }
-    }
 }
