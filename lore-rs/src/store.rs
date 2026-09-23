@@ -464,7 +464,7 @@ impl Store {
             &self.globals,
             StorageGetArgs {
                 handle: self.handle,
-                items: &[self.item(repository, address, false)],
+                items: &mut [self.item(repository, address, false)],
             },
             |event| {
                 crate::log_event(&event);
@@ -559,7 +559,7 @@ impl Store {
             &self.globals,
             StorageGetArgs {
                 handle: self.handle,
-                items: &[self.item(repository, address, true)],
+                items: &mut [self.item(repository, address, true)],
             },
             |event| {
                 crate::log_event(&event);
@@ -611,7 +611,12 @@ impl Store {
         Ok(written)
     }
 
-    fn item(&self, repository: RepositoryId, address: Address, streaming: bool) -> StorageGetItem {
+    fn item(
+        &self,
+        repository: RepositoryId,
+        address: Address,
+        streaming: bool,
+    ) -> StorageGetItem<'static> {
         StorageGetItem {
             id: 0,
             partition: repository.to_raw(),
@@ -621,6 +626,9 @@ impl Store {
             length: 0,
             streaming,
             local_cache: self.local_cache,
+            // `Store::get` and `Store::read_to` reassemble through the
+            // event stream, not a caller-supplied buffer.
+            data_out: None,
         }
     }
 }
