@@ -1,6 +1,6 @@
 use crate::{
-    BranchId, BranchInfoArgs, Event, GlobalArgs, Lore, LoreError, RepositoryId, RepositoryInfoArgs,
-    Revision, RevisionInfoArgs,
+    BranchId, BranchInfoArgs, Event, GlobalArgs, InstanceId, Lore, LoreError, RepositoryId,
+    RepositoryInfoArgs, Revision, RevisionInfoArgs,
 };
 
 /// A local repository instance — the directory holding `.lore` — together
@@ -61,6 +61,47 @@ impl Repository {
     /// This corresponds to `lore_sys::Lore::lore_repository_info`.
     pub fn info(&self) -> Result<RepositoryInfo, LoreError> {
         repository_info(self.lore, &self.globals, "")
+    }
+
+    /// Lists the checkouts registered for this repository. Lore registers a
+    /// checkout on its first writable open, so one only ever read through
+    /// these bindings is not among them.
+    ///
+    /// Opens the instance to do so, which creates its `.lore/instance` when
+    /// missing, as it is on a fresh checkout of a `.lore` that only commits
+    /// `id` and `config.toml`. [`Self::info`] reads that file but never
+    /// creates it, so call this first on such a checkout. Needs no branch
+    /// state, so it succeeds on a bare `.lore`.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_repository_instance_list`.
+    pub fn instances(&self) -> Result<Vec<InstanceInfo>, LoreError> {
+        const COMMAND: &str = "repository::instance_list";
+        let mut instances = Vec::new();
+
+        crate::call::repository_instance_list(self.lore, COMMAND, &self.globals, |event| {
+            crate::log_event(&event);
+
+            if let Ok(Event::RepositoryInstance {
+                instance_id,
+                path,
+                branch_name,
+                branch,
+                revision,
+                stale,
+            }) = event
+            {
+                instances.push(InstanceInfo {
+                    id: InstanceId::from_raw(instance_id),
+                    path: path.to_owned(),
+                    branch_name: branch_name.to_owned(),
+                    branch: BranchId::from_raw(branch),
+                    revision: Revision::from_raw(revision),
+                    staleness: InstanceStaleness::from_raw(stale),
+                });
+            }
+        })?;
+
+        Ok(instances)
     }
 
     /// Asks about one branch. Empty `name` is the branch the instance is on,
@@ -183,6 +224,47 @@ impl Repository {
         })?;
 
         Ok(Some(info).filter(|info| !info.revision.is_zero()))
+    }
+}
+
+/// One registered checkout of a repository, from [`Repository::instances`].
+#[derive(Debug, Clone)]
+pub struct InstanceInfo {
+    pub id: InstanceId,
+    /// Where the checkout was registered from.
+    pub path: String,
+    /// The branch the checkout is on; empty, with [`Self::branch`] zero, when
+    /// it has none, as on a bare `.lore`.
+    pub branch_name: String,
+    pub branch: BranchId,
+    pub revision: Revision,
+    pub staleness: InstanceStaleness,
+}
+
+/// Whether an [`InstanceInfo`] still describes a live checkout.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum InstanceStaleness {
+    Active,
+    /// The registered path no longer exists.
+    PathMissing,
+    /// The path holds a checkout whose `.lore/instance` names another
+    /// instance: it was re-created or re-cloned since.
+    Superseded,
+    /// The path holds no readable `.lore/instance`.
+    NoInstance,
+    /// A reason this version of the bindings does not know.
+    Other(u8),
+}
+
+impl InstanceStaleness {
+    fn from_raw(stale: u8) -> Self {
+        match stale {
+            0 => Self::Active,
+            1 => Self::PathMissing,
+            2 => Self::Superseded,
+            3 => Self::NoInstance,
+            other => Self::Other(other),
+        }
     }
 }
 
