@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 /// The Lore release to download binaries from. Must match the tag the `lore`
 /// submodule is pinned to, CI verifies this.
-const LORE_VERSION: &str = "0.8.5";
+const LORE_VERSION: &str = "0.10.0";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Target {

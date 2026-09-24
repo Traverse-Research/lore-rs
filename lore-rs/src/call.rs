@@ -6,8 +6,8 @@
 use crate::string::{raw_str, raw_str_array};
 use crate::{Event, GlobalArgs, LoreError};
 use lore_sys::{
-    lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t, lore_bytes_t,
-    lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
+    lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t, lore_bytes_mut_t,
+    lore_bytes_t, lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
     lore_file_info_args_t, lore_global_args_t, lore_partition_t, lore_repository_info_args_t,
     lore_repository_status_args_t, lore_revision_info_args_t, lore_revision_tree_close_args_t,
     lore_revision_tree_info_args_t, lore_revision_tree_list_children_args_t,
@@ -319,6 +319,9 @@ pub fn repository_info(
 pub struct BranchInfoArgs<'a> {
     /// Branch to report on; empty is the branch the repository is on.
     pub branch: &'a str,
+    /// Path of a link whose repository the branch belongs to; empty is the
+    /// repository `globals.repository_path` itself.
+    pub link: &'a str,
 }
 
 impl BranchInfoArgs<'_> {
@@ -326,6 +329,7 @@ impl BranchInfoArgs<'_> {
     fn to_raw(self) -> lore_branch_info_args_t {
         lore_branch_info_args_t {
             branch: raw_str(self.branch),
+            link: raw_str(self.link),
         }
     }
 }
@@ -505,6 +509,9 @@ pub struct StorageOpenArgs<'a> {
     pub cache_target_bytes: u64,
     /// Soft cap on the immutable-store fragment count; zero selects the default.
     pub cache_target_fragments: u64,
+    /// Skip re-hashing a loaded payload to check it against the address it
+    /// was read from. Applies to every read on the handle.
+    pub skip_verify: bool,
 }
 
 impl StorageOpenArgs<'_> {
@@ -517,6 +524,7 @@ impl StorageOpenArgs<'_> {
                 remote_url: raw_str(self.remote_url.unwrap_or_default()),
             },
             has_remote_config: u8::from(self.remote_url.is_some()),
+            skip_verify: u8::from(self.skip_verify),
             cache_target_bytes: self.cache_target_bytes,
             cache_target_fragments: self.cache_target_fragments,
         }
@@ -672,8 +680,8 @@ pub fn storage_put(
 }
 
 /// One buffer for [`storage_get`] to read.
-#[derive(Debug, Clone, Copy)]
-pub struct StorageGetItem {
+#[derive(Debug)]
+pub struct StorageGetItem<'a> {
     /// Caller-chosen id, echoed back in every event for this item. What tells
     /// the events of one item from another's when a call reads several.
     pub id: u64,
@@ -682,52 +690,86 @@ pub struct StorageGetItem {
     pub partition: lore_partition_t,
     /// Content address to read, as [`Event::FileInfo`] reports it.
     pub address: lore_address_t,
+    /// First content byte to read, counted from the start of the
+    /// decompressed content. A zeroed `offset`/`length` pair reads the whole
+    /// content; past the end of the content rejects with
+    /// `INVALID_ARGUMENTS`.
+    pub offset: u64,
+    /// Content bytes to read from `offset`; zero reads to the end. A range
+    /// reaching past the end is clamped to it, so [`Event::StorageGetData`]
+    /// may carry fewer bytes than asked for.
+    pub length: u64,
     /// Deliver one [`Event::StorageGetData`] per leaf fragment instead of a
     /// single reassembled buffer, so peak memory follows the fragment size
-    /// rather than the content size.
+    /// rather than the content size. Ignored when `data_out` is set.
     pub streaming: bool,
     /// Keep bytes fetched from a remote in the local store even when the
     /// producer did not flag them for local caching.
     pub local_cache: bool,
+    /// Write the read content straight into this buffer instead of
+    /// delivering it through [`Event::StorageGetData`]. A range that does not
+    /// fit rejects the item with `INVALID_ARGUMENTS` rather than truncating.
+    /// [`Event::StorageGetHeader`] still reports the whole content's size, no
+    /// [`Event::StorageGetData`] follows, and `streaming` is ignored.
+    ///
+    /// [`None`] is the default: delivery through [`Event::StorageGetData`].
+    pub data_out: Option<&'a mut [u8]>,
 }
 
-impl StorageGetItem {
-    /// The raw struct to hand to Lore. Carries no pointers, so it borrows
-    /// nothing.
-    fn to_raw(self) -> lore_storage_get_item_t {
+impl StorageGetItem<'_> {
+    /// The raw struct to hand to Lore, borrowing the same buffer `self` does
+    /// through `data_out`.
+    ///
+    /// Takes `&mut self`, unlike the other items' `to_raw`, because turning
+    /// `data_out` into a pointer needs unique access to the `&mut [u8]`
+    /// behind it — the same reason `std::io::Read::read_vectored` takes
+    /// `&mut [IoSliceMut<'_>]`. Named `raw` rather than `to_raw` so Clippy
+    /// does not read the `&mut self` as a naming-convention mistake.
+    fn raw(&mut self) -> lore_storage_get_item_t {
         lore_storage_get_item_t {
             id: self.id,
             partition: self.partition,
             address: self.address,
+            offset: self.offset,
+            length: self.length,
             streaming: u8::from(self.streaming),
             local_cache: u8::from(self.local_cache),
+            data_out: match self.data_out.as_deref_mut() {
+                // An empty slice's pointer is dangling, which is not what "no
+                // buffer" should reach Lore as.
+                Some(buf) if !buf.is_empty() => lore_bytes_mut_t {
+                    ptr: buf.as_mut_ptr().cast(),
+                    len: buf.len(),
+                },
+                _ => lore_bytes_mut_t {
+                    ptr: std::ptr::null_mut(),
+                    len: 0,
+                },
+            },
         }
     }
 }
 
 /// Arguments for [`storage_get`].
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug)]
 pub struct StorageGetArgs<'a> {
     /// Handle from [`storage_open`].
     pub handle: lore_store_t,
     /// Buffers to read. Each runs independently and emits its own events,
-    /// all carrying the item's `id`.
-    pub items: &'a [StorageGetItem],
+    /// all carrying the item's `id`. Mutable so an item's own `data_out` can
+    /// be written through it.
+    pub items: &'a mut [StorageGetItem<'a>],
 }
 
 impl StorageGetArgs<'_> {
     /// The items as Lore's own type, kept out of [`Self::to_raw`] for the same
     /// reason as [`FileInfoArgs::raw_paths`].
-    fn raw_items(self) -> Vec<lore_storage_get_item_t> {
-        self.items
-            .iter()
-            .copied()
-            .map(StorageGetItem::to_raw)
-            .collect()
+    fn raw_items(&mut self) -> Vec<lore_storage_get_item_t> {
+        self.items.iter_mut().map(StorageGetItem::raw).collect()
     }
 
     /// The raw struct to hand to Lore, borrowing `items`.
-    fn to_raw(self, items: &[lore_storage_get_item_t]) -> lore_storage_get_args_t {
+    fn to_raw(&self, items: &[lore_storage_get_item_t]) -> lore_storage_get_args_t {
         lore_storage_get_args_t {
             handle: self.handle,
             items: lore_storage_get_item_array_t {
@@ -747,8 +789,10 @@ impl StorageGetArgs<'_> {
 /// Each item emits [`Event::StorageGetHeader`] with the size of the
 /// reassembled content, then that content as one or more
 /// [`Event::StorageGetData`], then [`Event::StorageGetItemComplete`] carrying
-/// its outcome. The payload bytes are valid only for the duration of the
-/// callback that carries them.
+/// its outcome — unless the item set `data_out`, which skips both and writes
+/// the content straight into that buffer instead. The payload bytes handed to
+/// the callback are valid only for the duration of the callback that carries
+/// them.
 ///
 /// Any failed item makes the whole call return non-zero; the item's own
 /// outcome is on its [`Event::StorageGetItemComplete`].
@@ -758,13 +802,15 @@ pub fn storage_get(
     lore: &crate::Lore,
     command: &'static str,
     globals: &GlobalArgs,
-    args: StorageGetArgs<'_>,
+    mut args: StorageGetArgs<'_>,
     callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
 ) -> Result<(), LoreError> {
     let items = args.raw_items();
 
     // SAFETY: the entry point is the loaded library's own, and the raw struct
-    // borrows from `items`, which lives across the call.
+    // borrows from `items`, which lives across the call. Each raw item's own
+    // `data_out` pointer borrows from the caller's buffer the same way,
+    // through `args.items`, which also lives across the call.
     unsafe {
         call_with_callback(
             lore.lore_storage_get,
@@ -1403,7 +1449,11 @@ mod tests {
 
     #[test]
     fn branch_info_args_conversion() {
-        let raw = BranchInfoArgs { branch: "main" }.to_raw();
+        let raw = BranchInfoArgs {
+            branch: "main",
+            ..Default::default()
+        }
+        .to_raw();
         assert_eq!(unsafe { raw.branch.try_to_str() }, Ok("main"));
     }
 
@@ -1452,12 +1502,15 @@ mod tests {
                 hash: lore_sys::lore_hash_t { data: [2; 32] },
                 context: lore_sys::lore_context_t { data: [3; 16] },
             },
+            offset: 0,
+            length: 0,
             streaming: false,
             local_cache: true,
+            data_out: None,
         };
-        let args = StorageGetArgs {
+        let mut args = StorageGetArgs {
             handle: lore_store_t { handle_id: 42 },
-            items: &[item],
+            items: &mut [item],
         };
         let items = args.raw_items();
         let raw = args.to_raw(&items);
@@ -1469,13 +1522,44 @@ mod tests {
         assert_eq!(items[0].address.hash.data, [2; 32]);
         assert_eq!(items[0].streaming, 0);
         assert_eq!(items[0].local_cache, 1);
+        assert!(
+            items[0].data_out.ptr.is_null() && items[0].data_out.len == 0,
+            "no output buffer, so the bytes arrive as events"
+        );
+    }
+
+    #[test]
+    fn storage_get_args_with_a_data_out_buffer_borrows_it() {
+        let mut buf = [0u8; 4];
+        let buf_ptr = buf.as_mut_ptr();
+        let item = StorageGetItem {
+            id: 1,
+            partition: lore_partition_t { data: [1; 16] },
+            address: lore_address_t {
+                hash: lore_sys::lore_hash_t { data: [2; 32] },
+                context: lore_sys::lore_context_t { data: [3; 16] },
+            },
+            offset: 0,
+            length: 0,
+            streaming: false,
+            local_cache: false,
+            data_out: Some(&mut buf),
+        };
+        let mut args = StorageGetArgs {
+            handle: lore_store_t { handle_id: 42 },
+            items: &mut [item],
+        };
+        let items = args.raw_items();
+
+        assert_eq!(items[0].data_out.ptr, buf_ptr.cast());
+        assert_eq!(items[0].data_out.len, 4);
     }
 
     #[test]
     fn storage_get_args_without_items_pass_an_empty_array() {
-        let args = StorageGetArgs {
+        let mut args = StorageGetArgs {
             handle: lore_store_t { handle_id: 1 },
-            items: &[],
+            items: &mut [],
         };
         let items = args.raw_items();
         let raw = args.to_raw(&items);

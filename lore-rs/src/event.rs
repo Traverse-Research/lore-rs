@@ -76,8 +76,8 @@ pub enum Event<'a> {
         token: &'a str,
         preferred_username: &'a str,
         service_account: bool,
-        /// **Milliseconds** since the Unix epoch — unlike the `created` fields
-        /// elsewhere, which are seconds. Zero when Lore cannot say.
+        /// **Milliseconds** since the Unix epoch — unlike a branch's `created`,
+        /// which is seconds. Zero when Lore cannot say.
         expires: u64,
     },
     /// One entry of the token store.
@@ -90,8 +90,8 @@ pub enum Event<'a> {
         /// Acceptable root domains as one `", "`-joined string. Empty means
         /// unrestricted rather than none.
         authorized_domains: &'a str,
-        /// **Milliseconds** since the Unix epoch — unlike the `created` fields
-        /// elsewhere, which are seconds. Zero when Lore cannot say.
+        /// **Milliseconds** since the Unix epoch — unlike a branch's `created`,
+        /// which is seconds. Zero when Lore cannot say.
         expires: u64,
         /// Empty unless the call asked for tokens.
         token: &'a str,
@@ -138,6 +138,7 @@ pub enum Event<'a> {
         default_branch: lore_branch_id_t,
         default_branch_name: &'a str,
         creator: &'a str,
+        /// **Milliseconds** since the Unix epoch.
         created: u64,
     },
     RepositoryStatusRevision {
@@ -244,6 +245,13 @@ pub enum Event<'a> {
         /// The item's address on success, zero on failure.
         address: lore_address_t,
         error_code: lore_error_code_t,
+        /// Whether the local store holds the content.
+        stored_local: bool,
+        /// Whether the content reached the remote, or was already durable
+        /// there. A remote write that fails still reports `error_code =
+        /// NONE` if the local write succeeded — this is how a caller tells
+        /// the two apart.
+        stored_remote: bool,
     },
     StorageGetHeader {
         id: u64,
@@ -460,6 +468,8 @@ impl<'a> Event<'a> {
                     id: data.storage_put_item_complete.id,
                     address: data.storage_put_item_complete.address,
                     error_code: data.storage_put_item_complete.error_code,
+                    stored_local: data.storage_put_item_complete.stored_local != 0,
+                    stored_remote: data.storage_put_item_complete.stored_remote != 0,
                 },
                 LORE_EVENT_STORAGE_GET_HEADER => Self::StorageGetHeader {
                     id: data.storage_get_header.id,
