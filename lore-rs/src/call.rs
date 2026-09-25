@@ -8,7 +8,7 @@ use crate::{Event, GlobalArgs, LoreError};
 use lore_sys::{
     lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t, lore_bytes_mut_t,
     lore_bytes_t, lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
-    lore_file_info_args_t, lore_global_args_t, lore_hash_t, lore_partition_t,
+    lore_file_info_args_t, lore_global_args_t, lore_hash_t, lore_key_type_t, lore_partition_t,
     lore_repository_info_args_t, lore_repository_instance_list_args_t,
     lore_repository_status_args_t, lore_revision_info_args_t, lore_revision_tree_close_args_t,
     lore_revision_tree_info_args_t, lore_revision_tree_list_children_args_t,
@@ -19,7 +19,8 @@ use lore_sys::{
     lore_storage_get_metadata_args_t, lore_storage_get_metadata_item_array_t,
     lore_storage_get_metadata_item_t, lore_storage_get_resolved_args_t,
     lore_storage_get_resolved_item_array_t, lore_storage_get_resolved_item_t,
-    lore_storage_open_args_t, lore_storage_put_args_t, lore_storage_put_item_array_t,
+    lore_storage_mutable_load_args_t, lore_storage_mutable_load_item_array_t,
+    lore_storage_mutable_load_item_t, lore_storage_open_args_t, lore_storage_put_args_t, lore_storage_put_item_array_t,
     lore_storage_put_item_t, lore_storage_put_resolved_args_t,
     lore_storage_put_resolved_item_array_t, lore_storage_put_resolved_item_t,
     lore_storage_remote_config_t, lore_store_t, lore_string_t, LORE_EVENT_COMPLETE,
@@ -1155,6 +1156,108 @@ pub fn storage_get_metadata(
     unsafe {
         call_with_callback(
             lore.lore_storage_get_metadata,
+            command,
+            globals,
+            &args.to_raw(&items),
+            callback,
+        )
+    }
+}
+
+/// One mutable key for [`storage_mutable_load`] to read.
+#[derive(Debug, Clone, Copy)]
+pub struct StorageMutableLoadItem {
+    /// Caller-chosen id, echoed back on the item's
+    /// [`Event::StorageMutableLoadItemComplete`].
+    pub id: u64,
+    /// Partition to read from, which is a repository id. The zero partition
+    /// is rejected, as this item's own outcome rather than the call's.
+    pub partition: lore_partition_t,
+    /// Key to read.
+    pub key: lore_hash_t,
+    /// Kind of value the key refers to; `LORE_KEY_TYPE_RESOLVE` for keys
+    /// published by [`storage_put_resolved`].
+    pub key_type: lore_key_type_t,
+}
+
+impl StorageMutableLoadItem {
+    /// The raw struct to hand to Lore. Carries no pointers, so it borrows
+    /// nothing.
+    fn to_raw(self) -> lore_storage_mutable_load_item_t {
+        lore_storage_mutable_load_item_t {
+            id: self.id,
+            partition: self.partition,
+            key: self.key,
+            key_type: self.key_type,
+        }
+    }
+}
+
+/// Arguments for [`storage_mutable_load`].
+#[derive(Debug, Clone, Copy)]
+pub struct StorageMutableLoadArgs<'a> {
+    /// Handle from [`storage_open`].
+    pub handle: lore_store_t,
+    /// Keys to read. Each runs independently and completes on its own,
+    /// carrying the item's `id`.
+    pub items: &'a [StorageMutableLoadItem],
+}
+
+impl StorageMutableLoadArgs<'_> {
+    /// The items as Lore's own type, kept out of [`Self::to_raw`] for the same
+    /// reason as [`FileInfoArgs::raw_paths`].
+    fn raw_items(self) -> Vec<lore_storage_mutable_load_item_t> {
+        self.items
+            .iter()
+            .copied()
+            .map(StorageMutableLoadItem::to_raw)
+            .collect()
+    }
+
+    /// The raw struct to hand to Lore, borrowing `items`.
+    fn to_raw(
+        self,
+        items: &[lore_storage_mutable_load_item_t],
+    ) -> lore_storage_mutable_load_args_t {
+        lore_storage_mutable_load_args_t {
+            handle: self.handle,
+            items: lore_storage_mutable_load_item_array_t {
+                ptr: if items.is_empty() {
+                    std::ptr::null()
+                } else {
+                    items.as_ptr()
+                },
+                count: items.len(),
+            },
+        }
+    }
+}
+
+/// Reads the hash stored under mutable keys, without touching the content it
+/// names.
+///
+/// Each item emits one [`Event::StorageMutableLoadItemComplete`] carrying the
+/// value and its own outcome. Unlike the immutable reads there is no
+/// fallthrough: the default and `globals.local`/`globals.offline` read the
+/// handle's local mutable store only, and `globals.remote` (or a handle bound
+/// to it) reads the server's only. A key with no stored value completes with
+/// [`ErrorCode::AddressNotFound`](crate::ErrorCode::AddressNotFound).
+///
+/// This corresponds to `lore_sys::Lore::lore_storage_mutable_load`.
+pub fn storage_mutable_load(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: StorageMutableLoadArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let items = args.raw_items();
+
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `items`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_storage_mutable_load,
             command,
             globals,
             &args.to_raw(&items),

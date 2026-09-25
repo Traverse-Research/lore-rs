@@ -15,8 +15,8 @@ use lore_sys::{
     LORE_EVENT_REVISION_TREE_NODE_INFO, LORE_EVENT_REVISION_TREE_NODE_PATH,
     LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE, LORE_EVENT_STORAGE_GET_DATA,
     LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE,
-    LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
-    LORE_EVENT_STORAGE_PUT_ITEM_COMPLETE, LORE_LOG_LEVEL_ERROR, LORE_LOG_LEVEL_INFO,
+    LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE, LORE_EVENT_STORAGE_MUTABLE_LOAD_ITEM_COMPLETE,
+    LORE_EVENT_STORAGE_OPENED, LORE_EVENT_STORAGE_PUT_ITEM_COMPLETE, LORE_LOG_LEVEL_ERROR, LORE_LOG_LEVEL_INFO,
     LORE_LOG_LEVEL_TRACE, LORE_LOG_LEVEL_WARN,
 };
 
@@ -294,6 +294,14 @@ pub enum Event<'a> {
         fragment: lore_fragment_t,
         error_code: lore_error_code_t,
     },
+    /// The terminal event of a mutable-key load, success or failure. A key
+    /// with no stored value fails with `ADDRESS_NOT_FOUND`.
+    StorageMutableLoadItemComplete {
+        id: u64,
+        /// The hash stored under the key on success, zero on failure.
+        value: lore_hash_t,
+        error_code: lore_error_code_t,
+    },
     /// Event kinds without a mapped variant (yet), add them here as needed
     Other {
         tag: lore_event_tag_t,
@@ -516,6 +524,13 @@ impl<'a> Event<'a> {
                         address: data.storage_get_metadata_item_complete.address,
                         fragment: data.storage_get_metadata_item_complete.fragment,
                         error_code: data.storage_get_metadata_item_complete.error_code,
+                    }
+                }
+                LORE_EVENT_STORAGE_MUTABLE_LOAD_ITEM_COMPLETE => {
+                    Self::StorageMutableLoadItemComplete {
+                        id: data.storage_mutable_load_item_complete.id,
+                        value: data.storage_mutable_load_item_complete.value,
+                        error_code: data.storage_mutable_load_item_complete.error_code,
                     }
                 }
                 _ => Self::Other { tag },
