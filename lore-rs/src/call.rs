@@ -19,9 +19,12 @@ use lore_sys::{
     lore_storage_get_metadata_args_t, lore_storage_get_metadata_item_array_t,
     lore_storage_get_metadata_item_t, lore_storage_get_resolved_args_t,
     lore_storage_get_resolved_item_array_t, lore_storage_get_resolved_item_t,
-    lore_storage_mutable_load_args_t, lore_storage_mutable_load_item_array_t,
-    lore_storage_mutable_load_item_t, lore_storage_open_args_t, lore_storage_put_args_t,
-    lore_storage_put_item_array_t, lore_storage_put_item_t, lore_storage_put_resolved_args_t,
+    lore_storage_mutable_compare_and_swap_args_t,
+    lore_storage_mutable_compare_and_swap_item_array_t,
+    lore_storage_mutable_compare_and_swap_item_t, lore_storage_mutable_load_args_t,
+    lore_storage_mutable_load_item_array_t, lore_storage_mutable_load_item_t,
+    lore_storage_open_args_t, lore_storage_put_args_t, lore_storage_put_item_array_t,
+    lore_storage_put_item_t, lore_storage_put_resolved_args_t,
     lore_storage_put_resolved_item_array_t, lore_storage_put_resolved_item_t,
     lore_storage_remote_config_t, lore_store_t, lore_string_t, LORE_EVENT_COMPLETE,
     LORE_EVENT_ERROR,
@@ -1281,6 +1284,116 @@ pub fn storage_mutable_load(
     unsafe {
         call_with_callback(
             lore.lore_storage_mutable_load,
+            command,
+            globals,
+            &args.to_raw(&items),
+            callback,
+        )
+    }
+}
+
+/// One conditional swap for [`storage_mutable_compare_and_swap`] to perform.
+#[derive(Debug, Clone, Copy)]
+pub struct StorageMutableCompareAndSwapItem {
+    /// Caller-chosen id, echoed back on the item's
+    /// [`Event::StorageMutableCompareAndSwapItemComplete`].
+    pub id: u64,
+    /// Partition to act on, which is a repository id. The zero partition is
+    /// rejected, as this item's own outcome rather than the call's.
+    pub partition: lore_partition_t,
+    /// Key to swap.
+    pub key: lore_hash_t,
+    /// Value the key must hold for the swap to take effect. Zero matches a
+    /// key with no stored value.
+    pub expected: lore_hash_t,
+    /// Value to store when the swap takes effect. Zero removes the key.
+    pub value: lore_hash_t,
+    /// Kind of value the key refers to; `LORE_KEY_TYPE_RESOLVE` for keys
+    /// published by [`storage_put_resolved`].
+    pub key_type: lore_key_type_t,
+}
+
+impl StorageMutableCompareAndSwapItem {
+    /// The raw struct to hand to Lore. Carries no pointers, so it borrows
+    /// nothing.
+    fn to_raw(self) -> lore_storage_mutable_compare_and_swap_item_t {
+        lore_storage_mutable_compare_and_swap_item_t {
+            id: self.id,
+            partition: self.partition,
+            key: self.key,
+            expected: self.expected,
+            value: self.value,
+            key_type: self.key_type,
+        }
+    }
+}
+
+/// Arguments for [`storage_mutable_compare_and_swap`].
+#[derive(Debug, Clone, Copy)]
+pub struct StorageMutableCompareAndSwapArgs<'a> {
+    /// Handle from [`storage_open`].
+    pub handle: lore_store_t,
+    /// Swaps to perform. Each runs independently and completes on its own,
+    /// carrying the item's `id`; there is no atomicity across items.
+    pub items: &'a [StorageMutableCompareAndSwapItem],
+}
+
+impl StorageMutableCompareAndSwapArgs<'_> {
+    /// The items as Lore's own type, kept out of [`Self::to_raw`] for the same
+    /// reason as [`FileInfoArgs::raw_paths`].
+    fn raw_items(self) -> Vec<lore_storage_mutable_compare_and_swap_item_t> {
+        self.items
+            .iter()
+            .copied()
+            .map(StorageMutableCompareAndSwapItem::to_raw)
+            .collect()
+    }
+
+    /// The raw struct to hand to Lore, borrowing `items`.
+    fn to_raw(
+        self,
+        items: &[lore_storage_mutable_compare_and_swap_item_t],
+    ) -> lore_storage_mutable_compare_and_swap_args_t {
+        lore_storage_mutable_compare_and_swap_args_t {
+            handle: self.handle,
+            items: lore_storage_mutable_compare_and_swap_item_array_t {
+                ptr: if items.is_empty() {
+                    std::ptr::null()
+                } else {
+                    items.as_ptr()
+                },
+                count: items.len(),
+            },
+        }
+    }
+}
+
+/// Conditionally replaces the hash stored under mutable keys: each key is set
+/// to its item's `value` only while it still holds `expected`.
+///
+/// Each item emits one [`Event::StorageMutableCompareAndSwapItemComplete`]
+/// carrying the value the key held before the swap. The swap took effect
+/// exactly when that equals `expected`; a mismatch is not an error, and the
+/// item still succeeds. Which mutable store is swapped follows the same rule
+/// as [`storage_mutable_load`]: the handle's local one by default and under
+/// `globals.local`/`globals.offline`, the server's under `globals.remote` (or
+/// a handle bound to it), with no fallthrough between them.
+///
+/// This corresponds to `lore_sys::Lore::lore_storage_mutable_compare_and_swap`.
+pub fn storage_mutable_compare_and_swap(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: StorageMutableCompareAndSwapArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let items = args.raw_items();
+
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `items`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_storage_mutable_compare_and_swap,
             command,
             globals,
             &args.to_raw(&items),

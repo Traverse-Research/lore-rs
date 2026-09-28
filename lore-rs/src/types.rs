@@ -36,6 +36,10 @@ macro_rules! identifier {
             /// The all-zero value, which Lore uses for "none".
             pub const ZERO: Self = Self([0; $width]);
 
+            pub const fn new(bytes: [u8; $width]) -> Self {
+                Self(bytes)
+            }
+
             pub fn is_zero(&self) -> bool {
                 self.0 == [0; $width]
             }

@@ -15,9 +15,11 @@ use lore_sys::{
     LORE_EVENT_REVISION_TREE_NODE_INFO, LORE_EVENT_REVISION_TREE_NODE_PATH,
     LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE, LORE_EVENT_STORAGE_GET_DATA,
     LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE,
-    LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE, LORE_EVENT_STORAGE_MUTABLE_LOAD_ITEM_COMPLETE,
-    LORE_EVENT_STORAGE_OPENED, LORE_EVENT_STORAGE_PUT_ITEM_COMPLETE, LORE_LOG_LEVEL_ERROR,
-    LORE_LOG_LEVEL_INFO, LORE_LOG_LEVEL_TRACE, LORE_LOG_LEVEL_WARN,
+    LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE,
+    LORE_EVENT_STORAGE_MUTABLE_COMPARE_AND_SWAP_ITEM_COMPLETE,
+    LORE_EVENT_STORAGE_MUTABLE_LOAD_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
+    LORE_EVENT_STORAGE_PUT_ITEM_COMPLETE, LORE_LOG_LEVEL_ERROR, LORE_LOG_LEVEL_INFO,
+    LORE_LOG_LEVEL_TRACE, LORE_LOG_LEVEL_WARN,
 };
 
 /// One event decoded from lore's tagged event union. Borrows from the raw
@@ -302,6 +304,16 @@ pub enum Event<'a> {
         value: lore_hash_t,
         error_code: lore_error_code_t,
     },
+    /// The terminal event of a mutable-key compare-and-swap, success or
+    /// failure. The swap took effect when `previous` equals the item's
+    /// `expected`; a mismatch still succeeds.
+    StorageMutableCompareAndSwapItemComplete {
+        id: u64,
+        /// The hash the key held before the swap on success, zero on failure
+        /// or when the key held nothing.
+        previous: lore_hash_t,
+        error_code: lore_error_code_t,
+    },
     /// Event kinds without a mapped variant (yet), add them here as needed
     Other {
         tag: lore_event_tag_t,
@@ -531,6 +543,15 @@ impl<'a> Event<'a> {
                         id: data.storage_mutable_load_item_complete.id,
                         value: data.storage_mutable_load_item_complete.value,
                         error_code: data.storage_mutable_load_item_complete.error_code,
+                    }
+                }
+                LORE_EVENT_STORAGE_MUTABLE_COMPARE_AND_SWAP_ITEM_COMPLETE => {
+                    Self::StorageMutableCompareAndSwapItemComplete {
+                        id: data.storage_mutable_compare_and_swap_item_complete.id,
+                        previous: data.storage_mutable_compare_and_swap_item_complete.previous,
+                        error_code: data
+                            .storage_mutable_compare_and_swap_item_complete
+                            .error_code,
                     }
                 }
                 _ => Self::Other { tag },
