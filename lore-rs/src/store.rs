@@ -8,7 +8,8 @@ use lore_sys::{
 use crate::{
     Address, ContextId, ErrorCode, Event, GlobalArgs, Lore, LoreError, RepositoryId, ResolveKey,
     Revision, RevisionTree, StorageGetArgs, StorageGetItem, StorageGetMetadataArgs,
-    StorageGetMetadataItem, StorageGetResolvedArgs, StorageGetResolvedItem, StorageMutableLoadArgs,
+    StorageGetMetadataItem, StorageGetResolvedArgs, StorageGetResolvedItem,
+    StorageMutableCompareAndSwapArgs, StorageMutableCompareAndSwapItem, StorageMutableLoadArgs,
     StorageMutableLoadItem, StorageOpenArgs, StoragePutArgs, StoragePutItem,
     StoragePutResolvedArgs, StoragePutResolvedItem,
 };
@@ -18,6 +19,7 @@ const PUT_RESOLVED: &str = "storage::put_resolved";
 const METADATA: &str = "storage::get_metadata";
 const GET_RESOLVED: &str = "storage::get_resolved";
 const RESOLVE: &str = "storage::mutable_load";
+const COMPARE_AND_SWAP: &str = "storage::mutable_compare_and_swap";
 const FLUSH: &str = "storage::flush";
 
 /// Soft caps on the local store. Zero for either selects Lore's default; zero
@@ -162,6 +164,19 @@ pub struct Resolved<T> {
     /// The address the key resolved to.
     pub address: Address,
     pub data: T,
+}
+
+/// What [`Store::compare_and_swap`] found the key holding.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SwapOutcome {
+    /// The key held the expected value and now holds the new one.
+    Swapped,
+    /// The key held something else, and was left untouched.
+    Conflict {
+        /// What the key holds instead, [`None`] when it has no mapping.
+        /// Pass it as the next attempt's `expected` to retry against it.
+        current: Option<Revision>,
+    },
 }
 
 /// An open content-addressed store, closed on drop.
@@ -579,6 +594,95 @@ impl Store {
             Some(Address { hash, context })
         };
         Ok(address)
+    }
+
+    /// Points `key` at `value`, but only if it still resolves to `expected`:
+    /// the building block for read-modify-write on a key several writers
+    /// share, where [`Self::put_resolved`]'s last-writer-wins would lose
+    /// updates.
+    ///
+    /// [`None`] stands for no mapping on both sides: an `expected` of
+    /// [`None`] succeeds only when the key is unmapped, so it publishes a key
+    /// at most once, and a `value` of [`None`] retracts the key. Only the
+    /// hash is swapped, as the mutable store holds no context; the context a
+    /// reader completes it with is the one it passes to [`Self::resolve`] or
+    /// [`Self::get_resolved`].
+    ///
+    /// Nothing here checks that `value` names content that exists. Store it
+    /// first — with [`Self::put`], under [`PutOptions::remote_write`] when
+    /// the swap goes to the server — or a reader can resolve the key and find
+    /// nothing behind it. A losing attempt leaves that content stored but
+    /// unreferenced.
+    ///
+    /// Swaps the mutable store the handle's flags select, as
+    /// [`Self::resolve`] reads it: the local one by default and under
+    /// `globals.local`/`globals.offline`, the server's under
+    /// `globals.remote`. Only the server's is shared with other clients, so
+    /// that is the one to swap for coordination between them.
+    ///
+    /// This corresponds to
+    /// `lore_sys::Lore::lore_storage_mutable_compare_and_swap` under
+    /// `LORE_KEY_TYPE_RESOLVE`, with one item.
+    pub fn compare_and_swap_resolved(
+        &self,
+        repository: RepositoryId,
+        key: ResolveKey,
+        expected: Option<Revision>,
+        value: Option<Revision>,
+    ) -> Result<SwapOutcome, LoreError> {
+        // The zero hash is how the mutable store spells "no mapping".
+        let expected = expected.unwrap_or(Revision::ZERO);
+        let value = value.unwrap_or(Revision::ZERO);
+
+        let mut completion: Option<(Revision, lore_error_code_t)> = None;
+
+        let result = crate::call::storage_mutable_compare_and_swap(
+            self.lore,
+            COMPARE_AND_SWAP,
+            &self.globals,
+            StorageMutableCompareAndSwapArgs {
+                handle: self.handle,
+                items: &[StorageMutableCompareAndSwapItem {
+                    id: 0,
+                    partition: repository.to_raw(),
+                    key: key.to_raw(),
+                    expected: expected.to_raw(),
+                    value: value.to_raw(),
+                    key_type: LORE_KEY_TYPE_RESOLVE,
+                }],
+            },
+            |event| {
+                crate::log_event(&event);
+
+                if let Ok(Event::StorageMutableCompareAndSwapItemComplete {
+                    previous,
+                    error_code,
+                    ..
+                }) = event
+                {
+                    completion = Some((Revision::from_raw(previous), error_code));
+                }
+            },
+        );
+
+        let Some((previous, code)) = completion else {
+            result?;
+            return Err(LoreError::MissingEvent {
+                command: COMPARE_AND_SWAP,
+                expected: "storage_mutable_compare_and_swap_item_complete",
+            });
+        };
+
+        LoreError::resolve(COMPARE_AND_SWAP, result, Some(code))?;
+
+        let outcome = if previous == expected {
+            SwapOutcome::Swapped
+        } else {
+            SwapOutcome::Conflict {
+                current: Some(previous).filter(|previous| !previous.is_zero()),
+            }
+        };
+        Ok(outcome)
     }
 
     /// Waits for what this store has written to reach the disk.
