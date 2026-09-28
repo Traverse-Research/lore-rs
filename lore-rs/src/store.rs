@@ -2,20 +2,22 @@ use std::io::Write;
 
 use lore_sys::{
     lore_error_code_t, lore_fragment_t, lore_storage_close_args_t, lore_storage_flush_args_t,
-    lore_store_t,
+    lore_store_t, LORE_KEY_TYPE_RESOLVE,
 };
 
 use crate::{
     Address, ContextId, ErrorCode, Event, GlobalArgs, Lore, LoreError, RepositoryId, ResolveKey,
     Revision, RevisionTree, StorageGetArgs, StorageGetItem, StorageGetMetadataArgs,
-    StorageGetMetadataItem, StorageGetResolvedArgs, StorageGetResolvedItem, StorageOpenArgs,
-    StoragePutArgs, StoragePutItem, StoragePutResolvedArgs, StoragePutResolvedItem,
+    StorageGetMetadataItem, StorageGetResolvedArgs, StorageGetResolvedItem, StorageMutableLoadArgs,
+    StorageMutableLoadItem, StorageOpenArgs, StoragePutArgs, StoragePutItem,
+    StoragePutResolvedArgs, StoragePutResolvedItem,
 };
 
 const PUT: &str = "storage::put";
 const PUT_RESOLVED: &str = "storage::put_resolved";
 const METADATA: &str = "storage::get_metadata";
 const GET_RESOLVED: &str = "storage::get_resolved";
+const RESOLVE: &str = "storage::mutable_load";
 const FLUSH: &str = "storage::flush";
 
 /// Soft caps on the local store. Zero for either selects Lore's default; zero
@@ -498,6 +500,87 @@ impl Store {
     /// this is [`Self::metadata`] without the fragment it found.
     pub fn exists(&self, repository: RepositoryId, address: Address) -> Result<bool, LoreError> {
         Ok(self.metadata(repository, address)?.is_some())
+    }
+
+    /// The address `key` resolves to, or [`None`] when it has no mapping —
+    /// [`Self::get_resolved`] without reading the content. The hash comes
+    /// from the mutable store, and `context` completes it into an address,
+    /// the same way [`Self::get_resolved`] reads it.
+    ///
+    /// A key published by [`Self::put_resolved`] is only ever mapped once its
+    /// content is stored, so a mapping says the content was there when the
+    /// key was published. It does not say the content is there now:
+    /// obliterating content leaves the keys naming it in place, locally and
+    /// on the server alike. Nor does it hold for a mapping written through
+    /// the raw mutable store, which carries no such guarantee.
+    ///
+    /// Reads only the mutable store the handle's flags select, as
+    /// `mutable_load` does: the local one by default and under
+    /// `globals.local`/`globals.offline`, the server's under
+    /// `globals.remote`. Unlike the immutable reads there is no fallthrough
+    /// from one to the other, so a key published only on the server is
+    /// [`None`] on a handle that reads locally. A local mapping is answered
+    /// without asking the server, so a key another client has since
+    /// republished or retracted can still resolve to the address it had here.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_storage_mutable_load` under
+    /// `LORE_KEY_TYPE_RESOLVE`.
+    pub fn resolve(
+        &self,
+        repository: RepositoryId,
+        key: ResolveKey,
+        context: ContextId,
+    ) -> Result<Option<Address>, LoreError> {
+        let mut completion: Option<(Revision, lore_error_code_t)> = None;
+
+        let result = crate::call::storage_mutable_load(
+            self.lore,
+            RESOLVE,
+            &self.globals,
+            StorageMutableLoadArgs {
+                handle: self.handle,
+                items: &[StorageMutableLoadItem {
+                    id: 0,
+                    partition: repository.to_raw(),
+                    key: key.to_raw(),
+                    key_type: LORE_KEY_TYPE_RESOLVE,
+                }],
+            },
+            |event| {
+                crate::log_event(&event);
+
+                if let Ok(Event::StorageMutableLoadItemComplete {
+                    value, error_code, ..
+                }) = event
+                {
+                    completion = Some((Revision::from_raw(value), error_code));
+                }
+            },
+        );
+
+        let Some((hash, code)) = completion else {
+            result?;
+            return Err(LoreError::MissingEvent {
+                command: RESOLVE,
+                expected: "storage_mutable_load_item_complete",
+            });
+        };
+
+        // A miss is this call's answer rather than its failure, as for
+        // `metadata_outcome`.
+        if ErrorCode::from_raw(code) == Some(ErrorCode::AddressNotFound) {
+            return Ok(None);
+        }
+
+        LoreError::resolve(RESOLVE, result, Some(code))?;
+
+        // The zero hash is how a retracted key is stored.
+        let address = if hash.is_zero() {
+            None
+        } else {
+            Some(Address { hash, context })
+        };
+        Ok(address)
     }
 
     /// Waits for what this store has written to reach the disk.
