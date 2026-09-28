@@ -27,8 +27,8 @@ pub use call::{
     call_with_callback, AuthLoginWithTokenArgs, BranchInfoArgs, FileInfoArgs, RepositoryInfoArgs,
     RepositoryStatusArgs, RevisionInfoArgs, RevisionTreeResolvePathArgs, StorageGetArgs,
     StorageGetItem, StorageGetMetadataArgs, StorageGetMetadataItem, StorageGetResolvedArgs,
-    StorageGetResolvedItem, StorageOpenArgs, StoragePutArgs, StoragePutItem,
-    StoragePutResolvedArgs, StoragePutResolvedItem,
+    StorageGetResolvedItem, StorageMutableLoadArgs, StorageMutableLoadItem, StorageOpenArgs,
+    StoragePutArgs, StoragePutItem, StoragePutResolvedArgs, StoragePutResolvedItem,
 };
 
 mod string;
