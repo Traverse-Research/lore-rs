@@ -133,7 +133,9 @@ pub struct PutResolvedItem<'a> {
     pub context: ContextId,
     /// The bytes to hash, store and publish `key` for. Empty **removes**
     /// `key`'s mapping instead of publishing one, reported back as the zero
-    /// address on [`PutResolvedOutcome::address`].
+    /// address on [`PutResolvedOutcome::address`]. Without
+    /// `remote_write` that only evicts the local mapping, and a key published
+    /// remotely resolves again on the next call.
     pub data: &'a [u8],
     pub options: PutOptions,
 }

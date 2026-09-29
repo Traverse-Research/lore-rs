@@ -702,7 +702,9 @@ pub struct StoragePutResolvedItem<'a> {
     /// and the context a later [`storage_get_resolved`] must read the key at.
     pub context: lore_context_t,
     /// The bytes to hash, store and publish `key` for. A zero-length buffer
-    /// **removes** `key`'s mapping instead of publishing one.
+    /// **removes** `key`'s mapping instead of publishing one. Without
+    /// `remote_write` that only evicts the local mapping, and a key published
+    /// remotely resolves again on the next call.
     pub data: &'a [u8],
     /// Also publish the content and the mapping to the remote; ignored
     /// without a remote, or offline/local.
