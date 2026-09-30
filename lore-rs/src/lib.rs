@@ -27,8 +27,9 @@ pub use call::{
     call_with_callback, AuthLoginWithTokenArgs, BranchInfoArgs, FileInfoArgs, RepositoryInfoArgs,
     RepositoryStatusArgs, RevisionInfoArgs, RevisionTreeResolvePathArgs, StorageGetArgs,
     StorageGetItem, StorageGetMetadataArgs, StorageGetMetadataItem, StorageGetResolvedArgs,
-    StorageGetResolvedItem, StorageMutableLoadArgs, StorageMutableLoadItem, StorageOpenArgs,
-    StoragePutArgs, StoragePutItem, StoragePutResolvedArgs, StoragePutResolvedItem,
+    StorageGetResolvedItem, StorageMutableCompareAndSwapArgs, StorageMutableCompareAndSwapItem,
+    StorageMutableLoadArgs, StorageMutableLoadItem, StorageOpenArgs, StoragePutArgs,
+    StoragePutItem, StoragePutResolvedArgs, StoragePutResolvedItem,
 };
 
 mod string;
@@ -62,7 +63,7 @@ pub use repository::{
 mod store;
 pub use store::{
     CacheTargets, FragmentInfo, PutItem, PutOptions, PutResolvedItem, PutResolvedOutcome, Resolved,
-    Store, StoreLocation, StoreOptions,
+    Store, StoreLocation, StoreOptions, SwapOutcome,
 };
 
 mod revision_tree;
