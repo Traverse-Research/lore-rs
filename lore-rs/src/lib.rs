@@ -45,7 +45,7 @@ pub use error::{ErrorCode, LoreError};
 
 mod types;
 pub use types::{
-    Address, BranchId, ContextId, NodeId, NodeKind, RepositoryId, ResolveKey, Revision,
+    Address, BranchId, ContextId, InstanceId, NodeId, NodeKind, RepositoryId, ResolveKey, Revision,
 };
 
 mod library;
@@ -55,7 +55,9 @@ mod auth;
 pub use auth::UserInfo;
 
 mod repository;
-pub use repository::{BranchInfo, Repository, RepositoryInfo, RevisionInfo};
+pub use repository::{
+    BranchInfo, InstanceInfo, InstanceStaleness, Repository, RepositoryInfo, RevisionInfo,
+};
 
 mod store;
 pub use store::{

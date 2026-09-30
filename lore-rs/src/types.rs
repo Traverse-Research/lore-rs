@@ -8,7 +8,7 @@
 //! and logs print, so a revision in an error can be pasted into a `lore`
 //! command.
 
-use lore_sys::{lore_address_t, lore_context_t, lore_hash_t, lore_partition_t};
+use lore_sys::{lore_address_t, lore_context_t, lore_hash_t, lore_instance_id_t, lore_partition_t};
 
 /// Lowercase hex, truncated to the formatter's precision when it has one, so
 /// `{id:.8}` abbreviates the way Lore itself does.
@@ -117,6 +117,15 @@ identifier!(
     /// A repository, which is also the storage partition every read names.
     RepositoryId,
     lore_partition_t,
+    16
+);
+
+identifier!(
+    /// One checkout of a repository: what `.lore/instance` holds. Every
+    /// checkout of the same repository shares its [`RepositoryId`] but has an
+    /// instance of its own.
+    InstanceId,
+    lore_instance_id_t,
     16
 );
 
