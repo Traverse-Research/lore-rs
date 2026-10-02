@@ -36,7 +36,7 @@ mod string;
 pub use string::{LoreStringArrayExt, LoreStringExt};
 
 mod globals;
-pub use globals::GlobalArgs;
+pub use globals::{Backend, GlobalArgs, RawGlobals, WithBackend};
 
 mod event;
 pub use event::{log_event, Event};

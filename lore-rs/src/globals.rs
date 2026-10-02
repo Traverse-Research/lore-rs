@@ -160,6 +160,16 @@ impl std::fmt::Debug for GlobalArgs {
 }
 
 impl GlobalArgs {
+    /// These arguments with `backend` deciding the backend flags, for one
+    /// call. Borrows rather than copies, so a handle can pick a backend per
+    /// call without cloning the arguments it keeps.
+    pub fn with_backend(&self, backend: Backend) -> WithBackend<'_> {
+        WithBackend {
+            globals: self,
+            backend,
+        }
+    }
+
     /// The raw struct to hand to Lore. Borrows `self` through raw pointers,
     /// so `self` must outlive every use of the result.
     pub(crate) fn to_raw(&self) -> lore_global_args_t {
@@ -190,6 +200,66 @@ impl GlobalArgs {
             stats: self.stats,
             event_interval_ms: self.event_interval_ms,
         }
+    }
+}
+
+/// Which of a store handle's two backends a storage call acts on: its local
+/// store or the server's.
+///
+/// Lore combines a call's flags with the ones the handle was opened with and
+/// rejects a contradiction rather than resolving it, so this picks a backend
+/// only within what the handle allows: [`Remote`](Self::Remote) fails on a
+/// handle opened `offline` or `local`, and [`Local`](Self::Local) on one
+/// opened `remote`.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub enum Backend {
+    /// Whatever the global arguments already select.
+    #[default]
+    Default,
+    /// The local store only; sets `local`, clears `remote`.
+    Local,
+    /// The server only; sets `remote`, clears `local` and `offline`.
+    Remote,
+}
+
+/// [`GlobalArgs`] borrowed for one call with the backend flags overridden,
+/// see [`GlobalArgs::with_backend`].
+#[derive(Debug, Clone, Copy)]
+pub struct WithBackend<'a> {
+    globals: &'a GlobalArgs,
+    backend: Backend,
+}
+
+/// Anything that can stand in for the global arguments of a call: a
+/// [`GlobalArgs`], or one with an override such as [`WithBackend`].
+pub trait RawGlobals {
+    /// The raw struct to hand to Lore. Borrows `self` through raw pointers,
+    /// so `self` must outlive every use of the result.
+    fn raw_globals(&self) -> lore_global_args_t;
+}
+
+impl RawGlobals for GlobalArgs {
+    fn raw_globals(&self) -> lore_global_args_t {
+        self.to_raw()
+    }
+}
+
+impl RawGlobals for WithBackend<'_> {
+    fn raw_globals(&self) -> lore_global_args_t {
+        let mut raw = self.globals.to_raw();
+        match self.backend {
+            Backend::Default => {}
+            Backend::Local => {
+                raw.local = 1;
+                raw.remote = 0;
+            }
+            Backend::Remote => {
+                raw.remote = 1;
+                raw.local = 0;
+                raw.offline = 0;
+            }
+        }
+        raw
     }
 }
 
@@ -229,5 +299,26 @@ mod tests {
 
         assert!(!printed.contains("eg1~identity-token"), "{printed}");
         assert!(!printed.contains("eg1~access-token"), "{printed}");
+    }
+
+    #[test]
+    fn with_backend_overrides_only_the_backend_flags() {
+        let globals = GlobalArgs {
+            correlation_id: "call".into(),
+            offline: true,
+            stats: 1,
+            ..Default::default()
+        };
+
+        let remote = globals.with_backend(Backend::Remote).raw_globals();
+        assert_eq!((remote.offline, remote.local, remote.remote), (0, 0, 1));
+        assert_eq!(unsafe { remote.correlation_id.try_to_str() }, Ok("call"));
+        assert_eq!(remote.stats, 1);
+
+        let local = globals.with_backend(Backend::Local).raw_globals();
+        assert_eq!((local.offline, local.local, local.remote), (1, 1, 0));
+
+        let default = globals.with_backend(Backend::Default).raw_globals();
+        assert_eq!((default.offline, default.local, default.remote), (1, 0, 0));
     }
 }
