@@ -4,7 +4,7 @@
 //! them.
 
 use crate::string::{raw_str, raw_str_array};
-use crate::{Event, GlobalArgs, LoreError};
+use crate::{Event, GlobalArgs, LoreError, RawGlobals};
 use lore_sys::{
     lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t, lore_bytes_mut_t,
     lore_bytes_t, lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
@@ -112,7 +112,7 @@ pub unsafe fn call_with_callback<Args, Callback>(
         lore_event_callback_config_t,
     ) -> i32,
     command: &'static str,
-    globals: &GlobalArgs,
+    globals: &(impl RawGlobals + ?Sized),
     args: &Args,
     callback: Callback,
 ) -> Result<(), LoreError>
@@ -176,7 +176,7 @@ where
     // `context` outlives every use of the pointer handed to Lore.
     let status = unsafe {
         lore_function(
-            &globals.to_raw(),
+            &globals.raw_globals(),
             args,
             lore_event_callback_config_t {
                 user_context: std::ptr::addr_of_mut!(context) as u64,
@@ -1250,7 +1250,7 @@ impl StorageMutableLoadArgs<'_> {
 pub fn storage_mutable_load(
     lore: &crate::Lore,
     command: &'static str,
-    globals: &GlobalArgs,
+    globals: &(impl RawGlobals + ?Sized),
     args: StorageMutableLoadArgs<'_>,
     callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
 ) -> Result<(), LoreError> {
@@ -1360,7 +1360,7 @@ impl StorageMutableCompareAndSwapArgs<'_> {
 pub fn storage_mutable_compare_and_swap(
     lore: &crate::Lore,
     command: &'static str,
-    globals: &GlobalArgs,
+    globals: &(impl RawGlobals + ?Sized),
     args: StorageMutableCompareAndSwapArgs<'_>,
     callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
 ) -> Result<(), LoreError> {
