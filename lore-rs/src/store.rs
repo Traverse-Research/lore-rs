@@ -411,18 +411,28 @@ impl Store {
     /// compare-and-swap instead, which this exists to avoid the round trip
     /// for.
     ///
+    /// `backend` determines which mutable stores the key is published to
+    /// and which immutable stores the data reaches.
+    /// [`Backend::Default`] will always write to both the local and remote stores, as long as
+    /// the store was opened with both a local and a remote store.
+    /// [`Backend::Local`] and [`Backend::Remote`] will limit the write to a single destination.
+    ///
     /// Same durability rules as [`Self::put`]: nothing is flushed by the time
     /// this returns.
     ///
     /// This corresponds to `lore_sys::Lore::lore_storage_put_resolved` with
     /// one item.
-    pub fn put_resolved(&self, item: PutResolvedItem<'_>) -> Result<PutResolvedOutcome, LoreError> {
+    pub fn put_resolved(
+        &self,
+        backend: Backend,
+        item: PutResolvedItem<'_>,
+    ) -> Result<PutResolvedOutcome, LoreError> {
         let mut completion: Option<(Address, lore_error_code_t, bool, bool)> = None;
 
         let result = crate::call::storage_put_resolved(
             self.lore,
             PUT_RESOLVED,
-            &self.globals,
+            &self.globals.with_backend(backend),
             StoragePutResolvedArgs {
                 handle: self.handle,
                 items: &[StoragePutResolvedItem {
@@ -841,9 +851,16 @@ impl Store {
     /// [`ErrorCode::AddressNotFound`](crate::ErrorCode::AddressNotFound),
     /// same as [`Self::get`].
     ///
+    /// `backend` determines which mutable store is used for the resolution of the key.
+    /// [`Backend::Default`] will follow the same precedence the store has been opened with:
+    /// local first, followed by remote, unless the store has been opened only
+    /// for local or remote operations.
+    /// [`Backend::Local`] and [`Backend::Remote`] will limit it to a single mutable store.
+    ///
     /// This corresponds to `lore_sys::Lore::lore_storage_get_resolved`.
     pub fn get_resolved(
         &self,
+        backend: Backend,
         repository: RepositoryId,
         key: ResolveKey,
         context: ContextId,
@@ -859,7 +876,7 @@ impl Store {
         let result = crate::call::storage_get_resolved(
             self.lore,
             GET_RESOLVED,
-            &self.globals,
+            &self.globals.with_backend(backend),
             StorageGetResolvedArgs {
                 handle: self.handle,
                 items: &[StorageGetResolvedItem {
