@@ -806,7 +806,7 @@ impl StoragePutResolvedArgs<'_> {
 pub fn storage_put_resolved(
     lore: &crate::Lore,
     command: &'static str,
-    globals: &GlobalArgs,
+    globals: &(impl RawGlobals + ?Sized),
     args: StoragePutResolvedArgs<'_>,
     callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
 ) -> Result<(), LoreError> {
@@ -1072,7 +1072,7 @@ impl StorageGetResolvedArgs<'_> {
 pub fn storage_get_resolved(
     lore: &crate::Lore,
     command: &'static str,
-    globals: &GlobalArgs,
+    globals: &(impl RawGlobals + ?Sized),
     args: StorageGetResolvedArgs<'_>,
     callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
 ) -> Result<(), LoreError> {
