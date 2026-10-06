@@ -6,12 +6,12 @@ use lore_sys::{
 };
 
 use crate::{
-    Address, Backend, ContextId, ErrorCode, Event, GlobalArgs, Lore, LoreError, RepositoryId,
-    ResolveKey, Revision, RevisionTree, StorageGetArgs, StorageGetItem, StorageGetMetadataArgs,
-    StorageGetMetadataItem, StorageGetResolvedArgs, StorageGetResolvedItem,
-    StorageMutableCompareAndSwapArgs, StorageMutableCompareAndSwapItem, StorageMutableLoadArgs,
-    StorageMutableLoadItem, StorageOpenArgs, StoragePutArgs, StoragePutItem,
-    StoragePutResolvedArgs, StoragePutResolvedItem,
+    Address, Backend, ContextId, ErrorCode, Event, GlobalArgs, Hash, KeyType, Lore, LoreError,
+    RepositoryId, ResolveKey, Revision, RevisionTree, StorageGetArgs, StorageGetItem,
+    StorageGetMetadataArgs, StorageGetMetadataItem, StorageGetResolvedArgs, StorageGetResolvedItem,
+    StorageMutableCompareAndSwapArgs, StorageMutableCompareAndSwapItem, StorageMutableListArgs,
+    StorageMutableListItem, StorageMutableLoadArgs, StorageMutableLoadItem, StorageOpenArgs,
+    StoragePutArgs, StoragePutItem, StoragePutResolvedArgs, StoragePutResolvedItem,
 };
 
 const PUT: &str = "storage::put";
@@ -20,6 +20,7 @@ const METADATA: &str = "storage::get_metadata";
 const GET_RESOLVED: &str = "storage::get_resolved";
 const RESOLVE: &str = "storage::mutable_load";
 const COMPARE_AND_SWAP: &str = "storage::mutable_compare_and_swap";
+const LIST: &str = "storage::mutable_list";
 const FLUSH: &str = "storage::flush";
 
 /// Soft caps on the local store. Zero for either selects Lore's default; zero
@@ -168,7 +169,7 @@ pub struct Resolved<T> {
     pub data: T,
 }
 
-/// What [`Store::compare_and_swap`] found the key holding.
+/// What [`Store::compare_and_swap_resolved`] found the key holding.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SwapOutcome {
     /// The key held the expected value and now holds the new one.
@@ -697,6 +698,78 @@ impl Store {
             }
         };
         Ok(outcome)
+    }
+
+    /// Every key of `key_type` that `repository` maps in the **local**
+    /// mutable store, with the hash it maps to, in no particular order.
+    /// [`KeyType::Resolve`] lists what [`Self::put_resolved`] published. The
+    /// pairs collect straight into a map.
+    ///
+    /// Keys come back as an untyped [`Hash`](struct@Hash), since what they
+    /// mean depends on `key_type`; rewrap one as, say, a [`ResolveKey`] with
+    /// `ResolveKey::new(*key.as_bytes())`.
+    ///
+    /// Retracted keys are left out, the zero hash being how the mutable store
+    /// records one, as for [`Self::resolve`].
+    ///
+    /// Lore has no remote listing, so a key published only on the server is
+    /// missing here, and a handle opened `remote` fails with
+    /// [`ErrorCode::InvalidArguments`](crate::ErrorCode::InvalidArguments).
+    /// [`RepositoryId::ZERO`] lists every partition the handle can reach,
+    /// without saying which partition a key came from.
+    ///
+    /// The whole listing is collected before this returns.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_storage_mutable_list` with
+    /// one item.
+    pub fn list_local_keys(
+        &self,
+        repository: RepositoryId,
+        key_type: KeyType,
+    ) -> Result<Vec<(Hash, Revision)>, LoreError> {
+        let mut entries = Vec::new();
+        let mut outcome: Option<lore_error_code_t> = None;
+
+        let result = crate::call::storage_mutable_list(
+            self.lore,
+            LIST,
+            &self.globals.with_backend(Backend::Local),
+            StorageMutableListArgs {
+                handle: self.handle,
+                items: &[StorageMutableListItem {
+                    id: 0,
+                    partition: repository.to_raw(),
+                    key_type: key_type.to_raw(),
+                }],
+            },
+            |event| {
+                crate::log_event(&event);
+
+                match event {
+                    Ok(Event::StorageMutableListEntry { key, value, .. }) => {
+                        let value = Revision::from_raw(value);
+                        if !value.is_zero() {
+                            entries.push((Hash::from_raw(key), value));
+                        }
+                    }
+                    Ok(Event::StorageMutableListItemComplete { error_code, .. }) => {
+                        outcome = Some(error_code);
+                    }
+                    _ => {}
+                }
+            },
+        );
+
+        if outcome.is_none() {
+            result?;
+            return Err(LoreError::MissingEvent {
+                command: LIST,
+                expected: "storage_mutable_list_item_complete",
+            });
+        }
+        LoreError::resolve(LIST, result, outcome)?;
+
+        Ok(entries)
     }
 
     /// Waits for what this store has written to reach the disk.

@@ -8,6 +8,8 @@
 //! and logs print, so a revision in an error can be pasted into a `lore`
 //! command.
 
+use std::num::NonZeroU32;
+
 use lore_sys::{lore_address_t, lore_context_t, lore_hash_t, lore_instance_id_t, lore_partition_t};
 
 /// Lowercase hex, truncated to the formatter's precision when it has one, so
@@ -102,6 +104,16 @@ identifier!(
     /// A revision, by the hash of its content. [`Self::ZERO`] is Lore's "no
     /// revision" — what a branch with nothing on it reports as its tip.
     Revision,
+    lore_hash_t,
+    32
+);
+
+identifier!(
+    /// A 32-byte hash with no meaning of its own: a mutable key as
+    /// [`Store::list_local_keys`](crate::Store::list_local_keys) reports it,
+    /// whatever its [`KeyType`]. Rewrap it as the type it is, such as
+    /// `ResolveKey::new(*hash.as_bytes())`.
+    Hash,
     lore_hash_t,
     32
 );
@@ -220,5 +232,38 @@ impl NodeKind {
     /// Whether this node has content to read. A directory and a link do not.
     pub fn is_file(&self) -> bool {
         matches!(self, Self::File)
+    }
+}
+
+/// The kind of value a mutable key refers to. Lore files each key under one,
+/// so the same 32 bytes under two key types are two different keys.
+///
+/// [`Self::Other`] for the same reason as [`NodeKind::Other`].
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
+pub enum KeyType {
+    BranchMetadata,
+    BranchId,
+    BranchLatestPointer,
+    RepositoryMetadata,
+    RepositoryId,
+    Instance,
+    /// Keys naming immutable content, published by
+    /// [`Store::put_resolved`](crate::Store::put_resolved). See [`ResolveKey`].
+    Resolve,
+    Other(NonZeroU32),
+}
+
+impl KeyType {
+    pub(crate) fn to_raw(self) -> lore_sys::lore_key_type_t {
+        match self {
+            Self::BranchMetadata => lore_sys::LORE_KEY_TYPE_BRANCH_METADATA,
+            Self::BranchId => lore_sys::LORE_KEY_TYPE_BRANCH_ID,
+            Self::BranchLatestPointer => lore_sys::LORE_KEY_TYPE_BRANCH_LATEST_POINTER,
+            Self::RepositoryMetadata => lore_sys::LORE_KEY_TYPE_REPOSITORY_METADATA,
+            Self::RepositoryId => lore_sys::LORE_KEY_TYPE_REPOSITORY_ID,
+            Self::Instance => lore_sys::LORE_KEY_TYPE_INSTANCE,
+            Self::Resolve => lore_sys::LORE_KEY_TYPE_RESOLVE,
+            Self::Other(raw) => raw.get(),
+        }
     }
 }

@@ -21,10 +21,11 @@ use lore_sys::{
     lore_storage_get_resolved_item_array_t, lore_storage_get_resolved_item_t,
     lore_storage_mutable_compare_and_swap_args_t,
     lore_storage_mutable_compare_and_swap_item_array_t,
-    lore_storage_mutable_compare_and_swap_item_t, lore_storage_mutable_load_args_t,
-    lore_storage_mutable_load_item_array_t, lore_storage_mutable_load_item_t,
-    lore_storage_open_args_t, lore_storage_put_args_t, lore_storage_put_item_array_t,
-    lore_storage_put_item_t, lore_storage_put_resolved_args_t,
+    lore_storage_mutable_compare_and_swap_item_t, lore_storage_mutable_list_args_t,
+    lore_storage_mutable_list_item_array_t, lore_storage_mutable_list_item_t,
+    lore_storage_mutable_load_args_t, lore_storage_mutable_load_item_array_t,
+    lore_storage_mutable_load_item_t, lore_storage_open_args_t, lore_storage_put_args_t,
+    lore_storage_put_item_array_t, lore_storage_put_item_t, lore_storage_put_resolved_args_t,
     lore_storage_put_resolved_item_array_t, lore_storage_put_resolved_item_t,
     lore_storage_remote_config_t, lore_store_t, lore_string_t, LORE_EVENT_COMPLETE,
     LORE_EVENT_ERROR,
@@ -1394,6 +1395,105 @@ pub fn storage_mutable_compare_and_swap(
     unsafe {
         call_with_callback(
             lore.lore_storage_mutable_compare_and_swap,
+            command,
+            globals,
+            &args.to_raw(&items),
+            callback,
+        )
+    }
+}
+
+/// One listing for [`storage_mutable_list`] to perform.
+#[derive(Debug, Clone, Copy)]
+pub struct StorageMutableListItem {
+    /// Caller-chosen id, echoed back on every
+    /// [`Event::StorageMutableListEntry`] and the item's
+    /// [`Event::StorageMutableListItemComplete`].
+    pub id: u64,
+    /// Partition to list, which is a repository id. The zero partition lists
+    /// every partition the caller can access, and the entries do not say
+    /// which one they came from.
+    pub partition: lore_partition_t,
+    /// Kind of value to list; `LORE_KEY_TYPE_RESOLVE` for keys published by
+    /// [`storage_put_resolved`].
+    pub key_type: lore_key_type_t,
+}
+
+impl StorageMutableListItem {
+    /// The raw struct to hand to Lore. Carries no pointers, so it borrows
+    /// nothing.
+    fn to_raw(self) -> lore_storage_mutable_list_item_t {
+        lore_storage_mutable_list_item_t {
+            id: self.id,
+            partition: self.partition,
+            key_type: self.key_type,
+        }
+    }
+}
+
+/// Arguments for [`storage_mutable_list`].
+#[derive(Debug, Clone, Copy)]
+pub struct StorageMutableListArgs<'a> {
+    /// Handle from [`storage_open`].
+    pub handle: lore_store_t,
+    /// Listings to perform. Each runs independently, emitting its own entries
+    /// and completing on its own, carrying the item's `id`.
+    pub items: &'a [StorageMutableListItem],
+}
+
+impl StorageMutableListArgs<'_> {
+    /// The items as Lore's own type, kept out of [`Self::to_raw`] for the same
+    /// reason as [`FileInfoArgs::raw_paths`].
+    fn raw_items(self) -> Vec<lore_storage_mutable_list_item_t> {
+        self.items
+            .iter()
+            .copied()
+            .map(StorageMutableListItem::to_raw)
+            .collect()
+    }
+
+    /// The raw struct to hand to Lore, borrowing `items`.
+    fn to_raw(
+        self,
+        items: &[lore_storage_mutable_list_item_t],
+    ) -> lore_storage_mutable_list_args_t {
+        lore_storage_mutable_list_args_t {
+            handle: self.handle,
+            items: lore_storage_mutable_list_item_array_t {
+                ptr: if items.is_empty() {
+                    std::ptr::null()
+                } else {
+                    items.as_ptr()
+                },
+                count: items.len(),
+            },
+        }
+    }
+}
+
+/// Lists the key-value pairs a partition holds under one key type.
+///
+/// Each item emits one [`Event::StorageMutableListEntry`] per pair, then one
+/// terminal [`Event::StorageMutableListItemComplete`]. Listing reads the
+/// handle's local mutable store only: there is no remote protocol for it, so
+/// a call under `globals.remote` (or on a handle bound to it) is rejected as
+/// a whole with [`ErrorCode::InvalidArguments`](crate::ErrorCode::InvalidArguments).
+///
+/// This corresponds to `lore_sys::Lore::lore_storage_mutable_list`.
+pub fn storage_mutable_list(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &(impl RawGlobals + ?Sized),
+    args: StorageMutableListArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let items = args.raw_items();
+
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `items`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_storage_mutable_list,
             command,
             globals,
             &args.to_raw(&items),

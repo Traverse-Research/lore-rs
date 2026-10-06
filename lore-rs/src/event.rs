@@ -17,6 +17,7 @@ use lore_sys::{
     LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE,
     LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE,
     LORE_EVENT_STORAGE_MUTABLE_COMPARE_AND_SWAP_ITEM_COMPLETE,
+    LORE_EVENT_STORAGE_MUTABLE_LIST_ENTRY, LORE_EVENT_STORAGE_MUTABLE_LIST_ITEM_COMPLETE,
     LORE_EVENT_STORAGE_MUTABLE_LOAD_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
     LORE_EVENT_STORAGE_PUT_ITEM_COMPLETE, LORE_LOG_LEVEL_ERROR, LORE_LOG_LEVEL_INFO,
     LORE_LOG_LEVEL_TRACE, LORE_LOG_LEVEL_WARN,
@@ -314,6 +315,19 @@ pub enum Event<'a> {
         previous: lore_hash_t,
         error_code: lore_error_code_t,
     },
+    /// One key-value pair a mutable-store listing found, ahead of the item's
+    /// [`Self::StorageMutableListItemComplete`].
+    StorageMutableListEntry {
+        id: u64,
+        key: lore_hash_t,
+        value: lore_hash_t,
+    },
+    /// The terminal event of a mutable-store listing, success or failure,
+    /// emitted after every one of its entries.
+    StorageMutableListItemComplete {
+        id: u64,
+        error_code: lore_error_code_t,
+    },
     /// Event kinds without a mapped variant (yet), add them here as needed
     Other {
         tag: lore_event_tag_t,
@@ -552,6 +566,17 @@ impl<'a> Event<'a> {
                         error_code: data
                             .storage_mutable_compare_and_swap_item_complete
                             .error_code,
+                    }
+                }
+                LORE_EVENT_STORAGE_MUTABLE_LIST_ENTRY => Self::StorageMutableListEntry {
+                    id: data.storage_mutable_list_entry.id,
+                    key: data.storage_mutable_list_entry.key,
+                    value: data.storage_mutable_list_entry.value,
+                },
+                LORE_EVENT_STORAGE_MUTABLE_LIST_ITEM_COMPLETE => {
+                    Self::StorageMutableListItemComplete {
+                        id: data.storage_mutable_list_item_complete.id,
+                        error_code: data.storage_mutable_list_item_complete.error_code,
                     }
                 }
                 _ => Self::Other { tag },

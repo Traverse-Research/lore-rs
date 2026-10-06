@@ -28,8 +28,9 @@ pub use call::{
     RepositoryStatusArgs, RevisionInfoArgs, RevisionTreeResolvePathArgs, StorageGetArgs,
     StorageGetItem, StorageGetMetadataArgs, StorageGetMetadataItem, StorageGetResolvedArgs,
     StorageGetResolvedItem, StorageMutableCompareAndSwapArgs, StorageMutableCompareAndSwapItem,
-    StorageMutableLoadArgs, StorageMutableLoadItem, StorageOpenArgs, StoragePutArgs,
-    StoragePutItem, StoragePutResolvedArgs, StoragePutResolvedItem,
+    StorageMutableListArgs, StorageMutableListItem, StorageMutableLoadArgs, StorageMutableLoadItem,
+    StorageOpenArgs, StoragePutArgs, StoragePutItem, StoragePutResolvedArgs,
+    StoragePutResolvedItem,
 };
 
 mod string;
@@ -46,7 +47,8 @@ pub use error::{ErrorCode, LoreError};
 
 mod types;
 pub use types::{
-    Address, BranchId, ContextId, InstanceId, NodeId, NodeKind, RepositoryId, ResolveKey, Revision,
+    Address, BranchId, ContextId, Hash, InstanceId, KeyType, NodeId, NodeKind, RepositoryId,
+    ResolveKey, Revision,
 };
 
 mod library;
