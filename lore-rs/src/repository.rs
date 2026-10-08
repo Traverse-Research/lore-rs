@@ -7,10 +7,11 @@ use lore_sys::{
 };
 
 use crate::{
-    BranchId, BranchInfoArgs, BranchPushArgs, BranchSwitchArgs, Event, FileStageArgs,
-    FileUnstageArgs, GlobalArgs, InstanceId, Lore, LoreError, NodeKind, RepositoryCloneArgs,
-    RepositoryId, RepositoryInfoArgs, RepositoryStatusArgs, Revision, RevisionCommitArgs,
-    RevisionInfoArgs, RevisionSyncArgs,
+    BranchArchiveArgs, BranchCreateArgs, BranchId, BranchInfoArgs, BranchListArgs, BranchPushArgs,
+    BranchSwitchArgs, Event, FileStageArgs, FileUnstageArgs, GlobalArgs, InstanceId, Lore,
+    LoreError, NodeKind, RepositoryCloneArgs, RepositoryId, RepositoryInfoArgs,
+    RepositoryStatusArgs, Revision, RevisionCommitArgs, RevisionHistoryArgs, RevisionInfoArgs,
+    RevisionSyncArgs,
 };
 
 /// A local repository instance — the directory holding `.lore` — together
@@ -898,6 +899,69 @@ pub struct SyncRevision {
     pub conflict: bool,
 }
 
+/// A branch a [`create_branch`](Repository::create_branch) made in one
+/// repository.
+#[derive(Debug, Clone)]
+pub struct BranchCreated {
+    pub name: String,
+    /// The revision the new branch points at.
+    pub latest: Revision,
+    /// Lore made a new revision for the branch, which happens when the
+    /// repository has linked repositories that needed their own branch.
+    pub is_commit: bool,
+}
+
+/// One branch from [`Repository::branches`].
+#[derive(Debug, Clone)]
+pub struct BranchEntry {
+    /// Which side's view of the branch this is. A branch known on both sides
+    /// is listed once for each; an archived one is listed as local.
+    pub location: BranchLocation,
+    pub id: BranchId,
+    pub name: String,
+    pub category: String,
+    /// Tip on the side [`Self::location`] names; [`None`] when it has none.
+    pub latest: Option<Revision>,
+    /// The branch points this branch was created from, as parent branch and
+    /// the revision on it.
+    pub stack: Vec<(BranchId, Revision)>,
+    pub creator: String,
+    /// Lore's timestamp, which is milliseconds since the Unix epoch for a
+    /// branch created by a client and seconds for one created on a server.
+    pub created: u64,
+    /// The instance is on this branch.
+    pub is_current: bool,
+    pub archived: bool,
+}
+
+/// A revision history, from [`Repository::history`].
+#[derive(Debug, Clone)]
+pub struct History {
+    pub repository: RepositoryId,
+    pub branch: BranchId,
+    /// Newest first.
+    pub entries: Vec<HistoryEntry>,
+}
+
+/// One revision of a [`History`].
+#[derive(Debug, Clone)]
+pub struct HistoryEntry {
+    pub revision: Revision,
+    pub revision_number: u64,
+    parents: [Revision; 2],
+}
+
+impl HistoryEntry {
+    /// The parent revisions: none for an initial revision, one normally, two
+    /// for a merge.
+    pub fn parents(&self) -> impl Iterator<Item = Revision> + '_ {
+        self.parents
+            .iter()
+            .copied()
+            .filter(|parent| !parent.is_zero())
+    }
+}
+
 /// What a [`clone`](Lore::repository_clone) checked out.
 #[derive(Debug, Clone)]
 pub struct Cloned {
@@ -1321,6 +1385,155 @@ impl Repository {
         let mut sync = sync.ok_or(missing(COMMAND, "revision_sync_target"))?;
         sync.revision = synced;
         Ok(sync)
+    }
+
+    /// Creates a branch at the revision the instance is on and moves the
+    /// instance onto it, leaving the files as they are.
+    ///
+    /// One [`BranchCreated`] for the repository itself, then one per layer,
+    /// all with the same name; Lore does not say which is which. Empty when
+    /// the branch has no revision to point at, or when Lore restored an
+    /// archived branch instead, neither of which it reports.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_branch_create`.
+    pub fn create_branch(
+        &self,
+        args: BranchCreateArgs<'_>,
+    ) -> Result<Vec<BranchCreated>, LoreError> {
+        let mut created = Vec::new();
+
+        crate::call::branch_create(self.lore, "branch::create", &self.globals, args, |event| {
+            crate::log_event(&event);
+
+            if let Ok(Event::BranchCreate {
+                name,
+                latest,
+                is_commit,
+            }) = event
+            {
+                created.push(BranchCreated {
+                    name: name.to_owned(),
+                    latest: Revision::from_raw(latest),
+                    is_commit,
+                });
+            }
+        })?;
+
+        Ok(created)
+    }
+
+    /// Archives a branch, which is what Lore has in place of deleting one: it
+    /// stops being listed unless archived branches are asked for, and its
+    /// history stays. Returns the name of the branch archived, which is how
+    /// to tell which branch an id named.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_branch_archive`.
+    pub fn archive_branch(&self, args: BranchArchiveArgs<'_>) -> Result<String, LoreError> {
+        const COMMAND: &str = "branch::archive";
+        let mut archived = None;
+
+        crate::call::branch_archive(self.lore, COMMAND, &self.globals, args, |event| {
+            crate::log_event(&event);
+            if let Ok(Event::BranchArchive { name }) = event {
+                archived = Some(name.to_owned());
+            }
+        })?;
+
+        archived.ok_or(missing(COMMAND, "branch_archive"))
+    }
+
+    /// Lists the branches the instance and its remote know.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_branch_list`.
+    pub fn branches(&self, args: BranchListArgs) -> Result<Vec<BranchEntry>, LoreError> {
+        let mut branches = Vec::new();
+
+        crate::call::branch_list(self.lore, "branch::list", &self.globals, args, |event| {
+            crate::log_event(&event);
+
+            if let Ok(Event::BranchListEntry {
+                location,
+                id,
+                name,
+                category,
+                latest,
+                stack,
+                creator,
+                created,
+                is_current,
+                archived,
+            }) = event
+            {
+                branches.push(BranchEntry {
+                    location: BranchLocation::from_raw(location),
+                    id: BranchId::from_raw(id),
+                    name: name.to_owned(),
+                    category: category.to_owned(),
+                    latest: present(latest),
+                    stack: stack
+                        .iter()
+                        .map(|point| {
+                            (
+                                BranchId::from_raw(point.branch),
+                                Revision::from_raw(point.revision),
+                            )
+                        })
+                        .collect(),
+                    creator: creator.to_owned(),
+                    created,
+                    is_current,
+                    archived,
+                });
+            }
+        })?;
+
+        Ok(branches)
+    }
+
+    /// Walks the history back from a revision along its first parents.
+    ///
+    /// [`None`] when there is no revision to list: Lore reports the repository
+    /// and branch only along with the first entry.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_revision_history`.
+    pub fn history(&self, args: RevisionHistoryArgs<'_>) -> Result<Option<History>, LoreError> {
+        let mut history = None;
+        let mut entries = Vec::new();
+
+        crate::call::revision_history(
+            self.lore,
+            "revision::history",
+            &self.globals,
+            args,
+            |event| {
+                crate::log_event(&event);
+
+                match event {
+                    Ok(Event::RevisionHistory { repository, branch }) => {
+                        history = Some((
+                            RepositoryId::from_raw(repository),
+                            BranchId::from_raw(branch),
+                        ));
+                    }
+                    Ok(Event::RevisionHistoryEntry {
+                        revision,
+                        revision_number,
+                        parents,
+                    }) => entries.push(HistoryEntry {
+                        revision: Revision::from_raw(revision),
+                        revision_number,
+                        parents: parents.map(Revision::from_raw),
+                    }),
+                    _ => {}
+                }
+            },
+        )?;
+
+        Ok(history.map(|(repository, branch)| History {
+            repository,
+            branch,
+            entries,
+        }))
     }
 }
 
