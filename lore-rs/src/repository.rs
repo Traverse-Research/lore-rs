@@ -1,13 +1,16 @@
 use lore_sys::{
-    lore_file_action_t, lore_file_stage_count_data_t, lore_file_unstage_count_data_t, lore_hash_t,
-    lore_repository_clone_count_data_t, lore_revision_commit_count_data_t, LORE_FILE_ACTION_ADD,
-    LORE_FILE_ACTION_COPY, LORE_FILE_ACTION_DELETE, LORE_FILE_ACTION_KEEP, LORE_FILE_ACTION_MOVE,
+    lore_branch_location_t, lore_file_action_t, lore_file_stage_count_data_t,
+    lore_file_unstage_count_data_t, lore_hash_t, lore_repository_clone_count_data_t,
+    lore_revision_commit_count_data_t, LORE_BRANCH_LOCATION_LOCAL, LORE_BRANCH_LOCATION_REMOTE,
+    LORE_FILE_ACTION_ADD, LORE_FILE_ACTION_COPY, LORE_FILE_ACTION_DELETE, LORE_FILE_ACTION_KEEP,
+    LORE_FILE_ACTION_MOVE,
 };
 
 use crate::{
-    BranchId, BranchInfoArgs, Event, FileStageArgs, FileUnstageArgs, GlobalArgs, InstanceId, Lore,
-    LoreError, NodeKind, RepositoryCloneArgs, RepositoryId, RepositoryInfoArgs,
-    RepositoryStatusArgs, Revision, RevisionCommitArgs, RevisionInfoArgs,
+    BranchId, BranchInfoArgs, BranchPushArgs, BranchSwitchArgs, Event, FileStageArgs,
+    FileUnstageArgs, GlobalArgs, InstanceId, Lore, LoreError, NodeKind, RepositoryCloneArgs,
+    RepositoryId, RepositoryInfoArgs, RepositoryStatusArgs, Revision, RevisionCommitArgs,
+    RevisionInfoArgs, RevisionSyncArgs,
 };
 
 /// A local repository instance — the directory holding `.lore` — together
@@ -493,6 +496,27 @@ impl std::fmt::Display for FileAction {
     }
 }
 
+/// Which side a branch was found on: `lore_branch_location_t` as an enum,
+/// with [`Self::Other`] for the reason [`FileAction`] has one.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum BranchLocation {
+    /// The instance's local store.
+    Local,
+    /// The server.
+    Remote,
+    Other(lore_branch_location_t),
+}
+
+impl BranchLocation {
+    fn from_raw(location: lore_branch_location_t) -> Self {
+        match location {
+            LORE_BRANCH_LOCATION_LOCAL => Self::Local,
+            LORE_BRANCH_LOCATION_REMOTE => Self::Remote,
+            other => Self::Other(other),
+        }
+    }
+}
+
 /// Lore's tally of a [`stage`](Repository::stage),
 /// `lore_file_stage_count_data_t`.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
@@ -777,6 +801,103 @@ impl Commit {
     }
 }
 
+/// What a [`push`](Repository::push) of one repository found on both sides.
+#[derive(Debug, Clone)]
+pub struct Push {
+    pub remote: String,
+    pub repository: RepositoryId,
+    pub branch: BranchId,
+    pub branch_name: String,
+    /// [`None`] when the remote does not have the branch yet.
+    pub remote_revision: Option<Revision>,
+    pub local_revision: Option<Revision>,
+    /// Revisions on the remote since the two sides last agreed.
+    pub remote_history: u64,
+    /// Revisions the push sends.
+    pub local_history: u64,
+    /// The remote already held everything; nothing was sent.
+    pub already_pushed: bool,
+    /// The branch is the repository's default branch.
+    pub is_default: bool,
+    /// The repository is a linked repository.
+    pub is_link: bool,
+    /// The repository is a layer.
+    pub is_layer: bool,
+}
+
+/// What a [`push`](Repository::push) did.
+#[derive(Debug, Clone)]
+pub struct Pushed {
+    /// One per repository pushed, in the order Lore reported them: the
+    /// repository itself, then each layer, then each linked repository. Lore
+    /// also pushes a linked repository for every pushed revision that links
+    /// it, so one can appear more than once, usually with
+    /// [`already_pushed`](Push::already_pushed) set on the repeats.
+    pub pushes: Vec<Push>,
+    /// One per revision uploaded. Lore does not say which repository each
+    /// one is for.
+    pub uploads: Vec<Uploaded>,
+}
+
+/// The fragments a [`push`](Repository::push) uploaded for one revision.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct Uploaded {
+    pub fragments: u64,
+    pub bytes_transferred: u64,
+}
+
+/// The branch a [`switch`](Repository::switch) landed on.
+#[derive(Debug, Clone)]
+pub struct Switched {
+    pub id: BranchId,
+    pub name: String,
+    /// Tip in the local store; [`None`] when the instance never had the
+    /// branch before.
+    pub latest_local: Option<Revision>,
+    /// Tip on the remote; [`None`] when there is none.
+    pub latest_remote: Option<Revision>,
+    /// The revision the working tree is now on; [`None`] when the branch has
+    /// none.
+    pub revision: Option<Revision>,
+    /// Which tip the switch went to: the local store's, or the server's,
+    /// which is then the local tip too and is what `latest_local` holds.
+    pub location: BranchLocation,
+}
+
+/// What a [`sync`](Repository::sync) resolved and did.
+#[derive(Debug, Clone)]
+pub struct Sync {
+    pub remote: String,
+    pub repository: RepositoryId,
+    pub branch: BranchId,
+    pub branch_name: String,
+    /// The revision the working tree was on; [`None`] on an empty branch.
+    pub source_revision: Option<Revision>,
+    pub source_revision_number: u64,
+    /// The revision the sync resolved to; [`None`] on an empty branch.
+    pub target_revision: Option<Revision>,
+    pub target_revision_number: u64,
+    /// The target is the branch tip.
+    pub is_latest: bool,
+    /// The target came from the local store rather than the remote.
+    pub local: bool,
+    /// Where the working tree ended up; [`None`] when it was already on the
+    /// target and there was nothing to do.
+    pub revision: Option<SyncRevision>,
+}
+
+/// The revision a [`sync`](Repository::sync) left the working tree on.
+#[derive(Debug, Clone)]
+pub struct SyncRevision {
+    pub branch: BranchId,
+    pub revision: Revision,
+    pub revision_number: u64,
+    /// The revision is a merge Lore made to reconcile divergent history.
+    pub merge: bool,
+    /// The merge left conflicts for the caller to resolve.
+    pub conflict: bool,
+}
+
 /// What a [`clone`](Lore::repository_clone) checked out.
 #[derive(Debug, Clone)]
 pub struct Cloned {
@@ -1047,6 +1168,159 @@ impl Repository {
             });
         }
         Ok(commits)
+    }
+
+    /// Pushes a branch and its local revisions to the remote, creating the
+    /// branch there on its first push.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_branch_push`.
+    pub fn push(&self, args: BranchPushArgs<'_>) -> Result<Pushed, LoreError> {
+        const COMMAND: &str = "branch::push";
+        let mut pushes = Vec::new();
+        let mut uploads = Vec::new();
+
+        crate::call::branch_push(self.lore, COMMAND, &self.globals, args, |event| {
+            crate::log_event(&event);
+
+            match event {
+                Ok(Event::BranchPush {
+                    remote,
+                    repository,
+                    branch,
+                    branch_name,
+                    remote_revision,
+                    local_revision,
+                    remote_history,
+                    local_history,
+                    already_pushed,
+                    is_default,
+                    is_link,
+                    is_layer,
+                }) => pushes.push(Push {
+                    remote: remote.to_owned(),
+                    repository: RepositoryId::from_raw(repository),
+                    branch: BranchId::from_raw(branch),
+                    branch_name: branch_name.to_owned(),
+                    remote_revision: present(remote_revision),
+                    local_revision: present(local_revision),
+                    remote_history,
+                    local_history,
+                    already_pushed,
+                    is_default,
+                    is_link,
+                    is_layer,
+                }),
+                Ok(Event::BranchPushFragmentEnd {
+                    fragments,
+                    bytes_transferred,
+                }) => uploads.push(Uploaded {
+                    fragments,
+                    bytes_transferred,
+                }),
+                _ => {}
+            }
+        })?;
+
+        if pushes.is_empty() {
+            return Err(missing(COMMAND, "branch_push"));
+        }
+        Ok(Pushed { pushes, uploads })
+    }
+
+    /// Switches the working tree to another branch.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_branch_switch`.
+    pub fn switch(&self, args: BranchSwitchArgs<'_>) -> Result<Switched, LoreError> {
+        const COMMAND: &str = "branch::switch";
+        let mut switched = None;
+
+        crate::call::branch_switch(self.lore, COMMAND, &self.globals, args, |event| {
+            crate::log_event(&event);
+
+            if let Ok(Event::BranchSwitchEnd {
+                id,
+                name,
+                latest_local,
+                latest_remote,
+                revision,
+                location,
+            }) = event
+            {
+                switched = Some(Switched {
+                    id: BranchId::from_raw(id),
+                    name: name.to_owned(),
+                    latest_local: present(latest_local),
+                    latest_remote: present(latest_remote),
+                    revision: present(revision),
+                    location: BranchLocation::from_raw(location),
+                });
+            }
+        })?;
+
+        switched.ok_or(missing(COMMAND, "branch_switch_end"))
+    }
+
+    /// Synchronizes the working tree to a revision, merging when the branch
+    /// has diverged from it.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_revision_sync`.
+    pub fn sync(&self, args: RevisionSyncArgs<'_>) -> Result<Sync, LoreError> {
+        const COMMAND: &str = "revision::sync";
+        let mut sync = None;
+        let mut synced = None;
+
+        crate::call::revision_sync(self.lore, COMMAND, &self.globals, args, |event| {
+            crate::log_event(&event);
+
+            match event {
+                Ok(Event::RevisionSyncTarget {
+                    remote,
+                    repository,
+                    branch,
+                    branch_name,
+                    source_revision,
+                    source_revision_number,
+                    target_revision,
+                    target_revision_number,
+                    is_latest,
+                    local,
+                }) => {
+                    sync = Some(Sync {
+                        remote: remote.to_owned(),
+                        repository: RepositoryId::from_raw(repository),
+                        branch: BranchId::from_raw(branch),
+                        branch_name: branch_name.to_owned(),
+                        source_revision: present(source_revision),
+                        source_revision_number,
+                        target_revision: present(target_revision),
+                        target_revision_number,
+                        is_latest,
+                        local,
+                        revision: None,
+                    });
+                }
+                Ok(Event::RevisionSyncRevision {
+                    branch,
+                    revision,
+                    revision_number,
+                    merge,
+                    conflict,
+                }) => {
+                    synced = Some(SyncRevision {
+                        branch: BranchId::from_raw(branch),
+                        revision: Revision::from_raw(revision),
+                        revision_number,
+                        merge,
+                        conflict,
+                    });
+                }
+                _ => {}
+            }
+        })?;
+
+        let mut sync = sync.ok_or(missing(COMMAND, "revision_sync_target"))?;
+        sync.revision = synced;
+        Ok(sync)
     }
 }
 

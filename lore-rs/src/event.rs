@@ -1,12 +1,13 @@
 use crate::LoreStringExt;
 use lore_sys::{
-    lore_address_t, lore_branch_id_t, lore_context_t, lore_error_code_t, lore_event_t,
-    lore_event_tag_t, lore_file_action_t, lore_file_stage_count_data_t,
+    lore_address_t, lore_branch_id_t, lore_branch_location_t, lore_context_t, lore_error_code_t,
+    lore_event_t, lore_event_tag_t, lore_file_action_t, lore_file_stage_count_data_t,
     lore_file_unstage_count_data_t, lore_fragment_t, lore_hash_t, lore_instance_id_t,
     lore_log_level_t, lore_node_id_t, lore_node_type_t, lore_repository_clone_count_data_t,
     lore_repository_id_t, lore_revision_commit_count_data_t, LORE_EVENT_AUTH_IDENTITY,
     LORE_EVENT_AUTH_URL, LORE_EVENT_AUTH_USER_INFO, LORE_EVENT_AUTH_USER_TOKEN,
-    LORE_EVENT_BRANCH_INFO, LORE_EVENT_COMPLETE, LORE_EVENT_END, LORE_EVENT_ERROR,
+    LORE_EVENT_BRANCH_INFO, LORE_EVENT_BRANCH_PUSH, LORE_EVENT_BRANCH_PUSH_FRAGMENT_END,
+    LORE_EVENT_BRANCH_SWITCH_END, LORE_EVENT_COMPLETE, LORE_EVENT_END, LORE_EVENT_ERROR,
     LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_END, LORE_EVENT_FILE_STAGE_FILE,
     LORE_EVENT_FILE_STAGE_REVISION, LORE_EVENT_FILE_UNSTAGE_END, LORE_EVENT_FILE_UNSTAGE_FILE,
     LORE_EVENT_FILE_UNSTAGE_REVISION, LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_CLONE_END,
@@ -14,13 +15,14 @@ use lore_sys::{
     LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_COUNT,
     LORE_EVENT_REPOSITORY_STATUS_FILE, LORE_EVENT_REPOSITORY_STATUS_REVISION,
     LORE_EVENT_REPOSITORY_STATUS_SUMMARY, LORE_EVENT_REVISION_COMMIT_END,
-    LORE_EVENT_REVISION_COMMIT_REVISION, LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_TREE_CHILD,
-    LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE, LORE_EVENT_REVISION_TREE_INFO,
-    LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN, LORE_EVENT_REVISION_TREE_LOADED,
-    LORE_EVENT_REVISION_TREE_NODE_INFO, LORE_EVENT_REVISION_TREE_NODE_PATH,
-    LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE, LORE_EVENT_STORAGE_GET_DATA,
-    LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE,
-    LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE,
+    LORE_EVENT_REVISION_COMMIT_REVISION, LORE_EVENT_REVISION_INFO,
+    LORE_EVENT_REVISION_SYNC_REVISION, LORE_EVENT_REVISION_SYNC_TARGET,
+    LORE_EVENT_REVISION_TREE_CHILD, LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE,
+    LORE_EVENT_REVISION_TREE_INFO, LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN,
+    LORE_EVENT_REVISION_TREE_LOADED, LORE_EVENT_REVISION_TREE_NODE_INFO,
+    LORE_EVENT_REVISION_TREE_NODE_PATH, LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE,
+    LORE_EVENT_STORAGE_GET_DATA, LORE_EVENT_STORAGE_GET_HEADER,
+    LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE,
     LORE_EVENT_STORAGE_MUTABLE_COMPARE_AND_SWAP_ITEM_COMPLETE,
     LORE_EVENT_STORAGE_MUTABLE_LOAD_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
     LORE_EVENT_STORAGE_PUT_ITEM_COMPLETE, LORE_LOG_LEVEL_ERROR, LORE_LOG_LEVEL_INFO,
@@ -122,6 +124,49 @@ pub enum Event<'a> {
         creator: &'a str,
         created: u64,
         archived: bool,
+    },
+    /// One per repository a `branch_push` pushes, with the tips on both sides
+    /// before any of its data moves.
+    BranchPush {
+        remote: &'a str,
+        repository: lore_repository_id_t,
+        branch: lore_branch_id_t,
+        branch_name: &'a str,
+        /// Zero when the remote does not have the branch yet.
+        remote_revision: lore_hash_t,
+        local_revision: lore_hash_t,
+        /// Revisions on the remote since the two sides last agreed.
+        remote_history: u64,
+        /// Revisions the push will send.
+        local_history: u64,
+        /// The remote already holds everything local has; nothing is sent.
+        already_pushed: bool,
+        /// The branch is the repository's default branch.
+        is_default: bool,
+        /// The push is of a linked repository rather than the main one.
+        is_link: bool,
+        /// The push is of a layer rather than the main repository.
+        is_layer: bool,
+    },
+    /// The upload of one revision. It does not say which repository the
+    /// revision is in.
+    BranchPushFragmentEnd {
+        fragments: u64,
+        bytes_transferred: u64,
+    },
+    /// Concludes a successful `branch_switch` with the branch it landed on;
+    /// the fields of Lore's nested `lore_branch_switch_data_t`.
+    BranchSwitchEnd {
+        id: lore_branch_id_t,
+        name: &'a str,
+        /// Tip in the local store, zero when the instance never had the branch.
+        latest_local: lore_hash_t,
+        /// Tip on the remote, zero when there is none.
+        latest_remote: lore_hash_t,
+        /// The revision the working tree is now on.
+        revision: lore_hash_t,
+        /// Where the branch was found.
+        location: lore_branch_location_t,
     },
     FileInfo {
         path: &'a str,
@@ -286,6 +331,32 @@ pub enum Event<'a> {
         /// The direct parent, then the other parent of a merge; zero where
         /// there is none.
         parents: [lore_hash_t; 2],
+    },
+    /// The revision a `revision_sync` or `branch_switch` left the working
+    /// tree on. Emitted once; when the sync had to merge divergent history
+    /// it is the merge revision, with `merge` set.
+    RevisionSyncRevision {
+        branch: lore_branch_id_t,
+        revision: lore_hash_t,
+        revision_number: u64,
+        /// The revision is a merge Lore made to reconcile divergent history.
+        merge: bool,
+        /// The merge left conflicts for the caller to resolve.
+        conflict: bool,
+    },
+    RevisionSyncTarget {
+        remote: &'a str,
+        repository: lore_repository_id_t,
+        branch: lore_branch_id_t,
+        branch_name: &'a str,
+        source_revision: lore_hash_t,
+        source_revision_number: u64,
+        target_revision: lore_hash_t,
+        target_revision_number: u64,
+        /// The target is the branch tip.
+        is_latest: bool,
+        /// The target came from the local revision history, not the remote.
+        local: bool,
     },
     RevisionTreeLoaded {
         handle_id: u64,
@@ -486,6 +557,32 @@ impl<'a> Event<'a> {
                     created: data.branch_info.created,
                     archived: data.branch_info.archived != 0,
                 },
+                LORE_EVENT_BRANCH_PUSH => Self::BranchPush {
+                    remote: data.branch_push.remote.try_to_str()?,
+                    repository: data.branch_push.repository,
+                    branch: data.branch_push.branch,
+                    branch_name: data.branch_push.branch_name.try_to_str()?,
+                    remote_revision: data.branch_push.remote_revision,
+                    local_revision: data.branch_push.local_revision,
+                    remote_history: data.branch_push.remote_history,
+                    local_history: data.branch_push.local_history,
+                    already_pushed: data.branch_push.flag_already_pushed != 0,
+                    is_default: data.branch_push.flag_default != 0,
+                    is_link: data.branch_push.flag_link != 0,
+                    is_layer: data.branch_push.flag_layer != 0,
+                },
+                LORE_EVENT_BRANCH_PUSH_FRAGMENT_END => Self::BranchPushFragmentEnd {
+                    fragments: data.branch_push_fragment_end.fragments,
+                    bytes_transferred: data.branch_push_fragment_end.bytes_transferred,
+                },
+                LORE_EVENT_BRANCH_SWITCH_END => Self::BranchSwitchEnd {
+                    id: data.branch_switch_end.branch.id,
+                    name: data.branch_switch_end.branch.name.try_to_str()?,
+                    latest_local: data.branch_switch_end.branch.latest_local,
+                    latest_remote: data.branch_switch_end.branch.latest_remote,
+                    revision: data.branch_switch_end.branch.revision,
+                    location: data.branch_switch_end.branch.location,
+                },
                 LORE_EVENT_FILE_INFO => Self::FileInfo {
                     path: data.file_info.path.try_to_str()?,
                     hash: data.file_info.hash,
@@ -605,6 +702,25 @@ impl<'a> Event<'a> {
                         data.revision_commit_revision.parent,
                         data.revision_commit_revision.parent_other,
                     ],
+                },
+                LORE_EVENT_REVISION_SYNC_REVISION => Self::RevisionSyncRevision {
+                    branch: data.revision_sync_revision.branch,
+                    revision: data.revision_sync_revision.revision,
+                    revision_number: data.revision_sync_revision.revision_number,
+                    merge: data.revision_sync_revision.flag_merge != 0,
+                    conflict: data.revision_sync_revision.flag_conflict != 0,
+                },
+                LORE_EVENT_REVISION_SYNC_TARGET => Self::RevisionSyncTarget {
+                    remote: data.revision_sync_target.remote.try_to_str()?,
+                    repository: data.revision_sync_target.repository,
+                    branch: data.revision_sync_target.branch,
+                    branch_name: data.revision_sync_target.branch_name.try_to_str()?,
+                    source_revision: data.revision_sync_target.source_revision,
+                    source_revision_number: data.revision_sync_target.source_revision_number,
+                    target_revision: data.revision_sync_target.target_revision,
+                    target_revision_number: data.revision_sync_target.target_revision_number,
+                    is_latest: data.revision_sync_target.is_latest != 0,
+                    local: data.revision_sync_target.local != 0,
                 },
                 LORE_EVENT_REVISION_INFO => Self::RevisionInfo {
                     repository: data.revision_info.repository,
