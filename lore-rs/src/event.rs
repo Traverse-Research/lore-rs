@@ -1,15 +1,18 @@
 use crate::LoreStringExt;
 use lore_sys::{
     lore_address_t, lore_branch_id_t, lore_context_t, lore_error_code_t, lore_event_t,
-    lore_event_tag_t, lore_file_action_t, lore_fragment_t, lore_hash_t, lore_instance_id_t,
+    lore_event_tag_t, lore_file_action_t, lore_file_stage_count_data_t,
+    lore_file_unstage_count_data_t, lore_fragment_t, lore_hash_t, lore_instance_id_t,
     lore_log_level_t, lore_node_id_t, lore_node_type_t, lore_repository_id_t,
-    LORE_EVENT_AUTH_IDENTITY, LORE_EVENT_AUTH_URL, LORE_EVENT_AUTH_USER_INFO,
-    LORE_EVENT_AUTH_USER_TOKEN, LORE_EVENT_BRANCH_INFO, LORE_EVENT_COMPLETE, LORE_EVENT_END,
-    LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_FILE,
-    LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_DATA,
-    LORE_EVENT_REPOSITORY_INSTANCE, LORE_EVENT_REPOSITORY_STATE_DUMP_NODE,
-    LORE_EVENT_REPOSITORY_STATUS_COUNT, LORE_EVENT_REPOSITORY_STATUS_FILE,
-    LORE_EVENT_REPOSITORY_STATUS_REVISION, LORE_EVENT_REPOSITORY_STATUS_SUMMARY,
+    lore_revision_commit_count_data_t, LORE_EVENT_AUTH_IDENTITY, LORE_EVENT_AUTH_URL,
+    LORE_EVENT_AUTH_USER_INFO, LORE_EVENT_AUTH_USER_TOKEN, LORE_EVENT_BRANCH_INFO,
+    LORE_EVENT_COMPLETE, LORE_EVENT_END, LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO,
+    LORE_EVENT_FILE_STAGE_END, LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_STAGE_REVISION,
+    LORE_EVENT_FILE_UNSTAGE_END, LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_FILE_UNSTAGE_REVISION,
+    LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_INSTANCE,
+    LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_COUNT,
+    LORE_EVENT_REPOSITORY_STATUS_FILE, LORE_EVENT_REPOSITORY_STATUS_REVISION,
+    LORE_EVENT_REPOSITORY_STATUS_SUMMARY, LORE_EVENT_REVISION_COMMIT_END,
     LORE_EVENT_REVISION_COMMIT_REVISION, LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_TREE_CHILD,
     LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE, LORE_EVENT_REVISION_TREE_INFO,
     LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN, LORE_EVENT_REVISION_TREE_LOADED,
@@ -132,6 +135,24 @@ pub enum Event<'a> {
         /// Where a move or copy came from; empty for the other actions.
         from_path: &'a str,
     },
+    /// Lore's tally of a `file_stage`, once it is done.
+    FileStageEnd {
+        count: lore_file_stage_count_data_t,
+    },
+    /// The staged state a `file_stage` produced, one per repository it changed.
+    FileStageRevision {
+        repository: lore_repository_id_t,
+        revision: lore_hash_t,
+    },
+    /// Lore's tally of a `file_unstage`, once it is done.
+    FileUnstageEnd {
+        count: lore_file_unstage_count_data_t,
+    },
+    /// The staged state a `file_unstage` left behind.
+    FileUnstageRevision {
+        repository: lore_repository_id_t,
+        revision: lore_hash_t,
+    },
     FileUnstageFile {
         path: &'a str,
         action: lore_file_action_t,
@@ -236,9 +257,19 @@ pub enum Event<'a> {
     RepositoryStateDumpNode {
         path: &'a str,
     },
+    /// The final tally of a `revision_commit`'s file processing for one
+    /// repository, before that repository's revision is reported.
+    RevisionCommitEnd {
+        count: lore_revision_commit_count_data_t,
+    },
     RevisionCommitRevision {
-        revision: [u8; 32],
+        repository: lore_repository_id_t,
+        branch: lore_branch_id_t,
+        revision: lore_hash_t,
         revision_number: u64,
+        /// The direct parent, then the other parent of a merge; zero where
+        /// there is none.
+        parents: [lore_hash_t; 2],
     },
     RevisionInfo {
         repository: lore_repository_id_t,
@@ -460,6 +491,20 @@ impl<'a> Event<'a> {
                     action: data.file_stage_file.action,
                     from_path: data.file_stage_file.from_path.try_to_str()?,
                 },
+                LORE_EVENT_FILE_STAGE_END => Self::FileStageEnd {
+                    count: data.file_stage_end.count,
+                },
+                LORE_EVENT_FILE_STAGE_REVISION => Self::FileStageRevision {
+                    repository: data.file_stage_revision.repository,
+                    revision: data.file_stage_revision.revision,
+                },
+                LORE_EVENT_FILE_UNSTAGE_END => Self::FileUnstageEnd {
+                    count: data.file_unstage_end.count,
+                },
+                LORE_EVENT_FILE_UNSTAGE_REVISION => Self::FileUnstageRevision {
+                    repository: data.file_unstage_revision.repository,
+                    revision: data.file_unstage_revision.revision,
+                },
                 LORE_EVENT_FILE_UNSTAGE_FILE => Self::FileUnstageFile {
                     path: data.file_unstage_file.path.try_to_str()?,
                     action: data.file_unstage_file.action,
@@ -536,9 +581,18 @@ impl<'a> Event<'a> {
                 LORE_EVENT_REPOSITORY_STATE_DUMP_NODE => Self::RepositoryStateDumpNode {
                     path: data.repository_state_dump_node.name.try_to_str()?,
                 },
+                LORE_EVENT_REVISION_COMMIT_END => Self::RevisionCommitEnd {
+                    count: data.revision_commit_end.count,
+                },
                 LORE_EVENT_REVISION_COMMIT_REVISION => Self::RevisionCommitRevision {
-                    revision: data.revision_commit_revision.revision.data,
+                    repository: data.revision_commit_revision.repository,
+                    branch: data.revision_commit_revision.branch,
+                    revision: data.revision_commit_revision.revision,
                     revision_number: data.revision_commit_revision.revision_number,
+                    parents: [
+                        data.revision_commit_revision.parent,
+                        data.revision_commit_revision.parent_other,
+                    ],
                 },
                 LORE_EVENT_REVISION_INFO => Self::RevisionInfo {
                     repository: data.revision_info.repository,

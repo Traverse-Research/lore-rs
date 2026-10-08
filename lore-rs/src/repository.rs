@@ -1,11 +1,13 @@
 use lore_sys::{
-    lore_file_action_t, lore_hash_t, LORE_FILE_ACTION_ADD, LORE_FILE_ACTION_COPY,
+    lore_file_action_t, lore_file_stage_count_data_t, lore_file_unstage_count_data_t, lore_hash_t,
+    lore_revision_commit_count_data_t, LORE_FILE_ACTION_ADD, LORE_FILE_ACTION_COPY,
     LORE_FILE_ACTION_DELETE, LORE_FILE_ACTION_KEEP, LORE_FILE_ACTION_MOVE,
 };
 
 use crate::{
-    BranchId, BranchInfoArgs, Event, GlobalArgs, InstanceId, Lore, LoreError, NodeKind,
-    RepositoryId, RepositoryInfoArgs, RepositoryStatusArgs, Revision, RevisionInfoArgs,
+    BranchId, BranchInfoArgs, Event, FileStageArgs, FileUnstageArgs, GlobalArgs, InstanceId, Lore,
+    LoreError, NodeKind, RepositoryId, RepositoryInfoArgs, RepositoryStatusArgs, Revision,
+    RevisionCommitArgs, RevisionInfoArgs,
 };
 
 /// A local repository instance — the directory holding `.lore` — together
@@ -491,6 +493,97 @@ impl std::fmt::Display for FileAction {
     }
 }
 
+/// Lore's tally of a [`stage`](Repository::stage),
+/// `lore_file_stage_count_data_t`.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct StageCount {
+    pub directory_modify_count: u64,
+    pub directory_add_count: u64,
+    pub directory_delete_count: u64,
+    pub directory_move_count: u64,
+    pub file_modify_count: u64,
+    pub file_add_count: u64,
+    pub file_delete_count: u64,
+    pub file_move_count: u64,
+    /// Every item processed.
+    pub total_count: u64,
+}
+
+impl StageCount {
+    fn from_raw(count: lore_file_stage_count_data_t) -> Self {
+        Self {
+            directory_modify_count: count.directory_modify_count,
+            directory_add_count: count.directory_add_count,
+            directory_delete_count: count.directory_delete_count,
+            directory_move_count: count.directory_move_count,
+            file_modify_count: count.file_modify_count,
+            file_add_count: count.file_add_count,
+            file_delete_count: count.file_delete_count,
+            file_move_count: count.file_move_count,
+            total_count: count.total_count,
+        }
+    }
+}
+
+/// Lore's tally of an [`unstage`](Repository::unstage),
+/// `lore_file_unstage_count_data_t`.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct UnstageCount {
+    pub directory_unstaged_count: u64,
+    pub directory_discarded_count: u64,
+    pub file_unstaged_count: u64,
+    pub file_discarded_count: u64,
+    /// Every item processed.
+    pub total_count: u64,
+}
+
+impl UnstageCount {
+    fn from_raw(count: lore_file_unstage_count_data_t) -> Self {
+        Self {
+            directory_unstaged_count: count.directory_unstaged_count,
+            directory_discarded_count: count.directory_discarded_count,
+            file_unstaged_count: count.file_unstaged_count,
+            file_discarded_count: count.file_discarded_count,
+            total_count: count.total_count,
+        }
+    }
+}
+
+/// Lore's tally of the files a [`commit`](Repository::commit) processed,
+/// `lore_revision_commit_count_data_t`.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct CommitCount {
+    pub directory_count: u64,
+    pub directory_total: u64,
+    pub file_count: u64,
+    pub file_total: u64,
+    pub directory_delete_count: u64,
+    pub file_modify_count: u64,
+    pub file_delete_count: u64,
+    /// Content bytes.
+    pub bytes_transferred: u64,
+    pub bytes_total: u64,
+    /// Lore had found every file and directory to process.
+    pub discovery_complete: bool,
+}
+
+impl CommitCount {
+    fn from_raw(count: lore_revision_commit_count_data_t) -> Self {
+        Self {
+            directory_count: count.directory_count,
+            directory_total: count.directory_total,
+            file_count: count.file_count,
+            file_total: count.file_total,
+            directory_delete_count: count.directory_delete_count,
+            file_modify_count: count.file_modify_count,
+            file_delete_count: count.file_delete_count,
+            bytes_transferred: count.bytes_transferred,
+            bytes_total: count.bytes_total,
+            discovery_complete: count.discovery_complete != 0,
+        }
+    }
+}
+
 /// Where the working tree stands, from [`Repository::status`]: Lore's
 /// `repository_status_revision`, with the events that come after it.
 #[derive(Debug, Clone)]
@@ -583,6 +676,68 @@ pub struct StatusSummary {
     pub modifies: u64,
     pub moves: u64,
     pub copies: u64,
+}
+
+/// One path a [`stage`](Repository::stage) or
+/// [`unstage`](Repository::unstage) touched.
+#[derive(Debug, Clone)]
+pub struct FileChange {
+    /// Repository-relative.
+    pub path: String,
+    pub action: FileAction,
+    /// Where a [`Move`](FileAction::Move) or [`Copy`](FileAction::Copy) came
+    /// from. Only a stage reports it; an unstage never has one.
+    pub from_path: Option<String>,
+}
+
+/// What a [`stage`](Repository::stage) did.
+#[derive(Debug, Clone)]
+pub struct Staged {
+    /// In the order Lore reported them.
+    pub files: Vec<FileChange>,
+    pub count: StageCount,
+    /// The new staged state per repository: the repository itself when
+    /// anything outside its layers changed, then each layer a path went into.
+    /// Empty when nothing changed.
+    pub revisions: Vec<(RepositoryId, Revision)>,
+}
+
+/// What an [`unstage`](Repository::unstage) did.
+#[derive(Debug, Clone)]
+pub struct Unstaged {
+    /// In the order Lore reported them.
+    pub files: Vec<FileChange>,
+    /// [`None`] when nothing was staged, in which case Lore reports nothing at
+    /// all.
+    pub count: Option<UnstageCount>,
+    /// The staged state left behind; [`None`] when nothing was unstaged or
+    /// nothing remains staged.
+    pub revision: Option<(RepositoryId, Revision)>,
+}
+
+/// One revision a [`commit`](Repository::commit) created.
+#[derive(Debug, Clone)]
+pub struct Commit {
+    pub repository: RepositoryId,
+    pub branch: BranchId,
+    pub revision: Revision,
+    pub revision_number: u64,
+    /// Lore's tally of the files it processed for this revision. [`None`] for
+    /// a linked repository, whose files Lore counts in the tally of the
+    /// repository linking it.
+    pub count: Option<CommitCount>,
+    parents: [Revision; 2],
+}
+
+impl Commit {
+    /// The parent revisions: none for an initial revision, one normally, two
+    /// for a merge.
+    pub fn parents(&self) -> impl Iterator<Item = Revision> + '_ {
+        self.parents
+            .iter()
+            .copied()
+            .filter(|parent| !parent.is_zero())
+    }
 }
 
 /// Lore's all-zero "none" as [`None`].
@@ -708,5 +863,143 @@ impl Repository {
         status.count = count;
         status.summary = summary;
         Ok(status)
+    }
+
+    /// Stages paths for the next commit and reports each file whose staged
+    /// state changed. Lore works out the kind of change itself: a rename
+    /// arrives as a delete and an add, and a move only for a change of case.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_file_stage`.
+    pub fn stage(&self, args: FileStageArgs<'_>) -> Result<Staged, LoreError> {
+        const COMMAND: &str = "file::stage";
+        let mut files = Vec::new();
+        let mut count = None;
+        let mut revisions = Vec::new();
+
+        crate::call::file_stage(self.lore, COMMAND, &self.globals, args, |event| {
+            crate::log_event(&event);
+
+            match event {
+                Ok(Event::FileStageFile {
+                    path,
+                    action,
+                    from_path,
+                }) => files.push(FileChange {
+                    path: path.to_owned(),
+                    action: FileAction::from_raw(action),
+                    from_path: Some(from_path.to_owned()).filter(|from| !from.is_empty()),
+                }),
+                Ok(Event::FileStageEnd { count: tally }) => {
+                    count = Some(StageCount::from_raw(tally))
+                }
+                Ok(Event::FileStageRevision {
+                    repository,
+                    revision,
+                }) => revisions.push((
+                    RepositoryId::from_raw(repository),
+                    Revision::from_raw(revision),
+                )),
+                _ => {}
+            }
+        })?;
+
+        Ok(Staged {
+            files,
+            count: count.ok_or(missing(COMMAND, "file_stage_end"))?,
+            revisions,
+        })
+    }
+
+    /// Takes paths out of the next commit, leaving the working tree as it is,
+    /// and reports each path that was staged.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_file_unstage`.
+    pub fn unstage(&self, args: FileUnstageArgs<'_>) -> Result<Unstaged, LoreError> {
+        const COMMAND: &str = "file::unstage";
+        let mut files = Vec::new();
+        let mut count = None;
+        let mut revision = None;
+
+        crate::call::file_unstage(self.lore, COMMAND, &self.globals, args, |event| {
+            crate::log_event(&event);
+
+            match event {
+                Ok(Event::FileUnstageFile { path, action }) => files.push(FileChange {
+                    path: path.to_owned(),
+                    action: FileAction::from_raw(action),
+                    from_path: None,
+                }),
+                Ok(Event::FileUnstageEnd { count: tally }) => {
+                    count = Some(UnstageCount::from_raw(tally));
+                }
+                Ok(Event::FileUnstageRevision {
+                    repository,
+                    revision: staged,
+                }) => {
+                    revision = Some((
+                        RepositoryId::from_raw(repository),
+                        Revision::from_raw(staged),
+                    ));
+                }
+                _ => {}
+            }
+        })?;
+
+        Ok(Unstaged {
+            files,
+            count,
+            revision,
+        })
+    }
+
+    /// Commits the staged changes as new revisions on the branch the
+    /// instance is on. The revisions are local until [`push`](Self::push).
+    ///
+    /// One [`Commit`] per repository that got a new revision, in the order
+    /// Lore reported them: the linked repositories inside the repository, the
+    /// repository itself, then each layer with the linked repositories inside
+    /// it first. Empty when [`GlobalArgs::force`] committed nothing.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_revision_commit`.
+    pub fn commit(&self, args: RevisionCommitArgs<'_>) -> Result<Vec<Commit>, LoreError> {
+        const COMMAND: &str = "revision::commit";
+        let mut count = None;
+        let mut commits = Vec::new();
+
+        crate::call::revision_commit(self.lore, COMMAND, &self.globals, args, |event| {
+            crate::log_event(&event);
+
+            match event {
+                // Lore counts once per repository or layer, just before its
+                // revision. The linked repositories inside it are counted in
+                // that tally and report their revisions before it.
+                Ok(Event::RevisionCommitEnd { count: tally }) => {
+                    count = Some(CommitCount::from_raw(tally));
+                }
+                Ok(Event::RevisionCommitRevision {
+                    repository,
+                    branch,
+                    revision,
+                    revision_number,
+                    parents,
+                }) => commits.push(Commit {
+                    repository: RepositoryId::from_raw(repository),
+                    branch: BranchId::from_raw(branch),
+                    revision: Revision::from_raw(revision),
+                    revision_number,
+                    count: count.take(),
+                    parents: parents.map(Revision::from_raw),
+                }),
+                _ => {}
+            }
+        })?;
+
+        if commits.iter().any(|commit| commit.revision.is_zero()) {
+            return Err(LoreError::InvalidResponse {
+                command: COMMAND,
+                detail: "a committed revision is all zeroes".to_owned(),
+            });
+        }
+        Ok(commits)
     }
 }
