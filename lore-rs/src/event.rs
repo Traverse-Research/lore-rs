@@ -3,13 +3,14 @@ use lore_sys::{
     lore_address_t, lore_branch_id_t, lore_context_t, lore_error_code_t, lore_event_t,
     lore_event_tag_t, lore_file_action_t, lore_file_stage_count_data_t,
     lore_file_unstage_count_data_t, lore_fragment_t, lore_hash_t, lore_instance_id_t,
-    lore_log_level_t, lore_node_id_t, lore_node_type_t, lore_repository_id_t,
-    lore_revision_commit_count_data_t, LORE_EVENT_AUTH_IDENTITY, LORE_EVENT_AUTH_URL,
-    LORE_EVENT_AUTH_USER_INFO, LORE_EVENT_AUTH_USER_TOKEN, LORE_EVENT_BRANCH_INFO,
-    LORE_EVENT_COMPLETE, LORE_EVENT_END, LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO,
-    LORE_EVENT_FILE_STAGE_END, LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_STAGE_REVISION,
-    LORE_EVENT_FILE_UNSTAGE_END, LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_FILE_UNSTAGE_REVISION,
-    LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_INSTANCE,
+    lore_log_level_t, lore_node_id_t, lore_node_type_t, lore_repository_clone_count_data_t,
+    lore_repository_id_t, lore_revision_commit_count_data_t, LORE_EVENT_AUTH_IDENTITY,
+    LORE_EVENT_AUTH_URL, LORE_EVENT_AUTH_USER_INFO, LORE_EVENT_AUTH_USER_TOKEN,
+    LORE_EVENT_BRANCH_INFO, LORE_EVENT_COMPLETE, LORE_EVENT_END, LORE_EVENT_ERROR,
+    LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_END, LORE_EVENT_FILE_STAGE_FILE,
+    LORE_EVENT_FILE_STAGE_REVISION, LORE_EVENT_FILE_UNSTAGE_END, LORE_EVENT_FILE_UNSTAGE_FILE,
+    LORE_EVENT_FILE_UNSTAGE_REVISION, LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_CLONE_END,
+    LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_INSTANCE,
     LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_COUNT,
     LORE_EVENT_REPOSITORY_STATUS_FILE, LORE_EVENT_REPOSITORY_STATUS_REVISION,
     LORE_EVENT_REPOSITORY_STATUS_SUMMARY, LORE_EVENT_REVISION_COMMIT_END,
@@ -179,6 +180,12 @@ pub enum Event<'a> {
         /// Zero for a live checkout, otherwise why the registration no longer
         /// describes one; see [`InstanceStaleness`](crate::InstanceStaleness).
         stale: u8,
+    },
+    /// Concludes a successful `repository_clone` with what was checked out.
+    RepositoryCloneEnd {
+        branch: &'a str,
+        revision: lore_hash_t,
+        count: lore_repository_clone_count_data_t,
     },
     RepositoryStatusRevision {
         repository: lore_repository_id_t,
@@ -518,6 +525,11 @@ impl<'a> Event<'a> {
                     default_branch_name: data.repository_data.default_branch_name.try_to_str()?,
                     creator: data.repository_data.creator.try_to_str()?,
                     created: data.repository_data.created,
+                },
+                LORE_EVENT_REPOSITORY_CLONE_END => Self::RepositoryCloneEnd {
+                    branch: data.repository_clone_end.branch.try_to_str()?,
+                    revision: data.repository_clone_end.revision,
+                    count: data.repository_clone_end.count,
                 },
                 LORE_EVENT_REPOSITORY_INSTANCE => Self::RepositoryInstance {
                     instance_id: data.repository_instance.instance_id,

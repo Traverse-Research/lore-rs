@@ -1,13 +1,13 @@
 use lore_sys::{
     lore_file_action_t, lore_file_stage_count_data_t, lore_file_unstage_count_data_t, lore_hash_t,
-    lore_revision_commit_count_data_t, LORE_FILE_ACTION_ADD, LORE_FILE_ACTION_COPY,
-    LORE_FILE_ACTION_DELETE, LORE_FILE_ACTION_KEEP, LORE_FILE_ACTION_MOVE,
+    lore_repository_clone_count_data_t, lore_revision_commit_count_data_t, LORE_FILE_ACTION_ADD,
+    LORE_FILE_ACTION_COPY, LORE_FILE_ACTION_DELETE, LORE_FILE_ACTION_KEEP, LORE_FILE_ACTION_MOVE,
 };
 
 use crate::{
     BranchId, BranchInfoArgs, Event, FileStageArgs, FileUnstageArgs, GlobalArgs, InstanceId, Lore,
-    LoreError, NodeKind, RepositoryId, RepositoryInfoArgs, RepositoryStatusArgs, Revision,
-    RevisionCommitArgs, RevisionInfoArgs,
+    LoreError, NodeKind, RepositoryCloneArgs, RepositoryId, RepositoryInfoArgs,
+    RepositoryStatusArgs, Revision, RevisionCommitArgs, RevisionInfoArgs,
 };
 
 /// A local repository instance — the directory holding `.lore` — together
@@ -584,6 +584,43 @@ impl CommitCount {
     }
 }
 
+/// Lore's tally of a [`clone`](Lore::repository_clone),
+/// `lore_repository_clone_count_data_t`.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct CloneCount {
+    /// Files finished.
+    pub file_complete: u64,
+    /// Files kept because they already matched.
+    pub file_retain: u64,
+    pub file_replace: u64,
+    /// Files discovered to process.
+    pub file_count: u64,
+    /// Files still being processed.
+    pub file_inflight: u64,
+    /// Fragment fetches still in flight.
+    pub fragment_inflight: u64,
+    pub bytes_transferred: u64,
+    pub bytes_total: u64,
+    /// Lore had found every file to process.
+    pub discovery_complete: bool,
+}
+
+impl CloneCount {
+    fn from_raw(count: lore_repository_clone_count_data_t) -> Self {
+        Self {
+            file_complete: count.file_complete,
+            file_retain: count.file_retain,
+            file_replace: count.file_replace,
+            file_count: count.file_count,
+            file_inflight: count.file_inflight,
+            fragment_inflight: count.fragment_inflight,
+            bytes_transferred: count.bytes_transferred,
+            bytes_total: count.bytes_total,
+            discovery_complete: count.discovery_complete != 0,
+        }
+    }
+}
+
 /// Where the working tree stands, from [`Repository::status`]: Lore's
 /// `repository_status_revision`, with the events that come after it.
 #[derive(Debug, Clone)]
@@ -738,6 +775,15 @@ impl Commit {
             .copied()
             .filter(|parent| !parent.is_zero())
     }
+}
+
+/// What a [`clone`](Lore::repository_clone) checked out.
+#[derive(Debug, Clone)]
+pub struct Cloned {
+    pub branch: String,
+    /// [`None`] when the branch has no revision yet.
+    pub revision: Option<Revision>,
+    pub count: CloneCount,
 }
 
 /// Lore's all-zero "none" as [`None`].
@@ -1001,5 +1047,39 @@ impl Repository {
             });
         }
         Ok(commits)
+    }
+}
+
+impl Lore {
+    /// Clones a repository into `globals.repository_path`. Afterwards a
+    /// [`Repository`] with the same `globals` runs commands against the clone.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_repository_clone`.
+    pub fn repository_clone(
+        &self,
+        globals: &GlobalArgs,
+        args: RepositoryCloneArgs<'_>,
+    ) -> Result<Cloned, LoreError> {
+        const COMMAND: &str = "repository::clone";
+        let mut cloned = None;
+
+        crate::call::repository_clone(self, COMMAND, globals, args, |event| {
+            crate::log_event(&event);
+
+            if let Ok(Event::RepositoryCloneEnd {
+                branch,
+                revision,
+                count,
+            }) = event
+            {
+                cloned = Some(Cloned {
+                    branch: branch.to_owned(),
+                    revision: present(revision),
+                    count: CloneCount::from_raw(count),
+                });
+            }
+        })?;
+
+        cloned.ok_or(missing(COMMAND, "repository_clone_end"))
     }
 }
