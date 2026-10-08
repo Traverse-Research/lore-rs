@@ -1443,7 +1443,8 @@ pub fn storage_flush(
 pub struct RepositoryStatusArgs<'a> {
     /// Paths to report on; empty reports on the whole repository.
     pub paths: &'a [&'a str],
-    /// Include the staged state in the report.
+    /// Include the staged state in the report. Without it only `scan`
+    /// reports files.
     pub staged: bool,
     /// Walk the filesystem under each path and refresh every dirty flag.
     pub scan: bool,
@@ -1455,7 +1456,8 @@ pub struct RepositoryStatusArgs<'a> {
     pub sync_point: bool,
     /// Report only [`Event::RepositoryStatusRevision`], no per-file events.
     pub revision_only: bool,
-    /// Report the number of changed files rather than the files themselves.
+    /// Also report the size of the tree, filtered by the view: the staged
+    /// state when there is one, the current revision otherwise.
     pub count: bool,
 }
 

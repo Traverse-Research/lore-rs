@@ -1,6 +1,11 @@
+use lore_sys::{
+    lore_file_action_t, lore_hash_t, LORE_FILE_ACTION_ADD, LORE_FILE_ACTION_COPY,
+    LORE_FILE_ACTION_DELETE, LORE_FILE_ACTION_KEEP, LORE_FILE_ACTION_MOVE,
+};
+
 use crate::{
-    BranchId, BranchInfoArgs, Event, GlobalArgs, InstanceId, Lore, LoreError, RepositoryId,
-    RepositoryInfoArgs, Revision, RevisionInfoArgs,
+    BranchId, BranchInfoArgs, Event, GlobalArgs, InstanceId, Lore, LoreError, NodeKind,
+    RepositoryId, RepositoryInfoArgs, RepositoryStatusArgs, Revision, RevisionInfoArgs,
 };
 
 /// A local repository instance — the directory holding `.lore` — together
@@ -439,5 +444,269 @@ impl BranchInfo {
     pub fn branch_point(&self) -> Option<(BranchId, Revision)> {
         (!self.parent.is_zero() && !self.branch_point.is_zero())
             .then_some((self.parent, self.branch_point))
+    }
+}
+
+/// What Lore did, or would do, to one path: `lore_file_action_t` as an enum.
+///
+/// [`Self::Other`] rather than `#[non_exhaustive]`: the C type is an integer,
+/// so an unknown value is a runtime possibility and the caller should be able
+/// to see which one.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum FileAction {
+    /// The path stays where it is. Lore has no action for a modification, so
+    /// this is what a changed file reports, and what an unstage reports for
+    /// every staged change it drops.
+    Keep,
+    Add,
+    Delete,
+    Move,
+    Copy,
+    Other(lore_file_action_t),
+}
+
+impl FileAction {
+    fn from_raw(action: lore_file_action_t) -> Self {
+        match action {
+            LORE_FILE_ACTION_KEEP => Self::Keep,
+            LORE_FILE_ACTION_ADD => Self::Add,
+            LORE_FILE_ACTION_DELETE => Self::Delete,
+            LORE_FILE_ACTION_MOVE => Self::Move,
+            LORE_FILE_ACTION_COPY => Self::Copy,
+            other => Self::Other(other),
+        }
+    }
+}
+
+impl std::fmt::Display for FileAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Keep => f.write_str("keep"),
+            Self::Add => f.write_str("add"),
+            Self::Delete => f.write_str("delete"),
+            Self::Move => f.write_str("move"),
+            Self::Copy => f.write_str("copy"),
+            Self::Other(action) => write!(f, "unknown action {action}"),
+        }
+    }
+}
+
+/// Where the working tree stands, from [`Repository::status`]: Lore's
+/// `repository_status_revision`, with the events that come after it.
+#[derive(Debug, Clone)]
+pub struct Status {
+    pub repository: RepositoryId,
+    pub branch: BranchId,
+    pub branch_name: String,
+    /// The revision the working tree is on; [`None`] on an empty branch.
+    pub revision: Option<Revision>,
+    pub revision_number: u64,
+    /// [`None`] when nothing is staged.
+    pub revision_staged: Option<Revision>,
+    /// The incoming revision of a pending merge.
+    pub revision_merged: Option<Revision>,
+    /// The last revision merged in from the parent branch. Only reported with
+    /// [`RepositoryStatusArgs::sync_point`].
+    pub revision_merged_parent_branch: Option<Revision>,
+    /// Tip of the branch in the local store.
+    pub revision_local: Option<Revision>,
+    pub revision_local_number: u64,
+    /// Tip of the branch on the remote; [`None`] when unknown, when the branch
+    /// is not on the remote, or when the remote is unavailable.
+    pub revision_remote: Option<Revision>,
+    pub revision_remote_number: u64,
+    /// The local store holds revisions that are not on the remote's history
+    /// line.
+    pub is_local_ahead: bool,
+    /// The remote holds revisions that are not in the local store.
+    pub is_remote_ahead: bool,
+    /// A remote is configured and reachable with a local identity. This is
+    /// connectivity only, not authorization.
+    pub remote_available: bool,
+    /// The remote answered the revision query authoritatively, so the identity
+    /// may access the repository.
+    pub remote_authorized: bool,
+    /// The branch exists on the remote.
+    pub remote_branch_exist: bool,
+    /// Every path with pending changes or conflicts, or untracked. Empty with
+    /// [`RepositoryStatusArgs::revision_only`].
+    pub files: Vec<StatusFile>,
+    /// The size of the tree. Only with [`RepositoryStatusArgs::count`].
+    pub count: Option<StatusCount>,
+    /// The changes found. Only with [`RepositoryStatusArgs::scan`] or
+    /// [`RepositoryStatusArgs::check_dirty`].
+    pub summary: Option<StatusSummary>,
+}
+
+/// One path of a [`Status`].
+#[derive(Debug, Clone)]
+pub struct StatusFile {
+    /// Repository-relative.
+    pub path: String,
+    /// In bytes.
+    pub size: u64,
+    pub action: FileAction,
+    pub kind: NodeKind,
+    /// Part of the next commit, as opposed to only changed on disk.
+    pub staged: bool,
+    /// The change comes from a merge.
+    pub merged: bool,
+    pub conflict: bool,
+    pub conflict_unresolved: bool,
+    /// The conflict was resolved automatically.
+    pub conflict_automerged: bool,
+    /// The conflict was resolved with the local side.
+    pub conflict_mine: bool,
+    /// The conflict was resolved with the incoming side.
+    pub conflict_theirs: bool,
+    /// The file differs from the recorded state.
+    pub dirty: bool,
+    /// Where a [`Move`](FileAction::Move) or [`Copy`](FileAction::Copy) came
+    /// from.
+    pub from_path: Option<String>,
+}
+
+/// The size of the tree a [`Status`] reported on, filtered by the view: the
+/// staged state when there is one, the current revision otherwise.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct StatusCount {
+    pub directories: u64,
+    pub files: u64,
+}
+
+/// The changes a [`status`](Repository::status) that scanned or checked
+/// dirty files found.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct StatusSummary {
+    pub adds: u64,
+    pub deletes: u64,
+    pub modifies: u64,
+    pub moves: u64,
+    pub copies: u64,
+}
+
+/// Lore's all-zero "none" as [`None`].
+fn present(revision: lore_hash_t) -> Option<Revision> {
+    Some(Revision::from_raw(revision)).filter(|revision| !revision.is_zero())
+}
+
+fn missing(command: &'static str, expected: &'static str) -> LoreError {
+    LoreError::MissingEvent { command, expected }
+}
+
+impl Repository {
+    /// Reports the working tree: the branch and revision it is on, and the
+    /// paths that differ from that revision.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_repository_status`.
+    pub fn status(&self, args: RepositoryStatusArgs<'_>) -> Result<Status, LoreError> {
+        const COMMAND: &str = "repository::status";
+        let mut status = None;
+        let mut files = Vec::new();
+        let mut count = None;
+        let mut summary = None;
+
+        crate::call::repository_status(self.lore, COMMAND, &self.globals, args, |event| {
+            crate::log_event(&event);
+
+            match event {
+                Ok(Event::RepositoryStatusRevision {
+                    repository,
+                    branch,
+                    branch_name,
+                    revision,
+                    revision_number,
+                    revision_staged,
+                    revision_merged,
+                    revision_merged_parent_branch,
+                    revision_local,
+                    revision_local_number,
+                    revision_remote,
+                    revision_remote_number,
+                    is_local_ahead,
+                    is_remote_ahead,
+                    remote_available,
+                    remote_authorized,
+                    remote_branch_exist,
+                }) => {
+                    status = Some(Status {
+                        repository: RepositoryId::from_raw(repository),
+                        branch: BranchId::from_raw(branch),
+                        branch_name: branch_name.to_owned(),
+                        revision: present(revision),
+                        revision_number,
+                        revision_staged: present(revision_staged),
+                        revision_merged: present(revision_merged),
+                        revision_merged_parent_branch: present(revision_merged_parent_branch),
+                        revision_local: present(revision_local),
+                        revision_local_number,
+                        revision_remote: present(revision_remote),
+                        revision_remote_number,
+                        is_local_ahead,
+                        is_remote_ahead,
+                        remote_available,
+                        remote_authorized,
+                        remote_branch_exist,
+                        files: Vec::new(),
+                        count: None,
+                        summary: None,
+                    });
+                }
+                Ok(Event::RepositoryStatusFile {
+                    path,
+                    size,
+                    action,
+                    kind,
+                    staged,
+                    merged,
+                    conflict,
+                    conflict_unresolved,
+                    conflict_automerged,
+                    conflict_mine,
+                    conflict_theirs,
+                    dirty,
+                    from_path,
+                }) => files.push(StatusFile {
+                    path: path.to_owned(),
+                    size,
+                    action: FileAction::from_raw(action),
+                    kind: NodeKind::from_raw(kind),
+                    staged,
+                    merged,
+                    conflict,
+                    conflict_unresolved,
+                    conflict_automerged,
+                    conflict_mine,
+                    conflict_theirs,
+                    dirty,
+                    from_path: Some(from_path.to_owned()).filter(|from| !from.is_empty()),
+                }),
+                Ok(Event::RepositoryStatusCount { directories, files }) => {
+                    count = Some(StatusCount { directories, files });
+                }
+                Ok(Event::RepositoryStatusSummary {
+                    adds,
+                    deletes,
+                    modifies,
+                    moves,
+                    copies,
+                }) => {
+                    summary = Some(StatusSummary {
+                        adds,
+                        deletes,
+                        modifies,
+                        moves,
+                        copies,
+                    });
+                }
+                _ => {}
+            }
+        })?;
+
+        let mut status = status.ok_or(missing(COMMAND, "repository_status_revision"))?;
+        status.files = files;
+        status.count = count;
+        status.summary = summary;
+        Ok(status)
     }
 }
