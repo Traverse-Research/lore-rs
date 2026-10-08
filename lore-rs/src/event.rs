@@ -1,28 +1,30 @@
 use crate::LoreStringExt;
 use lore_sys::{
-    lore_address_t, lore_branch_id_t, lore_branch_location_t, lore_context_t, lore_error_code_t,
-    lore_event_t, lore_event_tag_t, lore_file_action_t, lore_file_stage_count_data_t,
-    lore_file_unstage_count_data_t, lore_fragment_t, lore_hash_t, lore_instance_id_t,
-    lore_log_level_t, lore_node_id_t, lore_node_type_t, lore_repository_clone_count_data_t,
-    lore_repository_id_t, lore_revision_commit_count_data_t, LORE_EVENT_AUTH_IDENTITY,
-    LORE_EVENT_AUTH_URL, LORE_EVENT_AUTH_USER_INFO, LORE_EVENT_AUTH_USER_TOKEN,
-    LORE_EVENT_BRANCH_INFO, LORE_EVENT_BRANCH_PUSH, LORE_EVENT_BRANCH_PUSH_FRAGMENT_END,
-    LORE_EVENT_BRANCH_SWITCH_END, LORE_EVENT_COMPLETE, LORE_EVENT_END, LORE_EVENT_ERROR,
-    LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_END, LORE_EVENT_FILE_STAGE_FILE,
-    LORE_EVENT_FILE_STAGE_REVISION, LORE_EVENT_FILE_UNSTAGE_END, LORE_EVENT_FILE_UNSTAGE_FILE,
-    LORE_EVENT_FILE_UNSTAGE_REVISION, LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_CLONE_END,
-    LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_INSTANCE,
+    lore_address_t, lore_branch_id_t, lore_branch_location_t, lore_branch_point_t, lore_context_t,
+    lore_error_code_t, lore_event_t, lore_event_tag_t, lore_file_action_t,
+    lore_file_stage_count_data_t, lore_file_unstage_count_data_t, lore_fragment_t, lore_hash_t,
+    lore_instance_id_t, lore_log_level_t, lore_node_id_t, lore_node_type_t,
+    lore_repository_clone_count_data_t, lore_repository_id_t, lore_revision_commit_count_data_t,
+    LORE_EVENT_AUTH_IDENTITY, LORE_EVENT_AUTH_URL, LORE_EVENT_AUTH_USER_INFO,
+    LORE_EVENT_AUTH_USER_TOKEN, LORE_EVENT_BRANCH_ARCHIVE, LORE_EVENT_BRANCH_CREATE,
+    LORE_EVENT_BRANCH_INFO, LORE_EVENT_BRANCH_LIST_ENTRY, LORE_EVENT_BRANCH_PUSH,
+    LORE_EVENT_BRANCH_PUSH_FRAGMENT_END, LORE_EVENT_BRANCH_SWITCH_END, LORE_EVENT_COMPLETE,
+    LORE_EVENT_END, LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_END,
+    LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_STAGE_REVISION, LORE_EVENT_FILE_UNSTAGE_END,
+    LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_FILE_UNSTAGE_REVISION, LORE_EVENT_LOG,
+    LORE_EVENT_REPOSITORY_CLONE_END, LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_INSTANCE,
     LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_COUNT,
     LORE_EVENT_REPOSITORY_STATUS_FILE, LORE_EVENT_REPOSITORY_STATUS_REVISION,
     LORE_EVENT_REPOSITORY_STATUS_SUMMARY, LORE_EVENT_REVISION_COMMIT_END,
-    LORE_EVENT_REVISION_COMMIT_REVISION, LORE_EVENT_REVISION_INFO,
-    LORE_EVENT_REVISION_SYNC_REVISION, LORE_EVENT_REVISION_SYNC_TARGET,
-    LORE_EVENT_REVISION_TREE_CHILD, LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE,
-    LORE_EVENT_REVISION_TREE_INFO, LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN,
-    LORE_EVENT_REVISION_TREE_LOADED, LORE_EVENT_REVISION_TREE_NODE_INFO,
-    LORE_EVENT_REVISION_TREE_NODE_PATH, LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE,
-    LORE_EVENT_STORAGE_GET_DATA, LORE_EVENT_STORAGE_GET_HEADER,
-    LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE,
+    LORE_EVENT_REVISION_COMMIT_REVISION, LORE_EVENT_REVISION_HISTORY,
+    LORE_EVENT_REVISION_HISTORY_ENTRY, LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_SYNC_REVISION,
+    LORE_EVENT_REVISION_SYNC_TARGET, LORE_EVENT_REVISION_TREE_CHILD,
+    LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE, LORE_EVENT_REVISION_TREE_INFO,
+    LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN, LORE_EVENT_REVISION_TREE_LOADED,
+    LORE_EVENT_REVISION_TREE_NODE_INFO, LORE_EVENT_REVISION_TREE_NODE_PATH,
+    LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE, LORE_EVENT_STORAGE_GET_DATA,
+    LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE,
+    LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE,
     LORE_EVENT_STORAGE_MUTABLE_COMPARE_AND_SWAP_ITEM_COMPLETE,
     LORE_EVENT_STORAGE_MUTABLE_LOAD_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
     LORE_EVENT_STORAGE_PUT_ITEM_COMPLETE, LORE_LOG_LEVEL_ERROR, LORE_LOG_LEVEL_INFO,
@@ -123,6 +125,39 @@ pub enum Event<'a> {
         branch_point: lore_hash_t,
         creator: &'a str,
         created: u64,
+        archived: bool,
+    },
+    /// Concludes a successful `branch_archive`.
+    BranchArchive {
+        name: &'a str,
+    },
+    /// A branch was created. Lore emits it only when the branch points at a
+    /// revision; a `branch_create` on an empty branch succeeds without it.
+    BranchCreate {
+        name: &'a str,
+        /// The revision the new branch points at.
+        latest: lore_hash_t,
+        /// Lore made a new revision for the branch, which happens when the
+        /// repository has linked repositories that needed their own branch.
+        is_commit: bool,
+    },
+    BranchListEntry {
+        /// Which side's view of the branch this is. A branch known both
+        /// locally and on the remote is listed once for each.
+        location: lore_branch_location_t,
+        id: lore_branch_id_t,
+        name: &'a str,
+        category: &'a str,
+        /// Tip on the side `location` names, zero when there is none.
+        latest: lore_hash_t,
+        /// The branch points this branch was created from.
+        stack: &'a [lore_branch_point_t],
+        creator: &'a str,
+        /// Milliseconds since the Unix epoch for a branch created by a client,
+        /// seconds for one created on a server.
+        created: u64,
+        /// Whether the instance is on this branch.
+        is_current: bool,
         archived: bool,
     },
     /// One per repository a `branch_push` pushes, with the tips on both sides
@@ -317,6 +352,20 @@ pub enum Event<'a> {
     RevisionCommitRevision {
         repository: lore_repository_id_t,
         branch: lore_branch_id_t,
+        revision: lore_hash_t,
+        revision_number: u64,
+        /// The direct parent, then the other parent of a merge; zero where
+        /// there is none.
+        parents: [lore_hash_t; 2],
+    },
+    /// Opens a `revision_history` with what it lists, along with its first
+    /// entry; an empty history has none.
+    RevisionHistory {
+        repository: lore_repository_id_t,
+        branch: lore_branch_id_t,
+    },
+    /// One revision of a `revision_history`, newest first.
+    RevisionHistoryEntry {
         revision: lore_hash_t,
         revision_number: u64,
         /// The direct parent, then the other parent of a merge; zero where
@@ -557,6 +606,36 @@ impl<'a> Event<'a> {
                     created: data.branch_info.created,
                     archived: data.branch_info.archived != 0,
                 },
+                LORE_EVENT_BRANCH_ARCHIVE => Self::BranchArchive {
+                    name: data.branch_archive.name.try_to_str()?,
+                },
+                LORE_EVENT_BRANCH_CREATE => Self::BranchCreate {
+                    name: data.branch_create.name.try_to_str()?,
+                    latest: data.branch_create.latest,
+                    is_commit: data.branch_create.is_commit != 0,
+                },
+                LORE_EVENT_BRANCH_LIST_ENTRY => Self::BranchListEntry {
+                    location: data.branch_list_entry.location,
+                    id: data.branch_list_entry.id,
+                    name: data.branch_list_entry.name.try_to_str()?,
+                    category: data.branch_list_entry.category.try_to_str()?,
+                    latest: data.branch_list_entry.latest,
+                    stack: {
+                        // Lore hands out a null pointer for an empty array,
+                        // which `from_raw_parts` does not accept even at
+                        // length zero.
+                        let stack = &data.branch_list_entry.stack;
+                        if stack.ptr.is_null() || stack.count == 0 {
+                            &[]
+                        } else {
+                            std::slice::from_raw_parts(stack.ptr, stack.count)
+                        }
+                    },
+                    creator: data.branch_list_entry.creator.try_to_str()?,
+                    created: data.branch_list_entry.created,
+                    is_current: data.branch_list_entry.is_current != 0,
+                    archived: data.branch_list_entry.archived != 0,
+                },
                 LORE_EVENT_BRANCH_PUSH => Self::BranchPush {
                     remote: data.branch_push.remote.try_to_str()?,
                     repository: data.branch_push.repository,
@@ -702,6 +781,15 @@ impl<'a> Event<'a> {
                         data.revision_commit_revision.parent,
                         data.revision_commit_revision.parent_other,
                     ],
+                },
+                LORE_EVENT_REVISION_HISTORY => Self::RevisionHistory {
+                    repository: data.revision_history.repository,
+                    branch: data.revision_history.branch,
+                },
+                LORE_EVENT_REVISION_HISTORY_ENTRY => Self::RevisionHistoryEntry {
+                    revision: data.revision_history_entry.revision,
+                    revision_number: data.revision_history_entry.revision_number,
+                    parents: data.revision_history_entry.parent,
                 },
                 LORE_EVENT_REVISION_SYNC_REVISION => Self::RevisionSyncRevision {
                     branch: data.revision_sync_revision.branch,

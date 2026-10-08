@@ -6,19 +6,21 @@
 use crate::string::{raw_str, raw_str_array};
 use crate::{Event, GlobalArgs, LoreError};
 use lore_sys::{
-    lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t,
+    lore_address_t, lore_auth_login_with_token_args_t, lore_branch_archive_args_t,
+    lore_branch_create_args_t, lore_branch_info_args_t, lore_branch_list_args_t,
     lore_branch_push_args_t, lore_branch_switch_args_t, lore_bytes_mut_t, lore_bytes_t,
     lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
     lore_file_info_args_t, lore_file_stage_args_t, lore_file_unstage_args_t, lore_global_args_t,
     lore_hash_t, lore_key_type_t, lore_partition_t, lore_repository_clone_args_t,
     lore_repository_info_args_t, lore_repository_instance_list_args_t,
-    lore_repository_status_args_t, lore_revision_commit_args_t, lore_revision_info_args_t,
-    lore_revision_sync_args_t, lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
-    lore_revision_tree_list_children_args_t, lore_revision_tree_load_args_t,
-    lore_revision_tree_node_info_args_t, lore_revision_tree_node_path_args_t,
-    lore_revision_tree_resolve_path_args_t, lore_revision_tree_t, lore_shared_store_mode_t,
-    lore_storage_close_args_t, lore_storage_flush_args_t, lore_storage_get_args_t,
-    lore_storage_get_item_array_t, lore_storage_get_item_t, lore_storage_get_metadata_args_t,
+    lore_repository_status_args_t, lore_revision_commit_args_t, lore_revision_history_args_t,
+    lore_revision_info_args_t, lore_revision_sync_args_t, lore_revision_tree_close_args_t,
+    lore_revision_tree_info_args_t, lore_revision_tree_list_children_args_t,
+    lore_revision_tree_load_args_t, lore_revision_tree_node_info_args_t,
+    lore_revision_tree_node_path_args_t, lore_revision_tree_resolve_path_args_t,
+    lore_revision_tree_t, lore_shared_store_mode_t, lore_storage_close_args_t,
+    lore_storage_flush_args_t, lore_storage_get_args_t, lore_storage_get_item_array_t,
+    lore_storage_get_item_t, lore_storage_get_metadata_args_t,
     lore_storage_get_metadata_item_array_t, lore_storage_get_metadata_item_t,
     lore_storage_get_resolved_args_t, lore_storage_get_resolved_item_array_t,
     lore_storage_get_resolved_item_t, lore_storage_mutable_compare_and_swap_args_t,
@@ -2251,6 +2253,203 @@ pub fn revision_sync(
             command,
             globals,
             &args.to_raw(&root_files, &dependency_tags),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`branch_create`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct BranchCreateArgs<'a> {
+    pub branch: &'a str,
+    /// Lore's free-form grouping of branches; empty is Lore's default.
+    pub category: &'a str,
+    /// Explicit branch id as 32 hex characters. Empty, or anything else, lets
+    /// Lore mint one.
+    pub id: &'a str,
+}
+
+impl BranchCreateArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_branch_create_args_t {
+        lore_branch_create_args_t {
+            branch: raw_str(self.branch),
+            category: raw_str(self.category),
+            id: raw_str(self.id),
+        }
+    }
+}
+
+/// Creates a branch at the revision the instance is on and moves the instance
+/// onto it, leaving the files as they are. Lore reports one
+/// [`Event::BranchCreate`] for the repository and one per layer, and only when
+/// the branch points at a revision: a branch created on an empty branch emits
+/// none. The branch is local until its first [`branch_push`]. A repository verb:
+/// `globals.repository_path` must hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_branch_create`.
+pub fn branch_create(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: BranchCreateArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_branch_create,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`branch_archive`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct BranchArchiveArgs<'a> {
+    /// A branch name, or its id as 32 hex characters.
+    pub branch: &'a str,
+}
+
+impl BranchArchiveArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_branch_archive_args_t {
+        // Archiving in a layer or link only is not exposed; the branch is
+        // archived in the repository itself.
+        lore_branch_archive_args_t {
+            branch: raw_str(self.branch),
+            layer: raw_str(""),
+            include_layers: 0,
+            link: raw_str(""),
+            include_links: 0,
+        }
+    }
+}
+
+/// Archives a branch, which is what Lore has in place of deleting one: the
+/// branch stops being listed unless archived branches are asked for, and its
+/// history stays. Lore reports it on [`Event::BranchArchive`].
+///
+/// This corresponds to `lore_sys::Lore::lore_branch_archive`.
+pub fn branch_archive(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: BranchArchiveArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_branch_archive,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`branch_list`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct BranchListArgs {
+    /// Also list the local branches that have been archived.
+    pub archived: bool,
+}
+
+impl BranchListArgs {
+    /// The raw struct to hand to Lore.
+    fn to_raw(self) -> lore_branch_list_args_t {
+        lore_branch_list_args_t {
+            archived: u8::from(self.archived),
+        }
+    }
+}
+
+/// Lists the branches the instance and its remote know, one
+/// [`Event::BranchListEntry`] each: the local ones, then the archived ones when
+/// asked for, then the remote's. A branch that exists on both sides is
+/// reported twice, once per location. A repository verb:
+/// `globals.repository_path` must hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_branch_list`.
+pub fn branch_list(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: BranchListArgs,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // is plain data.
+    unsafe {
+        call_with_callback(
+            lore.lore_branch_list,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`revision_history`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct RevisionHistoryArgs<'a> {
+    /// Revision to start from; empty is the revision the instance is on.
+    pub revision: &'a str,
+    /// Start from this branch's tip instead of `revision`, which must then be
+    /// empty. The walk still continues onto other branches unless
+    /// `only_branch` is set.
+    pub branch: &'a str,
+    /// Stop at revisions committed before this time, in milliseconds since the
+    /// Unix epoch as Lore records it; zero disables it.
+    pub date: u64,
+    /// Most revisions to report; zero is Lore's default of 100.
+    pub length: u32,
+    /// Stop where the history crosses onto another branch.
+    pub only_branch: bool,
+}
+
+impl RevisionHistoryArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_revision_history_args_t {
+        lore_revision_history_args_t {
+            revision: raw_str(self.revision),
+            branch: raw_str(self.branch),
+            date: self.date,
+            length: self.length,
+            only_branch: u8::from(self.only_branch),
+        }
+    }
+}
+
+/// Walks the history back from a revision along its first parents, newest
+/// first, one [`Event::RevisionHistoryEntry`] per revision after a single
+/// [`Event::RevisionHistory`]. A repository verb:
+/// `globals.repository_path` must hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_history`.
+pub fn revision_history(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: RevisionHistoryArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_history,
+            command,
+            globals,
+            &args.to_raw(),
             callback,
         )
     }
