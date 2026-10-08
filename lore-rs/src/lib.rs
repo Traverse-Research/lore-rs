@@ -24,13 +24,14 @@ pub use lore_sys::libloading;
 
 pub mod call;
 pub use call::{
-    call_with_callback, AuthLoginWithTokenArgs, BranchInfoArgs, FileInfoArgs, RepositoryCloneArgs,
-    RepositoryInfoArgs, RepositoryStatusArgs, RevisionInfoArgs, RevisionTreeResolvePathArgs,
-    SharedStoreMode, StorageGetArgs, StorageGetItem, StorageGetMetadataArgs,
-    StorageGetMetadataItem, StorageGetResolvedArgs, StorageGetResolvedItem,
-    StorageMutableCompareAndSwapArgs, StorageMutableCompareAndSwapItem, StorageMutableLoadArgs,
-    StorageMutableLoadItem, StorageOpenArgs, StoragePutArgs, StoragePutItem,
-    StoragePutResolvedArgs, StoragePutResolvedItem, VfsType,
+    call_with_callback, AuthLoginWithTokenArgs, BranchInfoArgs, CaseChange, FileInfoArgs,
+    FileStageArgs, FileUnstageArgs, RepositoryCloneArgs, RepositoryInfoArgs, RepositoryStatusArgs,
+    RevisionCommitArgs, RevisionInfoArgs, RevisionTreeResolvePathArgs, SharedStoreMode,
+    StorageGetArgs, StorageGetItem, StorageGetMetadataArgs, StorageGetMetadataItem,
+    StorageGetResolvedArgs, StorageGetResolvedItem, StorageMutableCompareAndSwapArgs,
+    StorageMutableCompareAndSwapItem, StorageMutableLoadArgs, StorageMutableLoadItem,
+    StorageOpenArgs, StoragePutArgs, StoragePutItem, StoragePutResolvedArgs,
+    StoragePutResolvedItem, VfsType,
 };
 
 mod string;
@@ -58,8 +59,9 @@ pub use auth::UserInfo;
 
 mod repository;
 pub use repository::{
-    BranchInfo, CloneCount, Cloned, FileAction, InstanceInfo, InstanceStaleness, Repository,
-    RepositoryInfo, RevisionInfo, Status, StatusCount, StatusFile, StatusSummary,
+    BranchInfo, CloneCount, Cloned, Commit, CommitCount, FileAction, FileChange, InstanceInfo,
+    InstanceStaleness, Repository, RepositoryInfo, RevisionInfo, StageCount, Staged, Status,
+    StatusCount, StatusFile, StatusSummary, UnstageCount, Unstaged,
 };
 
 mod store;
