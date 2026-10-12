@@ -27,7 +27,7 @@ pub use call::{
     call_with_callback, AuthLoginWithTokenArgs, BranchArchiveArgs, BranchCreateArgs,
     BranchInfoArgs, BranchListArgs, BranchPushArgs, BranchSwitchArgs, CaseChange, FileInfoArgs,
     FileStageArgs, FileUnstageArgs, RepositoryCloneArgs, RepositoryInfoArgs, RepositoryStatusArgs,
-    RevisionCommitArgs, RevisionHistoryArgs, RevisionInfoArgs, RevisionSyncArgs,
+    RevisionCommitArgs, RevisionDiffArgs, RevisionHistoryArgs, RevisionInfoArgs, RevisionSyncArgs,
     RevisionTreeResolvePathArgs, SharedStoreMode, StorageGetArgs, StorageGetItem,
     StorageGetMetadataArgs, StorageGetMetadataItem, StorageGetResolvedArgs, StorageGetResolvedItem,
     StorageMutableCompareAndSwapArgs, StorageMutableCompareAndSwapItem, StorageMutableLoadArgs,
@@ -61,10 +61,10 @@ pub use auth::UserInfo;
 mod repository;
 pub use repository::{
     BranchCreated, BranchEntry, BranchInfo, BranchLocation, CloneCount, Cloned, Commit,
-    CommitCount, FileAction, FileChange, History, HistoryEntry, InstanceInfo, InstanceStaleness,
-    Push, Pushed, Repository, RepositoryInfo, RevisionInfo, StageCount, Staged, Status,
-    StatusCount, StatusFile, StatusSummary, Switched, Sync, SyncRevision, UnstageCount, Unstaged,
-    Uploaded,
+    CommitCount, DiffEntry, FileAction, FileChange, FileInfo, History, HistoryEntry, InstanceInfo,
+    InstanceStaleness, Push, PushProgress, Pushed, Repository, RepositoryInfo, RevisionInfo,
+    StageCount, Staged, Status, StatusCount, StatusFile, StatusSummary, Switched, Sync,
+    SyncRevision, UnstageCount, Unstaged, Uploaded,
 };
 
 mod store;
