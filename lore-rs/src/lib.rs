@@ -62,9 +62,9 @@ mod repository;
 pub use repository::{
     BranchCreated, BranchEntry, BranchInfo, BranchLocation, CloneCount, Cloned, Commit,
     CommitCount, DiffEntry, FileAction, FileChange, FileInfo, History, HistoryEntry, InstanceInfo,
-    InstanceStaleness, Push, Pushed, Repository, RepositoryInfo, RevisionInfo, StageCount, Staged,
-    Status, StatusCount, StatusFile, StatusSummary, Switched, Sync, SyncRevision, UnstageCount,
-    Unstaged, Uploaded,
+    InstanceStaleness, Push, PushProgress, Pushed, Repository, RepositoryInfo, RevisionInfo,
+    StageCount, Staged, Status, StatusCount, StatusFile, StatusSummary, Switched, Sync,
+    SyncRevision, UnstageCount, Unstaged, Uploaded,
 };
 
 mod store;

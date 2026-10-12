@@ -8,11 +8,12 @@ use lore_sys::{
     LORE_EVENT_AUTH_IDENTITY, LORE_EVENT_AUTH_URL, LORE_EVENT_AUTH_USER_INFO,
     LORE_EVENT_AUTH_USER_TOKEN, LORE_EVENT_BRANCH_ARCHIVE, LORE_EVENT_BRANCH_CREATE,
     LORE_EVENT_BRANCH_INFO, LORE_EVENT_BRANCH_LIST_ENTRY, LORE_EVENT_BRANCH_PUSH,
-    LORE_EVENT_BRANCH_PUSH_FRAGMENT_END, LORE_EVENT_BRANCH_SWITCH_END, LORE_EVENT_COMPLETE,
-    LORE_EVENT_END, LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_END,
-    LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_STAGE_REVISION, LORE_EVENT_FILE_UNSTAGE_END,
-    LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_FILE_UNSTAGE_REVISION, LORE_EVENT_LOG,
-    LORE_EVENT_REPOSITORY_CLONE_END, LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_INSTANCE,
+    LORE_EVENT_BRANCH_PUSH_FRAGMENT_END, LORE_EVENT_BRANCH_PUSH_FRAGMENT_PROGRESS,
+    LORE_EVENT_BRANCH_SWITCH_END, LORE_EVENT_COMPLETE, LORE_EVENT_END, LORE_EVENT_ERROR,
+    LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_END, LORE_EVENT_FILE_STAGE_FILE,
+    LORE_EVENT_FILE_STAGE_REVISION, LORE_EVENT_FILE_UNSTAGE_END, LORE_EVENT_FILE_UNSTAGE_FILE,
+    LORE_EVENT_FILE_UNSTAGE_REVISION, LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_CLONE_END,
+    LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_INSTANCE,
     LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_COUNT,
     LORE_EVENT_REPOSITORY_STATUS_FILE, LORE_EVENT_REPOSITORY_STATUS_REVISION,
     LORE_EVENT_REPOSITORY_STATUS_SUMMARY, LORE_EVENT_REVISION_COMMIT_END,
@@ -185,6 +186,14 @@ pub enum Event<'a> {
     },
     /// The upload of one revision. It does not say which repository the
     /// revision is in.
+    /// How far a `branch_push`'s upload of one revision has got, at
+    /// intervals while it runs.
+    BranchPushFragmentProgress {
+        complete: u64,
+        count: u64,
+        bytes_transferred: u64,
+        bytes_total: u64,
+    },
     BranchPushFragmentEnd {
         fragments: u64,
         bytes_transferred: u64,
@@ -663,6 +672,12 @@ impl<'a> Event<'a> {
                     is_default: data.branch_push.flag_default != 0,
                     is_link: data.branch_push.flag_link != 0,
                     is_layer: data.branch_push.flag_layer != 0,
+                },
+                LORE_EVENT_BRANCH_PUSH_FRAGMENT_PROGRESS => Self::BranchPushFragmentProgress {
+                    complete: data.branch_push_fragment_progress.complete,
+                    count: data.branch_push_fragment_progress.count,
+                    bytes_transferred: data.branch_push_fragment_progress.bytes_transferred,
+                    bytes_total: data.branch_push_fragment_progress.bytes_total,
                 },
                 LORE_EVENT_BRANCH_PUSH_FRAGMENT_END => Self::BranchPushFragmentEnd {
                     fragments: data.branch_push_fragment_end.fragments,

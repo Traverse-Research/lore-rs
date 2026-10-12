@@ -664,6 +664,18 @@ impl UnstageCount {
     }
 }
 
+/// How far a push's upload of one revision has got,
+/// `lore_branch_push_fragment_progress_event_data_t`.
+#[derive(Debug, Clone, Copy)]
+pub struct PushProgress {
+    /// Fragments uploaded.
+    pub complete: u64,
+    /// Fragments to upload.
+    pub count: u64,
+    pub bytes_transferred: u64,
+    pub bytes_total: u64,
+}
+
 /// Lore's tally of the files a [`commit`](Repository::commit) processed,
 /// `lore_revision_commit_count_data_t`.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
@@ -1343,6 +1355,16 @@ impl Repository {
     ///
     /// This corresponds to `lore_sys::Lore::lore_branch_push`.
     pub fn push(&self, args: BranchPushArgs<'_>) -> Result<Pushed, LoreError> {
+        self.push_with_progress(args, |_| {})
+    }
+
+    /// [`Self::push`], calling `progress` with how far the upload of a
+    /// revision has got, at intervals while it runs.
+    pub fn push_with_progress(
+        &self,
+        args: BranchPushArgs<'_>,
+        mut progress: impl FnMut(&PushProgress) + Send,
+    ) -> Result<Pushed, LoreError> {
         const COMMAND: &str = "branch::push";
         let mut pushes = Vec::new();
         let mut uploads = Vec::new();
@@ -1377,6 +1399,17 @@ impl Repository {
                     is_default,
                     is_link,
                     is_layer,
+                }),
+                Ok(Event::BranchPushFragmentProgress {
+                    complete,
+                    count,
+                    bytes_transferred,
+                    bytes_total,
+                }) => progress(&PushProgress {
+                    complete,
+                    count,
+                    bytes_transferred,
+                    bytes_total,
                 }),
                 Ok(Event::BranchPushFragmentEnd {
                     fragments,
