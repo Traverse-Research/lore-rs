@@ -16,15 +16,15 @@ use lore_sys::{
     LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_COUNT,
     LORE_EVENT_REPOSITORY_STATUS_FILE, LORE_EVENT_REPOSITORY_STATUS_REVISION,
     LORE_EVENT_REPOSITORY_STATUS_SUMMARY, LORE_EVENT_REVISION_COMMIT_END,
-    LORE_EVENT_REVISION_COMMIT_REVISION, LORE_EVENT_REVISION_HISTORY,
-    LORE_EVENT_REVISION_HISTORY_ENTRY, LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_SYNC_REVISION,
-    LORE_EVENT_REVISION_SYNC_TARGET, LORE_EVENT_REVISION_TREE_CHILD,
-    LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE, LORE_EVENT_REVISION_TREE_INFO,
-    LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN, LORE_EVENT_REVISION_TREE_LOADED,
-    LORE_EVENT_REVISION_TREE_NODE_INFO, LORE_EVENT_REVISION_TREE_NODE_PATH,
-    LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE, LORE_EVENT_STORAGE_GET_DATA,
-    LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE,
-    LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE,
+    LORE_EVENT_REVISION_COMMIT_PROGRESS, LORE_EVENT_REVISION_COMMIT_REVISION,
+    LORE_EVENT_REVISION_DIFF_FILE, LORE_EVENT_REVISION_HISTORY, LORE_EVENT_REVISION_HISTORY_ENTRY,
+    LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_SYNC_REVISION, LORE_EVENT_REVISION_SYNC_TARGET,
+    LORE_EVENT_REVISION_TREE_CHILD, LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE,
+    LORE_EVENT_REVISION_TREE_INFO, LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN,
+    LORE_EVENT_REVISION_TREE_LOADED, LORE_EVENT_REVISION_TREE_NODE_INFO,
+    LORE_EVENT_REVISION_TREE_NODE_PATH, LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE,
+    LORE_EVENT_STORAGE_GET_DATA, LORE_EVENT_STORAGE_GET_HEADER,
+    LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE,
     LORE_EVENT_STORAGE_MUTABLE_COMPARE_AND_SWAP_ITEM_COMPLETE,
     LORE_EVENT_STORAGE_MUTABLE_LOAD_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
     LORE_EVENT_STORAGE_PUT_ITEM_COMPLETE, LORE_LOG_LEVEL_ERROR, LORE_LOG_LEVEL_INFO,
@@ -210,6 +210,15 @@ pub enum Event<'a> {
         is_file: bool,
         size: u64,
     },
+    /// One path a `revision_diff` found changed between its two revisions.
+    RevisionDiffFile {
+        path: &'a str,
+        action: lore_file_action_t,
+        old_is_file: bool,
+        new_is_file: bool,
+        old_address: lore_address_t,
+        new_address: lore_address_t,
+    },
     FileStageFile {
         path: &'a str,
         action: lore_file_action_t,
@@ -343,6 +352,11 @@ pub enum Event<'a> {
     },
     RepositoryStateDumpNode {
         path: &'a str,
+    },
+    /// How far a `revision_commit` has got, at intervals while it runs. The
+    /// totals grow until `discovery_complete` is set.
+    RevisionCommitProgress {
+        count: lore_revision_commit_count_data_t,
     },
     /// The final tally of a `revision_commit`'s file processing for one
     /// repository, before that repository's revision is reported.
@@ -669,6 +683,14 @@ impl<'a> Event<'a> {
                     is_file: data.file_info.is_file != 0,
                     size: data.file_info.size,
                 },
+                LORE_EVENT_REVISION_DIFF_FILE => Self::RevisionDiffFile {
+                    path: data.revision_diff_file.path.try_to_str()?,
+                    action: data.revision_diff_file.action,
+                    old_is_file: data.revision_diff_file.old_is_file != 0,
+                    new_is_file: data.revision_diff_file.new_is_file != 0,
+                    old_address: data.revision_diff_file.old_address,
+                    new_address: data.revision_diff_file.new_address,
+                },
                 LORE_EVENT_FILE_STAGE_FILE => Self::FileStageFile {
                     path: data.file_stage_file.path.try_to_str()?,
                     action: data.file_stage_file.action,
@@ -768,6 +790,9 @@ impl<'a> Event<'a> {
                 },
                 LORE_EVENT_REPOSITORY_STATE_DUMP_NODE => Self::RepositoryStateDumpNode {
                     path: data.repository_state_dump_node.name.try_to_str()?,
+                },
+                LORE_EVENT_REVISION_COMMIT_PROGRESS => Self::RevisionCommitProgress {
+                    count: data.revision_commit_progress.count,
                 },
                 LORE_EVENT_REVISION_COMMIT_END => Self::RevisionCommitEnd {
                     count: data.revision_commit_end.count,

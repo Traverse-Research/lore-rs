@@ -13,14 +13,14 @@ use lore_sys::{
     lore_file_info_args_t, lore_file_stage_args_t, lore_file_unstage_args_t, lore_global_args_t,
     lore_hash_t, lore_key_type_t, lore_partition_t, lore_repository_clone_args_t,
     lore_repository_info_args_t, lore_repository_instance_list_args_t,
-    lore_repository_status_args_t, lore_revision_commit_args_t, lore_revision_history_args_t,
-    lore_revision_info_args_t, lore_revision_sync_args_t, lore_revision_tree_close_args_t,
-    lore_revision_tree_info_args_t, lore_revision_tree_list_children_args_t,
-    lore_revision_tree_load_args_t, lore_revision_tree_node_info_args_t,
-    lore_revision_tree_node_path_args_t, lore_revision_tree_resolve_path_args_t,
-    lore_revision_tree_t, lore_shared_store_mode_t, lore_storage_close_args_t,
-    lore_storage_flush_args_t, lore_storage_get_args_t, lore_storage_get_item_array_t,
-    lore_storage_get_item_t, lore_storage_get_metadata_args_t,
+    lore_repository_status_args_t, lore_revision_commit_args_t, lore_revision_diff_args_t,
+    lore_revision_history_args_t, lore_revision_info_args_t, lore_revision_sync_args_t,
+    lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
+    lore_revision_tree_list_children_args_t, lore_revision_tree_load_args_t,
+    lore_revision_tree_node_info_args_t, lore_revision_tree_node_path_args_t,
+    lore_revision_tree_resolve_path_args_t, lore_revision_tree_t, lore_shared_store_mode_t,
+    lore_storage_close_args_t, lore_storage_flush_args_t, lore_storage_get_args_t,
+    lore_storage_get_item_array_t, lore_storage_get_item_t, lore_storage_get_metadata_args_t,
     lore_storage_get_metadata_item_array_t, lore_storage_get_metadata_item_t,
     lore_storage_get_resolved_args_t, lore_storage_get_resolved_item_array_t,
     lore_storage_get_resolved_item_t, lore_storage_mutable_compare_and_swap_args_t,
@@ -470,6 +470,58 @@ impl FileInfoArgs<'_> {
             local: u8::from(self.local),
             filtered: u8::from(self.filtered),
         }
+    }
+}
+
+/// Arguments for [`revision_diff`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct RevisionDiffArgs<'a> {
+    /// Revision to diff from, in any form Lore resolves.
+    pub source: &'a str,
+    /// Revision to diff to; empty is the revision the instance is on.
+    pub target: &'a str,
+    /// Repository-relative paths to restrict the diff to; empty is all.
+    pub paths: &'a [&'a str],
+}
+
+impl RevisionDiffArgs<'_> {
+    /// The paths as Lore's own string type; see [`FileInfoArgs::raw_paths`].
+    fn raw_paths(self) -> Vec<lore_string_t> {
+        self.paths.iter().copied().map(raw_str).collect()
+    }
+
+    fn to_raw(self, paths: &[lore_string_t]) -> lore_revision_diff_args_t {
+        lore_revision_diff_args_t {
+            revision_source: raw_str(self.source),
+            revision_target: raw_str(self.target),
+            paths: raw_str_array(paths),
+        }
+    }
+}
+
+/// Reports what changed between two revisions, one [`Event::RevisionDiffFile`]
+/// per path.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_diff`.
+pub fn revision_diff(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: RevisionDiffArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let paths = args.raw_paths();
+
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `paths` and `args`, both of which live across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_diff,
+            command,
+            globals,
+            &args.to_raw(&paths),
+            callback,
+        )
     }
 }
 

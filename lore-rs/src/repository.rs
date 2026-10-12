@@ -7,11 +7,11 @@ use lore_sys::{
 };
 
 use crate::{
-    BranchArchiveArgs, BranchCreateArgs, BranchId, BranchInfoArgs, BranchListArgs, BranchPushArgs,
-    BranchSwitchArgs, Event, FileStageArgs, FileUnstageArgs, GlobalArgs, InstanceId, Lore,
-    LoreError, NodeKind, RepositoryCloneArgs, RepositoryId, RepositoryInfoArgs,
-    RepositoryStatusArgs, Revision, RevisionCommitArgs, RevisionHistoryArgs, RevisionInfoArgs,
-    RevisionSyncArgs,
+    Address, BranchArchiveArgs, BranchCreateArgs, BranchId, BranchInfoArgs, BranchListArgs,
+    BranchPushArgs, BranchSwitchArgs, ContextId, Event, FileInfoArgs, FileStageArgs,
+    FileUnstageArgs, GlobalArgs, InstanceId, Lore, LoreError, NodeKind, RepositoryCloneArgs,
+    RepositoryId, RepositoryInfoArgs, RepositoryStatusArgs, Revision, RevisionCommitArgs,
+    RevisionDiffArgs, RevisionHistoryArgs, RevisionInfoArgs, RevisionSyncArgs,
 };
 
 /// A local repository instance — the directory holding `.lore` — together
@@ -178,6 +178,70 @@ impl Repository {
         Ok(info)
     }
 
+    /// What changed from `source` to `target`, one entry per path, in the
+    /// order Lore reported them.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_revision_diff`.
+    pub fn diff(&self, args: RevisionDiffArgs<'_>) -> Result<Vec<DiffEntry>, LoreError> {
+        let mut entries = Vec::new();
+
+        crate::call::revision_diff(self.lore, "revision::diff", &self.globals, args, |event| {
+            crate::log_event(&event);
+
+            if let Ok(Event::RevisionDiffFile {
+                path,
+                action,
+                old_is_file,
+                new_is_file,
+                old_address,
+                new_address,
+            }) = event
+            {
+                entries.push(DiffEntry {
+                    path: path.to_owned(),
+                    action: FileAction::from_raw(action),
+                    old_address: Address::from_raw(old_address),
+                    new_address: Address::from_raw(new_address),
+                    old_is_file,
+                    new_is_file,
+                });
+            }
+        })?;
+
+        Ok(entries)
+    }
+
+    /// What the repository holds at each of the paths in `args`, in the order
+    /// Lore reported them. A directory's size is that of everything under it.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_file_info`.
+    pub fn file_info(&self, args: FileInfoArgs<'_>) -> Result<Vec<FileInfo>, LoreError> {
+        let mut infos = Vec::new();
+
+        crate::call::file_info(self.lore, "file::info", &self.globals, args, |event| {
+            crate::log_event(&event);
+
+            if let Ok(Event::FileInfo {
+                path,
+                hash,
+                context,
+                is_file,
+                size,
+            }) = event
+            {
+                infos.push(FileInfo {
+                    path: path.to_owned(),
+                    hash: Revision::from_raw(hash),
+                    context: ContextId::from_raw(context),
+                    is_file,
+                    size,
+                });
+            }
+        })?;
+
+        Ok(infos)
+    }
+
     /// Resolves a revision signature the way Lore itself does, and reports
     /// the revision it names.
     ///
@@ -277,6 +341,32 @@ impl InstanceStaleness {
             other => Self::Other(other),
         }
     }
+}
+
+/// One path a [`diff`](Repository::diff) found changed.
+#[derive(Debug, Clone)]
+pub struct DiffEntry {
+    /// Repository-relative.
+    pub path: String,
+    pub action: FileAction,
+    /// All zeroes when the path is not in the source revision.
+    pub old_address: Address,
+    /// All zeroes when the path is not in the target revision.
+    pub new_address: Address,
+    pub old_is_file: bool,
+    pub new_is_file: bool,
+}
+
+/// What the repository holds at a path, from [`Repository::file_info`].
+#[derive(Debug, Clone)]
+pub struct FileInfo {
+    /// Repository-relative.
+    pub path: String,
+    pub hash: Revision,
+    pub context: ContextId,
+    pub is_file: bool,
+    /// Of a directory, everything under it.
+    pub size: u64,
 }
 
 /// A resolved revision, from [`Repository::revision`].
@@ -1193,6 +1283,17 @@ impl Repository {
     ///
     /// This corresponds to `lore_sys::Lore::lore_revision_commit`.
     pub fn commit(&self, args: RevisionCommitArgs<'_>) -> Result<Vec<Commit>, LoreError> {
+        self.commit_with_progress(args, |_| {})
+    }
+
+    /// [`Self::commit`], calling `progress` with Lore's running tally at
+    /// intervals while it reads the staged files. The totals in it grow until
+    /// [`CommitCount::discovery_complete`] is set.
+    pub fn commit_with_progress(
+        &self,
+        args: RevisionCommitArgs<'_>,
+        mut progress: impl FnMut(&CommitCount) + Send,
+    ) -> Result<Vec<Commit>, LoreError> {
         const COMMAND: &str = "revision::commit";
         let mut count = None;
         let mut commits = Vec::new();
@@ -1201,6 +1302,9 @@ impl Repository {
             crate::log_event(&event);
 
             match event {
+                Ok(Event::RevisionCommitProgress { count }) => {
+                    progress(&CommitCount::from_raw(count));
+                }
                 // Lore counts once per repository or layer, just before its
                 // revision. The linked repositories inside it are counted in
                 // that tally and report their revisions before it.
