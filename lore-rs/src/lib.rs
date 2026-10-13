@@ -60,7 +60,7 @@ pub use auth::UserInfo;
 
 mod repository;
 pub use repository::{
-    BranchCreated, BranchEntry, BranchInfo, BranchLocation, CloneCount, Cloned, Commit,
+    BranchCreated, BranchEntry, BranchInfo, BranchLocation, Branches, CloneCount, Cloned, Commit,
     CommitCount, DiffEntry, FileAction, FileChange, FileInfo, History, HistoryEntry, InstanceInfo,
     InstanceStaleness, Push, PushProgress, Pushed, Repository, RepositoryInfo, RevisionInfo,
     StageCount, Staged, Status, StatusCount, StatusFile, StatusSummary, Switched, Sync,

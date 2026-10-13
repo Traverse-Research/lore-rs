@@ -1036,6 +1036,16 @@ pub struct BranchEntry {
     pub archived: bool,
 }
 
+/// The branches from [`Repository::branches`].
+#[derive(Debug, Clone)]
+pub struct Branches {
+    pub entries: Vec<BranchEntry>,
+    /// The remote listed its branches, even if it had none. False when the
+    /// remote was not asked, as under `globals.local` or `globals.offline`,
+    /// or could not be reached; lore lists the local branches either way.
+    pub remote_listed: bool,
+}
+
 /// A revision history, from [`Repository::history`].
 #[derive(Debug, Clone)]
 pub struct History {
@@ -1579,15 +1589,20 @@ impl Repository {
         archived.ok_or(missing(COMMAND, "branch_archive"))
     }
 
-    /// Lists the branches the instance and its remote know.
+    /// Lists the branches the instance and its remote know, and whether the
+    /// remote answered.
     ///
     /// This corresponds to `lore_sys::Lore::lore_branch_list`.
-    pub fn branches(&self, args: BranchListArgs) -> Result<Vec<BranchEntry>, LoreError> {
+    pub fn branches(&self, args: BranchListArgs) -> Result<Branches, LoreError> {
         let mut branches = Vec::new();
+        let mut remote_listed = false;
 
         crate::call::branch_list(self.lore, "branch::list", &self.globals, args, |event| {
             crate::log_event(&event);
 
+            if let Ok(Event::BranchListBegin { location }) = event {
+                remote_listed |= BranchLocation::from_raw(location) == BranchLocation::Remote;
+            }
             if let Ok(Event::BranchListEntry {
                 location,
                 id,
@@ -1624,7 +1639,10 @@ impl Repository {
             }
         })?;
 
-        Ok(branches)
+        Ok(Branches {
+            entries: branches,
+            remote_listed,
+        })
     }
 
     /// Walks the history back from a revision along its first parents.

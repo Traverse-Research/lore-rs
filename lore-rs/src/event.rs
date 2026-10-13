@@ -7,13 +7,13 @@ use lore_sys::{
     lore_repository_clone_count_data_t, lore_repository_id_t, lore_revision_commit_count_data_t,
     LORE_EVENT_AUTH_IDENTITY, LORE_EVENT_AUTH_URL, LORE_EVENT_AUTH_USER_INFO,
     LORE_EVENT_AUTH_USER_TOKEN, LORE_EVENT_BRANCH_ARCHIVE, LORE_EVENT_BRANCH_CREATE,
-    LORE_EVENT_BRANCH_INFO, LORE_EVENT_BRANCH_LIST_ENTRY, LORE_EVENT_BRANCH_PUSH,
-    LORE_EVENT_BRANCH_PUSH_FRAGMENT_END, LORE_EVENT_BRANCH_PUSH_FRAGMENT_PROGRESS,
-    LORE_EVENT_BRANCH_SWITCH_END, LORE_EVENT_COMPLETE, LORE_EVENT_END, LORE_EVENT_ERROR,
-    LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_END, LORE_EVENT_FILE_STAGE_FILE,
-    LORE_EVENT_FILE_STAGE_REVISION, LORE_EVENT_FILE_UNSTAGE_END, LORE_EVENT_FILE_UNSTAGE_FILE,
-    LORE_EVENT_FILE_UNSTAGE_REVISION, LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_CLONE_END,
-    LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_INSTANCE,
+    LORE_EVENT_BRANCH_INFO, LORE_EVENT_BRANCH_LIST_BEGIN, LORE_EVENT_BRANCH_LIST_END,
+    LORE_EVENT_BRANCH_LIST_ENTRY, LORE_EVENT_BRANCH_PUSH, LORE_EVENT_BRANCH_PUSH_FRAGMENT_END,
+    LORE_EVENT_BRANCH_PUSH_FRAGMENT_PROGRESS, LORE_EVENT_BRANCH_SWITCH_END, LORE_EVENT_COMPLETE,
+    LORE_EVENT_END, LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_END,
+    LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_STAGE_REVISION, LORE_EVENT_FILE_UNSTAGE_END,
+    LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_FILE_UNSTAGE_REVISION, LORE_EVENT_LOG,
+    LORE_EVENT_REPOSITORY_CLONE_END, LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_INSTANCE,
     LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_COUNT,
     LORE_EVENT_REPOSITORY_STATUS_FILE, LORE_EVENT_REPOSITORY_STATUS_REVISION,
     LORE_EVENT_REPOSITORY_STATUS_SUMMARY, LORE_EVENT_REVISION_COMMIT_END,
@@ -141,6 +141,19 @@ pub enum Event<'a> {
         /// Lore made a new revision for the branch, which happens when the
         /// repository has linked repositories that needed their own branch.
         is_commit: bool,
+    },
+    /// Starts one side's part of a `branch_list`: lore lists the local
+    /// branches, then the archived local ones when asked for, then the
+    /// remote's. No remote section means the remote was not asked or could
+    /// not be reached.
+    BranchListBegin {
+        location: lore_branch_location_t,
+    },
+    /// Ends one side's part of a `branch_list`, with how many branches it
+    /// listed.
+    BranchListEnd {
+        location: lore_branch_location_t,
+        count: u64,
     },
     BranchListEntry {
         /// Which side's view of the branch this is. A branch known both
@@ -636,6 +649,13 @@ impl<'a> Event<'a> {
                     name: data.branch_create.name.try_to_str()?,
                     latest: data.branch_create.latest,
                     is_commit: data.branch_create.is_commit != 0,
+                },
+                LORE_EVENT_BRANCH_LIST_BEGIN => Self::BranchListBegin {
+                    location: data.branch_list_begin.location,
+                },
+                LORE_EVENT_BRANCH_LIST_END => Self::BranchListEnd {
+                    location: data.branch_list_end.location,
+                    count: data.branch_list_end.count,
                 },
                 LORE_EVENT_BRANCH_LIST_ENTRY => Self::BranchListEntry {
                     location: data.branch_list_entry.location,

@@ -2365,19 +2365,27 @@ pub fn branch_create(
 pub struct BranchArchiveArgs<'a> {
     /// A branch name, or its id as 32 hex characters.
     pub branch: &'a str,
+    /// Also archive the branch in the layer mounted at this path; empty is
+    /// none. Lore refuses it together with `include_layers`.
+    pub layer: &'a str,
+    /// Also archive the branch in every configured layer.
+    pub include_layers: bool,
+    /// Also archive the branch in the link mounted at this path; empty is
+    /// none. Lore refuses it together with `include_links`.
+    pub link: &'a str,
+    /// Also archive the branch in every configured link.
+    pub include_links: bool,
 }
 
 impl BranchArchiveArgs<'_> {
     /// The raw struct to hand to Lore, borrowing the same text `self` does.
     fn to_raw(self) -> lore_branch_archive_args_t {
-        // Archiving in a layer or link only is not exposed; the branch is
-        // archived in the repository itself.
         lore_branch_archive_args_t {
             branch: raw_str(self.branch),
-            layer: raw_str(""),
-            include_layers: 0,
-            link: raw_str(""),
-            include_links: 0,
+            layer: raw_str(self.layer),
+            include_layers: u8::from(self.include_layers),
+            link: raw_str(self.link),
+            include_links: u8::from(self.include_links),
         }
     }
 }
@@ -2739,6 +2747,46 @@ mod tests {
         let raw = BranchInfoArgs::default().to_raw();
         assert!(raw.branch.string.is_null());
         assert_eq!(raw.branch.length, 0);
+    }
+
+    #[test]
+    fn branch_archive_args_conversion() {
+        let raw = BranchArchiveArgs {
+            branch: "feature",
+            layer: "art",
+            include_layers: false,
+            link: "",
+            include_links: true,
+        }
+        .to_raw();
+        assert_eq!(unsafe { raw.branch.try_to_str() }, Ok("feature"));
+        assert_eq!(unsafe { raw.layer.try_to_str() }, Ok("art"));
+        assert_eq!(raw.include_layers, 0);
+        // An empty path means no single link, which lore tells from unset.
+        assert!(raw.link.string.is_null());
+        assert_eq!(raw.include_links, 1);
+    }
+
+    #[test]
+    fn branch_list_begin_and_end_events_decode_their_location() {
+        let mut begin: lore_event_t = unsafe { std::mem::zeroed() };
+        begin.tag = lore_sys::LORE_EVENT_BRANCH_LIST_BEGIN as lore_event_tag_t;
+        begin.__bindgen_anon_1.branch_list_begin.location = lore_sys::LORE_BRANCH_LOCATION_REMOTE;
+        let mut end: lore_event_t = unsafe { std::mem::zeroed() };
+        end.tag = lore_sys::LORE_EVENT_BRANCH_LIST_END as lore_event_tag_t;
+        end.__bindgen_anon_1.branch_list_end.location = lore_sys::LORE_BRANCH_LOCATION_REMOTE;
+        end.__bindgen_anon_1.branch_list_end.count = 3;
+
+        let mut seen = Vec::new();
+        run(&[begin, end], 0, |event| match event {
+            Ok(Event::BranchListBegin { location }) => seen.push((location, None)),
+            Ok(Event::BranchListEnd { location, count }) => seen.push((location, Some(count))),
+            _ => {}
+        })
+        .unwrap();
+
+        let remote = lore_sys::LORE_BRANCH_LOCATION_REMOTE;
+        assert_eq!(seen, vec![(remote, None), (remote, Some(3))]);
     }
 
     #[test]
