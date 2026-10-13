@@ -1064,7 +1064,9 @@ impl Repository {
     }
 
     /// Commits the staged changes as new revisions on the branch the
-    /// instance is on. The revisions are local until [`push`](Self::push).
+    /// instance is on. The revisions stay on this instance's branch until they
+    /// are pushed, though unless `globals.offline` or `globals.local` is set
+    /// Lore uploads their content to the remote while it commits.
     ///
     /// One [`Commit`] per repository that got a new revision, in the order
     /// Lore reported them: the linked repositories inside the repository, the
