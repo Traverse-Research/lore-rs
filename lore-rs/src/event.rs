@@ -2,14 +2,15 @@ use crate::LoreStringExt;
 use lore_sys::{
     lore_address_t, lore_branch_id_t, lore_context_t, lore_error_code_t, lore_event_t,
     lore_event_tag_t, lore_file_action_t, lore_fragment_t, lore_hash_t, lore_instance_id_t,
-    lore_log_level_t, lore_node_id_t, lore_repository_id_t, LORE_EVENT_AUTH_IDENTITY,
-    LORE_EVENT_AUTH_URL, LORE_EVENT_AUTH_USER_INFO, LORE_EVENT_AUTH_USER_TOKEN,
-    LORE_EVENT_BRANCH_INFO, LORE_EVENT_COMPLETE, LORE_EVENT_END, LORE_EVENT_ERROR,
-    LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG,
-    LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_INSTANCE,
-    LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_FILE,
-    LORE_EVENT_REPOSITORY_STATUS_REVISION, LORE_EVENT_REVISION_COMMIT_REVISION,
-    LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_TREE_CHILD,
+    lore_log_level_t, lore_node_id_t, lore_node_type_t, lore_repository_id_t,
+    LORE_EVENT_AUTH_IDENTITY, LORE_EVENT_AUTH_URL, LORE_EVENT_AUTH_USER_INFO,
+    LORE_EVENT_AUTH_USER_TOKEN, LORE_EVENT_BRANCH_INFO, LORE_EVENT_COMPLETE, LORE_EVENT_END,
+    LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_FILE,
+    LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_DATA,
+    LORE_EVENT_REPOSITORY_INSTANCE, LORE_EVENT_REPOSITORY_STATE_DUMP_NODE,
+    LORE_EVENT_REPOSITORY_STATUS_COUNT, LORE_EVENT_REPOSITORY_STATUS_FILE,
+    LORE_EVENT_REPOSITORY_STATUS_REVISION, LORE_EVENT_REPOSITORY_STATUS_SUMMARY,
+    LORE_EVENT_REVISION_COMMIT_REVISION, LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_TREE_CHILD,
     LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE, LORE_EVENT_REVISION_TREE_INFO,
     LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN, LORE_EVENT_REVISION_TREE_LOADED,
     LORE_EVENT_REVISION_TREE_NODE_INFO, LORE_EVENT_REVISION_TREE_NODE_PATH,
@@ -128,6 +129,8 @@ pub enum Event<'a> {
     FileStageFile {
         path: &'a str,
         action: lore_file_action_t,
+        /// Where a move or copy came from; empty for the other actions.
+        from_path: &'a str,
     },
     FileUnstageFile {
         path: &'a str,
@@ -157,14 +160,78 @@ pub enum Event<'a> {
         stale: u8,
     },
     RepositoryStatusRevision {
+        repository: lore_repository_id_t,
+        branch: lore_branch_id_t,
         branch_name: &'a str,
         /// The revision the repository is on.
         revision: lore_hash_t,
+        revision_number: u64,
+        /// Zero when nothing is staged.
+        revision_staged: lore_hash_t,
+        /// The incoming revision of a pending merge, zero when there is none.
+        revision_merged: lore_hash_t,
+        /// The last revision merged in from the parent branch; Lore only
+        /// works it out when the sync-point option is set.
+        revision_merged_parent_branch: lore_hash_t,
+        /// Tip of the branch in the local store.
+        revision_local: lore_hash_t,
+        revision_local_number: u64,
+        /// Tip of the branch on the remote; zero when unknown, when the
+        /// branch is not on the remote, or when the remote is unavailable.
+        revision_remote: lore_hash_t,
+        /// Zero when `revision_remote` is.
+        revision_remote_number: u64,
+        /// The local store holds revisions that are not on the remote's
+        /// history line.
+        is_local_ahead: bool,
+        /// The remote holds revisions that are not in the local store.
+        is_remote_ahead: bool,
+        /// A remote is configured and reachable with a local identity. This
+        /// is connectivity only, not authorization.
+        remote_available: bool,
+        /// The remote answered the revision query authoritatively, so the
+        /// identity may access the repository.
+        remote_authorized: bool,
+        /// The branch exists on the remote.
+        remote_branch_exist: bool,
     },
     RepositoryStatusFile {
         path: &'a str,
+        size: u64,
         action: lore_file_action_t,
+        /// Lore's `type`.
+        kind: lore_node_type_t,
         staged: bool,
+        /// The change comes from a merge.
+        merged: bool,
+        conflict: bool,
+        conflict_unresolved: bool,
+        /// The conflict was resolved automatically.
+        conflict_automerged: bool,
+        /// The conflict was resolved with the local side.
+        conflict_mine: bool,
+        /// The conflict was resolved with the incoming side.
+        conflict_theirs: bool,
+        /// The file differs from the recorded state.
+        dirty: bool,
+        /// Where a move or copy came from; empty for the other actions.
+        from_path: &'a str,
+    },
+    /// The size of the tree `repository_status` reported on, when `count` is
+    /// set: the staged state when there is one, the current revision
+    /// otherwise, filtered by the view.
+    RepositoryStatusCount {
+        directories: u64,
+        files: u64,
+    },
+    /// The changes a `repository_status` with `scan` or `check_dirty` found,
+    /// once it is done.
+    RepositoryStatusSummary {
+        adds: u64,
+        deletes: u64,
+        modifies: u64,
+        moves: u64,
+        copies: u64,
     },
     RepositoryStateDumpNode {
         path: &'a str,
@@ -391,6 +458,7 @@ impl<'a> Event<'a> {
                 LORE_EVENT_FILE_STAGE_FILE => Self::FileStageFile {
                     path: data.file_stage_file.path.try_to_str()?,
                     action: data.file_stage_file.action,
+                    from_path: data.file_stage_file.from_path.try_to_str()?,
                 },
                 LORE_EVENT_FILE_UNSTAGE_FILE => Self::FileUnstageFile {
                     path: data.file_unstage_file.path.try_to_str()?,
@@ -414,14 +482,56 @@ impl<'a> Event<'a> {
                     revision: data.repository_instance.revision,
                     stale: data.repository_instance.stale,
                 },
-                LORE_EVENT_REPOSITORY_STATUS_REVISION => Self::RepositoryStatusRevision {
-                    branch_name: data.repository_status_revision.branch_name.try_to_str()?,
-                    revision: data.repository_status_revision.revision,
+                LORE_EVENT_REPOSITORY_STATUS_REVISION => {
+                    let status = &data.repository_status_revision;
+                    Self::RepositoryStatusRevision {
+                        repository: status.repository,
+                        branch: status.branch,
+                        branch_name: status.branch_name.try_to_str()?,
+                        revision: status.revision,
+                        revision_number: status.revision_number,
+                        revision_staged: status.revision_staged,
+                        revision_merged: status.revision_merged,
+                        revision_merged_parent_branch: status.revision_merged_parent_branch,
+                        revision_local: status.revision_local,
+                        revision_local_number: status.revision_local_number,
+                        revision_remote: status.revision_remote,
+                        revision_remote_number: status.revision_remote_number,
+                        is_local_ahead: status.is_local_ahead != 0,
+                        is_remote_ahead: status.is_remote_ahead != 0,
+                        remote_available: status.remote_available != 0,
+                        remote_authorized: status.remote_authorized != 0,
+                        remote_branch_exist: status.remote_branch_exist != 0,
+                    }
+                }
+                LORE_EVENT_REPOSITORY_STATUS_FILE => {
+                    let file = &data.repository_status_file;
+                    Self::RepositoryStatusFile {
+                        path: file.path.try_to_str()?,
+                        size: file.size,
+                        action: file.action,
+                        kind: file.type_,
+                        staged: file.flag_staged != 0,
+                        merged: file.flag_merged != 0,
+                        conflict: file.flag_conflict != 0,
+                        conflict_unresolved: file.flag_conflict_unresolved != 0,
+                        conflict_automerged: file.flag_conflict_automerged != 0,
+                        conflict_mine: file.flag_conflict_mine != 0,
+                        conflict_theirs: file.flag_conflict_theirs != 0,
+                        dirty: file.flag_dirty != 0,
+                        from_path: file.from_path.try_to_str()?,
+                    }
+                }
+                LORE_EVENT_REPOSITORY_STATUS_COUNT => Self::RepositoryStatusCount {
+                    directories: data.repository_status_count.directories,
+                    files: data.repository_status_count.files,
                 },
-                LORE_EVENT_REPOSITORY_STATUS_FILE => Self::RepositoryStatusFile {
-                    path: data.repository_status_file.path.try_to_str()?,
-                    action: data.repository_status_file.action,
-                    staged: data.repository_status_file.flag_staged != 0,
+                LORE_EVENT_REPOSITORY_STATUS_SUMMARY => Self::RepositoryStatusSummary {
+                    adds: data.repository_status_summary.adds,
+                    deletes: data.repository_status_summary.deletes,
+                    modifies: data.repository_status_summary.modifies,
+                    moves: data.repository_status_summary.moves,
+                    copies: data.repository_status_summary.copies,
                 },
                 LORE_EVENT_REPOSITORY_STATE_DUMP_NODE => Self::RepositoryStateDumpNode {
                     path: data.repository_state_dump_node.name.try_to_str()?,

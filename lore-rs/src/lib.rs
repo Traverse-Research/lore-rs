@@ -57,7 +57,8 @@ pub use auth::UserInfo;
 
 mod repository;
 pub use repository::{
-    BranchInfo, InstanceInfo, InstanceStaleness, Repository, RepositoryInfo, RevisionInfo,
+    BranchInfo, FileAction, InstanceInfo, InstanceStaleness, Repository, RepositoryInfo,
+    RevisionInfo, Status, StatusCount, StatusFile, StatusSummary,
 };
 
 mod store;
