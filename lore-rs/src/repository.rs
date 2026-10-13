@@ -313,6 +313,59 @@ impl Lore {
     ) -> Result<RepositoryInfo, LoreError> {
         repository_info(self, globals, repository_url)
     }
+
+    /// Clones a repository into `globals.repository_path` and returns the
+    /// [`Repository`] that runs commands against it. With
+    /// [`RepositoryCloneArgs::no_tracking`] set, the clone's stores are gone
+    /// once this returns, so that [`Repository`] has nothing to read.
+    ///
+    /// See [`crate::call::repository_clone`] for the `globals` it reads.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_repository_clone`.
+    pub fn repository_clone(
+        &'static self,
+        globals: GlobalArgs,
+        args: RepositoryCloneArgs<'_>,
+    ) -> Result<Cloned, LoreError> {
+        self.repository_clone_with_progress(globals, args, |_| {})
+    }
+
+    /// [`Self::repository_clone`], calling `progress` with Lore's running
+    /// tally at intervals while it writes the files. The totals in it grow
+    /// until [`CloneCount::discovery_complete`] is set.
+    pub fn repository_clone_with_progress(
+        &'static self,
+        globals: GlobalArgs,
+        args: RepositoryCloneArgs<'_>,
+        mut progress: impl FnMut(&CloneCount) + Send,
+    ) -> Result<Cloned, LoreError> {
+        const COMMAND: &str = "repository::clone";
+        let mut end = None;
+
+        crate::call::repository_clone(self, COMMAND, &globals, args, |event| {
+            crate::log_event(&event);
+
+            match event {
+                Ok(Event::RepositoryCloneProgress { count }) => {
+                    progress(&CloneCount::from_raw(count));
+                }
+                Ok(Event::RepositoryCloneEnd {
+                    branch,
+                    revision,
+                    count,
+                }) => end = Some((branch.to_owned(), present(revision), count)),
+                _ => {}
+            }
+        })?;
+
+        let (branch, revision, count) = end.ok_or(missing(COMMAND, "repository_clone_end"))?;
+        Ok(Cloned {
+            repository: Repository::new(self, globals),
+            branch,
+            revision,
+            count: CloneCount::from_raw(count),
+        })
+    }
 }
 
 /// What a server says about a repository.
@@ -500,16 +553,21 @@ pub struct CloneCount {
     pub file_complete: u64,
     /// Files kept because they already matched.
     pub file_retain: u64,
+    /// Files replaced.
     pub file_replace: u64,
-    /// Files discovered to process.
+    /// Files discovered to process; final once `discovery_complete` is set.
     pub file_count: u64,
-    /// Files still being processed.
+    /// Files being processed right now.
     pub file_inflight: u64,
-    /// Fragment fetches still in flight.
+    /// Fragment fetches in flight across the whole process, not only this
+    /// clone's.
     pub fragment_inflight: u64,
+    /// Bytes transferred so far.
     pub bytes_transferred: u64,
+    /// Bytes to transfer; final once `discovery_complete` is set.
     pub bytes_total: u64,
-    /// Lore had found every file to process.
+    /// Lore has found every file to process. Never set for a bare clone or
+    /// one of a branch without revisions, which have no files to find.
     pub discovery_complete: bool,
 }
 
@@ -626,9 +684,12 @@ pub struct StatusSummary {
 /// What a [`clone`](Lore::repository_clone) checked out.
 #[derive(Debug, Clone)]
 pub struct Cloned {
+    /// The instance the clone wrote, with the `globals` it was cloned with.
+    pub repository: Repository,
     pub branch: String,
     /// [`None`] when the branch has no revision yet.
     pub revision: Option<Revision>,
+    /// The final tally.
     pub count: CloneCount,
 }
 
@@ -755,39 +816,5 @@ impl Repository {
         status.count = count;
         status.summary = summary;
         Ok(status)
-    }
-}
-
-impl Lore {
-    /// Clones a repository into `globals.repository_path`. Afterwards a
-    /// [`Repository`] with the same `globals` runs commands against the clone.
-    ///
-    /// This corresponds to `lore_sys::Lore::lore_repository_clone`.
-    pub fn repository_clone(
-        &self,
-        globals: &GlobalArgs,
-        args: RepositoryCloneArgs<'_>,
-    ) -> Result<Cloned, LoreError> {
-        const COMMAND: &str = "repository::clone";
-        let mut cloned = None;
-
-        crate::call::repository_clone(self, COMMAND, globals, args, |event| {
-            crate::log_event(&event);
-
-            if let Ok(Event::RepositoryCloneEnd {
-                branch,
-                revision,
-                count,
-            }) = event
-            {
-                cloned = Some(Cloned {
-                    branch: branch.to_owned(),
-                    revision: present(revision),
-                    count: CloneCount::from_raw(count),
-                });
-            }
-        })?;
-
-        cloned.ok_or(missing(COMMAND, "repository_clone_end"))
     }
 }
