@@ -1542,18 +1542,15 @@ impl Repository {
     ///
     /// This corresponds to `lore_sys::Lore::lore_revision_sync`.
     pub fn sync(&self, args: RevisionSyncArgs<'_>) -> Result<Sync, LoreError> {
-        self.sync_with_progress(args, |_| {}, |_| {})
+        self.sync_with_progress(args, |_| {})
     }
 
-    /// [`sync`](Self::sync), calling `target` once lore has picked the
-    /// revision, before any file moves, and `progress` as it writes files.
-    /// `target`'s [`Sync::revision`] is still [`None`] then.
+    /// [`sync`](Self::sync), calling `progress` as it writes files.
     ///
     /// This corresponds to `lore_sys::Lore::lore_revision_sync`.
     pub fn sync_with_progress(
         &self,
         args: RevisionSyncArgs<'_>,
-        mut target: impl FnMut(&Sync) + Send,
         mut progress: impl FnMut(&SyncProgress) + Send,
     ) -> Result<Sync, LoreError> {
         const COMMAND: &str = "revision::sync";
@@ -1578,7 +1575,7 @@ impl Repository {
                     remote_available,
                     remote_authorized,
                 }) => {
-                    let found = Sync {
+                    sync = Some(Sync {
                         remote: remote.to_owned(),
                         repository: RepositoryId::from_raw(repository),
                         branch: BranchId::from_raw(branch),
@@ -1592,9 +1589,7 @@ impl Repository {
                         remote_available,
                         remote_authorized,
                         revision: None,
-                    };
-                    target(&found);
-                    sync = Some(found);
+                    });
                 }
                 Ok(Event::RevisionSyncProgress {
                     file_update,
