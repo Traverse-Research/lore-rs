@@ -696,9 +696,13 @@ pub struct Staged {
     /// In the order Lore reported them.
     pub files: Vec<FileChange>,
     pub count: StageCount,
-    /// The new staged state per repository: the repository itself when
-    /// anything outside its layers changed, then each layer a path went into.
-    /// Empty when nothing changed.
+    /// The staged tree Lore wrote for each repository the stage changed: the
+    /// repository itself when anything outside its layers changed, then each
+    /// layer with staged changes. Each is the hash Lore keeps as that
+    /// repository's staged anchor, which the next commit builds its revision
+    /// from. Empty when nothing changed. In a dry run Lore reports the same
+    /// hashes but does not store them, so they are what would have been
+    /// staged.
     pub revisions: Vec<(RepositoryId, Revision)>,
 }
 
@@ -710,10 +714,10 @@ pub struct Unstaged {
     /// [`None`] when nothing was staged, in which case Lore reports nothing at
     /// all.
     pub count: Option<UnstageCount>,
-    /// The staged state left behind per repository: the repository itself
+    /// The staged tree Lore left for each repository: the repository itself
     /// when something was unstaged and something remains staged, then each
-    /// layer a path went into. A layer left with nothing staged is reported
-    /// with an all-zero revision.
+    /// layer a path went into, all zeroes when nothing remains staged in it.
+    /// Each is the hash Lore keeps as that repository's staged anchor.
     pub revisions: Vec<(RepositoryId, Revision)>,
 }
 
