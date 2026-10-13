@@ -1,9 +1,9 @@
-use crate::LoreStringExt;
+use crate::{Address, ContextId, LoreStringExt, Revision};
 use lore_sys::{
     lore_address_t, lore_branch_id_t, lore_branch_location_t, lore_branch_point_t, lore_context_t,
     lore_error_code_t, lore_event_t, lore_event_tag_t, lore_file_action_t,
     lore_file_stage_count_data_t, lore_file_unstage_count_data_t, lore_fragment_t, lore_hash_t,
-    lore_instance_id_t, lore_log_level_t, lore_node_id_t, lore_node_type_t,
+    lore_instance_id_t, lore_log_level_t, lore_metadata_t, lore_node_id_t, lore_node_type_t,
     lore_repository_clone_count_data_t, lore_repository_id_t, lore_revision_commit_count_data_t,
     LORE_EVENT_AUTH_IDENTITY, LORE_EVENT_AUTH_URL, LORE_EVENT_AUTH_USER_INFO,
     LORE_EVENT_AUTH_USER_TOKEN, LORE_EVENT_BRANCH_ARCHIVE, LORE_EVENT_BRANCH_CREATE,
@@ -13,27 +13,30 @@ use lore_sys::{
     LORE_EVENT_END, LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_END,
     LORE_EVENT_FILE_STAGE_FILE, LORE_EVENT_FILE_STAGE_REVISION, LORE_EVENT_FILE_UNSTAGE_END,
     LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_FILE_UNSTAGE_REVISION, LORE_EVENT_LOG,
-    LORE_EVENT_REPOSITORY_CLONE_END, LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_INSTANCE,
-    LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_COUNT,
-    LORE_EVENT_REPOSITORY_STATUS_FILE, LORE_EVENT_REPOSITORY_STATUS_REVISION,
-    LORE_EVENT_REPOSITORY_STATUS_SUMMARY, LORE_EVENT_REVISION_COMMIT_END,
-    LORE_EVENT_REVISION_COMMIT_PROGRESS, LORE_EVENT_REVISION_COMMIT_REVISION,
-    LORE_EVENT_REVISION_DIFF_FILE, LORE_EVENT_REVISION_HISTORY, LORE_EVENT_REVISION_HISTORY_ENTRY,
-    LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_RESTORE_FILE,
-    LORE_EVENT_REVISION_RESTORE_FILE_BEGIN, LORE_EVENT_REVISION_RESTORE_FRAGMENT_BEGIN,
-    LORE_EVENT_REVISION_RESTORE_FRAGMENT_END, LORE_EVENT_REVISION_RESTORE_FRAGMENT_PROGRESS,
-    LORE_EVENT_REVISION_RESTORE_REVISION, LORE_EVENT_REVISION_SYNC_PROGRESS,
-    LORE_EVENT_REVISION_SYNC_REVISION, LORE_EVENT_REVISION_SYNC_TARGET,
-    LORE_EVENT_REVISION_TREE_CHILD, LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE,
-    LORE_EVENT_REVISION_TREE_INFO, LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN,
-    LORE_EVENT_REVISION_TREE_LOADED, LORE_EVENT_REVISION_TREE_NODE_INFO,
-    LORE_EVENT_REVISION_TREE_NODE_PATH, LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE,
-    LORE_EVENT_STORAGE_GET_DATA, LORE_EVENT_STORAGE_GET_HEADER,
-    LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE,
+    LORE_EVENT_METADATA, LORE_EVENT_REPOSITORY_CLONE_END, LORE_EVENT_REPOSITORY_DATA,
+    LORE_EVENT_REPOSITORY_INSTANCE, LORE_EVENT_REPOSITORY_STATE_DUMP_NODE,
+    LORE_EVENT_REPOSITORY_STATUS_COUNT, LORE_EVENT_REPOSITORY_STATUS_FILE,
+    LORE_EVENT_REPOSITORY_STATUS_REVISION, LORE_EVENT_REPOSITORY_STATUS_SUMMARY,
+    LORE_EVENT_REVISION_COMMIT_END, LORE_EVENT_REVISION_COMMIT_PROGRESS,
+    LORE_EVENT_REVISION_COMMIT_REVISION, LORE_EVENT_REVISION_DIFF_FILE,
+    LORE_EVENT_REVISION_HISTORY, LORE_EVENT_REVISION_HISTORY_ENTRY, LORE_EVENT_REVISION_INFO,
+    LORE_EVENT_REVISION_RESTORE_FILE, LORE_EVENT_REVISION_RESTORE_FILE_BEGIN,
+    LORE_EVENT_REVISION_RESTORE_FRAGMENT_BEGIN, LORE_EVENT_REVISION_RESTORE_FRAGMENT_END,
+    LORE_EVENT_REVISION_RESTORE_FRAGMENT_PROGRESS, LORE_EVENT_REVISION_RESTORE_REVISION,
+    LORE_EVENT_REVISION_SYNC_PROGRESS, LORE_EVENT_REVISION_SYNC_REVISION,
+    LORE_EVENT_REVISION_SYNC_TARGET, LORE_EVENT_REVISION_TREE_CHILD,
+    LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE, LORE_EVENT_REVISION_TREE_INFO,
+    LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN, LORE_EVENT_REVISION_TREE_LOADED,
+    LORE_EVENT_REVISION_TREE_NODE_INFO, LORE_EVENT_REVISION_TREE_NODE_PATH,
+    LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE, LORE_EVENT_STORAGE_GET_DATA,
+    LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE,
+    LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE,
     LORE_EVENT_STORAGE_MUTABLE_COMPARE_AND_SWAP_ITEM_COMPLETE,
     LORE_EVENT_STORAGE_MUTABLE_LOAD_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
     LORE_EVENT_STORAGE_PUT_ITEM_COMPLETE, LORE_LOG_LEVEL_ERROR, LORE_LOG_LEVEL_INFO,
-    LORE_LOG_LEVEL_TRACE, LORE_LOG_LEVEL_WARN,
+    LORE_LOG_LEVEL_TRACE, LORE_LOG_LEVEL_WARN, LORE_METADATA_TYPE_ADDRESS,
+    LORE_METADATA_TYPE_BINARY, LORE_METADATA_TYPE_BOOLEAN, LORE_METADATA_TYPE_CONTEXT,
+    LORE_METADATA_TYPE_HASH, LORE_METADATA_TYPE_NUMERIC, LORE_METADATA_TYPE_STRING,
 };
 
 /// One event decoded from lore's tagged event union. Borrows from the raw
@@ -48,6 +51,41 @@ use lore_sys::{
 /// terminal failure is reported on the completion alone: its `status` and
 /// `error_code` are the same value, and no [`Self::Error`] precedes it. An
 /// [`Self::Error`] mid-stream is a non-fatal one.
+/// A metadata value, by the type Lore tags it with.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum MetadataValue {
+    Address(Address),
+    /// How many bytes there are; the bytes themselves are not kept.
+    Binary(usize),
+    Boolean(bool),
+    Context(ContextId),
+    /// A hash, which [`Revision`] holds as Lore's 32-byte hash type.
+    Hash(Revision),
+    Numeric(u64),
+    String(String),
+}
+
+impl MetadataValue {
+    /// [`None`] for a type this crate does not know.
+    ///
+    /// # Safety
+    ///
+    /// `raw` must be a value Lore sent, whose pointers are still valid.
+    unsafe fn from_raw(raw: &lore_metadata_t) -> Result<Option<Self>, std::str::Utf8Error> {
+        let data = &raw.__bindgen_anon_1;
+        Ok(Some(match raw.tag {
+            LORE_METADATA_TYPE_ADDRESS => Self::Address(Address::from_raw(data.address)),
+            LORE_METADATA_TYPE_BINARY => Self::Binary(data.binary.length),
+            LORE_METADATA_TYPE_BOOLEAN => Self::Boolean(data.boolean != 0),
+            LORE_METADATA_TYPE_CONTEXT => Self::Context(ContextId::from_raw(data.context)),
+            LORE_METADATA_TYPE_HASH => Self::Hash(Revision::from_raw(data.hash)),
+            LORE_METADATA_TYPE_NUMERIC => Self::Numeric(data.numeric),
+            LORE_METADATA_TYPE_STRING => Self::String(data.string.try_to_str()?.to_owned()),
+            _ => return Ok(None),
+        }))
+    }
+}
+
 #[non_exhaustive]
 pub enum Event<'a> {
     Log {
@@ -403,6 +441,12 @@ pub enum Event<'a> {
     RevisionHistory {
         repository: lore_repository_id_t,
         branch: lore_branch_id_t,
+    },
+    /// One metadata entry of the revision whose event came last, such as a
+    /// `revision_history` entry.
+    Metadata {
+        key: &'a str,
+        value: MetadataValue,
     },
     /// One revision of a `revision_history`, newest first.
     RevisionHistoryEntry {
@@ -903,6 +947,13 @@ impl<'a> Event<'a> {
                 LORE_EVENT_REVISION_HISTORY => Self::RevisionHistory {
                     repository: data.revision_history.repository,
                     branch: data.revision_history.branch,
+                },
+                LORE_EVENT_METADATA => match MetadataValue::from_raw(&data.metadata.value)? {
+                    Some(value) => Self::Metadata {
+                        key: data.metadata.key.try_to_str()?,
+                        value,
+                    },
+                    None => Self::Other { tag },
                 },
                 LORE_EVENT_REVISION_HISTORY_ENTRY => Self::RevisionHistoryEntry {
                     revision: data.revision_history_entry.revision,

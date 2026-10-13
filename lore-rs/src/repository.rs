@@ -9,9 +9,10 @@ use lore_sys::{
 use crate::{
     Address, BranchArchiveArgs, BranchCreateArgs, BranchId, BranchInfoArgs, BranchListArgs,
     BranchPushArgs, BranchSwitchArgs, ContextId, Event, FileInfoArgs, FileStageArgs,
-    FileUnstageArgs, GlobalArgs, InstanceId, Lore, LoreError, NodeKind, RepositoryCloneArgs,
-    RepositoryId, RepositoryInfoArgs, RepositoryStatusArgs, Revision, RevisionCommitArgs,
-    RevisionDiffArgs, RevisionHistoryArgs, RevisionInfoArgs, RevisionRestoreArgs, RevisionSyncArgs,
+    FileUnstageArgs, GlobalArgs, InstanceId, Lore, LoreError, MetadataValue, NodeKind,
+    RepositoryCloneArgs, RepositoryId, RepositoryInfoArgs, RepositoryStatusArgs, Revision,
+    RevisionCommitArgs, RevisionDiffArgs, RevisionHistoryArgs, RevisionInfoArgs,
+    RevisionRestoreArgs, RevisionSyncArgs, UserInfo,
 };
 
 /// A local repository instance — the directory holding `.lore` — together
@@ -1127,9 +1128,27 @@ pub struct HistoryEntry {
     pub revision: Revision,
     pub revision_number: u64,
     parents: [Revision; 2],
+    /// What Lore records about the revision, in the order it sends it: its
+    /// message, who committed it and when, among others.
+    pub metadata: Vec<Metadata>,
+}
+
+/// One metadata entry of a revision.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Metadata {
+    pub key: String,
+    pub value: MetadataValue,
 }
 
 impl HistoryEntry {
+    /// The revision's commit message, if it has one.
+    pub fn message(&self) -> Option<&str> {
+        self.metadata.iter().find_map(|entry| match &entry.value {
+            MetadataValue::String(message) if entry.key == "message" => Some(message.as_str()),
+            _ => None,
+        })
+    }
+
     /// The parent revisions: none for an initial revision, one normally, two
     /// for a merge.
     pub fn parents(&self) -> impl Iterator<Item = Revision> + '_ {
@@ -1767,6 +1786,15 @@ impl Repository {
         archived.ok_or(missing(COMMAND, "branch_archive"))
     }
 
+    /// Resolves user ids, as found in a revision's `committed-by` metadata, to
+    /// display names through the remote's auth service. Empty resolves the
+    /// current user locally.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_auth_user_info`.
+    pub fn user_info(&self, user_ids: &[&str]) -> Result<Vec<UserInfo>, LoreError> {
+        self.lore.auth_user_info(&self.globals, user_ids)
+    }
+
     /// Lists the branches the instance and its remote know, and whether the
     /// remote answered.
     ///
@@ -1856,7 +1884,17 @@ impl Repository {
                         revision: Revision::from_raw(revision),
                         revision_number,
                         parents: parents.map(Revision::from_raw),
+                        metadata: Vec::new(),
                     }),
+                    // Lore sends a revision's metadata right after its entry.
+                    Ok(Event::Metadata { key, value }) => {
+                        if let Some(entry) = entries.last_mut() {
+                            entry.metadata.push(Metadata {
+                                key: key.to_owned(),
+                                value,
+                            });
+                        }
+                    }
                     _ => {}
                 }
             },

@@ -6,10 +6,10 @@
 use crate::string::{raw_str, raw_str_array};
 use crate::{Event, GlobalArgs, LoreError};
 use lore_sys::{
-    lore_address_t, lore_auth_login_with_token_args_t, lore_branch_archive_args_t,
-    lore_branch_create_args_t, lore_branch_info_args_t, lore_branch_list_args_t,
-    lore_branch_push_args_t, lore_branch_switch_args_t, lore_bytes_mut_t, lore_bytes_t,
-    lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
+    lore_address_t, lore_auth_login_with_token_args_t, lore_auth_user_info_args_t,
+    lore_branch_archive_args_t, lore_branch_create_args_t, lore_branch_info_args_t,
+    lore_branch_list_args_t, lore_branch_push_args_t, lore_branch_switch_args_t, lore_bytes_mut_t,
+    lore_bytes_t, lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
     lore_file_info_args_t, lore_file_stage_args_t, lore_file_unstage_args_t, lore_global_args_t,
     lore_hash_t, lore_key_type_t, lore_partition_t, lore_repository_clone_args_t,
     lore_repository_info_args_t, lore_repository_instance_list_args_t,
@@ -2409,6 +2409,52 @@ pub fn branch_create(
     }
 }
 
+/// Arguments for [`auth_user_info`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct AuthUserInfoArgs<'a> {
+    /// User ids to resolve to display names; empty resolves the current user
+    /// locally.
+    pub user_ids: &'a [&'a str],
+}
+
+impl AuthUserInfoArgs<'_> {
+    /// The ids as Lore's own string type. Kept separate from [`Self::to_raw`]
+    /// because the array has to outlive the call.
+    fn raw_user_ids(self) -> Vec<lore_string_t> {
+        self.user_ids.iter().copied().map(raw_str).collect()
+    }
+
+    /// The raw struct to hand to Lore, borrowing `user_ids`.
+    fn to_raw(self, user_ids: &[lore_string_t]) -> lore_auth_user_info_args_t {
+        lore_auth_user_info_args_t {
+            user_ids: raw_str_array(user_ids),
+        }
+    }
+}
+
+/// Resolves user ids to display names, as `lore_auth_user_info` does.
+pub fn auth_user_info(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: AuthUserInfoArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let user_ids = args.raw_user_ids();
+
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `user_ids`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_auth_user_info,
+            command,
+            globals,
+            &args.to_raw(&user_ids),
+            callback,
+        )
+    }
+}
+
 /// Arguments for [`branch_archive`].
 #[derive(Debug, Default, Clone, Copy)]
 pub struct BranchArchiveArgs<'a> {
@@ -3025,6 +3071,104 @@ mod tests {
                 "revision ab 12",
             ]
         );
+    }
+
+    #[test]
+    fn auth_user_info_args_conversion() {
+        let ids = AuthUserInfoArgs {
+            user_ids: &["alice", "bob"],
+        }
+        .raw_user_ids();
+        let raw = AuthUserInfoArgs {
+            user_ids: &["alice", "bob"],
+        }
+        .to_raw(&ids);
+        assert_eq!(raw.user_ids.count, 2);
+        assert_eq!(unsafe { ids[1].try_to_str() }, Ok("bob"));
+    }
+
+    #[test]
+    fn auth_user_info_args_without_ids_pass_an_empty_array() {
+        // No ids means the current user, which Lore resolves locally.
+        let raw = AuthUserInfoArgs::default().to_raw(&[]);
+        assert!(raw.user_ids.ptr.is_null());
+        assert_eq!(raw.user_ids.count, 0);
+    }
+
+    fn metadata_event(
+        key: &'static str,
+        tag: u32,
+        set: impl FnOnce(&mut lore_sys::lore_metadata_t),
+    ) -> lore_event_t {
+        let mut event: lore_event_t = unsafe { std::mem::zeroed() };
+        event.tag = lore_sys::LORE_EVENT_METADATA as lore_event_tag_t;
+        let data = unsafe { &mut event.__bindgen_anon_1.metadata };
+        data.key = lore_string_t::from_str(key);
+        data.value.tag = tag;
+        set(&mut data.value);
+        event
+    }
+
+    #[test]
+    fn a_string_metadata_event_decodes_its_key_and_value() {
+        let event = metadata_event("message", lore_sys::LORE_METADATA_TYPE_STRING, |value| {
+            value.__bindgen_anon_1.string = lore_string_t::from_str("Fix the thing");
+        });
+
+        let mut seen = None;
+        run(&[event], 0, |event| {
+            if let Ok(Event::Metadata { key, value }) = event {
+                seen = Some((key.to_owned(), value));
+            }
+        })
+        .unwrap();
+
+        assert_eq!(
+            seen,
+            Some((
+                "message".to_owned(),
+                crate::MetadataValue::String("Fix the thing".to_owned())
+            ))
+        );
+    }
+
+    #[test]
+    fn numeric_and_boolean_metadata_events_decode_their_values() {
+        let numeric = metadata_event("timestamp", lore_sys::LORE_METADATA_TYPE_NUMERIC, |value| {
+            value.__bindgen_anon_1.numeric = 1_700_000_000_000;
+        });
+        let boolean = metadata_event("merged", lore_sys::LORE_METADATA_TYPE_BOOLEAN, |value| {
+            value.__bindgen_anon_1.boolean = 1;
+        });
+
+        let mut seen = Vec::new();
+        run(&[numeric, boolean], 0, |event| {
+            if let Ok(Event::Metadata { value, .. }) = event {
+                seen.push(value);
+            }
+        })
+        .unwrap();
+
+        assert_eq!(
+            seen,
+            vec![
+                crate::MetadataValue::Numeric(1_700_000_000_000),
+                crate::MetadataValue::Boolean(true)
+            ]
+        );
+    }
+
+    #[test]
+    fn a_metadata_event_of_an_unknown_type_is_left_as_other() {
+        let event = metadata_event("odd", 99, |_| {});
+
+        let mut other = false;
+        run(&[event], 0, |event| {
+            other |= matches!(event, Ok(Event::Other { .. }));
+        })
+        .unwrap();
+
+        assert!(other);
     }
 
     #[test]

@@ -13,6 +13,38 @@ pub struct UserInfo {
 }
 
 impl Lore {
+    /// Resolves user ids to display names through the remote's auth service.
+    /// Empty resolves the current user locally. An id the service does not
+    /// know is left out of the answer.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_auth_user_info`.
+    pub fn auth_user_info(
+        &self,
+        globals: &GlobalArgs,
+        user_ids: &[&str],
+    ) -> Result<Vec<UserInfo>, LoreError> {
+        let mut users = Vec::new();
+
+        crate::call::auth_user_info(
+            self,
+            "auth::user_info",
+            globals,
+            crate::AuthUserInfoArgs { user_ids },
+            |event| {
+                crate::log_event(&event);
+
+                if let Ok(Event::AuthUserInfo { id, name }) = event {
+                    users.push(UserInfo {
+                        id: id.to_owned(),
+                        name: name.to_owned(),
+                    });
+                }
+            },
+        )?;
+
+        Ok(users)
+    }
+
     /// Logs in with a token obtained elsewhere, and reports the identity it
     /// authenticated as.
     ///

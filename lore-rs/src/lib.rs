@@ -24,16 +24,16 @@ pub use lore_sys::libloading;
 
 pub mod call;
 pub use call::{
-    call_with_callback, AuthLoginWithTokenArgs, BranchArchiveArgs, BranchCreateArgs,
-    BranchInfoArgs, BranchListArgs, BranchPushArgs, BranchSwitchArgs, CaseChange, FileInfoArgs,
-    FileStageArgs, FileUnstageArgs, RepositoryCloneArgs, RepositoryInfoArgs, RepositoryStatusArgs,
-    RevisionCommitArgs, RevisionDiffArgs, RevisionHistoryArgs, RevisionInfoArgs,
-    RevisionRestoreArgs, RevisionSyncArgs, RevisionTreeResolvePathArgs, SharedStoreMode,
-    StorageGetArgs, StorageGetItem, StorageGetMetadataArgs, StorageGetMetadataItem,
-    StorageGetResolvedArgs, StorageGetResolvedItem, StorageMutableCompareAndSwapArgs,
-    StorageMutableCompareAndSwapItem, StorageMutableLoadArgs, StorageMutableLoadItem,
-    StorageOpenArgs, StoragePutArgs, StoragePutItem, StoragePutResolvedArgs,
-    StoragePutResolvedItem, VfsType,
+    call_with_callback, AuthLoginWithTokenArgs, AuthUserInfoArgs, BranchArchiveArgs,
+    BranchCreateArgs, BranchInfoArgs, BranchListArgs, BranchPushArgs, BranchSwitchArgs, CaseChange,
+    FileInfoArgs, FileStageArgs, FileUnstageArgs, RepositoryCloneArgs, RepositoryInfoArgs,
+    RepositoryStatusArgs, RevisionCommitArgs, RevisionDiffArgs, RevisionHistoryArgs,
+    RevisionInfoArgs, RevisionRestoreArgs, RevisionSyncArgs, RevisionTreeResolvePathArgs,
+    SharedStoreMode, StorageGetArgs, StorageGetItem, StorageGetMetadataArgs,
+    StorageGetMetadataItem, StorageGetResolvedArgs, StorageGetResolvedItem,
+    StorageMutableCompareAndSwapArgs, StorageMutableCompareAndSwapItem, StorageMutableLoadArgs,
+    StorageMutableLoadItem, StorageOpenArgs, StoragePutArgs, StoragePutItem,
+    StoragePutResolvedArgs, StoragePutResolvedItem, VfsType,
 };
 
 mod string;
@@ -43,7 +43,7 @@ mod globals;
 pub use globals::GlobalArgs;
 
 mod event;
-pub use event::{log_event, Event};
+pub use event::{log_event, Event, MetadataValue};
 
 mod error;
 pub use error::{ErrorCode, LoreError};
@@ -63,9 +63,10 @@ mod repository;
 pub use repository::{
     BranchCreated, BranchEntry, BranchInfo, BranchLocation, Branches, CloneCount, Cloned, Commit,
     CommitCount, DiffEntry, FileAction, FileChange, FileInfo, History, HistoryEntry, InstanceInfo,
-    InstanceStaleness, Push, PushProgress, Pushed, Repository, RepositoryInfo, RestoreProgress,
-    Restored, RestoredFile, RevisionInfo, StageCount, Staged, Status, StatusCount, StatusFile,
-    StatusSummary, Switched, Sync, SyncProgress, SyncRevision, UnstageCount, Unstaged, Uploaded,
+    InstanceStaleness, Metadata, Push, PushProgress, Pushed, Repository, RepositoryInfo,
+    RestoreProgress, Restored, RestoredFile, RevisionInfo, StageCount, Staged, Status, StatusCount,
+    StatusFile, StatusSummary, Switched, Sync, SyncProgress, SyncRevision, UnstageCount, Unstaged,
+    Uploaded,
 };
 
 mod store;
