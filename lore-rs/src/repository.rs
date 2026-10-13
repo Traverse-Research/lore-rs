@@ -984,9 +984,34 @@ pub struct Sync {
     pub is_latest: bool,
     /// The target came from the local store rather than the remote.
     pub local: bool,
+    /// The repository has a remote and lore could reach it.
+    pub remote_available: bool,
+    /// The remote let lore read the branch. Reachable but not authorized
+    /// means the sync went by local history only.
+    pub remote_authorized: bool,
     /// Where the working tree ended up; [`None`] when it was already on the
     /// target and there was nothing to do.
     pub revision: Option<SyncRevision>,
+}
+
+/// How far a [`sync`](Repository::sync_with_progress) has got writing files,
+/// `lore_revision_sync_progress_event_data_t`. Lore finds the work as it
+/// goes, so the totals can grow until `discovery_complete`.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct SyncProgress {
+    /// Files written so far.
+    pub file_update: u64,
+    pub file_update_total: u64,
+    /// Files removed so far.
+    pub file_delete: u64,
+    pub file_delete_total: u64,
+    /// Files lore merged without a conflict.
+    pub file_automerge: u64,
+    /// Files whose merge left a conflict.
+    pub file_conflict: u64,
+    pub bytes_update: u64,
+    pub bytes_update_total: u64,
+    pub discovery_complete: bool,
 }
 
 /// The revision a [`sync`](Repository::sync) left the working tree on.
@@ -1476,6 +1501,20 @@ impl Repository {
     ///
     /// This corresponds to `lore_sys::Lore::lore_revision_sync`.
     pub fn sync(&self, args: RevisionSyncArgs<'_>) -> Result<Sync, LoreError> {
+        self.sync_with_progress(args, |_| {}, |_| {})
+    }
+
+    /// [`sync`](Self::sync), calling `target` once lore has picked the
+    /// revision, before any file moves, and `progress` as it writes files.
+    /// `target`'s [`Sync::revision`] is still [`None`] then.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_revision_sync`.
+    pub fn sync_with_progress(
+        &self,
+        args: RevisionSyncArgs<'_>,
+        mut target: impl FnMut(&Sync) + Send,
+        mut progress: impl FnMut(&SyncProgress) + Send,
+    ) -> Result<Sync, LoreError> {
         const COMMAND: &str = "revision::sync";
         let mut sync = None;
         let mut synced = None;
@@ -1495,8 +1534,10 @@ impl Repository {
                     target_revision_number,
                     is_latest,
                     local,
+                    remote_available,
+                    remote_authorized,
                 }) => {
-                    sync = Some(Sync {
+                    let found = Sync {
                         remote: remote.to_owned(),
                         repository: RepositoryId::from_raw(repository),
                         branch: BranchId::from_raw(branch),
@@ -1507,9 +1548,34 @@ impl Repository {
                         target_revision_number,
                         is_latest,
                         local,
+                        remote_available,
+                        remote_authorized,
                         revision: None,
-                    });
+                    };
+                    target(&found);
+                    sync = Some(found);
                 }
+                Ok(Event::RevisionSyncProgress {
+                    file_update,
+                    file_update_total,
+                    file_delete,
+                    file_delete_total,
+                    file_automerge,
+                    file_conflict,
+                    bytes_update,
+                    bytes_update_total,
+                    discovery_complete,
+                }) => progress(&SyncProgress {
+                    file_update: file_update as u64,
+                    file_update_total: file_update_total as u64,
+                    file_delete: file_delete as u64,
+                    file_delete_total: file_delete_total as u64,
+                    file_automerge: file_automerge as u64,
+                    file_conflict: file_conflict as u64,
+                    bytes_update,
+                    bytes_update_total,
+                    discovery_complete,
+                }),
                 Ok(Event::RevisionSyncRevision {
                     branch,
                     revision,

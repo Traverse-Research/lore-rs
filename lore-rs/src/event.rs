@@ -19,13 +19,14 @@ use lore_sys::{
     LORE_EVENT_REPOSITORY_STATUS_SUMMARY, LORE_EVENT_REVISION_COMMIT_END,
     LORE_EVENT_REVISION_COMMIT_PROGRESS, LORE_EVENT_REVISION_COMMIT_REVISION,
     LORE_EVENT_REVISION_DIFF_FILE, LORE_EVENT_REVISION_HISTORY, LORE_EVENT_REVISION_HISTORY_ENTRY,
-    LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_SYNC_REVISION, LORE_EVENT_REVISION_SYNC_TARGET,
-    LORE_EVENT_REVISION_TREE_CHILD, LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE,
-    LORE_EVENT_REVISION_TREE_INFO, LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN,
-    LORE_EVENT_REVISION_TREE_LOADED, LORE_EVENT_REVISION_TREE_NODE_INFO,
-    LORE_EVENT_REVISION_TREE_NODE_PATH, LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE,
-    LORE_EVENT_STORAGE_GET_DATA, LORE_EVENT_STORAGE_GET_HEADER,
-    LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE,
+    LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_SYNC_PROGRESS, LORE_EVENT_REVISION_SYNC_REVISION,
+    LORE_EVENT_REVISION_SYNC_TARGET, LORE_EVENT_REVISION_TREE_CHILD,
+    LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE, LORE_EVENT_REVISION_TREE_INFO,
+    LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN, LORE_EVENT_REVISION_TREE_LOADED,
+    LORE_EVENT_REVISION_TREE_NODE_INFO, LORE_EVENT_REVISION_TREE_NODE_PATH,
+    LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE, LORE_EVENT_STORAGE_GET_DATA,
+    LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE,
+    LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE,
     LORE_EVENT_STORAGE_MUTABLE_COMPARE_AND_SWAP_ITEM_COMPLETE,
     LORE_EVENT_STORAGE_MUTABLE_LOAD_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
     LORE_EVENT_STORAGE_PUT_ITEM_COMPLETE, LORE_LOG_LEVEL_ERROR, LORE_LOG_LEVEL_INFO,
@@ -442,6 +443,24 @@ pub enum Event<'a> {
         is_latest: bool,
         /// The target came from the local revision history, not the remote.
         local: bool,
+        /// The repository has a remote and lore could reach it.
+        remote_available: bool,
+        /// The remote let lore read the branch. Reachable but not authorized
+        /// means the sync went by local history only.
+        remote_authorized: bool,
+    },
+    /// How far a `revision_sync` has got writing files. Lore finds the work
+    /// as it goes, so the totals can grow until `discovery_complete`.
+    RevisionSyncProgress {
+        file_update: usize,
+        file_update_total: usize,
+        file_delete: usize,
+        file_delete_total: usize,
+        file_automerge: usize,
+        file_conflict: usize,
+        bytes_update: u64,
+        bytes_update_total: u64,
+        discovery_complete: bool,
     },
     RevisionTreeLoaded {
         handle_id: u64,
@@ -869,6 +888,19 @@ impl<'a> Event<'a> {
                     target_revision_number: data.revision_sync_target.target_revision_number,
                     is_latest: data.revision_sync_target.is_latest != 0,
                     local: data.revision_sync_target.local != 0,
+                    remote_available: data.revision_sync_target.remote_available != 0,
+                    remote_authorized: data.revision_sync_target.remote_authorized != 0,
+                },
+                LORE_EVENT_REVISION_SYNC_PROGRESS => Self::RevisionSyncProgress {
+                    file_update: data.revision_sync_progress.file_update,
+                    file_update_total: data.revision_sync_progress.file_update_total,
+                    file_delete: data.revision_sync_progress.file_delete,
+                    file_delete_total: data.revision_sync_progress.file_delete_total,
+                    file_automerge: data.revision_sync_progress.file_automerge,
+                    file_conflict: data.revision_sync_progress.file_conflict,
+                    bytes_update: data.revision_sync_progress.bytes_update,
+                    bytes_update_total: data.revision_sync_progress.bytes_update_total,
+                    discovery_complete: data.revision_sync_progress.discovery_complete != 0,
                 },
                 LORE_EVENT_REVISION_INFO => Self::RevisionInfo {
                     repository: data.revision_info.repository,

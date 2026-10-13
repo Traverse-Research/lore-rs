@@ -2790,6 +2790,81 @@ mod tests {
     }
 
     #[test]
+    fn a_revision_sync_target_event_decodes_the_remote_state() {
+        let mut event: lore_event_t = unsafe { std::mem::zeroed() };
+        event.tag = lore_sys::LORE_EVENT_REVISION_SYNC_TARGET as lore_event_tag_t;
+        event.__bindgen_anon_1.revision_sync_target.remote_available = 1;
+        event
+            .__bindgen_anon_1
+            .revision_sync_target
+            .remote_authorized = 0;
+
+        let mut seen = None;
+        run(&[event], 0, |event| {
+            if let Ok(Event::RevisionSyncTarget {
+                remote_available,
+                remote_authorized,
+                ..
+            }) = event
+            {
+                seen = Some((remote_available, remote_authorized));
+            }
+        })
+        .unwrap();
+
+        assert_eq!(seen, Some((true, false)));
+    }
+
+    #[test]
+    fn a_revision_sync_progress_event_decodes_its_counts() {
+        let mut event: lore_event_t = unsafe { std::mem::zeroed() };
+        event.tag = lore_sys::LORE_EVENT_REVISION_SYNC_PROGRESS as lore_event_tag_t;
+        let data = unsafe { &mut event.__bindgen_anon_1.revision_sync_progress };
+        data.file_update = 2;
+        data.file_update_total = 5;
+        data.file_delete = 1;
+        data.file_delete_total = 3;
+        data.file_automerge = 4;
+        data.file_conflict = 6;
+        data.bytes_update = 100;
+        data.bytes_update_total = 1000;
+        data.discovery_complete = 1;
+
+        let mut seen = None;
+        run(&[event], 0, |event| {
+            if let Ok(Event::RevisionSyncProgress {
+                file_update,
+                file_update_total,
+                file_delete,
+                file_delete_total,
+                file_automerge,
+                file_conflict,
+                bytes_update,
+                bytes_update_total,
+                discovery_complete,
+            }) = event
+            {
+                seen = Some((
+                    [
+                        file_update,
+                        file_update_total,
+                        file_delete,
+                        file_delete_total,
+                        file_automerge,
+                        file_conflict,
+                    ],
+                    bytes_update,
+                    bytes_update_total,
+                    discovery_complete,
+                ));
+            }
+        })
+        .unwrap();
+
+        assert_eq!(seen, Some(([2, 5, 1, 3, 4, 6], 100, 1000, true)));
+    }
+
+    #[test]
     fn a_branch_info_event_decodes_both_tips() {
         let mut event: lore_event_t = unsafe { std::mem::zeroed() };
         event.tag = lore_sys::LORE_EVENT_BRANCH_INFO as lore_event_tag_t;

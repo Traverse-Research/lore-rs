@@ -64,7 +64,7 @@ pub use repository::{
     CommitCount, DiffEntry, FileAction, FileChange, FileInfo, History, HistoryEntry, InstanceInfo,
     InstanceStaleness, Push, PushProgress, Pushed, Repository, RepositoryInfo, RevisionInfo,
     StageCount, Staged, Status, StatusCount, StatusFile, StatusSummary, Switched, Sync,
-    SyncRevision, UnstageCount, Unstaged, Uploaded,
+    SyncProgress, SyncRevision, UnstageCount, Unstaged, Uploaded,
 };
 
 mod store;
