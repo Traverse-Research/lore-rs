@@ -148,7 +148,8 @@ pub enum Event<'a> {
     FileUnstageEnd {
         count: lore_file_unstage_count_data_t,
     },
-    /// The staged state a `file_unstage` left behind.
+    /// The staged state a `file_unstage` left behind, one per repository: the
+    /// repository itself, then each layer a path went into.
     FileUnstageRevision {
         repository: lore_repository_id_t,
         revision: lore_hash_t,
