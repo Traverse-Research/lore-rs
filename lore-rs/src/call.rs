@@ -1779,10 +1779,13 @@ impl CaseChange {
 /// Arguments for [`file_stage`].
 #[derive(Debug, Default, Clone, Copy)]
 pub struct FileStageArgs<'a> {
-    /// Paths to stage. A relative path is taken against the process's working
-    /// directory, not `repository_path`; empty or `.` is the repository root.
-    /// A directory stages the files under it that Lore already tracks as
-    /// dirty, or every changed file with `scan` set.
+    /// Paths to stage. Lore resolves a relative path against
+    /// [`GlobalArgs::working_directory`], or against the calling process's
+    /// working directory when that is empty; empty or `.` is the repository
+    /// root wherever the call runs from. A path that does not resolve inside
+    /// the repository is skipped with an [`Event::PathIgnore`]. A directory
+    /// stages the files under it that Lore already tracks as dirty, or every
+    /// changed file with `scan` set.
     pub paths: &'a [&'a str],
     pub case_change: CaseChange,
     /// Walk the filesystem under each directory path rather than relying on
@@ -1847,9 +1850,11 @@ impl FileUnstageArgs<'_> {
 }
 
 /// Takes staged changes out of the next commit, reporting one
-/// [`Event::FileUnstageFile`] per file it unstages. The working tree is left
-/// as it is. A repository verb: `globals.repository_path` must hold a `.lore`
-/// directory.
+/// [`Event::FileUnstageFile`] per file it unstages. Files on disk keep their
+/// contents, except under a link whose staged change is unstaged: Lore puts
+/// the link's pinned content back at its mount. A path that does not resolve
+/// inside the repository is skipped with an [`Event::PathIgnore`]. A
+/// repository verb: `globals.repository_path` must hold a `.lore` directory.
 ///
 /// This corresponds to `lore_sys::Lore::lore_file_unstage`.
 pub fn file_unstage(
@@ -1882,14 +1887,18 @@ pub struct RevisionCommitArgs<'a> {
     pub link: &'a str,
     /// Linked repositories that get a message of their own, by mount path.
     pub link_paths: &'a [&'a str],
-    /// The message for each of `link_paths`, in the same order.
+    /// The message for each of `link_paths`, in the same order. When the two
+    /// differ in length Lore logs a warning and pairs as many as the shorter
+    /// one holds.
     pub link_messages: &'a [&'a str],
     /// Commit only this layer, by its mount path relative to the repository
     /// root.
     pub layer: &'a str,
     /// Layers that get a message of their own, by mount path.
     pub layer_paths: &'a [&'a str],
-    /// The message for each of `layer_paths`, in the same order.
+    /// The message for each of `layer_paths`, in the same order. When the two
+    /// differ in length Lore logs a warning and pairs as many as the shorter
+    /// one holds.
     pub layer_messages: &'a [&'a str],
 }
 
@@ -1916,11 +1925,20 @@ impl RevisionCommitArgs<'_> {
 }
 
 /// Commits the staged changes as new revisions on the branch the instance is
-/// on, one [`Event::RevisionCommitRevision`] per repository that got one: its
-/// linked repositories, the repository itself and its layers. With
-/// [`GlobalArgs::force`] and nothing staged it succeeds with none. The commit
-/// is local until [`branch_push`]. A repository verb: `globals.repository_path` must
-/// hold a `.lore` directory.
+/// on, one [`Event::RevisionCommitRevision`] per repository that got one. The
+/// repository comes first, then each layer. Within each, the linked
+/// repositories inside it report their revisions first, then
+/// [`Event::RevisionCommitEnd`] tallies the files committed in it and them,
+/// then its own revision follows.
+///
+/// [`GlobalArgs::force`] skips the check that another instance has not moved
+/// the branch on, commits a staged tree identical to the current one, and
+/// succeeds without any revision when nothing is staged at all.
+///
+/// Unless `globals.offline` or `globals.local` is set, Lore uploads the new
+/// content to the remote while it commits; the revision itself stays on this
+/// instance's branch until it is pushed. A repository verb:
+/// `globals.repository_path` must hold a `.lore` directory.
 ///
 /// This corresponds to `lore_sys::Lore::lore_revision_commit`.
 pub fn revision_commit(
@@ -2206,6 +2224,23 @@ mod tests {
         .unwrap();
 
         assert_eq!(seen, Some(("main".to_owned(), [1; 32], [2; 32], true)));
+    }
+
+    #[test]
+    fn a_path_ignore_event_decodes_the_path() {
+        let mut event: lore_event_t = unsafe { std::mem::zeroed() };
+        event.tag = lore_sys::LORE_EVENT_PATH_IGNORE as lore_event_tag_t;
+        event.__bindgen_anon_1.path_ignore.path = lore_string_t::from_str("../outside.txt");
+
+        let mut seen = None;
+        run(&[event], 0, |event| {
+            if let Ok(Event::PathIgnore { path }) = event {
+                seen = Some(path.to_owned());
+            }
+        })
+        .unwrap();
+
+        assert_eq!(seen.as_deref(), Some("../outside.txt"));
     }
 
     #[test]
