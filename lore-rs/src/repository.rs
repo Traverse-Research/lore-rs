@@ -11,7 +11,7 @@ use crate::{
     BranchPushArgs, BranchSwitchArgs, ContextId, Event, FileInfoArgs, FileStageArgs,
     FileUnstageArgs, GlobalArgs, InstanceId, Lore, LoreError, NodeKind, RepositoryCloneArgs,
     RepositoryId, RepositoryInfoArgs, RepositoryStatusArgs, Revision, RevisionCommitArgs,
-    RevisionDiffArgs, RevisionHistoryArgs, RevisionInfoArgs, RevisionSyncArgs,
+    RevisionDiffArgs, RevisionHistoryArgs, RevisionInfoArgs, RevisionRestoreArgs, RevisionSyncArgs,
 };
 
 /// A local repository instance — the directory holding `.lore` — together
@@ -1026,6 +1026,47 @@ pub struct SyncRevision {
     pub conflict: bool,
 }
 
+/// What a [`restore`](Repository::restore) did.
+#[derive(Debug, Clone)]
+pub struct Restored {
+    /// The paths that differ between the branch tip and the restored
+    /// revision, in path order, with what the restore did to each on top of
+    /// the tip.
+    pub files: Vec<RestoredFile>,
+    /// Fragments Lore checked the remote for.
+    pub fragments_queried: u64,
+    /// Fragments Lore uploaded.
+    pub fragments_pushed: u64,
+    /// The new branch tip the instance is now on; [`None`] for a
+    /// [`dry_run`](GlobalArgs::dry_run), which only lists the files.
+    pub revision: Option<Revision>,
+    pub revision_number: u64,
+}
+
+/// One path a [`restore`](Repository::restore) changed on top of the branch
+/// tip.
+#[derive(Debug, Clone)]
+pub struct RestoredFile {
+    /// Repository-relative.
+    pub path: String,
+    pub action: FileAction,
+    pub size: u64,
+    pub is_file: bool,
+    pub is_directory: bool,
+    /// The path is a linked repository.
+    pub is_link: bool,
+}
+
+/// How far a [`restore`](Repository::restore_with_progress)'s upload has got,
+/// `lore_revision_restore_fragment_progress_event_data_t`.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct RestoreProgress {
+    /// Fragments uploaded.
+    pub complete: u64,
+    /// Fragments to upload.
+    pub count: u64,
+}
+
 /// A branch a [`create_branch`](Repository::create_branch) made in one
 /// repository.
 #[derive(Debug, Clone)]
@@ -1598,6 +1639,82 @@ impl Repository {
         let mut sync = sync.ok_or(missing(COMMAND, "revision_sync_target"))?;
         sync.revision = synced;
         Ok(sync)
+    }
+
+    /// Makes the revision the instance is on the branch tip again: commits a
+    /// new revision on top of the tip with the files of the current revision,
+    /// pushes it, and moves the instance onto it. The files on disk stay as
+    /// they are, since they already are the current revision's.
+    ///
+    /// It needs the remote. Unless [`GlobalArgs::force`] is set, Lore
+    /// refuses when the local tip is not the remote's, or when the current
+    /// revision is not in the branch's history. An empty message reuses the
+    /// restored revision's.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_revision_restore`.
+    pub fn restore(&self, args: RevisionRestoreArgs<'_>) -> Result<Restored, LoreError> {
+        self.restore_with_progress(args, |_| {})
+    }
+
+    /// [`Self::restore`], calling `progress` with how far the upload of the
+    /// new revision has got, at intervals while it runs.
+    pub fn restore_with_progress(
+        &self,
+        args: RevisionRestoreArgs<'_>,
+        mut progress: impl FnMut(&RestoreProgress) + Send,
+    ) -> Result<Restored, LoreError> {
+        const COMMAND: &str = "revision::restore";
+        let mut restored = Restored {
+            files: Vec::new(),
+            fragments_queried: 0,
+            fragments_pushed: 0,
+            revision: None,
+            revision_number: 0,
+        };
+
+        crate::call::revision_restore(self.lore, COMMAND, &self.globals, args, |event| {
+            crate::log_event(&event);
+
+            match event {
+                Ok(Event::RevisionRestoreFile {
+                    path,
+                    action,
+                    size,
+                    is_file,
+                    is_directory,
+                    is_module,
+                }) => restored.files.push(RestoredFile {
+                    path: path.to_owned(),
+                    action: FileAction::from_raw(action),
+                    size,
+                    is_file,
+                    is_directory,
+                    is_link: is_module,
+                }),
+                Ok(Event::RevisionRestoreFragmentBegin { fragments }) => {
+                    restored.fragments_queried = fragments;
+                }
+                Ok(Event::RevisionRestoreFragmentProgress { complete, count }) => {
+                    progress(&RestoreProgress { complete, count });
+                }
+                Ok(Event::RevisionRestoreFragmentEnd { fragments }) => {
+                    restored.fragments_pushed = fragments;
+                }
+                Ok(Event::RevisionRestoreRevision {
+                    revision,
+                    revision_number,
+                }) => {
+                    restored.revision = present(revision);
+                    restored.revision_number = revision_number;
+                }
+                _ => {}
+            }
+        })?;
+
+        if restored.revision.is_none() && !self.globals.dry_run {
+            return Err(missing(COMMAND, "revision_restore_revision"));
+        }
+        Ok(restored)
     }
 
     /// Creates a branch at the revision the instance is on and moves the

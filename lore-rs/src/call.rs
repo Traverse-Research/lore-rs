@@ -14,8 +14,8 @@ use lore_sys::{
     lore_hash_t, lore_key_type_t, lore_partition_t, lore_repository_clone_args_t,
     lore_repository_info_args_t, lore_repository_instance_list_args_t,
     lore_repository_status_args_t, lore_revision_commit_args_t, lore_revision_diff_args_t,
-    lore_revision_history_args_t, lore_revision_info_args_t, lore_revision_sync_args_t,
-    lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
+    lore_revision_history_args_t, lore_revision_info_args_t, lore_revision_restore_args_t,
+    lore_revision_sync_args_t, lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
     lore_revision_tree_list_children_args_t, lore_revision_tree_load_args_t,
     lore_revision_tree_node_info_args_t, lore_revision_tree_node_path_args_t,
     lore_revision_tree_resolve_path_args_t, lore_revision_tree_t, lore_shared_store_mode_t,
@@ -2310,6 +2310,55 @@ pub fn revision_sync(
     }
 }
 
+/// Arguments for [`revision_restore`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct RevisionRestoreArgs<'a> {
+    /// Commit message for the restored revision; empty reuses the message of
+    /// the revision being restored.
+    pub message: &'a str,
+}
+
+impl RevisionRestoreArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_revision_restore_args_t {
+        lore_revision_restore_args_t {
+            message: raw_str(self.message),
+        }
+    }
+}
+
+/// Makes the revision the instance is on the branch tip again: commits a new
+/// revision on top of the tip whose files are those of the current revision,
+/// pushes it, and moves the instance onto it, leaving the files on disk as
+/// they are. It lists the paths that differ from the tip with
+/// [`Event::RevisionRestoreFile`], reports the upload's progress with
+/// [`Event::RevisionRestoreFragmentProgress`], and the new revision with
+/// [`Event::RevisionRestoreRevision`]. It needs the remote, and refuses unless
+/// the local tip matches the remote's and the current revision is in the
+/// branch's history; [`GlobalArgs::force`] skips both checks. A repository
+/// verb: `globals.repository_path` must hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_restore`.
+pub fn revision_restore(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: RevisionRestoreArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_restore,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
 /// Arguments for [`branch_create`].
 #[derive(Debug, Default, Clone, Copy)]
 pub struct BranchCreateArgs<'a> {
@@ -2862,6 +2911,120 @@ mod tests {
         .unwrap();
 
         assert_eq!(seen, Some(([2, 5, 1, 3, 4, 6], 100, 1000, true)));
+    }
+
+    #[test]
+    fn revision_restore_args_conversion() {
+        let raw = RevisionRestoreArgs {
+            message: "Back to before the import",
+        }
+        .to_raw();
+        assert_eq!(
+            unsafe { raw.message.try_to_str() },
+            Ok("Back to before the import")
+        );
+    }
+
+    #[test]
+    fn revision_restore_args_without_a_message_pass_a_null_pointer() {
+        // No message reuses the restored revision's, which lore tells from
+        // unset rather than from a pointer to zero bytes.
+        let raw = RevisionRestoreArgs::default().to_raw();
+        assert!(raw.message.string.is_null());
+        assert_eq!(raw.message.length, 0);
+    }
+
+    #[test]
+    fn revision_restore_events_decode_their_files_progress_and_revision() {
+        let mut begin: lore_event_t = unsafe { std::mem::zeroed() };
+        begin.tag = lore_sys::LORE_EVENT_REVISION_RESTORE_FILE_BEGIN as lore_event_tag_t;
+        begin.__bindgen_anon_1.revision_restore_file_begin.count = 1;
+        let mut file: lore_event_t = unsafe { std::mem::zeroed() };
+        file.tag = lore_sys::LORE_EVENT_REVISION_RESTORE_FILE as lore_event_tag_t;
+        let data = unsafe { &mut file.__bindgen_anon_1.revision_restore_file };
+        data.path = lore_string_t::from_str("art/tree.png");
+        data.action = lore_sys::LORE_FILE_ACTION_DELETE;
+        data.size = 42;
+        data.is_file = 1;
+        let mut fragment_begin: lore_event_t = unsafe { std::mem::zeroed() };
+        fragment_begin.tag =
+            lore_sys::LORE_EVENT_REVISION_RESTORE_FRAGMENT_BEGIN as lore_event_tag_t;
+        fragment_begin
+            .__bindgen_anon_1
+            .revision_restore_fragment_begin
+            .fragments = 7;
+        let mut progress: lore_event_t = unsafe { std::mem::zeroed() };
+        progress.tag = lore_sys::LORE_EVENT_REVISION_RESTORE_FRAGMENT_PROGRESS as lore_event_tag_t;
+        let data = unsafe { &mut progress.__bindgen_anon_1.revision_restore_fragment_progress };
+        data.complete = 3;
+        data.count = 5;
+        let mut fragment_end: lore_event_t = unsafe { std::mem::zeroed() };
+        fragment_end.tag = lore_sys::LORE_EVENT_REVISION_RESTORE_FRAGMENT_END as lore_event_tag_t;
+        fragment_end
+            .__bindgen_anon_1
+            .revision_restore_fragment_end
+            .fragments = 5;
+        let mut revision: lore_event_t = unsafe { std::mem::zeroed() };
+        revision.tag = lore_sys::LORE_EVENT_REVISION_RESTORE_REVISION as lore_event_tag_t;
+        let data = unsafe { &mut revision.__bindgen_anon_1.revision_restore_revision };
+        data.revision.data[0] = 0xab;
+        data.revision_number = 12;
+
+        let mut seen = Vec::new();
+        run(
+            &[
+                begin,
+                file,
+                fragment_begin,
+                progress,
+                fragment_end,
+                revision,
+            ],
+            0,
+            |event| match event {
+                Ok(Event::RevisionRestoreFileBegin { count }) => {
+                    seen.push(format!("begin {count}"));
+                }
+                Ok(Event::RevisionRestoreFile {
+                    path,
+                    action,
+                    size,
+                    is_file,
+                    is_directory,
+                    is_module,
+                }) => seen.push(format!(
+                    "file {path} {} {size} {is_file} {is_directory} {is_module}",
+                    action == lore_sys::LORE_FILE_ACTION_DELETE
+                )),
+                Ok(Event::RevisionRestoreFragmentBegin { fragments }) => {
+                    seen.push(format!("query {fragments}"));
+                }
+                Ok(Event::RevisionRestoreFragmentProgress { complete, count }) => {
+                    seen.push(format!("progress {complete}/{count}"));
+                }
+                Ok(Event::RevisionRestoreFragmentEnd { fragments }) => {
+                    seen.push(format!("pushed {fragments}"));
+                }
+                Ok(Event::RevisionRestoreRevision {
+                    revision,
+                    revision_number,
+                }) => seen.push(format!("revision {:x} {revision_number}", revision.data[0])),
+                _ => {}
+            },
+        )
+        .unwrap();
+
+        assert_eq!(
+            seen,
+            [
+                "begin 1",
+                "file art/tree.png true 42 true false false",
+                "query 7",
+                "progress 3/5",
+                "pushed 5",
+                "revision ab 12",
+            ]
+        );
     }
 
     #[test]

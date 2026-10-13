@@ -19,14 +19,17 @@ use lore_sys::{
     LORE_EVENT_REPOSITORY_STATUS_SUMMARY, LORE_EVENT_REVISION_COMMIT_END,
     LORE_EVENT_REVISION_COMMIT_PROGRESS, LORE_EVENT_REVISION_COMMIT_REVISION,
     LORE_EVENT_REVISION_DIFF_FILE, LORE_EVENT_REVISION_HISTORY, LORE_EVENT_REVISION_HISTORY_ENTRY,
-    LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_SYNC_PROGRESS, LORE_EVENT_REVISION_SYNC_REVISION,
-    LORE_EVENT_REVISION_SYNC_TARGET, LORE_EVENT_REVISION_TREE_CHILD,
-    LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE, LORE_EVENT_REVISION_TREE_INFO,
-    LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN, LORE_EVENT_REVISION_TREE_LOADED,
-    LORE_EVENT_REVISION_TREE_NODE_INFO, LORE_EVENT_REVISION_TREE_NODE_PATH,
-    LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE, LORE_EVENT_STORAGE_GET_DATA,
-    LORE_EVENT_STORAGE_GET_HEADER, LORE_EVENT_STORAGE_GET_ITEM_COMPLETE,
-    LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE,
+    LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_RESTORE_FILE,
+    LORE_EVENT_REVISION_RESTORE_FILE_BEGIN, LORE_EVENT_REVISION_RESTORE_FRAGMENT_BEGIN,
+    LORE_EVENT_REVISION_RESTORE_FRAGMENT_END, LORE_EVENT_REVISION_RESTORE_FRAGMENT_PROGRESS,
+    LORE_EVENT_REVISION_RESTORE_REVISION, LORE_EVENT_REVISION_SYNC_PROGRESS,
+    LORE_EVENT_REVISION_SYNC_REVISION, LORE_EVENT_REVISION_SYNC_TARGET,
+    LORE_EVENT_REVISION_TREE_CHILD, LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE,
+    LORE_EVENT_REVISION_TREE_INFO, LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN,
+    LORE_EVENT_REVISION_TREE_LOADED, LORE_EVENT_REVISION_TREE_NODE_INFO,
+    LORE_EVENT_REVISION_TREE_NODE_PATH, LORE_EVENT_REVISION_TREE_RESOLVE_PATH_COMPLETE,
+    LORE_EVENT_STORAGE_GET_DATA, LORE_EVENT_STORAGE_GET_HEADER,
+    LORE_EVENT_STORAGE_GET_ITEM_COMPLETE, LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE,
     LORE_EVENT_STORAGE_MUTABLE_COMPARE_AND_SWAP_ITEM_COMPLETE,
     LORE_EVENT_STORAGE_MUTABLE_LOAD_ITEM_COMPLETE, LORE_EVENT_STORAGE_OPENED,
     LORE_EVENT_STORAGE_PUT_ITEM_COMPLETE, LORE_LOG_LEVEL_ERROR, LORE_LOG_LEVEL_INFO,
@@ -417,6 +420,42 @@ pub enum Event<'a> {
         /// The direct parent, then the other parent of a merge; zero where
         /// there is none.
         parents: [lore_hash_t; 2],
+    },
+    /// Opens the paths of a `revision_restore`: how many differ between the
+    /// branch tip and the revision being restored.
+    RevisionRestoreFileBegin {
+        count: usize,
+    },
+    /// One path that differs between the branch tip and the revision being
+    /// restored, with what the restore does to it on top of the tip.
+    RevisionRestoreFile {
+        path: &'a str,
+        action: lore_file_action_t,
+        size: u64,
+        is_file: bool,
+        is_directory: bool,
+        /// The path is a linked repository.
+        is_module: bool,
+    },
+    /// Opens a `revision_restore`'s upload with the fragments it checks the
+    /// remote for.
+    RevisionRestoreFragmentBegin {
+        fragments: u64,
+    },
+    /// How far a `revision_restore`'s upload has got, at intervals while it
+    /// runs.
+    RevisionRestoreFragmentProgress {
+        complete: u64,
+        count: u64,
+    },
+    /// Concludes a `revision_restore`'s upload with the fragments it sent.
+    RevisionRestoreFragmentEnd {
+        fragments: u64,
+    },
+    /// The revision a `revision_restore` made and moved the instance onto.
+    RevisionRestoreRevision {
+        revision: lore_hash_t,
+        revision_number: u64,
     },
     /// The revision a `revision_sync` or `branch_switch` left the working
     /// tree on. Emitted once; when the sync had to merge divergent history
@@ -869,6 +908,33 @@ impl<'a> Event<'a> {
                     revision: data.revision_history_entry.revision,
                     revision_number: data.revision_history_entry.revision_number,
                     parents: data.revision_history_entry.parent,
+                },
+                LORE_EVENT_REVISION_RESTORE_FILE_BEGIN => Self::RevisionRestoreFileBegin {
+                    count: data.revision_restore_file_begin.count,
+                },
+                LORE_EVENT_REVISION_RESTORE_FILE => Self::RevisionRestoreFile {
+                    path: data.revision_restore_file.path.try_to_str()?,
+                    action: data.revision_restore_file.action,
+                    size: data.revision_restore_file.size,
+                    is_file: data.revision_restore_file.is_file != 0,
+                    is_directory: data.revision_restore_file.is_directory != 0,
+                    is_module: data.revision_restore_file.is_module != 0,
+                },
+                LORE_EVENT_REVISION_RESTORE_FRAGMENT_BEGIN => Self::RevisionRestoreFragmentBegin {
+                    fragments: data.revision_restore_fragment_begin.fragments,
+                },
+                LORE_EVENT_REVISION_RESTORE_FRAGMENT_PROGRESS => {
+                    Self::RevisionRestoreFragmentProgress {
+                        complete: data.revision_restore_fragment_progress.complete,
+                        count: data.revision_restore_fragment_progress.count,
+                    }
+                }
+                LORE_EVENT_REVISION_RESTORE_FRAGMENT_END => Self::RevisionRestoreFragmentEnd {
+                    fragments: data.revision_restore_fragment_end.fragments,
+                },
+                LORE_EVENT_REVISION_RESTORE_REVISION => Self::RevisionRestoreRevision {
+                    revision: data.revision_restore_revision.revision,
+                    revision_number: data.revision_restore_revision.revision_number,
                 },
                 LORE_EVENT_REVISION_SYNC_REVISION => Self::RevisionSyncRevision {
                     branch: data.revision_sync_revision.branch,
