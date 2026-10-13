@@ -168,7 +168,7 @@ pub struct Resolved<T> {
     pub data: T,
 }
 
-/// What [`Store::compare_and_swap_resolved`] found the key holding.
+/// What [`Store::compare_and_swap`] found the key holding.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SwapOutcome {
     /// The key held the expected value and now holds the new one.

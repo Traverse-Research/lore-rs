@@ -24,13 +24,12 @@ pub use lore_sys::libloading;
 
 pub mod call;
 pub use call::{
-    call_with_callback, AuthLoginWithTokenArgs, BranchInfoArgs, CaseChange, FileInfoArgs,
-    FileStageArgs, FileUnstageArgs, RepositoryInfoArgs, RepositoryStatusArgs, RevisionCommitArgs,
-    RevisionInfoArgs, RevisionTreeResolvePathArgs, StorageGetArgs, StorageGetItem,
-    StorageGetMetadataArgs, StorageGetMetadataItem, StorageGetResolvedArgs, StorageGetResolvedItem,
-    StorageMutableCompareAndSwapArgs, StorageMutableCompareAndSwapItem, StorageMutableLoadArgs,
-    StorageMutableLoadItem, StorageOpenArgs, StoragePutArgs, StoragePutItem,
-    StoragePutResolvedArgs, StoragePutResolvedItem,
+    call_with_callback, AuthLoginWithTokenArgs, BranchInfoArgs, FileInfoArgs, RepositoryInfoArgs,
+    RepositoryStatusArgs, RevisionInfoArgs, RevisionTreeResolvePathArgs, StorageGetArgs,
+    StorageGetItem, StorageGetMetadataArgs, StorageGetMetadataItem, StorageGetResolvedArgs,
+    StorageGetResolvedItem, StorageMutableCompareAndSwapArgs, StorageMutableCompareAndSwapItem,
+    StorageMutableLoadArgs, StorageMutableLoadItem, StorageOpenArgs, StoragePutArgs,
+    StoragePutItem, StoragePutResolvedArgs, StoragePutResolvedItem,
 };
 
 mod string;
@@ -58,9 +57,8 @@ pub use auth::UserInfo;
 
 mod repository;
 pub use repository::{
-    BranchInfo, Commit, CommitCount, FileAction, FileChange, InstanceInfo, InstanceStaleness,
-    Repository, RepositoryInfo, RevisionInfo, StageCount, Staged, Status, StatusCount, StatusFile,
-    StatusSummary, UnstageCount, Unstaged,
+    BranchInfo, FileAction, InstanceInfo, InstanceStaleness, Repository, RepositoryInfo,
+    RevisionInfo, Status, StatusCount, StatusFile, StatusSummary,
 };
 
 mod store;
