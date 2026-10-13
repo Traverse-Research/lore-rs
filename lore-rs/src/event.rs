@@ -140,7 +140,9 @@ pub enum Event<'a> {
     FileStageEnd {
         count: lore_file_stage_count_data_t,
     },
-    /// The staged state a `file_stage` produced, one per repository it changed.
+    /// The hash of the staged tree a `file_stage` wrote, one per repository it
+    /// changed. Lore keeps it as that repository's staged anchor, and the next
+    /// commit builds its revision from it.
     FileStageRevision {
         repository: lore_repository_id_t,
         revision: lore_hash_t,
@@ -149,8 +151,8 @@ pub enum Event<'a> {
     FileUnstageEnd {
         count: lore_file_unstage_count_data_t,
     },
-    /// The staged state a `file_unstage` left behind, one per repository: the
-    /// repository itself, then each layer a path went into.
+    /// The hash of the staged tree a `file_unstage` left, one per repository:
+    /// the repository itself, then each layer a path went into.
     FileUnstageRevision {
         repository: lore_repository_id_t,
         revision: lore_hash_t,
