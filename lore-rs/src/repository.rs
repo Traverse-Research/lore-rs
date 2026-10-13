@@ -817,9 +817,11 @@ pub struct Unstaged {
     /// [`None`] when nothing was staged, in which case Lore reports nothing at
     /// all.
     pub count: Option<UnstageCount>,
-    /// The staged state left behind; [`None`] when nothing was unstaged or
-    /// nothing remains staged.
-    pub revision: Option<(RepositoryId, Revision)>,
+    /// The staged state left behind per repository: the repository itself
+    /// when something was unstaged and something remains staged, then each
+    /// layer a path went into. A layer left with nothing staged is reported
+    /// with an all-zero revision.
+    pub revisions: Vec<(RepositoryId, Revision)>,
 }
 
 /// One revision a [`commit`](Repository::commit) created.
@@ -1025,7 +1027,7 @@ impl Repository {
         const COMMAND: &str = "file::unstage";
         let mut files = Vec::new();
         let mut count = None;
-        let mut revision = None;
+        let mut revisions = Vec::new();
 
         crate::call::file_unstage(self.lore, COMMAND, &self.globals, args, |event| {
             crate::log_event(&event);
@@ -1041,13 +1043,11 @@ impl Repository {
                 }
                 Ok(Event::FileUnstageRevision {
                     repository,
-                    revision: staged,
-                }) => {
-                    revision = Some((
-                        RepositoryId::from_raw(repository),
-                        Revision::from_raw(staged),
-                    ));
-                }
+                    revision,
+                }) => revisions.push((
+                    RepositoryId::from_raw(repository),
+                    Revision::from_raw(revision),
+                )),
                 _ => {}
             }
         })?;
@@ -1055,7 +1055,7 @@ impl Repository {
         Ok(Unstaged {
             files,
             count,
-            revision,
+            revisions,
         })
     }
 
