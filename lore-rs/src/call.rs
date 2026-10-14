@@ -3172,6 +3172,59 @@ mod tests {
     }
 
     #[test]
+    fn a_file_info_event_decodes_its_flags_and_sizes() {
+        let mut event: lore_event_t = unsafe { std::mem::zeroed() };
+        event.tag = lore_sys::LORE_EVENT_FILE_INFO as lore_event_tag_t;
+        let data = unsafe { &mut event.__bindgen_anon_1.file_info };
+        data.path = lore_string_t::from_str("models/a.txt");
+        data.is_file = 1;
+        data.flag_modified = 1;
+        data.flag_conflict = 1;
+        data.mode = 0o644;
+        data.size = 10;
+        data.local_size = 11;
+        data.local_hash = lore_sys::lore_hash_t { data: [7; 32] };
+        data.filter_size = 9;
+
+        let mut seen = None;
+        run(&[event], 0, |event| {
+            if let Ok(Event::FileInfo {
+                is_file,
+                is_dir,
+                modified,
+                deleted,
+                added,
+                conflict,
+                mode,
+                size,
+                local_size,
+                local_hash,
+                filter_size,
+                ..
+            }) = event
+            {
+                seen = Some((
+                    [is_file, is_dir, modified, deleted, added, conflict],
+                    mode,
+                    [size, local_size, filter_size],
+                    local_hash.data,
+                ));
+            }
+        })
+        .unwrap();
+
+        assert_eq!(
+            seen,
+            Some((
+                [true, false, true, false, false, true],
+                0o644,
+                [10, 11, 9],
+                [7; 32]
+            ))
+        );
+    }
+
+    #[test]
     fn a_branch_info_event_decodes_its_stack() {
         let stack = [
             lore_sys::lore_branch_point_t {

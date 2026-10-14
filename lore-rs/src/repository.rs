@@ -232,21 +232,51 @@ impl Repository {
         crate::call::file_info(self.lore, "file::info", &self.globals, args, |event| {
             crate::log_event(&event);
 
-            if let Ok(Event::FileInfo {
-                path,
-                hash,
-                context,
-                is_file,
-                size,
-            }) = event
-            {
-                infos.push(FileInfo {
+            match event {
+                Ok(Event::FileInfo {
+                    path,
+                    hash,
+                    context,
+                    is_file,
+                    is_dir,
+                    modified,
+                    deleted,
+                    added,
+                    conflict,
+                    mode,
+                    size,
+                    local_size,
+                    local_hash,
+                    filter_size,
+                }) => infos.push(FileInfo {
                     path: path.to_owned(),
                     hash: Revision::from_raw(hash),
                     context: ContextId::from_raw(context),
                     is_file,
+                    is_dir,
+                    modified,
+                    deleted,
+                    added,
+                    conflict,
+                    mode,
                     size,
-                });
+                    local_size,
+                    local_hash: Revision::from_raw(local_hash),
+                    filter_size,
+                    metadata: Vec::new(),
+                }),
+                // Lore sends a path's metadata right after its info. It reports
+                // the paths concurrently, so events of different paths can
+                // interleave and a path's metadata can land on another's entry.
+                Ok(Event::Metadata { key, value }) => {
+                    if let Some(info) = infos.last_mut() {
+                        info.metadata.push(Metadata {
+                            key: key.to_owned(),
+                            value,
+                        });
+                    }
+                }
+                _ => {}
             }
         })?;
 
@@ -376,8 +406,27 @@ pub struct FileInfo {
     pub hash: Revision,
     pub context: ContextId,
     pub is_file: bool,
-    /// Of a directory, everything under it.
+    pub is_dir: bool,
+    /// The local file differs from the repository's.
+    pub modified: bool,
+    /// The repository holds the path and the local filesystem does not.
+    pub deleted: bool,
+    /// The local filesystem has the path and the repository does not.
+    pub added: bool,
+    pub conflict: bool,
+    /// File mode bits.
+    pub mode: u16,
+    /// In the repository; of a directory, everything under it.
     pub size: u64,
+    /// On the local filesystem.
+    pub local_size: u64,
+    /// What the local content hashes to, zero where nothing was compared.
+    pub local_hash: Revision,
+    /// After the filters are applied.
+    pub filter_size: u64,
+    /// The file's metadata entries, in the order Lore sends them after the
+    /// path's own event.
+    pub metadata: Vec<Metadata>,
 }
 
 /// A resolved revision, from [`Repository::revision`].

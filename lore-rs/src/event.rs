@@ -267,12 +267,30 @@ pub enum Event<'a> {
         /// Where the branch was found.
         location: lore_branch_location_t,
     },
+    /// What the repository holds at one path of a `file_info`, followed by the
+    /// [`Self::Metadata`] events of that path's file metadata. A path the
+    /// repository does not hold is reported with `added` set, if it exists on the
+    /// local filesystem, and has no metadata.
     FileInfo {
         path: &'a str,
         hash: lore_hash_t,
         context: lore_context_t,
         is_file: bool,
+        is_dir: bool,
+        modified: bool,
+        deleted: bool,
+        added: bool,
+        conflict: bool,
+        /// File mode bits.
+        mode: u16,
+        /// In the repository; of a directory, everything under it.
         size: u64,
+        /// On the local filesystem.
+        local_size: u64,
+        /// What the local content hashes to, zero where nothing was compared.
+        local_hash: lore_hash_t,
+        /// After the filters are applied.
+        filter_size: u64,
     },
     /// One path a `revision_diff` found changed between its two revisions.
     RevisionDiffFile {
@@ -829,7 +847,16 @@ impl<'a> Event<'a> {
                     hash: data.file_info.hash,
                     context: data.file_info.context,
                     is_file: data.file_info.is_file != 0,
+                    is_dir: data.file_info.is_dir != 0,
+                    modified: data.file_info.flag_modified != 0,
+                    deleted: data.file_info.flag_deleted != 0,
+                    added: data.file_info.flag_added != 0,
+                    conflict: data.file_info.flag_conflict != 0,
+                    mode: data.file_info.mode,
                     size: data.file_info.size,
+                    local_size: data.file_info.local_size,
+                    local_hash: data.file_info.local_hash,
+                    filter_size: data.file_info.filter_size,
                 },
                 LORE_EVENT_REVISION_DIFF_FILE => Self::RevisionDiffFile {
                     path: data.revision_diff_file.path.try_to_str()?,
