@@ -6,8 +6,8 @@ use lore_sys::{
 };
 
 use crate::{
-    Address, ContextId, ErrorCode, Event, GlobalArgs, Lore, LoreError, RepositoryId, ResolveKey,
-    Revision, RevisionTree, StorageGetArgs, StorageGetItem, StorageGetMetadataArgs,
+    Address, Backend, ContextId, ErrorCode, Event, GlobalArgs, Lore, LoreError, RepositoryId,
+    ResolveKey, Revision, RevisionTree, StorageGetArgs, StorageGetItem, StorageGetMetadataArgs,
     StorageGetMetadataItem, StorageGetResolvedArgs, StorageGetResolvedItem,
     StorageMutableCompareAndSwapArgs, StorageMutableCompareAndSwapItem, StorageMutableLoadArgs,
     StorageMutableLoadItem, StorageOpenArgs, StoragePutArgs, StoragePutItem,
@@ -411,18 +411,28 @@ impl Store {
     /// compare-and-swap instead, which this exists to avoid the round trip
     /// for.
     ///
+    /// `backend` determines which mutable stores the key is published to
+    /// and which immutable stores the data reaches.
+    /// [`Backend::Default`] will always write to both the local and remote stores, as long as
+    /// the store was opened with both a local and a remote store.
+    /// [`Backend::Local`] and [`Backend::Remote`] will limit the write to a single destination.
+    ///
     /// Same durability rules as [`Self::put`]: nothing is flushed by the time
     /// this returns.
     ///
     /// This corresponds to `lore_sys::Lore::lore_storage_put_resolved` with
     /// one item.
-    pub fn put_resolved(&self, item: PutResolvedItem<'_>) -> Result<PutResolvedOutcome, LoreError> {
+    pub fn put_resolved(
+        &self,
+        backend: Backend,
+        item: PutResolvedItem<'_>,
+    ) -> Result<PutResolvedOutcome, LoreError> {
         let mut completion: Option<(Address, lore_error_code_t, bool, bool)> = None;
 
         let result = crate::call::storage_put_resolved(
             self.lore,
             PUT_RESOLVED,
-            &self.globals,
+            &self.globals.with_backend(backend),
             StoragePutResolvedArgs {
                 handle: self.handle,
                 items: &[StoragePutResolvedItem {
@@ -529,11 +539,13 @@ impl Store {
     /// on the server alike. Nor does it hold for a mapping written through
     /// the raw mutable store, which carries no such guarantee.
     ///
-    /// Reads only the mutable store the handle's flags select, as
-    /// `mutable_load` does: the local one by default and under
+    /// Reads only one mutable store: the one `backend` names, or with
+    /// [`Backend::Default`] the one the handle's flags select, as
+    /// `mutable_load` does — the local one by default and under
     /// `globals.local`/`globals.offline`, the server's under
-    /// `globals.remote`. Unlike the immutable reads there is no fallthrough
-    /// from one to the other, so a key published only on the server is
+    /// `globals.remote`. `backend` cannot contradict how the handle was
+    /// opened, see [`Backend`]. Unlike the immutable reads there is no
+    /// fallthrough from one to the other, so a key published only on the server is
     /// [`None`] on a handle that reads locally. A local mapping is answered
     /// without asking the server, so a key another client has since
     /// republished or retracted can still resolve to the address it had here.
@@ -542,6 +554,7 @@ impl Store {
     /// `LORE_KEY_TYPE_RESOLVE`.
     pub fn resolve(
         &self,
+        backend: Backend,
         repository: RepositoryId,
         key: ResolveKey,
         context: ContextId,
@@ -551,7 +564,7 @@ impl Store {
         let result = crate::call::storage_mutable_load(
             self.lore,
             RESOLVE,
-            &self.globals,
+            &self.globals.with_backend(backend),
             StorageMutableLoadArgs {
                 handle: self.handle,
                 items: &[StorageMutableLoadItem {
@@ -616,17 +629,16 @@ impl Store {
     /// nothing behind it. A losing attempt leaves that content stored but
     /// unreferenced.
     ///
-    /// Swaps the mutable store the handle's flags select, as
-    /// [`Self::resolve`] reads it: the local one by default and under
-    /// `globals.local`/`globals.offline`, the server's under
-    /// `globals.remote`. Only the server's is shared with other clients, so
-    /// that is the one to swap for coordination between them.
+    /// Swaps the mutable store `backend` picks, as [`Self::resolve`] reads
+    /// it. Only the server's is shared with other clients, so
+    /// [`Backend::Remote`] is the one to swap for coordination between them.
     ///
     /// This corresponds to
     /// `lore_sys::Lore::lore_storage_mutable_compare_and_swap` under
     /// `LORE_KEY_TYPE_RESOLVE`, with one item.
     pub fn compare_and_swap_resolved(
         &self,
+        backend: Backend,
         repository: RepositoryId,
         key: ResolveKey,
         expected: Option<Revision>,
@@ -641,7 +653,7 @@ impl Store {
         let result = crate::call::storage_mutable_compare_and_swap(
             self.lore,
             COMPARE_AND_SWAP,
-            &self.globals,
+            &self.globals.with_backend(backend),
             StorageMutableCompareAndSwapArgs {
                 handle: self.handle,
                 items: &[StorageMutableCompareAndSwapItem {
@@ -839,9 +851,16 @@ impl Store {
     /// [`ErrorCode::AddressNotFound`](crate::ErrorCode::AddressNotFound),
     /// same as [`Self::get`].
     ///
+    /// `backend` determines which mutable store is used for the resolution of the key.
+    /// [`Backend::Default`] will follow the same precedence the store has been opened with:
+    /// local first, followed by remote, unless the store has been opened only
+    /// for local or remote operations.
+    /// [`Backend::Local`] and [`Backend::Remote`] will limit it to a single mutable store.
+    ///
     /// This corresponds to `lore_sys::Lore::lore_storage_get_resolved`.
     pub fn get_resolved(
         &self,
+        backend: Backend,
         repository: RepositoryId,
         key: ResolveKey,
         context: ContextId,
@@ -857,7 +876,7 @@ impl Store {
         let result = crate::call::storage_get_resolved(
             self.lore,
             GET_RESOLVED,
-            &self.globals,
+            &self.globals.with_backend(backend),
             StorageGetResolvedArgs {
                 handle: self.handle,
                 items: &[StorageGetResolvedItem {
