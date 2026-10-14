@@ -9,25 +9,27 @@ use lore_sys::{
     lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t, lore_bytes_mut_t,
     lore_bytes_t, lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
     lore_file_info_args_t, lore_global_args_t, lore_hash_t, lore_key_type_t, lore_partition_t,
-    lore_repository_info_args_t, lore_repository_instance_list_args_t,
-    lore_repository_status_args_t, lore_revision_info_args_t, lore_revision_tree_close_args_t,
-    lore_revision_tree_info_args_t, lore_revision_tree_list_children_args_t,
-    lore_revision_tree_load_args_t, lore_revision_tree_node_info_args_t,
-    lore_revision_tree_node_path_args_t, lore_revision_tree_resolve_path_args_t,
-    lore_revision_tree_t, lore_storage_close_args_t, lore_storage_flush_args_t,
-    lore_storage_get_args_t, lore_storage_get_item_array_t, lore_storage_get_item_t,
-    lore_storage_get_metadata_args_t, lore_storage_get_metadata_item_array_t,
-    lore_storage_get_metadata_item_t, lore_storage_get_resolved_args_t,
-    lore_storage_get_resolved_item_array_t, lore_storage_get_resolved_item_t,
-    lore_storage_mutable_compare_and_swap_args_t,
+    lore_repository_clone_args_t, lore_repository_info_args_t,
+    lore_repository_instance_list_args_t, lore_repository_status_args_t, lore_revision_info_args_t,
+    lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
+    lore_revision_tree_list_children_args_t, lore_revision_tree_load_args_t,
+    lore_revision_tree_node_info_args_t, lore_revision_tree_node_path_args_t,
+    lore_revision_tree_resolve_path_args_t, lore_revision_tree_t, lore_shared_store_mode_t,
+    lore_storage_close_args_t, lore_storage_flush_args_t, lore_storage_get_args_t,
+    lore_storage_get_item_array_t, lore_storage_get_item_t, lore_storage_get_metadata_args_t,
+    lore_storage_get_metadata_item_array_t, lore_storage_get_metadata_item_t,
+    lore_storage_get_resolved_args_t, lore_storage_get_resolved_item_array_t,
+    lore_storage_get_resolved_item_t, lore_storage_mutable_compare_and_swap_args_t,
     lore_storage_mutable_compare_and_swap_item_array_t,
     lore_storage_mutable_compare_and_swap_item_t, lore_storage_mutable_load_args_t,
     lore_storage_mutable_load_item_array_t, lore_storage_mutable_load_item_t,
     lore_storage_open_args_t, lore_storage_put_args_t, lore_storage_put_item_array_t,
     lore_storage_put_item_t, lore_storage_put_resolved_args_t,
     lore_storage_put_resolved_item_array_t, lore_storage_put_resolved_item_t,
-    lore_storage_remote_config_t, lore_store_t, lore_string_t, LORE_EVENT_COMPLETE,
-    LORE_EVENT_ERROR,
+    lore_storage_remote_config_t, lore_store_t, lore_string_t, lore_vfs_type_t,
+    LORE_EVENT_COMPLETE, LORE_EVENT_ERROR, LORE_SHARED_STORE_MODE_DISABLED,
+    LORE_SHARED_STORE_MODE_ENABLED, LORE_SHARED_STORE_MODE_INHERIT, LORE_VFS_TYPE_DEFAULT,
+    LORE_VFS_TYPE_NONE, LORE_VFS_TYPE_SWFS,
 };
 
 /// Why a call failed, collected from the events that conclude it. Follows the
@@ -1746,6 +1748,173 @@ pub fn revision_tree_close(
     }
 }
 
+/// A slice of text as Lore's own string type, for the array fields. Kept apart
+/// from the `to_raw` that points at it, which borrows the result.
+fn raw_strs(strs: &[&str]) -> Vec<lore_string_t> {
+    strs.iter().copied().map(raw_str).collect()
+}
+
+/// The virtual filesystem a repository's files go through: `vfs` in
+/// `lore_repository_clone_args_t` and `lore_repository_create_args_t`.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub enum VfsType {
+    /// No virtual filesystem: files are written to disk.
+    #[default]
+    None,
+    /// Whichever virtual filesystem Lore picks for the machine. Lore 0.10.0
+    /// always picks [`Self::Swfs`].
+    Default,
+    /// Epic's Split Write File System.
+    Swfs,
+}
+
+impl VfsType {
+    fn to_raw(self) -> lore_vfs_type_t {
+        match self {
+            Self::None => LORE_VFS_TYPE_NONE,
+            Self::Default => LORE_VFS_TYPE_DEFAULT,
+            Self::Swfs => LORE_VFS_TYPE_SWFS,
+        }
+    }
+}
+
+/// Whether a repository is backed by the machine's shared store instead of a
+/// local immutable store: `use_shared_store` in `lore_repository_clone_args_t`
+/// and `lore_repository_create_args_t`.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub enum SharedStoreMode {
+    /// Follow the machine's `use_shared_store_automatically` setting, which is
+    /// off when unset.
+    #[default]
+    Inherit,
+    /// Always use the shared store.
+    Enabled,
+    /// Never use the shared store, whatever the machine's setting.
+    Disabled,
+}
+
+impl SharedStoreMode {
+    fn to_raw(self) -> lore_shared_store_mode_t {
+        match self {
+            Self::Inherit => LORE_SHARED_STORE_MODE_INHERIT,
+            Self::Enabled => LORE_SHARED_STORE_MODE_ENABLED,
+            Self::Disabled => LORE_SHARED_STORE_MODE_DISABLED,
+        }
+    }
+}
+
+/// Arguments for [`repository_clone`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct RepositoryCloneArgs<'a> {
+    /// The repository to clone, as `lore://host:port/name`.
+    pub repository_url: &'a str,
+    /// Revision signature to clone, which also names the branch: `main@latest`
+    /// is the tip of `main`. Empty is the tip of the default branch.
+    pub revision: &'a str,
+    /// Path to a view file, resolved like the call's other relative paths (see
+    /// [`GlobalArgs::working_directory`]). Lore copies it into `.lore`. Empty
+    /// clones without a view.
+    pub view: &'a str,
+    /// Clone without writing any files. Lore still records the cloned revision
+    /// as the one the instance is on.
+    pub bare: bool,
+    /// Write each file straight to its destination, instead of to a temporary
+    /// file that is then moved into place.
+    pub direct_file_write: bool,
+    /// The virtual filesystem to clone through, if any.
+    pub vfs: VfsType,
+    /// Name of a layer repository on the same server. Lore clones the revision
+    /// that matches the layer's latest one, linked through `layer_metadata`.
+    /// Empty uses no layer.
+    pub layer: &'a str,
+    /// Metadata key that links layer revisions to this repository's.
+    pub layer_metadata: &'a str,
+    /// File listing the files to prefetch. Lore 0.10.0 accepts it but does not
+    /// read it during a clone.
+    pub prefetch: &'a str,
+    /// Whether to use the shared store instead of a local immutable store.
+    pub shared_store: SharedStoreMode,
+    /// Path of the shared store; empty is the machine's default. Ignored
+    /// unless [`Self::shared_store`] ends up enabling the shared store.
+    pub shared_store_path: &'a str,
+    /// Clone without local repository tracking: Lore's stores live in memory
+    /// and are gone once the call returns.
+    pub no_tracking: bool,
+    /// Repository-relative paths of the files to clone together with their
+    /// dependencies; empty clones every file.
+    pub root_files: &'a [&'a str],
+    /// Tags to filter dependencies by. Ignored when `root_files` is empty.
+    pub dependency_tags: &'a [&'a str],
+    /// Follow transitive dependencies recursively. Ignored when `root_files`
+    /// is empty.
+    pub dependency_recursive: bool,
+    /// Deepest dependency traversal; zero is unlimited. Ignored when
+    /// `root_files` is empty.
+    pub dependency_depth_limit: u32,
+}
+
+impl RepositoryCloneArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the text `self` does and the
+    /// two arrays passed in.
+    fn to_raw(
+        self,
+        root_files: &[lore_string_t],
+        dependency_tags: &[lore_string_t],
+    ) -> lore_repository_clone_args_t {
+        lore_repository_clone_args_t {
+            repository_url: raw_str(self.repository_url),
+            revision: raw_str(self.revision),
+            view: raw_str(self.view),
+            bare: u8::from(self.bare),
+            direct_file_write: u8::from(self.direct_file_write),
+            vfs: self.vfs.to_raw(),
+            layer: raw_str(self.layer),
+            layer_metadata: raw_str(self.layer_metadata),
+            prefetch: raw_str(self.prefetch),
+            use_shared_store: self.shared_store.to_raw(),
+            shared_store_path: raw_str(self.shared_store_path),
+            no_tracking: u8::from(self.no_tracking),
+            root_files: raw_str_array(root_files),
+            dependency_tags: raw_str_array(dependency_tags),
+            dependency_recursive: u8::from(self.dependency_recursive),
+            dependency_depth_limit: self.dependency_depth_limit,
+        }
+    }
+}
+
+/// Clones a repository into `globals.repository_path`; an empty path is the
+/// working directory. A `.lore` already there fails the call unless
+/// `globals.force` is set, which deletes it first. A clone that fails part way
+/// leaves its `.lore` behind.
+///
+/// Lore reports [`Event::RepositoryCloneProgress`] at intervals while it writes
+/// the files, then [`Event::RepositoryCloneEnd`] with the branch and revision.
+/// It sends the end event even when writing the files failed, so only the
+/// returned result says whether the clone succeeded.
+///
+/// This corresponds to `lore_sys::Lore::lore_repository_clone`.
+pub fn repository_clone(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: RepositoryCloneArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let root_files = raw_strs(args.root_files);
+    let dependency_tags = raw_strs(args.dependency_tags);
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args` and the two arrays, which all live across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_repository_clone,
+            command,
+            globals,
+            &args.to_raw(&root_files, &dependency_tags),
+            callback,
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -2005,6 +2174,101 @@ mod tests {
         .unwrap();
 
         assert_eq!(seen, Some(("main".to_owned(), [1; 32], [2; 32], true)));
+    }
+
+    #[test]
+    fn repository_clone_args_conversion() {
+        let args = RepositoryCloneArgs {
+            repository_url: "lore://localhost:41337/project",
+            revision: "main@latest",
+            vfs: VfsType::Swfs,
+            shared_store: SharedStoreMode::Disabled,
+            root_files: &["levels/a.level"],
+            dependency_tags: &["mesh", "texture"],
+            dependency_depth_limit: 3,
+            ..Default::default()
+        };
+        let root_files = raw_strs(args.root_files);
+        let dependency_tags = raw_strs(args.dependency_tags);
+        let raw = args.to_raw(&root_files, &dependency_tags);
+
+        assert_eq!(
+            unsafe { raw.repository_url.try_to_str() },
+            Ok("lore://localhost:41337/project")
+        );
+        assert_eq!(unsafe { raw.revision.try_to_str() }, Ok("main@latest"));
+        assert_eq!(raw.vfs, LORE_VFS_TYPE_SWFS);
+        assert_eq!(raw.use_shared_store, LORE_SHARED_STORE_MODE_DISABLED);
+        assert_eq!(
+            raw.root_files.ptr,
+            root_files.as_ptr(),
+            "borrows the array it was given"
+        );
+        assert_eq!(raw.dependency_tags.count, 2);
+        assert_eq!(raw.dependency_depth_limit, 3);
+        assert!(raw.view.string.is_null(), "unset is null");
+    }
+
+    #[test]
+    fn repository_clone_args_default_to_lores_zeroed_ones() {
+        // Lore documents a zeroed struct as its defaults: no VFS, and the
+        // shared store as the machine's setting says.
+        let raw = RepositoryCloneArgs::default().to_raw(&[], &[]);
+
+        assert_eq!(raw.vfs, 0);
+        assert_eq!(raw.use_shared_store, 0);
+        assert!(raw.root_files.ptr.is_null());
+        assert_eq!(raw.root_files.count, 0);
+    }
+
+    #[test]
+    fn repository_clone_events_decode_their_counts() {
+        let mut progress: lore_event_t = unsafe { std::mem::zeroed() };
+        progress.tag = lore_sys::LORE_EVENT_REPOSITORY_CLONE_PROGRESS as lore_event_tag_t;
+        progress
+            .__bindgen_anon_1
+            .repository_clone_progress
+            .count
+            .file_count = 10;
+        progress
+            .__bindgen_anon_1
+            .repository_clone_progress
+            .count
+            .file_complete = 4;
+
+        let mut end: lore_event_t = unsafe { std::mem::zeroed() };
+        end.tag = lore_sys::LORE_EVENT_REPOSITORY_CLONE_END as lore_event_tag_t;
+        end.__bindgen_anon_1.repository_clone_end.branch = lore_string_t::from_str("main");
+        end.__bindgen_anon_1.repository_clone_end.revision =
+            lore_sys::lore_hash_t { data: [1; 32] };
+        end.__bindgen_anon_1
+            .repository_clone_end
+            .count
+            .file_complete = 10;
+        end.__bindgen_anon_1
+            .repository_clone_end
+            .count
+            .discovery_complete = 1;
+
+        let mut seen = Vec::new();
+        run(&[progress, end], 0, |event| match event {
+            Ok(Event::RepositoryCloneProgress { count }) => {
+                seen.push((None, count.file_complete, count.file_count));
+            }
+            Ok(Event::RepositoryCloneEnd {
+                branch,
+                revision,
+                count,
+            }) => {
+                assert_eq!(revision.data, [1; 32]);
+                assert_eq!(count.discovery_complete, 1);
+                seen.push((Some(branch.to_owned()), count.file_complete, 0));
+            }
+            _ => {}
+        })
+        .unwrap();
+
+        assert_eq!(seen, vec![(None, 4, 10), (Some("main".to_owned()), 10, 0)]);
     }
 
     #[test]

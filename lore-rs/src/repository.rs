@@ -1,11 +1,12 @@
 use lore_sys::{
-    lore_file_action_t, lore_hash_t, LORE_FILE_ACTION_ADD, LORE_FILE_ACTION_COPY,
-    LORE_FILE_ACTION_DELETE, LORE_FILE_ACTION_KEEP, LORE_FILE_ACTION_MOVE,
+    lore_file_action_t, lore_hash_t, lore_repository_clone_count_data_t, LORE_FILE_ACTION_ADD,
+    LORE_FILE_ACTION_COPY, LORE_FILE_ACTION_DELETE, LORE_FILE_ACTION_KEEP, LORE_FILE_ACTION_MOVE,
 };
 
 use crate::{
     BranchId, BranchInfoArgs, Event, GlobalArgs, InstanceId, Lore, LoreError, NodeKind,
-    RepositoryId, RepositoryInfoArgs, RepositoryStatusArgs, Revision, RevisionInfoArgs,
+    RepositoryCloneArgs, RepositoryId, RepositoryInfoArgs, RepositoryStatusArgs, Revision,
+    RevisionInfoArgs,
 };
 
 /// A local repository instance — the directory holding `.lore` — together
@@ -312,6 +313,59 @@ impl Lore {
     ) -> Result<RepositoryInfo, LoreError> {
         repository_info(self, globals, repository_url)
     }
+
+    /// Clones a repository into `globals.repository_path` and returns the
+    /// [`Repository`] that runs commands against it. With
+    /// [`RepositoryCloneArgs::no_tracking`] set, the clone's stores are gone
+    /// once this returns, so that [`Repository`] has nothing to read.
+    ///
+    /// See [`crate::call::repository_clone`] for the `globals` it reads.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_repository_clone`.
+    pub fn repository_clone(
+        &'static self,
+        globals: GlobalArgs,
+        args: RepositoryCloneArgs<'_>,
+    ) -> Result<Cloned, LoreError> {
+        self.repository_clone_with_progress(globals, args, |_| {})
+    }
+
+    /// [`Self::repository_clone`], calling `progress` with Lore's running
+    /// tally at intervals while it writes the files. The totals in it grow
+    /// until [`CloneCount::discovery_complete`] is set.
+    pub fn repository_clone_with_progress(
+        &'static self,
+        globals: GlobalArgs,
+        args: RepositoryCloneArgs<'_>,
+        mut progress: impl FnMut(&CloneCount) + Send,
+    ) -> Result<Cloned, LoreError> {
+        const COMMAND: &str = "repository::clone";
+        let mut end = None;
+
+        crate::call::repository_clone(self, COMMAND, &globals, args, |event| {
+            crate::log_event(&event);
+
+            match event {
+                Ok(Event::RepositoryCloneProgress { count }) => {
+                    progress(&CloneCount::from_raw(count));
+                }
+                Ok(Event::RepositoryCloneEnd {
+                    branch,
+                    revision,
+                    count,
+                }) => end = Some((branch.to_owned(), present(revision), count)),
+                _ => {}
+            }
+        })?;
+
+        let (branch, revision, count) = end.ok_or(missing(COMMAND, "repository_clone_end"))?;
+        Ok(Cloned {
+            repository: Repository::new(self, globals),
+            branch,
+            revision,
+            count: CloneCount::from_raw(count),
+        })
+    }
 }
 
 /// What a server says about a repository.
@@ -491,6 +545,48 @@ impl std::fmt::Display for FileAction {
     }
 }
 
+/// Lore's tally of a [`clone`](Lore::repository_clone),
+/// `lore_repository_clone_count_data_t`.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct CloneCount {
+    /// Files finished.
+    pub file_complete: u64,
+    /// Files kept because they already matched.
+    pub file_retain: u64,
+    /// Files replaced.
+    pub file_replace: u64,
+    /// Files discovered to process; final once `discovery_complete` is set.
+    pub file_count: u64,
+    /// Files being processed right now.
+    pub file_inflight: u64,
+    /// Fragment fetches in flight across the whole process, not only this
+    /// clone's.
+    pub fragment_inflight: u64,
+    /// Bytes transferred so far.
+    pub bytes_transferred: u64,
+    /// Bytes to transfer; final once `discovery_complete` is set.
+    pub bytes_total: u64,
+    /// Lore has found every file to process. Never set for a bare clone or
+    /// one of a branch without revisions, which have no files to find.
+    pub discovery_complete: bool,
+}
+
+impl CloneCount {
+    fn from_raw(count: lore_repository_clone_count_data_t) -> Self {
+        Self {
+            file_complete: count.file_complete,
+            file_retain: count.file_retain,
+            file_replace: count.file_replace,
+            file_count: count.file_count,
+            file_inflight: count.file_inflight,
+            fragment_inflight: count.fragment_inflight,
+            bytes_transferred: count.bytes_transferred,
+            bytes_total: count.bytes_total,
+            discovery_complete: count.discovery_complete != 0,
+        }
+    }
+}
+
 /// Where the working tree stands, from [`Repository::status`]: Lore's
 /// `repository_status_revision`, with the events that come after it.
 #[derive(Debug, Clone)]
@@ -583,6 +679,18 @@ pub struct StatusSummary {
     pub modifies: u64,
     pub moves: u64,
     pub copies: u64,
+}
+
+/// What a [`clone`](Lore::repository_clone) checked out.
+#[derive(Debug, Clone)]
+pub struct Cloned {
+    /// The instance the clone wrote, with the `globals` it was cloned with.
+    pub repository: Repository,
+    pub branch: String,
+    /// [`None`] when the branch has no revision yet.
+    pub revision: Option<Revision>,
+    /// The final tally.
+    pub count: CloneCount,
 }
 
 /// Lore's all-zero "none" as [`None`].

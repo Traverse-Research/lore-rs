@@ -2,11 +2,12 @@ use crate::LoreStringExt;
 use lore_sys::{
     lore_address_t, lore_branch_id_t, lore_context_t, lore_error_code_t, lore_event_t,
     lore_event_tag_t, lore_file_action_t, lore_fragment_t, lore_hash_t, lore_instance_id_t,
-    lore_log_level_t, lore_node_id_t, lore_node_type_t, lore_repository_id_t,
-    LORE_EVENT_AUTH_IDENTITY, LORE_EVENT_AUTH_URL, LORE_EVENT_AUTH_USER_INFO,
+    lore_log_level_t, lore_node_id_t, lore_node_type_t, lore_repository_clone_count_data_t,
+    lore_repository_id_t, LORE_EVENT_AUTH_IDENTITY, LORE_EVENT_AUTH_URL, LORE_EVENT_AUTH_USER_INFO,
     LORE_EVENT_AUTH_USER_TOKEN, LORE_EVENT_BRANCH_INFO, LORE_EVENT_COMPLETE, LORE_EVENT_END,
     LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_FILE,
-    LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_DATA,
+    LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_CLONE_END,
+    LORE_EVENT_REPOSITORY_CLONE_PROGRESS, LORE_EVENT_REPOSITORY_DATA,
     LORE_EVENT_REPOSITORY_INSTANCE, LORE_EVENT_REPOSITORY_STATE_DUMP_NODE,
     LORE_EVENT_REPOSITORY_STATUS_COUNT, LORE_EVENT_REPOSITORY_STATUS_FILE,
     LORE_EVENT_REPOSITORY_STATUS_REVISION, LORE_EVENT_REPOSITORY_STATUS_SUMMARY,
@@ -135,6 +136,18 @@ pub enum Event<'a> {
     FileUnstageFile {
         path: &'a str,
         action: lore_file_action_t,
+    },
+    /// Lore's running tally while a `repository_clone` writes files.
+    RepositoryCloneProgress {
+        count: lore_repository_clone_count_data_t,
+    },
+    /// What a `repository_clone` checked out, or a `link_add` for each
+    /// repository it clones. Sent even when writing the files then failed, so
+    /// it does not by itself mean the call succeeded.
+    RepositoryCloneEnd {
+        branch: &'a str,
+        revision: lore_hash_t,
+        count: lore_repository_clone_count_data_t,
     },
     RepositoryData {
         remote_url: &'a str,
@@ -463,6 +476,14 @@ impl<'a> Event<'a> {
                 LORE_EVENT_FILE_UNSTAGE_FILE => Self::FileUnstageFile {
                     path: data.file_unstage_file.path.try_to_str()?,
                     action: data.file_unstage_file.action,
+                },
+                LORE_EVENT_REPOSITORY_CLONE_PROGRESS => Self::RepositoryCloneProgress {
+                    count: data.repository_clone_progress.count,
+                },
+                LORE_EVENT_REPOSITORY_CLONE_END => Self::RepositoryCloneEnd {
+                    branch: data.repository_clone_end.branch.try_to_str()?,
+                    revision: data.repository_clone_end.revision,
+                    count: data.repository_clone_end.count,
                 },
                 LORE_EVENT_REPOSITORY_DATA => Self::RepositoryData {
                     remote_url: data.repository_data.remote_url.try_to_str()?,
