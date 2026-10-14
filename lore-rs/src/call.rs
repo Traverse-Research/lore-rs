@@ -3172,6 +3172,59 @@ mod tests {
     }
 
     #[test]
+    fn a_branch_info_event_decodes_its_stack() {
+        let stack = [
+            lore_sys::lore_branch_point_t {
+                branch: lore_sys::lore_context_t { data: [1; 16] },
+                revision: lore_sys::lore_hash_t { data: [2; 32] },
+            },
+            lore_sys::lore_branch_point_t {
+                branch: lore_sys::lore_context_t { data: [3; 16] },
+                revision: lore_sys::lore_hash_t { data: [4; 32] },
+            },
+        ];
+        let mut event: lore_event_t = unsafe { std::mem::zeroed() };
+        event.tag = lore_sys::LORE_EVENT_BRANCH_INFO as lore_event_tag_t;
+        event.__bindgen_anon_1.branch_info.name = lore_string_t::from_str("feature");
+        event.__bindgen_anon_1.branch_info.stack = lore_sys::lore_branch_point_array_t {
+            ptr: stack.as_ptr(),
+            count: stack.len(),
+        };
+
+        let mut seen = None;
+        run(&[event], 0, |event| {
+            if let Ok(Event::BranchInfo { stack, .. }) = event {
+                seen = Some(
+                    stack
+                        .iter()
+                        .map(|point| (point.branch.data, point.revision.data))
+                        .collect::<Vec<_>>(),
+                );
+            }
+        })
+        .unwrap();
+
+        assert_eq!(seen, Some(vec![([1; 16], [2; 32]), ([3; 16], [4; 32])]));
+    }
+
+    #[test]
+    fn a_branch_info_event_without_a_stack_decodes_an_empty_one() {
+        // Lore sends a null pointer for an empty array.
+        let mut event: lore_event_t = unsafe { std::mem::zeroed() };
+        event.tag = lore_sys::LORE_EVENT_BRANCH_INFO as lore_event_tag_t;
+
+        let mut seen = None;
+        run(&[event], 0, |event| {
+            if let Ok(Event::BranchInfo { stack, .. }) = event {
+                seen = Some(stack.len());
+            }
+        })
+        .unwrap();
+
+        assert_eq!(seen, Some(0));
+    }
+
+    #[test]
     fn a_branch_info_event_decodes_both_tips() {
         let mut event: lore_event_t = unsafe { std::mem::zeroed() };
         event.tag = lore_sys::LORE_EVENT_BRANCH_INFO as lore_event_tag_t;

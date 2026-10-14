@@ -151,9 +151,6 @@ pub enum Event<'a> {
         /// Empty unless the call asked for tokens.
         token: &'a str,
     },
-    /// The `stack` of branch points the raw event also carries is not decoded:
-    /// it is an array, which no variant here has needed yet, and
-    /// [`Self::BranchInfo::branch_point`] is its first entry.
     BranchInfo {
         id: lore_branch_id_t,
         name: &'a str,
@@ -168,6 +165,9 @@ pub enum Event<'a> {
         branch_point: lore_hash_t,
         creator: &'a str,
         created: u64,
+        /// The branch points this branch was created from, in the order Lore
+        /// sends them.
+        stack: &'a [lore_branch_point_t],
         archived: bool,
     },
     /// Concludes a successful `branch_archive`.
@@ -742,6 +742,17 @@ impl<'a> Event<'a> {
                     branch_point: data.branch_info.branch_point,
                     creator: data.branch_info.creator.try_to_str()?,
                     created: data.branch_info.created,
+                    stack: {
+                        // Lore hands out a null pointer for an empty array,
+                        // which `from_raw_parts` does not accept even at
+                        // length zero.
+                        let stack = &data.branch_info.stack;
+                        if stack.ptr.is_null() || stack.count == 0 {
+                            &[]
+                        } else {
+                            std::slice::from_raw_parts(stack.ptr, stack.count)
+                        }
+                    },
                     archived: data.branch_info.archived != 0,
                 },
                 LORE_EVENT_BRANCH_ARCHIVE => Self::BranchArchive {

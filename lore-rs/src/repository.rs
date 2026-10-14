@@ -145,6 +145,7 @@ impl Repository {
                     branch_point,
                     creator,
                     created,
+                    stack,
                     archived,
                 }) = event
                 {
@@ -159,6 +160,15 @@ impl Repository {
                         latest_remote: Revision::from_raw(latest_remote),
                         parent: BranchId::from_raw(parent),
                         branch_point: Revision::from_raw(branch_point),
+                        stack: stack
+                            .iter()
+                            .map(|point| {
+                                (
+                                    BranchId::from_raw(point.branch),
+                                    Revision::from_raw(point.revision),
+                                )
+                            })
+                            .collect(),
                     });
                 }
             },
@@ -521,6 +531,9 @@ pub struct BranchInfo {
     latest_remote: Revision,
     parent: BranchId,
     branch_point: Revision,
+    /// The branch points this branch was created from, as parent branch and
+    /// the revision on it, in the order Lore sends them.
+    pub stack: Vec<(BranchId, Revision)>,
 }
 
 impl BranchInfo {
