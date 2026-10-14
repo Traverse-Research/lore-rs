@@ -69,6 +69,35 @@ impl Repository {
         repository_info(self.lore, &self.globals, "")
     }
 
+    /// Reads one value from the instance's `.lore/config.toml`: `remote_url`,
+    /// the server [`Self::info`] and every other remote call talks to, or
+    /// `identity`. Empty when the file does not set it.
+    ///
+    /// Answered from the file, unlike [`Self::info`], so it can say which
+    /// server a checkout uses before logging in to it. Lore does connect to
+    /// that server while opening the instance, without depending on an answer.
+    /// On a bare `.lore` call [`Self::instances`] first, which creates the
+    /// `.lore/instance` this needs.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_repository_config_get`.
+    pub fn config_get(&self, key: &str) -> Result<String, LoreError> {
+        const COMMAND: &str = "repository::config_get";
+        let mut value = None;
+
+        crate::call::repository_config_get(self.lore, COMMAND, &self.globals, key, |event| {
+            crate::log_event(&event);
+
+            if let Ok(Event::RepositoryConfigGet { value: read, .. }) = event {
+                value = Some(read.to_owned());
+            }
+        })?;
+
+        value.ok_or(LoreError::MissingEvent {
+            command: COMMAND,
+            expected: "repository_config_get",
+        })
+    }
+
     /// Lists the checkouts registered for this repository. Lore registers a
     /// checkout on its first writable open, so one only ever read through
     /// these bindings is not among them.
