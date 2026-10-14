@@ -314,22 +314,34 @@ impl Repository {
             |event| {
                 crate::log_event(&event);
 
-                if let Ok(Event::RevisionInfo {
-                    repository,
-                    revision,
-                    revision_number,
-                    parents,
-                }) = event
-                {
-                    info = Some(RevisionInfo {
-                        repository: RepositoryId::from_raw(repository),
-                        revision: Revision::from_raw(revision),
-                        number: revision_number,
-                        parents: [
-                            Revision::from_raw(parents[0]),
-                            Revision::from_raw(parents[1]),
-                        ],
-                    });
+                match event {
+                    Ok(Event::RevisionInfo {
+                        repository,
+                        revision,
+                        revision_number,
+                        parents,
+                    }) => {
+                        info = Some(RevisionInfo {
+                            repository: RepositoryId::from_raw(repository),
+                            revision: Revision::from_raw(revision),
+                            number: revision_number,
+                            parents: [
+                                Revision::from_raw(parents[0]),
+                                Revision::from_raw(parents[1]),
+                            ],
+                            metadata: Vec::new(),
+                        });
+                    }
+                    // Lore sends the revision's metadata right after its event.
+                    Ok(Event::Metadata { key, value }) => {
+                        if let Some(info) = info.as_mut() {
+                            info.metadata.push(Metadata {
+                                key: key.to_owned(),
+                                value,
+                            });
+                        }
+                    }
+                    _ => {}
                 }
             },
         )?;
@@ -437,9 +449,21 @@ pub struct RevisionInfo {
     /// Lore's sequential number of the revision on its branch.
     pub number: u64,
     parents: [Revision; 2],
+    /// What Lore records about the revision, in the order it sends it after the
+    /// revision's own event: its message, who committed it and when, among
+    /// others.
+    pub metadata: Vec<Metadata>,
 }
 
 impl RevisionInfo {
+    /// The revision's commit message, if it has one.
+    pub fn message(&self) -> Option<&str> {
+        self.metadata.iter().find_map(|entry| match &entry.value {
+            MetadataValue::String(message) if entry.key == "message" => Some(message.as_str()),
+            _ => None,
+        })
+    }
+
     /// The parent revisions: none for an initial revision, one normally, two
     /// for a merge.
     pub fn parents(&self) -> impl Iterator<Item = Revision> + '_ {
