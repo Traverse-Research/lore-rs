@@ -7,11 +7,12 @@ use lore_sys::{
     LORE_EVENT_AUTH_USER_TOKEN, LORE_EVENT_BRANCH_INFO, LORE_EVENT_COMPLETE, LORE_EVENT_END,
     LORE_EVENT_ERROR, LORE_EVENT_FILE_INFO, LORE_EVENT_FILE_STAGE_FILE,
     LORE_EVENT_FILE_UNSTAGE_FILE, LORE_EVENT_LOG, LORE_EVENT_REPOSITORY_CLONE_END,
-    LORE_EVENT_REPOSITORY_CLONE_PROGRESS, LORE_EVENT_REPOSITORY_DATA,
-    LORE_EVENT_REPOSITORY_INSTANCE, LORE_EVENT_REPOSITORY_STATE_DUMP_NODE,
-    LORE_EVENT_REPOSITORY_STATUS_COUNT, LORE_EVENT_REPOSITORY_STATUS_FILE,
-    LORE_EVENT_REPOSITORY_STATUS_REVISION, LORE_EVENT_REPOSITORY_STATUS_SUMMARY,
-    LORE_EVENT_REVISION_COMMIT_REVISION, LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_TREE_CHILD,
+    LORE_EVENT_REPOSITORY_CLONE_PROGRESS, LORE_EVENT_REPOSITORY_CONFIG_GET,
+    LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_INSTANCE,
+    LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_COUNT,
+    LORE_EVENT_REPOSITORY_STATUS_FILE, LORE_EVENT_REPOSITORY_STATUS_REVISION,
+    LORE_EVENT_REPOSITORY_STATUS_SUMMARY, LORE_EVENT_REVISION_COMMIT_REVISION,
+    LORE_EVENT_REVISION_INFO, LORE_EVENT_REVISION_TREE_CHILD,
     LORE_EVENT_REVISION_TREE_CLOSE_COMPLETE, LORE_EVENT_REVISION_TREE_INFO,
     LORE_EVENT_REVISION_TREE_LIST_CHILDREN_BEGIN, LORE_EVENT_REVISION_TREE_LOADED,
     LORE_EVENT_REVISION_TREE_NODE_INFO, LORE_EVENT_REVISION_TREE_NODE_PATH,
@@ -148,6 +149,12 @@ pub enum Event<'a> {
         branch: &'a str,
         revision: lore_hash_t,
         count: lore_repository_clone_count_data_t,
+    },
+    /// One value read from the repository's `.lore/config.toml`, from
+    /// `config_get`. Empty when the file does not set it.
+    RepositoryConfigGet {
+        key: &'a str,
+        value: &'a str,
     },
     RepositoryData {
         remote_url: &'a str,
@@ -484,6 +491,10 @@ impl<'a> Event<'a> {
                     branch: data.repository_clone_end.branch.try_to_str()?,
                     revision: data.repository_clone_end.revision,
                     count: data.repository_clone_end.count,
+                },
+                LORE_EVENT_REPOSITORY_CONFIG_GET => Self::RepositoryConfigGet {
+                    key: data.repository_config_get.key.try_to_str()?,
+                    value: data.repository_config_get.value.try_to_str()?,
                 },
                 LORE_EVENT_REPOSITORY_DATA => Self::RepositoryData {
                     remote_url: data.repository_data.remote_url.try_to_str()?,

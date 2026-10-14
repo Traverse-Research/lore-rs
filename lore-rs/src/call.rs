@@ -9,7 +9,7 @@ use lore_sys::{
     lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t, lore_bytes_mut_t,
     lore_bytes_t, lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
     lore_file_info_args_t, lore_global_args_t, lore_hash_t, lore_key_type_t, lore_partition_t,
-    lore_repository_clone_args_t, lore_repository_info_args_t,
+    lore_repository_clone_args_t, lore_repository_config_get_args_t, lore_repository_info_args_t,
     lore_repository_instance_list_args_t, lore_repository_status_args_t, lore_revision_info_args_t,
     lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
     lore_revision_tree_list_children_args_t, lore_revision_tree_load_args_t,
@@ -1515,6 +1515,42 @@ pub fn repository_status(
     }
 }
 
+/// Reads one value from the repository's `.lore/config.toml`, as one
+/// [`Event::RepositoryConfigGet`]. Lore knows two keys, `remote_url` and
+/// `identity`; one the file does not set reads as empty, and any other key
+/// fails the call.
+///
+/// The value comes from the file at `globals.repository_path`, never from the
+/// server. Lore still opens the repository as it does for every repository
+/// verb, which connects to the configured remote, but the call does not depend
+/// on it answering: against an unreachable remote it succeeds after the
+/// connection attempt gives up. That open needs `.lore/instance`, which a bare
+/// `.lore` holding only `id` and `config.toml` lacks; Lore then fails with
+/// "Repository requires migration" until [`repository_instance_list`] has
+/// created it.
+///
+/// This corresponds to `lore_sys::Lore::lore_repository_config_get`.
+pub fn repository_config_get(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    key: &str,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let args = lore_repository_config_get_args_t { key: raw_str(key) };
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `key`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_repository_config_get,
+            command,
+            globals,
+            &args,
+            callback,
+        )
+    }
+}
+
 /// Lists the checkouts registered for a repository, one
 /// [`Event::RepositoryInstance`] each, live ones first and then stale ones.
 ///
@@ -2052,6 +2088,31 @@ mod tests {
         .unwrap();
 
         assert_eq!(seen, Some(("user-id".to_owned(), "Some One".to_owned())));
+    }
+
+    #[test]
+    fn a_repository_config_get_event_decodes_the_value() {
+        let mut event: lore_event_t = unsafe { std::mem::zeroed() };
+        event.tag = lore_sys::LORE_EVENT_REPOSITORY_CONFIG_GET as lore_event_tag_t;
+        event.__bindgen_anon_1.repository_config_get.key = lore_string_t::from_str("remote_url");
+        event.__bindgen_anon_1.repository_config_get.value =
+            lore_string_t::from_str("grpcs://lore.example.com");
+
+        let mut seen = None;
+        run(&[event], 0, |event| {
+            if let Ok(Event::RepositoryConfigGet { key, value }) = event {
+                seen = Some((key.to_owned(), value.to_owned()));
+            }
+        })
+        .unwrap();
+
+        assert_eq!(
+            seen,
+            Some((
+                "remote_url".to_owned(),
+                "grpcs://lore.example.com".to_owned()
+            ))
+        );
     }
 
     #[test]
