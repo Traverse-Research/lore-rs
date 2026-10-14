@@ -2260,6 +2260,12 @@ pub struct RevisionSyncArgs<'a> {
     pub dependency_recursive: bool,
     /// Deepest dependency traversal; zero is unlimited.
     pub dependency_depth_limit: u32,
+    /// View filter file to leave the working files materialized under, which
+    /// changes the subset of the repository that is on disk and carries the
+    /// working tree to what the new view holds. Empty keeps the view the
+    /// instance holds. Lore refuses it together with `reset` or `root_files`,
+    /// and when the sync would merge a diverged branch.
+    pub view: &'a str,
 }
 
 impl RevisionSyncArgs<'_> {
@@ -2278,7 +2284,7 @@ impl RevisionSyncArgs<'_> {
             dependency_tags: raw_str_array(dependency_tags),
             dependency_recursive: u8::from(self.dependency_recursive),
             dependency_depth_limit: self.dependency_depth_limit,
-            view: raw_str(""),
+            view: raw_str(self.view),
         }
     }
 }
@@ -2883,6 +2889,27 @@ mod tests {
 
         let remote = lore_sys::LORE_BRANCH_LOCATION_REMOTE;
         assert_eq!(seen, vec![(remote, None), (remote, Some(3))]);
+    }
+
+    #[test]
+    fn revision_sync_args_conversion() {
+        let args = RevisionSyncArgs {
+            revision: "main@latest",
+            view: "views/art.view",
+            ..Default::default()
+        };
+        let raw = args.to_raw(&[], &[]);
+        assert_eq!(unsafe { raw.revision.try_to_str() }, Ok("main@latest"));
+        assert_eq!(unsafe { raw.view.try_to_str() }, Ok("views/art.view"));
+    }
+
+    #[test]
+    fn revision_sync_args_without_a_view_pass_a_null_pointer() {
+        // An empty view keeps the one the instance holds, which lore tells
+        // from unset rather than from a pointer to zero bytes.
+        let raw = RevisionSyncArgs::default().to_raw(&[], &[]);
+        assert!(raw.view.string.is_null());
+        assert_eq!(raw.view.length, 0);
     }
 
     #[test]
