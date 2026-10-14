@@ -8,9 +8,10 @@ use crate::{Event, GlobalArgs, LoreError, RawGlobals};
 use lore_sys::{
     lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t, lore_bytes_mut_t,
     lore_bytes_t, lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
-    lore_file_info_args_t, lore_global_args_t, lore_hash_t, lore_key_type_t, lore_partition_t,
-    lore_repository_clone_args_t, lore_repository_info_args_t,
-    lore_repository_instance_list_args_t, lore_repository_status_args_t, lore_revision_info_args_t,
+    lore_file_info_args_t, lore_file_stage_args_t, lore_file_unstage_args_t, lore_global_args_t,
+    lore_hash_t, lore_key_type_t, lore_partition_t, lore_repository_clone_args_t,
+    lore_repository_info_args_t, lore_repository_instance_list_args_t,
+    lore_repository_status_args_t, lore_revision_commit_args_t, lore_revision_info_args_t,
     lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
     lore_revision_tree_list_children_args_t, lore_revision_tree_load_args_t,
     lore_revision_tree_node_info_args_t, lore_revision_tree_node_path_args_t,
@@ -1778,6 +1779,29 @@ impl VfsType {
     }
 }
 
+/// What [`file_stage`] does with a path that differs from the tracked one only
+/// in case: `case_change` in `lore_file_stage_args_t`.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub enum CaseChange {
+    /// Refuse to stage it.
+    #[default]
+    Error,
+    /// Keep the tracked case, renaming the file on disk to match it.
+    Keep,
+    /// Stage the new case as a rename in the repository.
+    Rename,
+}
+
+impl CaseChange {
+    fn to_raw(self) -> u32 {
+        match self {
+            Self::Error => 0,
+            Self::Keep => 1,
+            Self::Rename => 2,
+        }
+    }
+}
+
 /// Whether a repository is backed by the machine's shared store instead of a
 /// local immutable store: `use_shared_store` in `lore_repository_clone_args_t`
 /// and `lore_repository_create_args_t`.
@@ -1882,6 +1906,34 @@ impl RepositoryCloneArgs<'_> {
     }
 }
 
+/// Arguments for [`file_stage`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct FileStageArgs<'a> {
+    /// Paths to stage. Lore resolves a relative path against
+    /// [`GlobalArgs::working_directory`], or against the calling process's
+    /// working directory when that is empty; empty or `.` is the repository
+    /// root wherever the call runs from. A path that does not resolve inside
+    /// the repository is skipped with an [`Event::PathIgnore`]. A directory
+    /// stages the files under it that Lore already tracks as dirty, or every
+    /// changed file with `scan` set.
+    pub paths: &'a [&'a str],
+    pub case_change: CaseChange,
+    /// Walk the filesystem under each directory path rather than relying on
+    /// the dirty flags Lore holds. No effect on file paths.
+    pub scan: bool,
+}
+
+impl FileStageArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing `paths`.
+    fn to_raw(self, paths: &[lore_string_t]) -> lore_file_stage_args_t {
+        lore_file_stage_args_t {
+            paths: raw_str_array(paths),
+            case_change: self.case_change.to_raw(),
+            scan: u8::from(self.scan),
+        }
+    }
+}
+
 /// Clones a repository into `globals.repository_path`; an empty path is the
 /// working directory. A `.lore` already there fails the call unless
 /// `globals.force` is set, which deletes it first. A clone that fails part way
@@ -1910,6 +1962,167 @@ pub fn repository_clone(
             command,
             globals,
             &args.to_raw(&root_files, &dependency_tags),
+            callback,
+        )
+    }
+}
+
+/// Stages files for the next commit, reporting one [`Event::FileStageFile`]
+/// per file whose staged state changed, with the change Lore recorded for it.
+/// Lore works out the kind of change itself: a rename arrives as a delete and
+/// an add, and a move only for a change of case. A repository verb:
+/// `globals.repository_path` must hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_file_stage`.
+pub fn file_stage(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: FileStageArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let paths = raw_strs(args.paths);
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `paths` and `args`, which both live across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_file_stage,
+            command,
+            globals,
+            &args.to_raw(&paths),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`file_unstage`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct FileUnstageArgs<'a> {
+    /// Paths to take out of the staged state, resolved as
+    /// [`FileStageArgs::paths`] are.
+    pub paths: &'a [&'a str],
+}
+
+impl FileUnstageArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing `paths`.
+    fn to_raw(self, paths: &[lore_string_t]) -> lore_file_unstage_args_t {
+        lore_file_unstage_args_t {
+            paths: raw_str_array(paths),
+        }
+    }
+}
+
+/// Takes staged changes out of the next commit, reporting one
+/// [`Event::FileUnstageFile`] per file it unstages. Files on disk keep their
+/// contents, except under a link whose staged change is unstaged: Lore puts
+/// the link's pinned content back at its mount. A path that does not resolve
+/// inside the repository is skipped with an [`Event::PathIgnore`]. A
+/// repository verb: `globals.repository_path` must hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_file_unstage`.
+pub fn file_unstage(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: FileUnstageArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let paths = raw_strs(args.paths);
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `paths` and `args`, which both live across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_file_unstage,
+            command,
+            globals,
+            &args.to_raw(&paths),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`revision_commit`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct RevisionCommitArgs<'a> {
+    pub message: &'a str,
+    /// Commit only this linked repository, by its mount path relative to the
+    /// repository root.
+    pub link: &'a str,
+    /// Linked repositories that get a message of their own, by mount path.
+    pub link_paths: &'a [&'a str],
+    /// The message for each of `link_paths`, in the same order. When the two
+    /// differ in length Lore logs a warning and pairs as many as the shorter
+    /// one holds.
+    pub link_messages: &'a [&'a str],
+    /// Commit only this layer, by its mount path relative to the repository
+    /// root.
+    pub layer: &'a str,
+    /// Layers that get a message of their own, by mount path.
+    pub layer_paths: &'a [&'a str],
+    /// The message for each of `layer_paths`, in the same order. When the two
+    /// differ in length Lore logs a warning and pairs as many as the shorter
+    /// one holds.
+    pub layer_messages: &'a [&'a str],
+}
+
+impl RevisionCommitArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the text `self` does and the
+    /// four arrays passed in.
+    fn to_raw(
+        self,
+        link_paths: &[lore_string_t],
+        link_messages: &[lore_string_t],
+        layer_paths: &[lore_string_t],
+        layer_messages: &[lore_string_t],
+    ) -> lore_revision_commit_args_t {
+        lore_revision_commit_args_t {
+            message: raw_str(self.message),
+            link: raw_str(self.link),
+            link_paths: raw_str_array(link_paths),
+            link_messages: raw_str_array(link_messages),
+            layer: raw_str(self.layer),
+            layer_paths: raw_str_array(layer_paths),
+            layer_messages: raw_str_array(layer_messages),
+        }
+    }
+}
+
+/// Commits the staged changes as new revisions on the branch the instance is
+/// on, one [`Event::RevisionCommitRevision`] per repository that got one. The
+/// repository comes first, then each layer. Within each, the linked
+/// repositories inside it report their revisions first, then
+/// [`Event::RevisionCommitEnd`] tallies the files committed in it and them,
+/// then its own revision follows.
+///
+/// [`GlobalArgs::force`] skips the check that another instance has not moved
+/// the branch on, commits a staged tree identical to the current one, and
+/// succeeds without any revision when nothing is staged at all.
+///
+/// Unless `globals.offline` or `globals.local` is set, Lore uploads the new
+/// content to the remote while it commits; the revision itself stays on this
+/// instance's branch until it is pushed. A repository verb:
+/// `globals.repository_path` must hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_commit`.
+pub fn revision_commit(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: RevisionCommitArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let link_paths = raw_strs(args.link_paths);
+    let link_messages = raw_strs(args.link_messages);
+    let layer_paths = raw_strs(args.layer_paths);
+    let layer_messages = raw_strs(args.layer_messages);
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args` and the four arrays, which all live across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_commit,
+            command,
+            globals,
+            &args.to_raw(&link_paths, &link_messages, &layer_paths, &layer_messages),
             callback,
         )
     }
@@ -2269,6 +2482,23 @@ mod tests {
         .unwrap();
 
         assert_eq!(seen, vec![(None, 4, 10), (Some("main".to_owned()), 10, 0)]);
+    }
+
+    #[test]
+    fn a_path_ignore_event_decodes_the_path() {
+        let mut event: lore_event_t = unsafe { std::mem::zeroed() };
+        event.tag = lore_sys::LORE_EVENT_PATH_IGNORE as lore_event_tag_t;
+        event.__bindgen_anon_1.path_ignore.path = lore_string_t::from_str("../outside.txt");
+
+        let mut seen = None;
+        run(&[event], 0, |event| {
+            if let Ok(Event::PathIgnore { path }) = event {
+                seen = Some(path.to_owned());
+            }
+        })
+        .unwrap();
+
+        assert_eq!(seen.as_deref(), Some("../outside.txt"));
     }
 
     #[test]
