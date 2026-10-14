@@ -2278,6 +2278,7 @@ impl RevisionSyncArgs<'_> {
             dependency_tags: raw_str_array(dependency_tags),
             dependency_recursive: u8::from(self.dependency_recursive),
             dependency_depth_limit: self.dependency_depth_limit,
+            view: raw_str(""),
         }
     }
 }

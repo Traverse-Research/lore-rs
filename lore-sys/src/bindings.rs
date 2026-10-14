@@ -92,13 +92,12 @@ pub const LORE_ERROR_CODE_ADDRESS_NOT_FOUND: lore_error_code_t = 80;
 pub const LORE_ERROR_CODE_INTERNAL: lore_error_code_t = -1;
 /// The backing store is overloaded; the caller should retry later.
 pub const LORE_ERROR_CODE_SLOW_DOWN: lore_error_code_t = 31;
-/** Small discriminator enum for per-item terminal events in the
- content-addressed storage API.
+/** Small discriminator enum for the per-item terminal events of the revision-tree API.
 
- Narrower than the general library error code — events emitted per
- put/get/copy/etc. item embed this code so a caller can branch on the
- common cases cheaply without parsing the companion `LORE_EVENT_ERROR`
- detail.
+ Narrower than the general library error code: an event embeds this so a caller can branch on
+ the common cases cheaply, without reading a message. The cost is that it names only five
+ outcomes, so errors outside them arrive as `Internal`. The storage API carries a full
+ [`LoreErrorDetail`] on its per-item events instead, and no longer uses this enum.
 
  The values are the error codes themselves, taken from the registry in
  `lore_base::error`, so a code read from a per-item event means the same
@@ -9693,9 +9692,9 @@ fn bindgen_test_layout_lore_storage_opened_event_data_t() {
     );
 }
 /** Terminal per-item event for `put`, `put_file`, `put_resolved` and
- `put_file_resolved`. On success `error_code == None` and `address` is the
+ `put_file_resolved`. On success `error.error_code == 0` and `address` is the
  computed content hash — for the resolved variants, the content the key now
- resolves to; on failure `error_code` is populated and `address` is zero.*/
+ resolves to; on failure `error` is populated and `address` is zero.*/
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_put_item_complete_event_data_t {
@@ -9704,15 +9703,15 @@ pub struct lore_storage_put_item_complete_event_data_t {
     /// The computed content address of the stored item.
     pub address: lore_address_t,
     /// The outcome for the item.
-    pub error_code: lore_error_code_t,
-    /** Non-zero when the local store holds the content. Appended after the original three
- fields, so a consumer reading only those is unaffected — `serde(default)` lets an older
- payload that lacks the field deserialize, as events cross the IPC boundary.*/
+    pub error: lore_error_detail_t,
+    /** Non-zero when the local store holds the content. Trailing, so a payload that lacks it still
+ decodes: the IPC wire format is non-self-describing, where only a missing trailing field is
+ recoverable.*/
     pub stored_local: u8,
     /** Non-zero when the content reached the remote, or was already durable there. A remote
- write that fails still reports `error_code = NONE` if the local write succeeded — this is
- how a caller tells the two apart. For fragmented content it is the intersection across
- every fragment, so it is set only when the whole tree is remote.*/
+ write that fails still reports success if the local write succeeded — this is how a
+ caller tells the two apart. For fragmented content it is the intersection across every
+ fragment, so it is set only when the whole tree is remote.*/
     pub stored_remote: u8,
 }
 #[test]
@@ -9721,7 +9720,7 @@ fn bindgen_test_layout_lore_storage_put_item_complete_event_data_t() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<lore_storage_put_item_complete_event_data_t>(),
-        64usize,
+        104usize,
         "Size of lore_storage_put_item_complete_event_data_t",
     );
     assert_eq!(
@@ -9740,18 +9739,18 @@ fn bindgen_test_layout_lore_storage_put_item_complete_event_data_t() {
         "Offset of field: lore_storage_put_item_complete_event_data_t::address",
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
         56usize,
-        "Offset of field: lore_storage_put_item_complete_event_data_t::error_code",
+        "Offset of field: lore_storage_put_item_complete_event_data_t::error",
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).stored_local) as usize - ptr as usize },
-        60usize,
+        96usize,
         "Offset of field: lore_storage_put_item_complete_event_data_t::stored_local",
     );
     assert_eq!(
         unsafe { ::std::ptr::addr_of!((*ptr).stored_remote) as usize - ptr as usize },
-        61usize,
+        97usize,
         "Offset of field: lore_storage_put_item_complete_event_data_t::stored_remote",
     );
 }
@@ -9892,7 +9891,7 @@ pub struct lore_storage_get_item_complete_event_data_t {
     /// The content address of the item.
     pub address: lore_address_t,
     /// The outcome for the item.
-    pub error_code: lore_error_code_t,
+    pub error: lore_error_detail_t,
 }
 #[test]
 fn bindgen_test_layout_lore_storage_get_item_complete_event_data_t() {
@@ -9900,7 +9899,7 @@ fn bindgen_test_layout_lore_storage_get_item_complete_event_data_t() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<lore_storage_get_item_complete_event_data_t>(),
-        64usize,
+        96usize,
         "Size of lore_storage_get_item_complete_event_data_t",
     );
     assert_eq!(
@@ -9919,16 +9918,15 @@ fn bindgen_test_layout_lore_storage_get_item_complete_event_data_t() {
         "Offset of field: lore_storage_get_item_complete_event_data_t::address",
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
         56usize,
-        "Offset of field: lore_storage_get_item_complete_event_data_t::error_code",
+        "Offset of field: lore_storage_get_item_complete_event_data_t::error",
     );
 }
-/** Terminal per-item event for `get_metadata`. On success `fragment` is
- valid and `error_code == None`; on miss `error_code == ADDRESS_NOT_FOUND`.
- Mirrors `LoreStorageGetItemCompleteEventData`'s shape minus the absence of
- any preceding `GET_HEADER` / `GET_DATA` events — `get_metadata` carries no
- payload bytes.*/
+/** Terminal per-item event for `get_metadata`. On success `fragment` is valid and
+ `error.error_code == 0`; on miss `error` carries the address-not-found error. Mirrors
+ `LoreStorageGetItemCompleteEventData`'s shape minus the absence of any preceding
+ `GET_HEADER` / `GET_DATA` events — `get_metadata` carries no payload bytes.*/
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_get_metadata_item_complete_event_data_t {
@@ -9939,7 +9937,7 @@ pub struct lore_storage_get_metadata_item_complete_event_data_t {
     /// The metadata fragment for the item.
     pub fragment: lore_fragment_t,
     /// The outcome for the item.
-    pub error_code: lore_error_code_t,
+    pub error: lore_error_detail_t,
 }
 #[test]
 fn bindgen_test_layout_lore_storage_get_metadata_item_complete_event_data_t() {
@@ -9949,7 +9947,7 @@ fn bindgen_test_layout_lore_storage_get_metadata_item_complete_event_data_t() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<lore_storage_get_metadata_item_complete_event_data_t>(),
-        80usize,
+        112usize,
         "Size of lore_storage_get_metadata_item_complete_event_data_t",
     );
     assert_eq!(
@@ -9973,9 +9971,9 @@ fn bindgen_test_layout_lore_storage_get_metadata_item_complete_event_data_t() {
         "Offset of field: lore_storage_get_metadata_item_complete_event_data_t::fragment",
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
         72usize,
-        "Offset of field: lore_storage_get_metadata_item_complete_event_data_t::error_code",
+        "Offset of field: lore_storage_get_metadata_item_complete_event_data_t::error",
     );
 }
 /** Terminal per-item event for `copy`. `source_partition` /
@@ -9997,7 +9995,7 @@ pub struct lore_storage_copy_item_complete_event_data_t {
     /// The context of the item in the target.
     pub target_context: lore_context_t,
     /// The outcome for the item.
-    pub error_code: lore_error_code_t,
+    pub error: lore_error_detail_t,
 }
 #[test]
 fn bindgen_test_layout_lore_storage_copy_item_complete_event_data_t() {
@@ -10007,7 +10005,7 @@ fn bindgen_test_layout_lore_storage_copy_item_complete_event_data_t() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<lore_storage_copy_item_complete_event_data_t>(),
-        112usize,
+        144usize,
         "Size of lore_storage_copy_item_complete_event_data_t",
     );
     assert_eq!(
@@ -10041,17 +10039,16 @@ fn bindgen_test_layout_lore_storage_copy_item_complete_event_data_t() {
         "Offset of field: lore_storage_copy_item_complete_event_data_t::target_context",
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
         104usize,
-        "Offset of field: lore_storage_copy_item_complete_event_data_t::error_code",
+        "Offset of field: lore_storage_copy_item_complete_event_data_t::error",
     );
 }
 /** Terminal per-item event for `obliterate`. `local_success` / `remote_success` report
  whether the corresponding side completed without error. `local_skipped` / `remote_skipped`
  report whether the corresponding side was suppressed up front by the handle's bound flags
  (`globals.offline`/`local`/`remote`) — when a side is skipped, its `_success` flag is `0`
- rather than a misleading `1`. `error_code` is populated if either side that DID run
- failed.*/
+ rather than a misleading `1`. `error` is populated if either side that DID run failed.*/
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_obliterate_item_complete_event_data_t {
@@ -10068,7 +10065,7 @@ pub struct lore_storage_obliterate_item_complete_event_data_t {
     /// 1 when the remote side was skipped.
     pub remote_skipped: u8,
     /// The outcome for the item.
-    pub error_code: lore_error_code_t,
+    pub error: lore_error_detail_t,
 }
 #[test]
 fn bindgen_test_layout_lore_storage_obliterate_item_complete_event_data_t() {
@@ -10078,7 +10075,7 @@ fn bindgen_test_layout_lore_storage_obliterate_item_complete_event_data_t() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<lore_storage_obliterate_item_complete_event_data_t>(),
-        64usize,
+        104usize,
         "Size of lore_storage_obliterate_item_complete_event_data_t",
     );
     assert_eq!(
@@ -10117,9 +10114,9 @@ fn bindgen_test_layout_lore_storage_obliterate_item_complete_event_data_t() {
         "Offset of field: lore_storage_obliterate_item_complete_event_data_t::remote_skipped",
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
-        60usize,
-        "Offset of field: lore_storage_obliterate_item_complete_event_data_t::error_code",
+        unsafe { ::std::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_storage_obliterate_item_complete_event_data_t::error",
     );
 }
 /** Terminal per-item event for `upload`. `already_durable` is 1 when the
@@ -10134,7 +10131,7 @@ pub struct lore_storage_upload_item_complete_event_data_t {
     /// 1 when the item was already durable and no upload was performed.
     pub already_durable: u8,
     /// The outcome for the item.
-    pub error_code: lore_error_code_t,
+    pub error: lore_error_detail_t,
 }
 #[test]
 fn bindgen_test_layout_lore_storage_upload_item_complete_event_data_t() {
@@ -10144,7 +10141,7 @@ fn bindgen_test_layout_lore_storage_upload_item_complete_event_data_t() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<lore_storage_upload_item_complete_event_data_t>(),
-        64usize,
+        104usize,
         "Size of lore_storage_upload_item_complete_event_data_t",
     );
     assert_eq!(
@@ -10168,9 +10165,9 @@ fn bindgen_test_layout_lore_storage_upload_item_complete_event_data_t() {
         "Offset of field: lore_storage_upload_item_complete_event_data_t::already_durable",
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
-        60usize,
-        "Offset of field: lore_storage_upload_item_complete_event_data_t::error_code",
+        unsafe { ::std::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_storage_upload_item_complete_event_data_t::error",
     );
 }
 /** Delivered on successful `lore_revision_tree_load`. Carries the registry
@@ -11039,9 +11036,10 @@ fn bindgen_test_layout_lore_revision_tree_info_event_data_t() {
         "Offset of field: lore_revision_tree_info_event_data_t::error_code",
     );
 }
-/** Terminal per-item event for `mutable_load`. On success `error_code == None` and `value` is
- the loaded value hash (`Hash::default()` when the key holds a null/removed value); on miss
- `error_code == ADDRESS_NOT_FOUND` and `value` is zero.*/
+/** Terminal per-item event for `mutable_load`. On success `error.error_code == 0` and `value`
+ is the loaded value hash (`Hash::default()` when the key holds a null/removed value); on
+ miss `error` carries the miss the answering backend raised — `AddressNotFound` from a local
+ store, `NotFound` from a remote one — and `value` is zero.*/
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_mutable_load_item_complete_event_data_t {
@@ -11050,7 +11048,7 @@ pub struct lore_storage_mutable_load_item_complete_event_data_t {
     /// The value stored for the key.
     pub value: lore_hash_t,
     /// The outcome for the item.
-    pub error_code: lore_error_code_t,
+    pub error: lore_error_detail_t,
 }
 #[test]
 fn bindgen_test_layout_lore_storage_mutable_load_item_complete_event_data_t() {
@@ -11060,7 +11058,7 @@ fn bindgen_test_layout_lore_storage_mutable_load_item_complete_event_data_t() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<lore_storage_mutable_load_item_complete_event_data_t>(),
-        48usize,
+        80usize,
         "Size of lore_storage_mutable_load_item_complete_event_data_t",
     );
     assert_eq!(
@@ -11079,19 +11077,19 @@ fn bindgen_test_layout_lore_storage_mutable_load_item_complete_event_data_t() {
         "Offset of field: lore_storage_mutable_load_item_complete_event_data_t::value",
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
         40usize,
-        "Offset of field: lore_storage_mutable_load_item_complete_event_data_t::error_code",
+        "Offset of field: lore_storage_mutable_load_item_complete_event_data_t::error",
     );
 }
-/// Terminal per-item event for `mutable_store`. `error_code == None` on a successful store.
+/// Terminal per-item event for `mutable_store`. `error.error_code == 0` on a successful store.
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_mutable_store_item_complete_event_data_t {
     /// Correlation id of the item.
     pub id: u64,
     /// The outcome for the item.
-    pub error_code: lore_error_code_t,
+    pub error: lore_error_detail_t,
 }
 #[test]
 fn bindgen_test_layout_lore_storage_mutable_store_item_complete_event_data_t() {
@@ -11101,7 +11099,7 @@ fn bindgen_test_layout_lore_storage_mutable_store_item_complete_event_data_t() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<lore_storage_mutable_store_item_complete_event_data_t>(),
-        16usize,
+        48usize,
         "Size of lore_storage_mutable_store_item_complete_event_data_t",
     );
     assert_eq!(
@@ -11115,14 +11113,14 @@ fn bindgen_test_layout_lore_storage_mutable_store_item_complete_event_data_t() {
         "Offset of field: lore_storage_mutable_store_item_complete_event_data_t::id",
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
         8usize,
-        "Offset of field: lore_storage_mutable_store_item_complete_event_data_t::error_code",
+        "Offset of field: lore_storage_mutable_store_item_complete_event_data_t::error",
     );
 }
 /** Terminal per-item event for `mutable_compare_and_swap`. `previous` is the value the key held
  before the swap (equal to the caller's `expected` when the swap took effect, otherwise the
- actual current value). `error_code == None` on success.*/
+ actual current value). `error.error_code == 0` on success.*/
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_mutable_compare_and_swap_item_complete_event_data_t {
@@ -11131,7 +11129,7 @@ pub struct lore_storage_mutable_compare_and_swap_item_complete_event_data_t {
     /// The value the key held before the swap.
     pub previous: lore_hash_t,
     /// The outcome for the item.
-    pub error_code: lore_error_code_t,
+    pub error: lore_error_detail_t,
 }
 #[test]
 fn bindgen_test_layout_lore_storage_mutable_compare_and_swap_item_complete_event_data_t() {
@@ -11143,7 +11141,7 @@ fn bindgen_test_layout_lore_storage_mutable_compare_and_swap_item_complete_event
         ::std::mem::size_of::<
             lore_storage_mutable_compare_and_swap_item_complete_event_data_t,
         >(),
-        48usize,
+        80usize,
         "Size of lore_storage_mutable_compare_and_swap_item_complete_event_data_t",
     );
     assert_eq!(
@@ -11164,9 +11162,9 @@ fn bindgen_test_layout_lore_storage_mutable_compare_and_swap_item_complete_event
         "Offset of field: lore_storage_mutable_compare_and_swap_item_complete_event_data_t::previous",
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
         40usize,
-        "Offset of field: lore_storage_mutable_compare_and_swap_item_complete_event_data_t::error_code",
+        "Offset of field: lore_storage_mutable_compare_and_swap_item_complete_event_data_t::error",
     );
 }
 /// One `(key, value)` pair emitted by `mutable_list`, before the item's terminal event.
@@ -11213,14 +11211,14 @@ fn bindgen_test_layout_lore_storage_mutable_list_entry_event_data_t() {
     );
 }
 /** Terminal per-item event for `mutable_list`, emitted after every `MUTABLE_LIST_ENTRY` for the
- item. `error_code == None` once the listing completes.*/
+ item. `error.error_code == 0` once the listing completes.*/
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_storage_mutable_list_item_complete_event_data_t {
     /// Correlation id of the listing item.
     pub id: u64,
     /// The outcome for the item.
-    pub error_code: lore_error_code_t,
+    pub error: lore_error_detail_t,
 }
 #[test]
 fn bindgen_test_layout_lore_storage_mutable_list_item_complete_event_data_t() {
@@ -11230,7 +11228,7 @@ fn bindgen_test_layout_lore_storage_mutable_list_item_complete_event_data_t() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<lore_storage_mutable_list_item_complete_event_data_t>(),
-        16usize,
+        48usize,
         "Size of lore_storage_mutable_list_item_complete_event_data_t",
     );
     assert_eq!(
@@ -11244,9 +11242,9 @@ fn bindgen_test_layout_lore_storage_mutable_list_item_complete_event_data_t() {
         "Offset of field: lore_storage_mutable_list_item_complete_event_data_t::id",
     );
     assert_eq!(
-        unsafe { ::std::ptr::addr_of!((*ptr).error_code) as usize - ptr as usize },
+        unsafe { ::std::ptr::addr_of!((*ptr).error) as usize - ptr as usize },
         8usize,
-        "Offset of field: lore_storage_mutable_list_item_complete_event_data_t::error_code",
+        "Offset of field: lore_storage_mutable_list_item_complete_event_data_t::error",
     );
 }
 /// Data for the start of a store eviction pass.
@@ -14532,7 +14530,7 @@ fn bindgen_test_layout_lore_global_args_t() {
         "Offset of field: lore_global_args_t::event_interval_ms",
     );
 }
-/// Arguments for resolving user IDs to display names via the remote auth service.
+/// Arguments for resolving user IDs to display names via the remote user service.
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct lore_auth_user_info_args_t {
@@ -15479,6 +15477,40 @@ fn bindgen_test_layout_lore_branch_reset_args_t() {
         "Offset of field: lore_branch_reset_args_t::branch",
     );
 }
+/// Arguments for listing a branch's LATEST revision history.
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct lore_branch_latest_list_args_t {
+    /// Branch to list, current branch if empty
+    pub branch: lore_string_t,
+    /// Maximum entries to return (`0` uses the default of 30)
+    pub limit: u32,
+}
+#[test]
+fn bindgen_test_layout_lore_branch_latest_list_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_branch_latest_list_args_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_branch_latest_list_args_t>(),
+        24usize,
+        "Size of lore_branch_latest_list_args_t",
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_branch_latest_list_args_t>(),
+        8usize,
+        "Alignment of lore_branch_latest_list_args_t",
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).branch) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_branch_latest_list_args_t::branch",
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).limit) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_branch_latest_list_args_t::limit",
+    );
+}
 /// Arguments for pushing a branch and its revisions to the remote.
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -16112,6 +16144,8 @@ pub struct lore_file_reset_to_last_merged_args_t {
     pub branch: lore_string_t,
     /// Purge untracked files
     pub purge: u8,
+    /// Merge side to restore, 0 = resolved (the merge revision), 1 = self ("mine"), 2 = other ("theirs")
+    pub merge_side: u32,
 }
 #[test]
 fn bindgen_test_layout_lore_file_reset_to_last_merged_args_t() {
@@ -16141,6 +16175,11 @@ fn bindgen_test_layout_lore_file_reset_to_last_merged_args_t() {
         unsafe { ::std::ptr::addr_of!((*ptr).purge) as usize - ptr as usize },
         32usize,
         "Offset of field: lore_file_reset_to_last_merged_args_t::purge",
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).merge_side) as usize - ptr as usize },
+        36usize,
+        "Offset of field: lore_file_reset_to_last_merged_args_t::merge_side",
     );
 }
 /// Arguments for staging one or more files for the next commit.
@@ -16956,6 +16995,32 @@ fn bindgen_test_layout_lore_link_list_args_t() {
         "Offset of field: lore_link_list_args_t::_unused",
     );
 }
+/// Arguments for listing the links whose linked repositories hold staged changes.
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct lore_link_list_staged_args_t {
+    pub _unused: ::std::os::raw::c_int,
+}
+#[test]
+fn bindgen_test_layout_lore_link_list_staged_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_link_list_staged_args_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_link_list_staged_args_t>(),
+        4usize,
+        "Size of lore_link_list_staged_args_t",
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_link_list_staged_args_t>(),
+        4usize,
+        "Alignment of lore_link_list_staged_args_t",
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_link_list_staged_args_t::_unused",
+    );
+}
 /// Arguments for updating the pin or properties of an existing link.
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -17264,6 +17329,34 @@ fn bindgen_test_layout_lore_repository_create_args_t() {
         },
         56usize,
         "Offset of field: lore_repository_create_args_t::shared_store_path",
+    );
+}
+/// Arguments for deleting a remote repository.
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct lore_repository_delete_args_t {
+    /** URL of the remote repository to delete, or a name or ID resolved against the remote of
+ the repository at `repository_path`*/
+    pub repository_url: lore_string_t,
+}
+#[test]
+fn bindgen_test_layout_lore_repository_delete_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_repository_delete_args_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_repository_delete_args_t>(),
+        16usize,
+        "Size of lore_repository_delete_args_t",
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_repository_delete_args_t>(),
+        8usize,
+        "Alignment of lore_repository_delete_args_t",
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).repository_url) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_repository_delete_args_t::repository_url",
     );
 }
 /// Arguments for waiting on outstanding asynchronous repository tasks.
@@ -18104,6 +18197,9 @@ pub struct lore_revision_sync_args_t {
     pub dependency_recursive: u8,
     /// Maximum dependency traversal depth; 0 means unlimited
     pub dependency_depth_limit: u32,
+    /** View filter file to leave the working files materialized under; empty to keep the view the
+ instance holds*/
+    pub view: lore_string_t,
 }
 #[test]
 fn bindgen_test_layout_lore_revision_sync_args_t() {
@@ -18111,7 +18207,7 @@ fn bindgen_test_layout_lore_revision_sync_args_t() {
     let ptr = UNINIT.as_ptr();
     assert_eq!(
         ::std::mem::size_of::<lore_revision_sync_args_t>(),
-        64usize,
+        80usize,
         "Size of lore_revision_sync_args_t",
     );
     assert_eq!(
@@ -18157,6 +18253,96 @@ fn bindgen_test_layout_lore_revision_sync_args_t() {
         },
         60usize,
         "Offset of field: lore_revision_sync_args_t::dependency_depth_limit",
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).view) as usize - ptr as usize },
+        64usize,
+        "Offset of field: lore_revision_sync_args_t::view",
+    );
+}
+/// Arguments for bisecting the revision range between two revisions.
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct lore_revision_bisect_args_t {
+    /// Starting (known-good) revision of the bisect range
+    pub start: lore_string_t,
+    /// Ending (known-bad) revision of the bisect range
+    pub end: lore_string_t,
+}
+#[test]
+fn bindgen_test_layout_lore_revision_bisect_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_bisect_args_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_bisect_args_t>(),
+        32usize,
+        "Size of lore_revision_bisect_args_t",
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_bisect_args_t>(),
+        8usize,
+        "Alignment of lore_revision_bisect_args_t",
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).start) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_bisect_args_t::start",
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).end) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_bisect_args_t::end",
+    );
+}
+/// Arguments for cherry-picking a revision onto the current branch.
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct lore_revision_cherry_pick_args_t {
+    /// Revision to cherry pick
+    pub revision: lore_string_t,
+    /** Message to use for an auto-commit if no conflicts arise; empty uses the
+ picked revision's message*/
+    pub message: lore_string_t,
+    /// Disable auto-commit even if no conflicts arise
+    pub no_commit: u8,
+    /** Metadata keys to carry from the picked revision onto the revision this
+ creates. Empty carries nothing; the single entry `*` carries every key
+ that is not reserved to the cherry-pick itself.*/
+    pub inherit_metadata: lore_string_array_t,
+}
+#[test]
+fn bindgen_test_layout_lore_revision_cherry_pick_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_revision_cherry_pick_args_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_revision_cherry_pick_args_t>(),
+        56usize,
+        "Size of lore_revision_cherry_pick_args_t",
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_revision_cherry_pick_args_t>(),
+        8usize,
+        "Alignment of lore_revision_cherry_pick_args_t",
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).revision) as usize - ptr as usize },
+        0usize,
+        "Offset of field: lore_revision_cherry_pick_args_t::revision",
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).message) as usize - ptr as usize },
+        16usize,
+        "Offset of field: lore_revision_cherry_pick_args_t::message",
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).no_commit) as usize - ptr as usize },
+        32usize,
+        "Offset of field: lore_revision_cherry_pick_args_t::no_commit",
+    );
+    assert_eq!(
+        unsafe { ::std::ptr::addr_of!((*ptr).inherit_metadata) as usize - ptr as usize },
+        40usize,
+        "Offset of field: lore_revision_cherry_pick_args_t::inherit_metadata",
     );
 }
 /// Arguments for reverting the working directory to a specified revision.
@@ -18426,6 +18612,35 @@ fn bindgen_test_layout_lore_shared_store_info_args_t() {
         unsafe { ::std::ptr::addr_of!((*ptr)._unused) as usize - ptr as usize },
         0usize,
         "Offset of field: lore_shared_store_info_args_t::_unused",
+    );
+}
+/// Arguments for listing the registry of shared stores.
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct lore_shared_store_list_args_t {
+    /// Whether to load each shared store to search for each instance using it.
+    pub include_instances: u8,
+}
+#[test]
+fn bindgen_test_layout_lore_shared_store_list_args_t() {
+    const UNINIT: ::std::mem::MaybeUninit<lore_shared_store_list_args_t> = ::std::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::std::mem::size_of::<lore_shared_store_list_args_t>(),
+        1usize,
+        "Size of lore_shared_store_list_args_t",
+    );
+    assert_eq!(
+        ::std::mem::align_of::<lore_shared_store_list_args_t>(),
+        1usize,
+        "Alignment of lore_shared_store_list_args_t",
+    );
+    assert_eq!(
+        unsafe {
+            ::std::ptr::addr_of!((*ptr).include_instances) as usize - ptr as usize
+        },
+        0usize,
+        "Offset of field: lore_shared_store_list_args_t::include_instances",
     );
 }
 /// Arguments for setting whether to automatically use the shared store.
@@ -18800,7 +19015,7 @@ pub struct lore_storage_get_item_t {
  selects `GET_DATA` delivery.
 
  The capacity is the limit: a range exceeding it fails the item with
- `LORE_ERROR_CODE_INVALID_ARGUMENTS` rather than truncating. `GET_HEADER` reports the whole
+ `Oversized` rather than truncating. `GET_HEADER` reports the whole
  content's size, which with `offset` and `length` gives the bytes written; no `GET_DATA`
  follows, and `streaming` is ignored. The buffer holds unspecified bytes when the item fails.*/
     pub data_out: lore_bytes_mut_t,
@@ -18956,7 +19171,7 @@ pub struct lore_storage_get_resolved_item_t {
  `GET_DATA` delivery.
 
  The capacity is the limit: content exceeding it fails the item with
- `LORE_ERROR_CODE_INVALID_ARGUMENTS` rather than truncating. `GET_HEADER` reports the content
+ `Oversized` rather than truncating. `GET_HEADER` reports the content
  size, no `GET_DATA` follows, and `streaming` is ignored. The buffer holds unspecified bytes
  when the item fails.*/
     pub data_out: lore_bytes_mut_t,
@@ -20873,7 +21088,8 @@ fn bindgen_test_layout_lore_service_stop_args_t() {
 #[derive(Debug, Copy, Clone)]
 pub struct lore_service_set_executable_args_t {
     /** Path of the executable to start as the service. Empty clears the setting,
- which returns to resolving one from the running program.*/
+ which prevents auto-starting the service but can still can connect to an
+ already running service.*/
     pub executable: lore_string_t,
 }
 #[test]
@@ -22756,6 +22972,16 @@ pub struct Lore {
         args: *const lore_branch_reset_args_t,
         callback: lore_event_callback_config_t,
     ),
+    pub lore_branch_latest_list: unsafe extern "C" fn(
+        globals: *const lore_global_args_t,
+        args: *const lore_branch_latest_list_args_t,
+        callback: lore_event_callback_config_t,
+    ) -> i32,
+    pub lore_branch_latest_list_async: unsafe extern "C" fn(
+        globals: *const lore_global_args_t,
+        args: *const lore_branch_latest_list_args_t,
+        callback: lore_event_callback_config_t,
+    ),
     pub lore_branch_push: unsafe extern "C" fn(
         globals: *const lore_global_args_t,
         args: *const lore_branch_push_args_t,
@@ -23106,6 +23332,16 @@ pub struct Lore {
         args: *const lore_link_list_args_t,
         callback: lore_event_callback_config_t,
     ),
+    pub lore_link_list_staged: unsafe extern "C" fn(
+        globals: *const lore_global_args_t,
+        args: *const lore_link_list_staged_args_t,
+        callback: lore_event_callback_config_t,
+    ) -> i32,
+    pub lore_link_list_staged_async: unsafe extern "C" fn(
+        globals: *const lore_global_args_t,
+        args: *const lore_link_list_staged_args_t,
+        callback: lore_event_callback_config_t,
+    ),
     pub lore_link_update: unsafe extern "C" fn(
         globals: *const lore_global_args_t,
         args: *const lore_link_update_args_t,
@@ -23154,6 +23390,16 @@ pub struct Lore {
     pub lore_repository_create_async: unsafe extern "C" fn(
         globals: *const lore_global_args_t,
         args: *const lore_repository_create_args_t,
+        callback: lore_event_callback_config_t,
+    ),
+    pub lore_repository_delete: unsafe extern "C" fn(
+        globals: *const lore_global_args_t,
+        args: *const lore_repository_delete_args_t,
+        callback: lore_event_callback_config_t,
+    ) -> i32,
+    pub lore_repository_delete_async: unsafe extern "C" fn(
+        globals: *const lore_global_args_t,
+        args: *const lore_repository_delete_args_t,
         callback: lore_event_callback_config_t,
     ),
     pub lore_repository_flush: unsafe extern "C" fn(
@@ -23376,6 +23622,26 @@ pub struct Lore {
         args: *const lore_revision_sync_args_t,
         callback: lore_event_callback_config_t,
     ),
+    pub lore_revision_bisect: unsafe extern "C" fn(
+        globals: *const lore_global_args_t,
+        args: *const lore_revision_bisect_args_t,
+        callback: lore_event_callback_config_t,
+    ) -> i32,
+    pub lore_revision_bisect_async: unsafe extern "C" fn(
+        globals: *const lore_global_args_t,
+        args: *const lore_revision_bisect_args_t,
+        callback: lore_event_callback_config_t,
+    ),
+    pub lore_revision_cherry_pick: unsafe extern "C" fn(
+        globals: *const lore_global_args_t,
+        args: *const lore_revision_cherry_pick_args_t,
+        callback: lore_event_callback_config_t,
+    ) -> i32,
+    pub lore_revision_cherry_pick_async: unsafe extern "C" fn(
+        globals: *const lore_global_args_t,
+        args: *const lore_revision_cherry_pick_args_t,
+        callback: lore_event_callback_config_t,
+    ),
     pub lore_revision_revert: unsafe extern "C" fn(
         globals: *const lore_global_args_t,
         args: *const lore_revision_revert_args_t,
@@ -23464,6 +23730,16 @@ pub struct Lore {
     pub lore_shared_store_info_async: unsafe extern "C" fn(
         globals: *const lore_global_args_t,
         args: *const lore_shared_store_info_args_t,
+        callback: lore_event_callback_config_t,
+    ),
+    pub lore_shared_store_list: unsafe extern "C" fn(
+        globals: *const lore_global_args_t,
+        args: *const lore_shared_store_list_args_t,
+        callback: lore_event_callback_config_t,
+    ) -> i32,
+    pub lore_shared_store_list_async: unsafe extern "C" fn(
+        globals: *const lore_global_args_t,
+        args: *const lore_shared_store_list_args_t,
         callback: lore_event_callback_config_t,
     ),
     pub lore_shared_store_set_use_automatically: unsafe extern "C" fn(
@@ -24102,6 +24378,12 @@ impl Lore {
         let lore_branch_reset_async = __library
             .get(b"lore_branch_reset_async\0")
             .map(|sym| *sym)?;
+        let lore_branch_latest_list = __library
+            .get(b"lore_branch_latest_list\0")
+            .map(|sym| *sym)?;
+        let lore_branch_latest_list_async = __library
+            .get(b"lore_branch_latest_list_async\0")
+            .map(|sym| *sym)?;
         let lore_branch_push = __library.get(b"lore_branch_push\0").map(|sym| *sym)?;
         let lore_branch_push_async = __library
             .get(b"lore_branch_push_async\0")
@@ -24282,6 +24564,12 @@ impl Lore {
         let lore_link_list_async = __library
             .get(b"lore_link_list_async\0")
             .map(|sym| *sym)?;
+        let lore_link_list_staged = __library
+            .get(b"lore_link_list_staged\0")
+            .map(|sym| *sym)?;
+        let lore_link_list_staged_async = __library
+            .get(b"lore_link_list_staged_async\0")
+            .map(|sym| *sym)?;
         let lore_link_update = __library.get(b"lore_link_update\0").map(|sym| *sym)?;
         let lore_link_update_async = __library
             .get(b"lore_link_update_async\0")
@@ -24309,6 +24597,12 @@ impl Lore {
             .map(|sym| *sym)?;
         let lore_repository_create_async = __library
             .get(b"lore_repository_create_async\0")
+            .map(|sym| *sym)?;
+        let lore_repository_delete = __library
+            .get(b"lore_repository_delete\0")
+            .map(|sym| *sym)?;
+        let lore_repository_delete_async = __library
+            .get(b"lore_repository_delete_async\0")
             .map(|sym| *sym)?;
         let lore_repository_flush = __library
             .get(b"lore_repository_flush\0")
@@ -24426,6 +24720,18 @@ impl Lore {
         let lore_revision_sync_async = __library
             .get(b"lore_revision_sync_async\0")
             .map(|sym| *sym)?;
+        let lore_revision_bisect = __library
+            .get(b"lore_revision_bisect\0")
+            .map(|sym| *sym)?;
+        let lore_revision_bisect_async = __library
+            .get(b"lore_revision_bisect_async\0")
+            .map(|sym| *sym)?;
+        let lore_revision_cherry_pick = __library
+            .get(b"lore_revision_cherry_pick\0")
+            .map(|sym| *sym)?;
+        let lore_revision_cherry_pick_async = __library
+            .get(b"lore_revision_cherry_pick_async\0")
+            .map(|sym| *sym)?;
         let lore_revision_revert = __library
             .get(b"lore_revision_revert\0")
             .map(|sym| *sym)?;
@@ -24479,6 +24785,12 @@ impl Lore {
             .map(|sym| *sym)?;
         let lore_shared_store_info_async = __library
             .get(b"lore_shared_store_info_async\0")
+            .map(|sym| *sym)?;
+        let lore_shared_store_list = __library
+            .get(b"lore_shared_store_list\0")
+            .map(|sym| *sym)?;
+        let lore_shared_store_list_async = __library
+            .get(b"lore_shared_store_list_async\0")
             .map(|sym| *sym)?;
         let lore_shared_store_set_use_automatically = __library
             .get(b"lore_shared_store_set_use_automatically\0")
@@ -24819,6 +25131,8 @@ impl Lore {
             lore_branch_switch_async,
             lore_branch_reset,
             lore_branch_reset_async,
+            lore_branch_latest_list,
+            lore_branch_latest_list_async,
             lore_branch_push,
             lore_branch_push_async,
             lore_branch_metadata_get,
@@ -24889,6 +25203,8 @@ impl Lore {
             lore_link_info_async,
             lore_link_list,
             lore_link_list_async,
+            lore_link_list_staged,
+            lore_link_list_staged_async,
             lore_link_update,
             lore_link_update_async,
             lore_repository_clone,
@@ -24899,6 +25215,8 @@ impl Lore {
             lore_repository_dump_async,
             lore_repository_create,
             lore_repository_create_async,
+            lore_repository_delete,
+            lore_repository_delete_async,
             lore_repository_flush,
             lore_repository_flush_async,
             lore_repository_gc,
@@ -24943,6 +25261,10 @@ impl Lore {
             lore_revision_metadata_set_async,
             lore_revision_sync,
             lore_revision_sync_async,
+            lore_revision_bisect,
+            lore_revision_bisect_async,
+            lore_revision_cherry_pick,
+            lore_revision_cherry_pick_async,
             lore_revision_revert,
             lore_revision_revert_async,
             lore_revision_revert_abort,
@@ -24961,6 +25283,8 @@ impl Lore {
             lore_shared_store_create_async,
             lore_shared_store_info,
             lore_shared_store_info_async,
+            lore_shared_store_list,
+            lore_shared_store_list_async,
             lore_shared_store_set_use_automatically,
             lore_shared_store_set_use_automatically_async,
             lore_storage_open,
@@ -26503,6 +26827,66 @@ impl Lore {
         callback: lore_event_callback_config_t,
     ) {
         (self.lore_branch_reset_async)(globals, args, callback)
+    }
+    /** List the revisions the LATEST of a branch has held, most recent first.
+
+ # Events
+
+ Events are delivered via the callback as `lore_event_t`. Use the `tag` field to identify the event type.
+
+ ## Standard Events
+
+ These events are emitted by all interface functions:
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_LOG` | `lore_log_event_data_t` | Diagnostic messages throughout execution |
+ | `LORE_EVENT_ERROR` | `lore_error_event_data_t` | Emitted for a non-fatal error during the operation |
+ | `LORE_EVENT_COMPLETE` | `lore_complete_event_data_t` | Always emitted at the end; `status` is `0` on success or the error code on failure |
+ | `LORE_EVENT_END` | `lore_end_event_data_t` | Always emitted after `COMPLETE` to signal callback termination |
+
+ ## Branch Events
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_BRANCH_LATEST_LIST_ENTRY` | `lore_branch_latest_list_entry_event_data_t` | Emitted for each revision the branch LATEST has held, most recent first |*/
+    pub unsafe fn lore_branch_latest_list(
+        &self,
+        globals: *const lore_global_args_t,
+        args: *const lore_branch_latest_list_args_t,
+        callback: lore_event_callback_config_t,
+    ) -> i32 {
+        (self.lore_branch_latest_list)(globals, args, callback)
+    }
+    /** Asynchronous version of `lore_branch_latest_list`.
+
+ # Events
+
+ Events are delivered via the callback as `lore_event_t`. Use the `tag` field to identify the event type.
+
+ ## Standard Events
+
+ These events are emitted by all interface functions:
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_LOG` | `lore_log_event_data_t` | Diagnostic messages throughout execution |
+ | `LORE_EVENT_ERROR` | `lore_error_event_data_t` | Emitted for a non-fatal error during the operation |
+ | `LORE_EVENT_COMPLETE` | `lore_complete_event_data_t` | Always emitted at the end; `status` is `0` on success or the error code on failure |
+ | `LORE_EVENT_END` | `lore_end_event_data_t` | Always emitted after `COMPLETE` to signal callback termination |
+
+ ## Branch Events
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_BRANCH_LATEST_LIST_ENTRY` | `lore_branch_latest_list_entry_event_data_t` | Emitted for each revision the branch LATEST has held, most recent first |*/
+    pub unsafe fn lore_branch_latest_list_async(
+        &self,
+        globals: *const lore_global_args_t,
+        args: *const lore_branch_latest_list_args_t,
+        callback: lore_event_callback_config_t,
+    ) {
+        (self.lore_branch_latest_list_async)(globals, args, callback)
     }
     /** Push local branch commits to the remote repository.
 
@@ -28532,6 +28916,66 @@ impl Lore {
     ) {
         (self.lore_link_list_async)(globals, args, callback)
     }
+    /** List the links whose linked repositories hold staged changes, including nested links.
+
+ # Events
+
+ Events are delivered via the callback as `lore_event_t`. Use the `tag` field to identify the event type.
+
+ ## Standard Events
+
+ These events are emitted by all interface functions:
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_LOG` | `lore_log_event_data_t` | Diagnostic messages throughout execution |
+ | `LORE_EVENT_ERROR` | `lore_error_event_data_t` | Emitted for a non-fatal error during the operation |
+ | `LORE_EVENT_COMPLETE` | `lore_complete_event_data_t` | Always emitted at the end; `status` is `0` on success or the error code on failure |
+ | `LORE_EVENT_END` | `lore_end_event_data_t` | Always emitted after `COMPLETE` to signal callback termination |
+
+ ## Link Events
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_LINK_STAGED_ENTRY` | `lore_link_staged_entry_event_data_t` | Emitted for each link with staged changes |*/
+    pub unsafe fn lore_link_list_staged(
+        &self,
+        globals: *const lore_global_args_t,
+        args: *const lore_link_list_staged_args_t,
+        callback: lore_event_callback_config_t,
+    ) -> i32 {
+        (self.lore_link_list_staged)(globals, args, callback)
+    }
+    /** Asynchronous version of `lore_link_list_staged`.
+
+ # Events
+
+ Events are delivered via the callback as `lore_event_t`. Use the `tag` field to identify the event type.
+
+ ## Standard Events
+
+ These events are emitted by all interface functions:
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_LOG` | `lore_log_event_data_t` | Diagnostic messages throughout execution |
+ | `LORE_EVENT_ERROR` | `lore_error_event_data_t` | Emitted for a non-fatal error during the operation |
+ | `LORE_EVENT_COMPLETE` | `lore_complete_event_data_t` | Always emitted at the end; `status` is `0` on success or the error code on failure |
+ | `LORE_EVENT_END` | `lore_end_event_data_t` | Always emitted after `COMPLETE` to signal callback termination |
+
+ ## Link Events
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_LINK_STAGED_ENTRY` | `lore_link_staged_entry_event_data_t` | Emitted for each link with staged changes |*/
+    pub unsafe fn lore_link_list_staged_async(
+        &self,
+        globals: *const lore_global_args_t,
+        args: *const lore_link_list_staged_args_t,
+        callback: lore_event_callback_config_t,
+    ) {
+        (self.lore_link_list_staged_async)(globals, args, callback)
+    }
     /** Update properties of an existing repository link.
 
  # Events
@@ -28853,6 +29297,54 @@ impl Lore {
         callback: lore_event_callback_config_t,
     ) {
         (self.lore_repository_create_async)(globals, args, callback)
+    }
+    /** Delete a Lore repository on the remote server.
+
+ # Events
+
+ Events are delivered via the callback as `lore_event_t`. Use the `tag` field to identify the event type.
+
+ ## Standard Events
+
+ These events are emitted by all interface functions:
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_LOG` | `lore_log_event_data_t` | Diagnostic messages throughout execution |
+ | `LORE_EVENT_ERROR` | `lore_error_event_data_t` | Emitted for a non-fatal error during the operation |
+ | `LORE_EVENT_COMPLETE` | `lore_complete_event_data_t` | Always emitted at the end; `status` is `0` on success or the error code on failure |
+ | `LORE_EVENT_END` | `lore_end_event_data_t` | Always emitted after `COMPLETE` to signal callback termination |*/
+    pub unsafe fn lore_repository_delete(
+        &self,
+        globals: *const lore_global_args_t,
+        args: *const lore_repository_delete_args_t,
+        callback: lore_event_callback_config_t,
+    ) -> i32 {
+        (self.lore_repository_delete)(globals, args, callback)
+    }
+    /** Asynchronous version of `lore_repository_delete`.
+
+ # Events
+
+ Events are delivered via the callback as `lore_event_t`. Use the `tag` field to identify the event type.
+
+ ## Standard Events
+
+ These events are emitted by all interface functions:
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_LOG` | `lore_log_event_data_t` | Diagnostic messages throughout execution |
+ | `LORE_EVENT_ERROR` | `lore_error_event_data_t` | Emitted for a non-fatal error during the operation |
+ | `LORE_EVENT_COMPLETE` | `lore_complete_event_data_t` | Always emitted at the end; `status` is `0` on success or the error code on failure |
+ | `LORE_EVENT_END` | `lore_end_event_data_t` | Always emitted after `COMPLETE` to signal callback termination |*/
+    pub unsafe fn lore_repository_delete_async(
+        &self,
+        globals: *const lore_global_args_t,
+        args: *const lore_repository_delete_args_t,
+        callback: lore_event_callback_config_t,
+    ) {
+        (self.lore_repository_delete_async)(globals, args, callback)
     }
     /** Flush pending repository state to persistent storage.
 
@@ -30208,6 +30700,171 @@ impl Lore {
     ) {
         (self.lore_revision_sync_async)(globals, args, callback)
     }
+    /** Take one step of a bisect between two revisions, synchronizing the working directory to the
+ revision halfway between them.
+
+ # Events
+
+ Events are delivered via the callback as `lore_event_t`. Use the `tag` field to identify the event type.
+
+ ## Standard Events
+
+ These events are emitted by all interface functions:
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_LOG` | `lore_log_event_data_t` | Diagnostic messages throughout execution |
+ | `LORE_EVENT_ERROR` | `lore_error_event_data_t` | Emitted for a non-fatal error during the operation |
+ | `LORE_EVENT_COMPLETE` | `lore_complete_event_data_t` | Always emitted at the end; `status` is `0` on success or the error code on failure |
+ | `LORE_EVENT_END` | `lore_end_event_data_t` | Always emitted after `COMPLETE` to signal callback termination |
+
+ ## Bisect Events
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_REVISION_BISECT` | `lore_revision_bisect_event_data_t` | Emitted once the working directory is synchronized to the selected revision, with the revision numbers of the range and whether the search is done |
+
+ ## Sync Events
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_REVISION_SYNC_TARGET` | `lore_revision_sync_target_event_data_t` | Emitted once after resolving the selected revision |
+ | `LORE_EVENT_REVISION_SYNC_FILE` | `lore_revision_sync_file_event_data_t` | Emitted for each file deleted, modified, added, or merged during sync |
+ | `LORE_EVENT_REVISION_SYNC_PROGRESS` | `lore_revision_sync_progress_event_data_t` | Emitted periodically during file realization and once at completion |
+ | `LORE_EVENT_REVISION_SYNC_REVISION` | `lore_revision_sync_revision_event_data_t` | Emitted once at the end with the resulting revision |
+ | `LORE_EVENT_REVISION_RESOLVE` | `lore_revision_resolve_event_data_t` | Emitted when resolving a revision |
+ | `LORE_EVENT_FILTER_EXCLUDE` | `lore_filter_exclude_event_data_t` | Emitted for each path excluded by view or ignore filters |*/
+    pub unsafe fn lore_revision_bisect(
+        &self,
+        globals: *const lore_global_args_t,
+        args: *const lore_revision_bisect_args_t,
+        callback: lore_event_callback_config_t,
+    ) -> i32 {
+        (self.lore_revision_bisect)(globals, args, callback)
+    }
+    /** Asynchronous version of `lore_revision_bisect`.
+
+ # Events
+
+ Events are delivered via the callback as `lore_event_t`. Use the `tag` field to identify the event type.
+
+ ## Standard Events
+
+ These events are emitted by all interface functions:
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_LOG` | `lore_log_event_data_t` | Diagnostic messages throughout execution |
+ | `LORE_EVENT_ERROR` | `lore_error_event_data_t` | Emitted for a non-fatal error during the operation |
+ | `LORE_EVENT_COMPLETE` | `lore_complete_event_data_t` | Always emitted at the end; `status` is `0` on success or the error code on failure |
+ | `LORE_EVENT_END` | `lore_end_event_data_t` | Always emitted after `COMPLETE` to signal callback termination |
+
+ ## Bisect Events
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_REVISION_BISECT` | `lore_revision_bisect_event_data_t` | Emitted once the working directory is synchronized to the selected revision, with the revision numbers of the range and whether the search is done |
+
+ ## Sync Events
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_REVISION_SYNC_TARGET` | `lore_revision_sync_target_event_data_t` | Emitted once after resolving the selected revision |
+ | `LORE_EVENT_REVISION_SYNC_FILE` | `lore_revision_sync_file_event_data_t` | Emitted for each file deleted, modified, added, or merged during sync |
+ | `LORE_EVENT_REVISION_SYNC_PROGRESS` | `lore_revision_sync_progress_event_data_t` | Emitted periodically during file realization and once at completion |
+ | `LORE_EVENT_REVISION_SYNC_REVISION` | `lore_revision_sync_revision_event_data_t` | Emitted once at the end with the resulting revision |
+ | `LORE_EVENT_REVISION_RESOLVE` | `lore_revision_resolve_event_data_t` | Emitted when resolving a revision |
+ | `LORE_EVENT_FILTER_EXCLUDE` | `lore_filter_exclude_event_data_t` | Emitted for each path excluded by view or ignore filters |*/
+    pub unsafe fn lore_revision_bisect_async(
+        &self,
+        globals: *const lore_global_args_t,
+        args: *const lore_revision_bisect_args_t,
+        callback: lore_event_callback_config_t,
+    ) {
+        (self.lore_revision_bisect_async)(globals, args, callback)
+    }
+    /** Cherry-pick a revision onto the current branch, applying its changes to the working tree.
+
+ # Events
+
+ Events are delivered via the callback as `lore_event_t`. Use the `tag` field to identify the event type.
+
+ ## Standard Events
+
+ These events are emitted by all interface functions:
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_LOG` | `lore_log_event_data_t` | Diagnostic messages throughout execution |
+ | `LORE_EVENT_ERROR` | `lore_error_event_data_t` | Emitted for a non-fatal error during the operation |
+ | `LORE_EVENT_COMPLETE` | `lore_complete_event_data_t` | Always emitted at the end; `status` is `0` on success or the error code on failure |
+ | `LORE_EVENT_END` | `lore_end_event_data_t` | Always emitted after `COMPLETE` to signal callback termination |
+
+ ## Cherry-Pick Events
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_CHERRY_PICK_START_BEGIN` | `lore_cherry_pick_start_begin_event_data_t` | Emitted when cherry-pick begins, includes picked revision info |
+ | `LORE_EVENT_CHERRY_PICK_START_END` | `lore_cherry_pick_start_end_event_data_t` | Emitted when cherry-pick completes, includes conflict flag |
+ | `LORE_EVENT_CHERRY_PICK_CONFLICT_FILE` | `lore_cherry_pick_conflict_file_event_data_t` | Emitted for each file with an unresolved cherry-pick conflict |
+ | `LORE_EVENT_REVISION_SYNC_PROGRESS` | `lore_revision_sync_progress_event_data_t` | Emitted while the picked changes are applied |
+ | `LORE_EVENT_REVISION_SYNC_FILE` | `lore_revision_sync_file_event_data_t` | Emitted for each file modified during cherry-pick realization |
+ | `LORE_EVENT_FILE_STAGE_FILE` | `lore_file_stage_file_event_data_t` | Emitted for each file staged for deletion during cherry-pick |
+ | `LORE_EVENT_REVISION_COMMIT_BEGIN` | `lore_revision_commit_begin_event_data_t` | Emitted when auto-commit starts (no conflicts) |
+ | `LORE_EVENT_REVISION_COMMIT_PROGRESS` | `lore_revision_commit_progress_event_data_t` | Emitted during auto-commit |
+ | `LORE_EVENT_REVISION_COMMIT_END` | `lore_revision_commit_end_event_data_t` | Emitted when auto-commit completes |
+ | `LORE_EVENT_REVISION_COMMIT_REVISION` | `lore_revision_commit_revision_event_data_t` | Emitted with the committed cherry-pick revision |
+ | `LORE_EVENT_METADATA` | `lore_metadata_event_data_t` | Emitted for metadata of the auto-commit |
+ | `LORE_EVENT_FRAGMENT_WRITE` | `lore_fragment_write_event_data_t` | Emitted for fragments written during auto-commit |*/
+    pub unsafe fn lore_revision_cherry_pick(
+        &self,
+        globals: *const lore_global_args_t,
+        args: *const lore_revision_cherry_pick_args_t,
+        callback: lore_event_callback_config_t,
+    ) -> i32 {
+        (self.lore_revision_cherry_pick)(globals, args, callback)
+    }
+    /** Asynchronous version of `lore_revision_cherry_pick`.
+
+ # Events
+
+ Events are delivered via the callback as `lore_event_t`. Use the `tag` field to identify the event type.
+
+ ## Standard Events
+
+ These events are emitted by all interface functions:
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_LOG` | `lore_log_event_data_t` | Diagnostic messages throughout execution |
+ | `LORE_EVENT_ERROR` | `lore_error_event_data_t` | Emitted for a non-fatal error during the operation |
+ | `LORE_EVENT_COMPLETE` | `lore_complete_event_data_t` | Always emitted at the end; `status` is `0` on success or the error code on failure |
+ | `LORE_EVENT_END` | `lore_end_event_data_t` | Always emitted after `COMPLETE` to signal callback termination |
+
+ ## Cherry-Pick Events
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_CHERRY_PICK_START_BEGIN` | `lore_cherry_pick_start_begin_event_data_t` | Emitted when cherry-pick begins, includes picked revision info |
+ | `LORE_EVENT_CHERRY_PICK_START_END` | `lore_cherry_pick_start_end_event_data_t` | Emitted when cherry-pick completes, includes conflict flag |
+ | `LORE_EVENT_CHERRY_PICK_CONFLICT_FILE` | `lore_cherry_pick_conflict_file_event_data_t` | Emitted for each file with an unresolved cherry-pick conflict |
+ | `LORE_EVENT_REVISION_SYNC_PROGRESS` | `lore_revision_sync_progress_event_data_t` | Emitted while the picked changes are applied |
+ | `LORE_EVENT_REVISION_SYNC_FILE` | `lore_revision_sync_file_event_data_t` | Emitted for each file modified during cherry-pick realization |
+ | `LORE_EVENT_FILE_STAGE_FILE` | `lore_file_stage_file_event_data_t` | Emitted for each file staged for deletion during cherry-pick |
+ | `LORE_EVENT_REVISION_COMMIT_BEGIN` | `lore_revision_commit_begin_event_data_t` | Emitted when auto-commit starts (no conflicts) |
+ | `LORE_EVENT_REVISION_COMMIT_PROGRESS` | `lore_revision_commit_progress_event_data_t` | Emitted during auto-commit |
+ | `LORE_EVENT_REVISION_COMMIT_END` | `lore_revision_commit_end_event_data_t` | Emitted when auto-commit completes |
+ | `LORE_EVENT_REVISION_COMMIT_REVISION` | `lore_revision_commit_revision_event_data_t` | Emitted with the committed cherry-pick revision |
+ | `LORE_EVENT_METADATA` | `lore_metadata_event_data_t` | Emitted for metadata of the auto-commit |
+ | `LORE_EVENT_FRAGMENT_WRITE` | `lore_fragment_write_event_data_t` | Emitted for fragments written during auto-commit |*/
+    pub unsafe fn lore_revision_cherry_pick_async(
+        &self,
+        globals: *const lore_global_args_t,
+        args: *const lore_revision_cherry_pick_args_t,
+        callback: lore_event_callback_config_t,
+    ) {
+        (self.lore_revision_cherry_pick_async)(globals, args, callback)
+    }
     /** Revert a revision, applying its inverse changes to the working tree.
 
  # Events
@@ -30785,6 +31442,66 @@ impl Lore {
         callback: lore_event_callback_config_t,
     ) {
         (self.lore_shared_store_info_async)(globals, args, callback)
+    }
+    /** List every registered shared store.
+
+ # Events
+
+ Events are delivered via the callback as `lore_event_t`. Use the `tag` field to identify the event type.
+
+ ## Standard Events
+
+ These events are emitted by all interface functions:
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_LOG` | `lore_log_event_data_t` | Diagnostic messages throughout execution |
+ | `LORE_EVENT_ERROR` | `lore_error_event_data_t` | Emitted for a non-fatal error during the operation |
+ | `LORE_EVENT_COMPLETE` | `lore_complete_event_data_t` | Always emitted at the end; `status` is `0` on success or the error code on failure |
+ | `LORE_EVENT_END` | `lore_end_event_data_t` | Always emitted after `COMPLETE` to signal callback termination |
+
+ ## Shared Store Events
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_SHARED_STORE_LIST` | `lore_shared_store_list_event_data_t` | Emitted on success carrying every registered shared store, and the instances using each when `include_instances` is set |*/
+    pub unsafe fn lore_shared_store_list(
+        &self,
+        globals: *const lore_global_args_t,
+        args: *const lore_shared_store_list_args_t,
+        callback: lore_event_callback_config_t,
+    ) -> i32 {
+        (self.lore_shared_store_list)(globals, args, callback)
+    }
+    /** List every registered shared store (async).
+
+ # Events
+
+ Events are delivered via the callback as `lore_event_t`. Use the `tag` field to identify the event type.
+
+ ## Standard Events
+
+ These events are emitted by all interface functions:
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_LOG` | `lore_log_event_data_t` | Diagnostic messages throughout execution |
+ | `LORE_EVENT_ERROR` | `lore_error_event_data_t` | Emitted for a non-fatal error during the operation |
+ | `LORE_EVENT_COMPLETE` | `lore_complete_event_data_t` | Always emitted at the end; `status` is `0` on success or the error code on failure |
+ | `LORE_EVENT_END` | `lore_end_event_data_t` | Always emitted after `COMPLETE` to signal callback termination |
+
+ ## Shared Store Events
+
+ | Tag | Data Type | Description |
+ |-----|-----------|-------------|
+ | `LORE_EVENT_SHARED_STORE_LIST` | `lore_shared_store_list_event_data_t` | Emitted on success carrying every registered shared store, and the instances using each when `include_instances` is set |*/
+    pub unsafe fn lore_shared_store_list_async(
+        &self,
+        globals: *const lore_global_args_t,
+        args: *const lore_shared_store_list_args_t,
+        callback: lore_event_callback_config_t,
+    ) {
+        (self.lore_shared_store_list_async)(globals, args, callback)
     }
     /** Set whether to automatically use the shared store.
 
@@ -31823,8 +32540,9 @@ impl Lore {
     ) -> i32 {
         (self.lore_set_allocator)(alloc, alloc_zeroed, realloc, dealloc)
     }
-    /** Return the library version as a NUL-terminated string. The string is owned
- by the library and must not be freed by the caller.*/
+    /** Return the library version as a NUL-terminated string: `LORE_INTERFACE_VERSION`,
+ then `+` and the build name. The string is owned by the library and must not
+ be freed by the caller.*/
     pub unsafe fn lore_version(&self) -> *const ::std::os::raw::c_char {
         (self.lore_version)()
     }

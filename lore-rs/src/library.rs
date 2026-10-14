@@ -55,9 +55,10 @@ impl std::fmt::Debug for Lore {
 }
 
 impl Lore {
-    /// The version the loaded library reports for itself, such as `0.10.0`.
-    /// Compare it with the release the bindings were generated for when a
-    /// mismatch would be surprising; the bindings themselves cannot tell.
+    /// The version the loaded library reports for itself: the interface
+    /// version, then `+` and the build name. Compare it with the release the
+    /// bindings were generated for when a mismatch would be surprising; the
+    /// bindings themselves cannot tell.
     pub fn version(&self) -> &str {
         // SAFETY: `lore_version` returns a pointer to a NUL-terminated string
         // the library owns and never frees, and the library is never unloaded.

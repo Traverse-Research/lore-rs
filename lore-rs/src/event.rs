@@ -622,12 +622,15 @@ pub enum Event<'a> {
         id: u64,
         /// The item's address on success, zero on failure.
         address: lore_address_t,
+        /// The failure's own FFI code, as [`Self::Complete`] carries it;
+        /// zero on success. Lore does not yet promise these values stable.
         error_code: lore_error_code_t,
+        /// The failure's message, empty when the item succeeded.
+        message: &'a str,
         /// Whether the local store holds the content.
         stored_local: bool,
         /// Whether the content reached the remote, or was already durable
-        /// there. A remote write that fails still reports `error_code =
-        /// NONE` if the local write succeeded — this is how a caller tells
+        /// there. A remote write that fails still reports success if the local write succeeded — this is how a caller tells
         /// the two apart.
         stored_remote: bool,
     },
@@ -647,7 +650,11 @@ pub enum Event<'a> {
         id: u64,
         /// The item's address on success, zero on failure.
         address: lore_address_t,
+        /// The failure's own FFI code, as [`Self::Complete`] carries it;
+        /// zero on success. Lore does not yet promise these values stable.
         error_code: lore_error_code_t,
+        /// The failure's message, empty when the item succeeded.
+        message: &'a str,
     },
     /// The terminal event of a metadata lookup, success or failure. Carries
     /// no bytes, and no other event precedes it.
@@ -657,15 +664,23 @@ pub enum Event<'a> {
         address: lore_address_t,
         /// What the store holds for the address; zeroed on failure.
         fragment: lore_fragment_t,
+        /// The failure's own FFI code, as [`Self::Complete`] carries it;
+        /// zero on success. Lore does not yet promise these values stable.
         error_code: lore_error_code_t,
+        /// The failure's message, empty when the item succeeded.
+        message: &'a str,
     },
     /// The terminal event of a mutable-key load, success or failure. A key
-    /// with no stored value fails with `ADDRESS_NOT_FOUND`.
+    /// with no stored value fails with the address-not-found error.
     StorageMutableLoadItemComplete {
         id: u64,
         /// The hash stored under the key on success, zero on failure.
         value: lore_hash_t,
+        /// The failure's own FFI code, as [`Self::Complete`] carries it;
+        /// zero on success. Lore does not yet promise these values stable.
         error_code: lore_error_code_t,
+        /// The failure's message, empty when the item succeeded.
+        message: &'a str,
     },
     /// The terminal event of a mutable-key compare-and-swap, success or
     /// failure. The swap took effect when `previous` equals the item's
@@ -675,7 +690,11 @@ pub enum Event<'a> {
         /// The hash the key held before the swap on success, zero on failure
         /// or when the key held nothing.
         previous: lore_hash_t,
+        /// The failure's own FFI code, as [`Self::Complete`] carries it;
+        /// zero on success. Lore does not yet promise these values stable.
         error_code: lore_error_code_t,
+        /// The failure's message, empty when the item succeeded.
+        message: &'a str,
     },
     /// Event kinds without a mapped variant (yet), add them here as needed
     Other {
@@ -1108,7 +1127,8 @@ impl<'a> Event<'a> {
                 LORE_EVENT_STORAGE_PUT_ITEM_COMPLETE => Self::StoragePutItemComplete {
                     id: data.storage_put_item_complete.id,
                     address: data.storage_put_item_complete.address,
-                    error_code: data.storage_put_item_complete.error_code,
+                    error_code: data.storage_put_item_complete.error.error_code,
+                    message: data.storage_put_item_complete.error.message.try_to_str()?,
                     stored_local: data.storage_put_item_complete.stored_local != 0,
                     stored_remote: data.storage_put_item_complete.stored_remote != 0,
                 },
@@ -1128,21 +1148,32 @@ impl<'a> Event<'a> {
                 LORE_EVENT_STORAGE_GET_ITEM_COMPLETE => Self::StorageGetItemComplete {
                     id: data.storage_get_item_complete.id,
                     address: data.storage_get_item_complete.address,
-                    error_code: data.storage_get_item_complete.error_code,
+                    error_code: data.storage_get_item_complete.error.error_code,
+                    message: data.storage_get_item_complete.error.message.try_to_str()?,
                 },
                 LORE_EVENT_STORAGE_GET_METADATA_ITEM_COMPLETE => {
                     Self::StorageGetMetadataItemComplete {
                         id: data.storage_get_metadata_item_complete.id,
                         address: data.storage_get_metadata_item_complete.address,
                         fragment: data.storage_get_metadata_item_complete.fragment,
-                        error_code: data.storage_get_metadata_item_complete.error_code,
+                        error_code: data.storage_get_metadata_item_complete.error.error_code,
+                        message: data
+                            .storage_get_metadata_item_complete
+                            .error
+                            .message
+                            .try_to_str()?,
                     }
                 }
                 LORE_EVENT_STORAGE_MUTABLE_LOAD_ITEM_COMPLETE => {
                     Self::StorageMutableLoadItemComplete {
                         id: data.storage_mutable_load_item_complete.id,
                         value: data.storage_mutable_load_item_complete.value,
-                        error_code: data.storage_mutable_load_item_complete.error_code,
+                        error_code: data.storage_mutable_load_item_complete.error.error_code,
+                        message: data
+                            .storage_mutable_load_item_complete
+                            .error
+                            .message
+                            .try_to_str()?,
                     }
                 }
                 LORE_EVENT_STORAGE_MUTABLE_COMPARE_AND_SWAP_ITEM_COMPLETE => {
@@ -1151,7 +1182,13 @@ impl<'a> Event<'a> {
                         previous: data.storage_mutable_compare_and_swap_item_complete.previous,
                         error_code: data
                             .storage_mutable_compare_and_swap_item_complete
+                            .error
                             .error_code,
+                        message: data
+                            .storage_mutable_compare_and_swap_item_complete
+                            .error
+                            .message
+                            .try_to_str()?,
                     }
                 }
                 _ => Self::Other { tag },

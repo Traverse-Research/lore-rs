@@ -4,8 +4,10 @@ use lore_sys::{
 };
 
 /// The outcome Lore attaches to a terminal event: `lore_error_code_t` as an
-/// enum. These are per-item codes (a storage item, a tree lookup), distinct
-/// from the FFI status a whole call returns.
+/// enum. A storage item reports its own FFI code, the same numbering a whole
+/// call's status uses, so a failure this enum has no name for is
+/// [`Self::Other`], a missing payload (81) and an oversized blob (118) among
+/// them. A tree lookup still reports one of the five values of the C enum.
 ///
 /// [`Self::Other`] rather than `#[non_exhaustive]`: the C type is an integer,
 /// so an unknown value is a runtime possibility and the caller should be able
