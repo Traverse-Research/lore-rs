@@ -60,8 +60,8 @@ pub use auth::UserInfo;
 mod repository;
 pub use repository::{
     BranchInfo, CloneCount, Cloned, Commit, CommitCount, FileAction, FileChange, InstanceInfo,
-    InstanceStaleness, Repository, RepositoryInfo, RevisionInfo, StageCount, Staged, Status,
-    StatusCount, StatusFile, StatusSummary, UnstageCount, Unstaged,
+    InstanceStaleness, Repository, RepositoryEntry, RepositoryInfo, RevisionInfo, StageCount,
+    Staged, Status, StatusCount, StatusFile, StatusSummary, UnstageCount, Unstaged,
 };
 
 mod store;

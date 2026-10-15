@@ -10,7 +10,7 @@ use lore_sys::{
     lore_bytes_t, lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
     lore_file_info_args_t, lore_file_stage_args_t, lore_file_unstage_args_t, lore_global_args_t,
     lore_hash_t, lore_key_type_t, lore_partition_t, lore_repository_clone_args_t,
-    lore_repository_info_args_t, lore_repository_instance_list_args_t,
+    lore_repository_info_args_t, lore_repository_instance_list_args_t, lore_repository_list_args_t,
     lore_repository_status_args_t, lore_revision_commit_args_t, lore_revision_info_args_t,
     lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
     lore_revision_tree_list_children_args_t, lore_revision_tree_load_args_t,
@@ -1967,6 +1967,26 @@ pub fn repository_clone(
     }
 }
 
+/// Lists the repositories on a server, one [`Event::RepositoryListEntry`]
+/// each. `url` is the server alone, as `lore://host:port`. This needs no
+/// local instance and ignores `globals.repository_path`; it reads
+/// [`GlobalArgs::identity`], and a server that requires authentication
+/// refuses without a login.
+///
+/// This corresponds to `lore_sys::Lore::lore_repository_list`.
+pub fn repository_list(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    url: &str,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let args = lore_repository_list_args_t { url: raw_str(url) };
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `url`, which lives across the call.
+    unsafe { call_with_callback(lore.lore_repository_list, command, globals, &args, callback) }
+}
+
 /// Stages files for the next commit, reporting one [`Event::FileStageFile`]
 /// per file whose staged state changed, with the change Lore recorded for it.
 /// Lore works out the kind of change itself: a rename arrives as a delete and
@@ -2265,6 +2285,28 @@ mod tests {
         .unwrap();
 
         assert_eq!(seen, Some(("user-id".to_owned(), "Some One".to_owned())));
+    }
+
+    #[test]
+    fn a_repository_list_entry_event_decodes_the_id_and_name() {
+        let mut event: lore_event_t = unsafe { std::mem::zeroed() };
+        event.tag = lore_sys::LORE_EVENT_REPOSITORY_LIST_ENTRY as lore_event_tag_t;
+        event.__bindgen_anon_1.repository_list_entry.id = lore_partition_t { data: [7; 16] };
+        event.__bindgen_anon_1.repository_list_entry.name =
+            lore_string_t::from_str("Traverse-Research/breda-assets");
+
+        let mut seen = None;
+        run(&[event], 0, |event| {
+            if let Ok(Event::RepositoryListEntry { id, name }) = event {
+                seen = Some((id.data, name.to_owned()));
+            }
+        })
+        .unwrap();
+
+        assert_eq!(
+            seen,
+            Some(([7; 16], "Traverse-Research/breda-assets".to_owned()))
+        );
     }
 
     #[test]

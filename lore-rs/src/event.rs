@@ -11,7 +11,7 @@ use lore_sys::{
     LORE_EVENT_FILE_STAGE_REVISION, LORE_EVENT_FILE_UNSTAGE_END, LORE_EVENT_FILE_UNSTAGE_FILE,
     LORE_EVENT_FILE_UNSTAGE_REVISION, LORE_EVENT_LOG, LORE_EVENT_PATH_IGNORE,
     LORE_EVENT_REPOSITORY_CLONE_END, LORE_EVENT_REPOSITORY_CLONE_PROGRESS,
-    LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_INSTANCE,
+    LORE_EVENT_REPOSITORY_DATA, LORE_EVENT_REPOSITORY_INSTANCE, LORE_EVENT_REPOSITORY_LIST_ENTRY,
     LORE_EVENT_REPOSITORY_STATE_DUMP_NODE, LORE_EVENT_REPOSITORY_STATUS_COUNT,
     LORE_EVENT_REPOSITORY_STATUS_FILE, LORE_EVENT_REPOSITORY_STATUS_REVISION,
     LORE_EVENT_REPOSITORY_STATUS_SUMMARY, LORE_EVENT_REVISION_COMMIT_END,
@@ -191,6 +191,11 @@ pub enum Event<'a> {
         created: u64,
     },
     /// One registered checkout of the repository, from `instance_list`.
+    /// One repository on a server, from `repository_list`.
+    RepositoryListEntry {
+        id: lore_repository_id_t,
+        name: &'a str,
+    },
     RepositoryInstance {
         instance_id: lore_instance_id_t,
         path: &'a str,
@@ -551,6 +556,10 @@ impl<'a> Event<'a> {
                     default_branch_name: data.repository_data.default_branch_name.try_to_str()?,
                     creator: data.repository_data.creator.try_to_str()?,
                     created: data.repository_data.created,
+                },
+                LORE_EVENT_REPOSITORY_LIST_ENTRY => Self::RepositoryListEntry {
+                    id: data.repository_list_entry.id,
+                    name: data.repository_list_entry.name.try_to_str()?,
                 },
                 LORE_EVENT_REPOSITORY_INSTANCE => Self::RepositoryInstance {
                     instance_id: data.repository_instance.instance_id,

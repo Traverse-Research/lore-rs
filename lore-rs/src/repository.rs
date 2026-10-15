@@ -315,6 +315,38 @@ impl Lore {
         repository_info(self, globals, repository_url)
     }
 
+    /// Lists the repositories on a server, by id and name.
+    ///
+    /// `url` is the server alone, as `lore://host:port`. This needs no local
+    /// instance, and it is how a name is turned into the [`RepositoryId`] a
+    /// checkout of that repository is made from: the same name on two servers
+    /// is two repositories with two ids.
+    ///
+    /// See [`crate::call::repository_list`] for the `globals` it reads.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_repository_list`.
+    pub fn repository_list(
+        &self,
+        globals: &GlobalArgs,
+        url: &str,
+    ) -> Result<Vec<RepositoryEntry>, LoreError> {
+        const COMMAND: &str = "repository::list";
+        let mut entries = Vec::new();
+
+        crate::call::repository_list(self, COMMAND, globals, url, |event| {
+            crate::log_event(&event);
+
+            if let Ok(Event::RepositoryListEntry { id, name }) = event {
+                entries.push(RepositoryEntry {
+                    id: RepositoryId::from_raw(id),
+                    name: name.to_owned(),
+                });
+            }
+        })?;
+
+        Ok(entries)
+    }
+
     /// Clones a repository into `globals.repository_path` and returns the
     /// [`Repository`] that runs commands against it. With
     /// [`RepositoryCloneArgs::no_tracking`] set, the clone's stores are gone
@@ -367,6 +399,13 @@ impl Lore {
             count: CloneCount::from_raw(count),
         })
     }
+}
+
+/// One repository on a server, as [`Lore::repository_list`] reports it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RepositoryEntry {
+    pub id: RepositoryId,
+    pub name: String,
 }
 
 /// What a server says about a repository.
