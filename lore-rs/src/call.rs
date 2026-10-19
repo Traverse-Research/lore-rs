@@ -6,13 +6,14 @@
 use crate::string::{raw_str, raw_str_array};
 use crate::{Event, GlobalArgs, LoreError, RawGlobals};
 use lore_sys::{
-    lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t, lore_bytes_mut_t,
-    lore_bytes_t, lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
+    lore_address_t, lore_auth_login_with_token_args_t, lore_branch_info_args_t,
+    lore_branch_push_args_t, lore_branch_switch_args_t, lore_bytes_mut_t, lore_bytes_t,
+    lore_context_t, lore_event_callback_config_t, lore_event_t, lore_event_tag_t,
     lore_file_info_args_t, lore_file_stage_args_t, lore_file_unstage_args_t, lore_global_args_t,
     lore_hash_t, lore_key_type_t, lore_partition_t, lore_repository_clone_args_t,
     lore_repository_info_args_t, lore_repository_instance_list_args_t,
     lore_repository_status_args_t, lore_revision_commit_args_t, lore_revision_info_args_t,
-    lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
+    lore_revision_sync_args_t, lore_revision_tree_close_args_t, lore_revision_tree_info_args_t,
     lore_revision_tree_list_children_args_t, lore_revision_tree_load_args_t,
     lore_revision_tree_node_info_args_t, lore_revision_tree_node_path_args_t,
     lore_revision_tree_resolve_path_args_t, lore_revision_tree_t, lore_shared_store_mode_t,
@@ -2123,6 +2124,174 @@ pub fn revision_commit(
             command,
             globals,
             &args.to_raw(&link_paths, &link_messages, &layer_paths, &layer_messages),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`branch_push`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct BranchPushArgs<'a> {
+    /// Branch to push; empty is the branch the instance is on.
+    pub branch: &'a str,
+    /// Let the server fast-forward when its tip has moved on since the last
+    /// sync, rather than refusing the push.
+    pub fast_forward_merge: bool,
+}
+
+impl BranchPushArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_branch_push_args_t {
+        lore_branch_push_args_t {
+            branch: raw_str(self.branch),
+            fast_forward_merge: u8::from(self.fast_forward_merge),
+        }
+    }
+}
+
+/// Pushes a branch and its local revisions to the remote, creating the branch
+/// there on its first push, with one [`Event::BranchPush`] per repository
+/// pushed: the repository itself, its layers and its linked repositories. A
+/// repository verb: `globals.repository_path` must hold a `.lore` directory,
+/// and the remote is the one in its `.lore/config.toml`.
+///
+/// This corresponds to `lore_sys::Lore::lore_branch_push`.
+pub fn branch_push(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: BranchPushArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_branch_push,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`branch_switch`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct BranchSwitchArgs<'a> {
+    /// Branch to switch to.
+    pub branch: &'a str,
+    /// Revision on that branch to check out; empty is its tip.
+    pub revision: &'a str,
+    /// Overwrite locally modified files with the incoming revision rather
+    /// than refusing to switch over them.
+    pub reset: bool,
+    /// Move the instance's anchor without touching or verifying files.
+    pub bare: bool,
+}
+
+impl BranchSwitchArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the same text `self` does.
+    fn to_raw(self) -> lore_branch_switch_args_t {
+        lore_branch_switch_args_t {
+            branch: raw_str(self.branch),
+            revision: raw_str(self.revision),
+            reset: u8::from(self.reset),
+            bare: u8::from(self.bare),
+        }
+    }
+}
+
+/// Switches the working tree to another branch, realizing the file changes
+/// between the two revisions, and concludes with [`Event::BranchSwitchEnd`].
+/// Along the way it emits the events [`revision_sync`] does. A repository
+/// verb: `globals.repository_path` must hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_branch_switch`.
+pub fn branch_switch(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: BranchSwitchArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args`, which lives across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_branch_switch,
+            command,
+            globals,
+            &args.to_raw(),
+            callback,
+        )
+    }
+}
+
+/// Arguments for [`revision_sync`].
+#[derive(Debug, Default, Clone, Copy)]
+pub struct RevisionSyncArgs<'a> {
+    /// Revision to synchronize to; empty is the tip of the branch the
+    /// instance is on.
+    pub revision: &'a str,
+    /// Fast-forward and keep local changes when syncing to a local revision.
+    pub forward_changes: bool,
+    /// Overwrite locally modified files with the incoming revision.
+    pub reset: bool,
+    /// Root files for a dependency-based selective sync; empty syncs every
+    /// file.
+    pub root_files: &'a [&'a str],
+    /// Tags to filter dependencies by during resolution.
+    pub dependency_tags: &'a [&'a str],
+    /// Follow transitive dependencies recursively.
+    pub dependency_recursive: bool,
+    /// Deepest dependency traversal; zero is unlimited.
+    pub dependency_depth_limit: u32,
+}
+
+impl RevisionSyncArgs<'_> {
+    /// The raw struct to hand to Lore, borrowing the text `self` does and the
+    /// two arrays passed in.
+    fn to_raw(
+        self,
+        root_files: &[lore_string_t],
+        dependency_tags: &[lore_string_t],
+    ) -> lore_revision_sync_args_t {
+        lore_revision_sync_args_t {
+            revision: raw_str(self.revision),
+            forward_changes: u8::from(self.forward_changes),
+            reset: u8::from(self.reset),
+            root_files: raw_str_array(root_files),
+            dependency_tags: raw_str_array(dependency_tags),
+            dependency_recursive: u8::from(self.dependency_recursive),
+            dependency_depth_limit: self.dependency_depth_limit,
+        }
+    }
+}
+
+/// Synchronizes the working tree to a revision, merging when the branch has
+/// diverged from it. Reports the target on [`Event::RevisionSyncTarget`] and
+/// the resulting revision on [`Event::RevisionSyncRevision`]. A repository
+/// verb: `globals.repository_path` must hold a `.lore` directory.
+///
+/// This corresponds to `lore_sys::Lore::lore_revision_sync`.
+pub fn revision_sync(
+    lore: &crate::Lore,
+    command: &'static str,
+    globals: &GlobalArgs,
+    args: RevisionSyncArgs<'_>,
+    callback: impl FnMut(Result<Event<'_>, std::str::Utf8Error>) + Send,
+) -> Result<(), LoreError> {
+    let root_files = raw_strs(args.root_files);
+    let dependency_tags = raw_strs(args.dependency_tags);
+    // SAFETY: the entry point is the loaded library's own, and the raw struct
+    // borrows from `args` and the two arrays, which all live across the call.
+    unsafe {
+        call_with_callback(
+            lore.lore_revision_sync,
+            command,
+            globals,
+            &args.to_raw(&root_files, &dependency_tags),
             callback,
         )
     }
