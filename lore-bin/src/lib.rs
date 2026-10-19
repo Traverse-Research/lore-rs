@@ -85,6 +85,9 @@ pub fn fetch_binary_from(mirror: &str, target: Target) -> PathBuf {
             "--location",
             "--retry",
             "3",
+            // `--retry` alone skips connection failures (curl exit 7), so a
+            // mirror that is briefly unreachable fails the build on the first try.
+            "--retry-all-errors",
             "--connect-timeout",
             "30",
             "--max-time",
