@@ -54,19 +54,28 @@ pub fn archive_name(target: Target) -> String {
     format!("liblore-v{LORE_VERSION}-{triple}.{archive_ext}")
 }
 
+/// Where Epic publishes the release assets: `v<version>/<asset>` under here.
+const GITHUB_RELEASES: &str = "https://github.com/EpicGames/lore/releases/download";
+
 /// Downloads the prebuilt Lore library archive from the Lore GitHub release
 /// matching the `lore` submodule, extracts it into `OUT_DIR` and returns the
 /// path to the contained library.
 pub fn fetch_binary(target: Target) -> PathBuf {
-    let url = format!(
-        "https://github.com/EpicGames/lore/releases/download/v{LORE_VERSION}/{}",
-        archive_name(target)
-    );
+    fetch_binary_from(GITHUB_RELEASES, target)
+}
+
+/// As [`fetch_binary`], but from a mirror of the release: `mirror` is the URL
+/// under which the assets are found as `v<version>/<asset>`, named as the
+/// GitHub release names them. For a build that should depend on storage of
+/// its own rather than on GitHub's release hosts.
+pub fn fetch_binary_from(mirror: &str, target: Target) -> PathBuf {
+    let archive_name = archive_name(target);
+    let url = format!("{mirror}/v{LORE_VERSION}/{archive_name}");
 
     let out_dir = PathBuf::from(
         std::env::var_os("OUT_DIR").expect("OUT_DIR not set (are you in a build script?)"),
     );
-    let archive = out_dir.join(archive_name(target));
+    let archive = out_dir.join(&archive_name);
 
     let status = std::process::Command::new("curl")
         .args([
@@ -98,7 +107,7 @@ pub fn fetch_binary(target: Target) -> PathBuf {
             std::process::Command::new(PathBuf::from(system_root).join("System32\\tar.exe"));
         cmd.arg("-xf").arg(&archive).arg("-C").arg(&out_dir);
         cmd
-    } else if target == Target::WindowsX86_64 {
+    } else if archive_name.ends_with(".zip") {
         let mut cmd = std::process::Command::new("unzip");
         cmd.arg("-o").arg(&archive).arg("-d").arg(&out_dir);
         cmd
