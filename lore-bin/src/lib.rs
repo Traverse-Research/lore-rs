@@ -87,8 +87,10 @@ pub fn fetch_binary_from(mirror: &str, target: Target) -> PathBuf {
             // trace (addresses tried, OS error per attempt) costs nothing on a
             // green build and explains the red ones.
             "--verbose",
+            // Backs off 1, 2, 4, 8, 16 and 32 s, so the last attempt lands about
+            // a minute after the first: long enough to ride out a brief outage.
             "--retry",
-            "4",
+            "6",
             // `--retry` alone skips connection failures (curl exit 7), so a
             // mirror that is briefly unreachable fails the build on the first try.
             "--retry-all-errors",
