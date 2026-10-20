@@ -83,6 +83,10 @@ pub fn fetch_binary_from(mirror: &str, target: Target) -> PathBuf {
             "--silent",
             "--show-error",
             "--location",
+            // Cargo shows a build script's stderr only when it fails, so this
+            // trace (addresses tried, OS error per attempt) costs nothing on a
+            // green build and explains the red ones.
+            "--verbose",
             "--retry",
             "4",
             // `--retry` alone skips connection failures (curl exit 7), so a
