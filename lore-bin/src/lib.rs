@@ -83,8 +83,21 @@ pub fn fetch_binary_from(mirror: &str, target: Target) -> PathBuf {
             "--silent",
             "--show-error",
             "--location",
+            // Cargo shows a build script's stderr only when it fails, so this
+            // trace (addresses tried, OS error per attempt) costs nothing on a
+            // green build and explains the red ones.
+            "--verbose",
+            // A fixed 5 s between attempts, and no new attempt once 180 s have
+            // passed, so a stuck download can't stretch the build indefinitely.
             "--retry",
-            "3",
+            "10",
+            "--retry-delay",
+            "5",
+            "--retry-max-time",
+            "180",
+            // `--retry` alone skips connection failures (curl exit 7), so a
+            // mirror that is briefly unreachable fails the build on the first try.
+            "--retry-all-errors",
             "--connect-timeout",
             "30",
             "--max-time",
