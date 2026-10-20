@@ -90,7 +90,7 @@ pub fn fetch_binary_from(mirror: &str, target: Target) -> PathBuf {
             // A fixed 5 s between attempts, and no new attempt once 180 s have
             // passed, so a stuck download can't stretch the build indefinitely.
             "--retry",
-            "6",
+            "10",
             "--retry-delay",
             "5",
             "--retry-max-time",
