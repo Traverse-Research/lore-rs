@@ -1,4 +1,7 @@
-use std::path::PathBuf;
+use std::{
+    path::{Path, PathBuf},
+    time::Duration,
+};
 
 /// The Lore release the bindings are generated for, and so the one whose
 /// binaries to download. Must match the tag the `lore` submodule is pinned to,
@@ -77,38 +80,7 @@ pub fn fetch_binary_from(mirror: &str, target: Target) -> PathBuf {
     );
     let archive = out_dir.join(&archive_name);
 
-    let status = std::process::Command::new("curl")
-        .args([
-            "--fail",
-            "--silent",
-            "--show-error",
-            "--location",
-            // Cargo shows a build script's stderr only when it fails, so this
-            // trace (addresses tried, OS error per attempt) costs nothing on a
-            // green build and explains the red ones.
-            "--verbose",
-            // A fixed 5 s between attempts, and no new attempt once 180 s have
-            // passed, so a stuck download can't stretch the build indefinitely.
-            "--retry",
-            "10",
-            "--retry-delay",
-            "5",
-            "--retry-max-time",
-            "180",
-            // `--retry` alone skips connection failures (curl exit 7), so a
-            // mirror that is briefly unreachable fails the build on the first try.
-            "--retry-all-errors",
-            "--connect-timeout",
-            "30",
-            "--max-time",
-            "300",
-            "--output",
-        ])
-        .arg(&archive)
-        .arg(&url)
-        .status()
-        .unwrap_or_else(|e| panic!("failed to run curl: {e}"));
-    assert!(status.success(), "curl failed to download {url}");
+    download(&url, &archive);
 
     // Windows ships bsdtar in System32, which extracts both zip and tar.gz.
     // Resolve it explicitly: PATH may find GNU tar first (e.g. Git Bash),
@@ -142,6 +114,56 @@ pub fn fetch_binary_from(mirror: &str, target: Target) -> PathBuf {
     );
 
     out_dir.join(library_file_name(target))
+}
+
+/// Downloads `url` to `output`, retrying with a fresh `curl` process per
+/// attempt rather than curl's own `--retry`: curl caches DNS answers for 60 s
+/// within a process, so a lookup that came back without usable addresses
+/// (e.g. only AAAA records on a host without IPv6) failed every retry as well.
+fn download(url: &str, output: &Path) {
+    // Enough to ride out a blip such as a single timed-out DNS query; an
+    // outage lasting longer than this fails the build either way.
+    const ATTEMPTS: u32 = 5;
+    const INITIAL_RETRY_DELAY: Duration = Duration::from_secs(2);
+
+    let mut retry_delay = INITIAL_RETRY_DELAY;
+    for attempt in 1..=ATTEMPTS {
+        let status = std::process::Command::new("curl")
+            .args([
+                "--fail",
+                "--silent",
+                "--show-error",
+                "--location",
+                // Cargo shows a build script's stderr only when it fails, so
+                // this trace (addresses tried, OS error per attempt) costs
+                // nothing on a green build and explains the red ones.
+                "--verbose",
+                "--connect-timeout",
+                "30",
+                "--max-time",
+                "300",
+                "--output",
+            ])
+            .arg(output)
+            .arg(url)
+            .status()
+            .unwrap_or_else(|e| panic!("failed to run curl: {e}"));
+        if status.success() {
+            return;
+        }
+
+        if attempt == ATTEMPTS {
+            break;
+        }
+        eprintln!(
+            "attempt {attempt}/{ATTEMPTS} to download {url} failed ({status}), retrying in {}s",
+            retry_delay.as_secs()
+        );
+        std::thread::sleep(retry_delay);
+        retry_delay *= 2;
+    }
+
+    panic!("curl failed to download {url}");
 }
 
 #[cfg(test)]
