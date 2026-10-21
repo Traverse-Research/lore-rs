@@ -160,6 +160,19 @@ pub struct PutResolvedOutcome {
     pub stored_remote: bool,
 }
 
+/// One key for [`Store::get_resolved_many`] to resolve and read.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub struct GetResolvedItem {
+    /// The partition the key is resolved and read in, as for
+    /// [`Store::get_resolved`]. [`RepositoryId::ZERO`] is rejected.
+    pub repository: RepositoryId,
+    /// The mutable key to resolve, under `LORE_KEY_TYPE_RESOLVE`. The zero
+    /// key is rejected.
+    pub key: ResolveKey,
+    /// The context the resolved hash is completed with into an [`Address`].
+    pub context: ContextId,
+}
+
 /// What resolving a mutable key answered: the address it resolved to,
 /// together with what the read produced.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -919,13 +932,7 @@ impl Store {
         key: ResolveKey,
         context: ContextId,
     ) -> Result<Resolved<Vec<u8>>, LoreError> {
-        let mut data: Option<Vec<u8>> = None;
-        // See `Self::get` for what these track.
-        let mut covered = 0u64;
-        let mut end = 0u64;
-        let mut overflow = None;
-        let mut resolved: Option<Address> = None;
-        let mut outcome: Option<lore_error_code_t> = None;
+        let mut reassembly = Reassembly::default();
 
         let result = crate::call::storage_get_resolved(
             self.lore,
@@ -933,82 +940,96 @@ impl Store {
             &self.globals.with_backend(backend),
             StorageGetResolvedArgs {
                 handle: self.handle,
-                items: &[StorageGetResolvedItem {
-                    id: 0,
-                    partition: repository.to_raw(),
-                    key: key.to_raw(),
-                    context: context.to_raw(),
-                    streaming: false,
-                    local_cache: self.local_cache,
-                }],
+                items: &[self.resolved_item(
+                    0,
+                    GetResolvedItem {
+                        repository,
+                        key,
+                        context,
+                    },
+                )],
             },
             |event| {
                 crate::log_event(&event);
 
-                match event {
-                    Ok(Event::StorageGetHeader { size_content, .. }) => {
-                        data = Some(vec![0u8; size_content as usize]);
-                    }
-                    Ok(Event::StorageGetData { offset, bytes, .. }) => {
-                        let length = bytes.len() as u64;
-                        let Some(buffer) = data.as_mut() else {
-                            overflow = Some(offset.saturating_add(length));
-                            return;
-                        };
-                        let size = buffer.len() as u64;
-                        let Some(range_end) = offset
-                            .checked_add(length)
-                            .filter(|range_end| *range_end <= size)
-                        else {
-                            overflow = Some(offset.saturating_add(length));
-                            return;
-                        };
-
-                        buffer[offset as usize..range_end as usize].copy_from_slice(bytes);
-                        covered += length;
-                        end = end.max(range_end);
-                    }
-                    Ok(Event::StorageGetItemComplete {
-                        address,
-                        error_code,
-                        ..
-                    }) => {
-                        resolved = Some(Address::from_raw(address));
-                        outcome = Some(error_code);
-                    }
-                    _ => {}
+                if let Ok(event) = event {
+                    reassembly.record(event);
                 }
             },
         );
-        LoreError::resolve(GET_RESOLVED, result, outcome)?;
+        LoreError::resolve(
+            GET_RESOLVED,
+            result,
+            reassembly.completion.map(|(_, code)| code),
+        )?;
 
-        let data = data.ok_or(LoreError::MissingEvent {
-            command: GET_RESOLVED,
-            expected: "storage_get_header",
-        })?;
-        let size = data.len() as u64;
+        reassembly.finish()
+    }
 
-        if let Some(over) = overflow {
-            return Err(LoreError::SizeMismatch {
-                command: GET_RESOLVED,
-                expected: size,
-                covered: over,
-            });
-        }
-        if covered != size || end != size {
-            return Err(LoreError::SizeMismatch {
-                command: GET_RESOLVED,
-                expected: size,
-                covered: covered.min(end),
-            });
-        }
+    /// Resolves several mutable keys and reads the content each names, in one
+    /// call: [`Self::get_resolved`] for a batch, which Lore resolves and reads
+    /// concurrently in one FFI round trip rather than one per key. The results
+    /// come back in the order the items were given.
+    ///
+    /// **One failed item does not fail the call**, as for [`Self::put_many`]:
+    /// a key with no mapping is [`LoreError::Failed`] with
+    /// [`ErrorCode::AddressNotFound`] in its own slot, and the rest still
+    /// answer. The outer error is left for what goes wrong with the call as a
+    /// whole.
+    ///
+    /// Every item's buffer is held until the call returns, so the whole batch
+    /// is in memory at once. Same rules as [`Self::get_resolved`] otherwise,
+    /// with `backend` applying to every item.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_storage_get_resolved`.
+    #[allow(clippy::type_complexity)]
+    pub fn get_resolved_many(
+        &self,
+        backend: Backend,
+        items: &[GetResolvedItem],
+    ) -> Result<Vec<Result<Resolved<Vec<u8>>, LoreError>>, LoreError> {
+        let raw_items = items
+            .iter()
+            .enumerate()
+            // The position is the id, as for `Self::put_many`.
+            .map(|(index, item)| self.resolved_item(index as u64, *item))
+            .collect::<Vec<_>>();
 
-        let address = resolved.ok_or(LoreError::MissingEvent {
-            command: GET_RESOLVED,
-            expected: "storage_get_item_complete",
-        })?;
+        let mut reassemblies: Vec<Reassembly> = Vec::new();
+        reassemblies.resize_with(items.len(), Reassembly::default);
 
-        Ok(Resolved { address, data })
+        let result = crate::call::storage_get_resolved(
+            self.lore,
+            GET_RESOLVED,
+            &self.globals.with_backend(backend),
+            StorageGetResolvedArgs {
+                handle: self.handle,
+                items: &raw_items,
+            },
+            |event| {
+                crate::log_event(&event);
+
+                let Ok(event) = event else {
+                    return;
+                };
+                let id = match event {
+                    Event::StorageGetHeader { id, .. }
+                    | Event::StorageGetData { id, .. }
+                    | Event::StorageGetItemComplete { id, .. } => id,
+                    _ => return,
+                };
+                // An id from outside the batch leaves the item it was meant
+                // for unreported, which fails the batch below.
+                if let Some(reassembly) = usize::try_from(id)
+                    .ok()
+                    .and_then(|index| reassemblies.get_mut(index))
+                {
+                    reassembly.record(event);
+                }
+            },
+        );
+
+        get_resolved_outcomes(reassemblies, result)
     }
 
     /// Reads one address into `sink`, one Lore fragment at a time, and
@@ -1117,6 +1138,100 @@ impl Store {
             data_out: None,
         }
     }
+
+    fn resolved_item(&self, id: u64, item: GetResolvedItem) -> StorageGetResolvedItem {
+        StorageGetResolvedItem {
+            id,
+            partition: item.repository.to_raw(),
+            key: item.key.to_raw(),
+            context: item.context.to_raw(),
+            streaming: false,
+            local_cache: self.local_cache,
+        }
+    }
+}
+
+/// One resolved read's events, reassembled into its buffer. Fragments are not
+/// promised in order, so the buffer is written by offset; see
+/// [`Store::get_range`] for what `covered` and `end` track.
+#[derive(Default)]
+struct Reassembly {
+    data: Option<Vec<u8>>,
+    covered: u64,
+    end: u64,
+    overflow: Option<u64>,
+    completion: Option<(Address, lore_error_code_t)>,
+}
+
+impl Reassembly {
+    /// Takes one event of this item's sequence; events of other kinds are
+    /// ignored.
+    fn record(&mut self, event: Event<'_>) {
+        match event {
+            Event::StorageGetHeader { size_content, .. } => {
+                self.data = Some(vec![0u8; size_content as usize]);
+            }
+            Event::StorageGetData { offset, bytes, .. } => {
+                let length = bytes.len() as u64;
+                let Some(buffer) = self.data.as_mut() else {
+                    self.overflow = Some(offset.saturating_add(length));
+                    return;
+                };
+                let size = buffer.len() as u64;
+                let Some(range_end) = offset
+                    .checked_add(length)
+                    .filter(|range_end| *range_end <= size)
+                else {
+                    self.overflow = Some(offset.saturating_add(length));
+                    return;
+                };
+
+                buffer[offset as usize..range_end as usize].copy_from_slice(bytes);
+                self.covered += length;
+                self.end = self.end.max(range_end);
+            }
+            Event::StorageGetItemComplete {
+                address,
+                error_code,
+                ..
+            } => {
+                self.completion = Some((Address::from_raw(address), error_code));
+            }
+            _ => {}
+        }
+    }
+
+    /// Checks the delivery covered exactly what the header announced. Only
+    /// meaningful once the item's own code has been checked.
+    fn finish(self) -> Result<Resolved<Vec<u8>>, LoreError> {
+        let data = self.data.ok_or(LoreError::MissingEvent {
+            command: GET_RESOLVED,
+            expected: "storage_get_header",
+        })?;
+        let size = data.len() as u64;
+
+        if let Some(over) = self.overflow {
+            return Err(LoreError::SizeMismatch {
+                command: GET_RESOLVED,
+                expected: size,
+                covered: over,
+            });
+        }
+        if self.covered != size || self.end != size {
+            return Err(LoreError::SizeMismatch {
+                command: GET_RESOLVED,
+                expected: size,
+                covered: self.covered.min(self.end),
+            });
+        }
+
+        let (address, _) = self.completion.ok_or(LoreError::MissingEvent {
+            command: GET_RESOLVED,
+            expected: "storage_get_item_complete",
+        })?;
+
+        Ok(Resolved { address, data })
+    }
 }
 
 /// Folds what a put reported into one result per item, in the order the items
@@ -1152,6 +1267,45 @@ fn put_outcomes(
 
     // A call failure the items already account for gives way to them. One no
     // item accounts for is all there is to report.
+    if outcomes.iter().all(Result::is_ok) {
+        result?;
+    }
+
+    Ok(outcomes)
+}
+
+/// Folds what a batch of resolved reads reported into one result per item, in
+/// the order the items were given, by the same rules as [`put_outcomes`].
+#[allow(clippy::type_complexity)]
+fn get_resolved_outcomes(
+    reassemblies: Vec<Reassembly>,
+    result: Result<(), LoreError>,
+) -> Result<Vec<Result<Resolved<Vec<u8>>, LoreError>>, LoreError> {
+    if reassemblies.iter().any(|item| item.completion.is_none()) {
+        result?;
+        return Err(LoreError::MissingEvent {
+            command: GET_RESOLVED,
+            expected: "storage_get_item_complete",
+        });
+    }
+
+    let outcomes: Vec<Result<Resolved<Vec<u8>>, LoreError>> = reassemblies
+        .into_iter()
+        .map(|item| {
+            let code = item.completion.map(|(_, code)| code);
+            match code.and_then(ErrorCode::from_raw) {
+                None => item.finish(),
+                // As for a put, the call's messages only count its failed
+                // items, so an item's code is all there is to report.
+                Some(code) => Err(LoreError::Failed {
+                    command: GET_RESOLVED,
+                    code,
+                    messages: Vec::new(),
+                }),
+            }
+        })
+        .collect();
+
     if outcomes.iter().all(Result::is_ok) {
         result?;
     }
@@ -1226,5 +1380,177 @@ impl Drop for Store {
         if let Err(error) = result {
             log::error!(target: "lore", "{error}");
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use lore_sys::{LORE_ERROR_CODE_ADDRESS_NOT_FOUND, LORE_ERROR_CODE_NONE};
+
+    use super::*;
+
+    fn address(tag: u8) -> Address {
+        Address {
+            hash: Revision::new([tag; 32]),
+            context: ContextId::default(),
+        }
+    }
+
+    fn header(id: u64, size_content: u64) -> Event<'static> {
+        Event::StorageGetHeader {
+            id,
+            address: Address::default().to_raw(),
+            size_content,
+        }
+    }
+
+    fn data(id: u64, offset: u64, bytes: &'static [u8]) -> Event<'static> {
+        Event::StorageGetData { id, offset, bytes }
+    }
+
+    fn complete(id: u64, address: Address, error_code: lore_error_code_t) -> Event<'static> {
+        Event::StorageGetItemComplete {
+            id,
+            address: address.to_raw(),
+            error_code,
+        }
+    }
+
+    /// Feeds `events` to a batch of `items` the way `get_resolved_many`
+    /// routes them, then folds the batch.
+    #[allow(clippy::type_complexity)]
+    fn fold(
+        items: usize,
+        events: Vec<Event<'static>>,
+        result: Result<(), LoreError>,
+    ) -> Result<Vec<Result<Resolved<Vec<u8>>, LoreError>>, LoreError> {
+        let mut reassemblies: Vec<Reassembly> = Vec::new();
+        reassemblies.resize_with(items, Reassembly::default);
+        for event in events {
+            let id = match event {
+                Event::StorageGetHeader { id, .. }
+                | Event::StorageGetData { id, .. }
+                | Event::StorageGetItemComplete { id, .. } => id,
+                _ => unreachable!(),
+            };
+            if let Some(reassembly) = reassemblies.get_mut(id as usize) {
+                reassembly.record(event);
+            }
+        }
+        get_resolved_outcomes(reassemblies, result)
+    }
+
+    fn call_failed() -> Result<(), LoreError> {
+        Err(LoreError::Call {
+            command: GET_RESOLVED,
+            status: 1,
+            messages: vec!["1/2 items failed".to_owned()],
+        })
+    }
+
+    #[test]
+    fn interleaved_items_land_in_their_own_slots() {
+        let outcomes = fold(
+            2,
+            vec![
+                header(1, 3),
+                header(0, 4),
+                data(0, 2, b"cd"),
+                data(1, 0, b"xyz"),
+                data(0, 0, b"ab"),
+                complete(1, address(2), LORE_ERROR_CODE_NONE),
+                complete(0, address(1), LORE_ERROR_CODE_NONE),
+            ],
+            Ok(()),
+        )
+        .unwrap();
+
+        let outcomes: Vec<_> = outcomes.into_iter().map(Result::unwrap).collect();
+        assert_eq!(
+            outcomes,
+            vec![
+                Resolved {
+                    address: address(1),
+                    data: b"abcd".to_vec(),
+                },
+                Resolved {
+                    address: address(2),
+                    data: b"xyz".to_vec(),
+                },
+            ]
+        );
+    }
+
+    #[test]
+    fn a_missing_key_fails_only_its_own_item() {
+        let outcomes = fold(
+            2,
+            vec![
+                complete(0, Address::default(), LORE_ERROR_CODE_ADDRESS_NOT_FOUND),
+                header(1, 2),
+                data(1, 0, b"ok"),
+                complete(1, address(1), LORE_ERROR_CODE_NONE),
+            ],
+            call_failed(),
+        )
+        .unwrap();
+
+        assert!(outcomes[0].as_ref().unwrap_err().is_not_found());
+        assert_eq!(outcomes[1].as_ref().unwrap().data, b"ok");
+    }
+
+    #[test]
+    fn a_short_delivery_fails_only_its_own_item() {
+        let outcomes = fold(
+            2,
+            vec![
+                header(0, 4),
+                data(0, 0, b"ab"),
+                complete(0, address(1), LORE_ERROR_CODE_NONE),
+                header(1, 0),
+                complete(1, address(2), LORE_ERROR_CODE_NONE),
+            ],
+            Ok(()),
+        )
+        .unwrap();
+
+        assert!(matches!(
+            outcomes[0],
+            Err(LoreError::SizeMismatch {
+                expected: 4,
+                covered: 2,
+                ..
+            })
+        ));
+        assert_eq!(outcomes[1].as_ref().unwrap().data, b"");
+    }
+
+    #[test]
+    fn an_unreported_item_fails_the_batch() {
+        let error = fold(
+            2,
+            vec![header(0, 0), complete(0, address(1), LORE_ERROR_CODE_NONE)],
+            Ok(()),
+        )
+        .unwrap_err();
+
+        assert!(matches!(error, LoreError::MissingEvent { .. }));
+    }
+
+    #[test]
+    fn a_call_failure_no_item_accounts_for_fails_the_batch() {
+        let error = fold(
+            1,
+            vec![header(0, 0), complete(0, address(1), LORE_ERROR_CODE_NONE)],
+            call_failed(),
+        )
+        .unwrap_err();
+
+        assert!(matches!(error, LoreError::Call { .. }));
+    }
+
+    #[test]
+    fn an_empty_batch_answers_with_nothing() {
+        assert!(fold(0, Vec::new(), Ok(())).unwrap().is_empty());
     }
 }

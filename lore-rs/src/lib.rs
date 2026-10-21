@@ -67,8 +67,8 @@ pub use repository::{
 
 mod store;
 pub use store::{
-    CacheTargets, FragmentInfo, PutItem, PutOptions, PutResolvedItem, PutResolvedOutcome, Resolved,
-    Store, StoreLocation, StoreOptions, SwapOutcome,
+    CacheTargets, FragmentInfo, GetResolvedItem, PutItem, PutOptions, PutResolvedItem,
+    PutResolvedOutcome, Resolved, Store, StoreLocation, StoreOptions, SwapOutcome,
 };
 
 mod revision_tree;
