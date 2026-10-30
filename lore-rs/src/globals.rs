@@ -1,4 +1,7 @@
-use lore_sys::lore_global_args_t;
+use lore_sys::{
+    lore_auth_mode_t, lore_global_args_t, LORE_AUTH_MODE_AUTO, LORE_AUTH_MODE_GRPC,
+    LORE_AUTH_MODE_OIDC,
+};
 
 use crate::string::raw_str;
 
@@ -122,6 +125,18 @@ pub struct GlobalArgs {
     /// How often a call emits progress events, in milliseconds. Applies
     /// whatever `stats` is set to. Zero is Lore's default.
     pub event_interval_ms: u64,
+    /// Which authentication path to take when the server advertises both
+    /// its gRPC auth service and an OIDC issuer. A path the server does not
+    /// advertise cannot be taken.
+    pub auth_mode: AuthMode,
+    /// Treat the remote as a trusted source, for a caller inside its
+    /// infrastructure where performance comes first: payloads fetched from
+    /// it have only their sizes checked against their length, are never
+    /// hashed, and are decompressed only where their content is read. A
+    /// storage handle binds it at open;
+    /// [`StoreOptions::skip_verify`](crate::StoreOptions::skip_verify) is
+    /// the same switch for one handle.
+    pub trust_remote: bool,
 }
 
 // Written out rather than derived: `identity_token` and `access_token` are
@@ -155,6 +170,8 @@ impl std::fmt::Debug for GlobalArgs {
             .field("store_keep_alive_seconds", &self.store_keep_alive_seconds)
             .field("stats", &self.stats)
             .field("event_interval_ms", &self.event_interval_ms)
+            .field("auth_mode", &self.auth_mode)
+            .field("trust_remote", &self.trust_remote)
             .finish()
     }
 }
@@ -199,6 +216,33 @@ impl GlobalArgs {
             cache: u8::from(self.cache),
             stats: self.stats,
             event_interval_ms: self.event_interval_ms,
+            auth_mode: self.auth_mode.to_raw(),
+            trust_remote: u8::from(self.trust_remote),
+        }
+    }
+}
+
+/// Which authentication path a client takes when a server advertises both
+/// its gRPC auth service and an OIDC issuer: `auth_mode` in
+/// `lore_global_args_t`.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub enum AuthMode {
+    /// The server's preference: the OIDC path if the server marks it
+    /// preferred, the gRPC path otherwise.
+    #[default]
+    Auto,
+    /// The gRPC path, through the auth service at `auth_url`.
+    Grpc,
+    /// The OIDC path, through the advertised OIDC issuer.
+    Oidc,
+}
+
+impl AuthMode {
+    fn to_raw(self) -> lore_auth_mode_t {
+        match self {
+            Self::Auto => LORE_AUTH_MODE_AUTO,
+            Self::Grpc => LORE_AUTH_MODE_GRPC,
+            Self::Oidc => LORE_AUTH_MODE_OIDC,
         }
     }
 }
@@ -284,6 +328,23 @@ mod tests {
         assert_eq!(raw.force, 0);
         assert_eq!(raw.cache, 0, "the default is Lore's all-zero configuration");
         assert_eq!(raw.store_keep_alive, 0);
+        assert_eq!(
+            raw.trust_remote, 0,
+            "fetched payloads are verified unless asked"
+        );
+        assert_eq!(raw.auth_mode, LORE_AUTH_MODE_AUTO);
+    }
+
+    #[test]
+    fn trust_remote_and_auth_mode_reach_lore() {
+        let raw = GlobalArgs {
+            trust_remote: true,
+            auth_mode: AuthMode::Oidc,
+            ..Default::default()
+        }
+        .to_raw();
+        assert_eq!(raw.trust_remote, 1);
+        assert_eq!(raw.auth_mode, LORE_AUTH_MODE_OIDC);
     }
 
     #[test]
