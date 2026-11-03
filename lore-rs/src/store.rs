@@ -144,6 +144,20 @@ pub struct PutResolvedItem<'a> {
     pub options: PutOptions,
 }
 
+/// What [`Store::put`] reported for one buffer it stored.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct PutOutcome {
+    /// Where the content now lives.
+    pub address: Address,
+    /// Whether the local store holds the content.
+    pub stored_local: bool,
+    /// Whether the content reached the remote, or was already durable there.
+    /// Check this, not whether the call succeeded, to confirm other clients
+    /// can read it: a remote write that fails still succeeds here if the
+    /// local write landed.
+    pub stored_remote: bool,
+}
+
 /// What [`Store::put_resolved`] reported for the key it published.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct PutResolvedOutcome {
@@ -307,9 +321,10 @@ impl Store {
         crate::revision_tree::load(self, repository, revision)
     }
 
-    /// Stores one buffer, and returns the address it landed at: the hash of
-    /// the bytes together with [`PutItem::context`]. An empty buffer stores
-    /// nothing and answers with the zero hash.
+    /// Stores one buffer, and reports the address it landed at — the hash of
+    /// the bytes together with [`PutItem::context`] — and which stores now
+    /// hold it, see [`PutOutcome`]. An empty buffer stores nothing and
+    /// answers with the zero hash.
     ///
     /// **A put creates no revision-tree entry.** Nothing in the repository
     /// points at the address afterwards, so the caller has to keep it — in a
@@ -321,7 +336,7 @@ impl Store {
     /// it wrote. See [`Lore::shutdown`](crate::Lore::shutdown).
     ///
     /// This corresponds to `lore_sys::Lore::lore_storage_put` with one item.
-    pub fn put(&self, item: PutItem<'_>) -> Result<Address, LoreError> {
+    pub fn put(&self, item: PutItem<'_>) -> Result<PutOutcome, LoreError> {
         self.put_many(&[item])?
             .into_iter()
             .next()
@@ -346,7 +361,7 @@ impl Store {
     pub fn put_many(
         &self,
         items: &[PutItem<'_>],
-    ) -> Result<Vec<Result<Address, LoreError>>, LoreError> {
+    ) -> Result<Vec<Result<PutOutcome, LoreError>>, LoreError> {
         let raw_items = items
             .iter()
             .enumerate()
@@ -363,7 +378,7 @@ impl Store {
             })
             .collect::<Vec<_>>();
 
-        let mut completions: Vec<Option<(Address, lore_error_code_t)>> = vec![None; items.len()];
+        let mut completions: Vec<Option<(PutOutcome, lore_error_code_t)>> = vec![None; items.len()];
 
         let result = crate::call::storage_put(
             self.lore,
@@ -380,7 +395,8 @@ impl Store {
                     id,
                     address,
                     error_code,
-                    ..
+                    stored_local,
+                    stored_remote,
                 }) = event
                 {
                     // An id from outside the batch leaves the item it was
@@ -389,7 +405,14 @@ impl Store {
                         .ok()
                         .and_then(|index| completions.get_mut(index))
                     {
-                        *slot = Some((Address::from_raw(address), error_code));
+                        *slot = Some((
+                            PutOutcome {
+                                address: Address::from_raw(address),
+                                stored_local,
+                                stored_remote,
+                            },
+                            error_code,
+                        ));
                     }
                 }
             },
@@ -1066,9 +1089,9 @@ impl Store {
 /// Folds what a put reported into one result per item, in the order the items
 /// were given. Kept out of the event callback, which cannot fail the call.
 fn put_outcomes(
-    completions: Vec<Option<(Address, lore_error_code_t)>>,
+    completions: Vec<Option<(PutOutcome, lore_error_code_t)>>,
     result: Result<(), LoreError>,
-) -> Result<Vec<Result<Address, LoreError>>, LoreError> {
+) -> Result<Vec<Result<PutOutcome, LoreError>>, LoreError> {
     // Nothing was said about a missing item, so whatever went wrong with the
     // call stands for the batch.
     if completions.iter().any(Option::is_none) {
@@ -1079,11 +1102,11 @@ fn put_outcomes(
         });
     }
 
-    let outcomes: Vec<Result<Address, LoreError>> = completions
+    let outcomes: Vec<Result<PutOutcome, LoreError>> = completions
         .into_iter()
         .flatten()
-        .map(|(address, code)| match ErrorCode::from_raw(code) {
-            None => Ok(address),
+        .map(|(outcome, code)| match ErrorCode::from_raw(code) {
+            None => Ok(outcome),
             // A put's messages belong to the call and only count its failed
             // items, so an item's code is all there is to report.
             Some(code) => Err(LoreError::Failed {

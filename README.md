@@ -115,11 +115,13 @@ let bytes = store.get(tree.repository(), node.address)?;
 
 // Writing goes through the same handle. Nothing in the repository points at
 // the address afterwards, so it is the caller's to keep.
-let address = store.put(PutItem {
-    repository: info.id,
-    data: b"cooked output",
-    ..Default::default()
-})?;
+let address = store
+    .put(PutItem {
+        repository: info.id,
+        data: b"cooked output",
+        ..Default::default()
+    })?
+    .address;
 ```
 
 Everything the handle types do not cover is reachable through `lore_rs::call`,
