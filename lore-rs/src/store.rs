@@ -18,6 +18,7 @@ use crate::{
 const PUT: &str = "storage::put";
 const PUT_RESOLVED: &str = "storage::put_resolved";
 const METADATA: &str = "storage::get_metadata";
+const GET: &str = "storage::get";
 const GET_RESOLVED: &str = "storage::get_resolved";
 const RESOLVE: &str = "storage::mutable_load";
 const COMPARE_AND_SWAP: &str = "storage::mutable_compare_and_swap";
@@ -158,6 +159,15 @@ pub struct PutResolvedOutcome {
     /// visible to other clients: a remote write that fails still succeeds
     /// here if the local write landed.
     pub stored_remote: bool,
+}
+
+/// One address for [`Store::get_many`] to read in full.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub struct GetItem {
+    /// The partition the read is authorized against, as for [`Store::get`].
+    /// [`RepositoryId::ZERO`] is rejected.
+    pub repository: RepositoryId,
+    pub address: Address,
 }
 
 /// One key for [`Store::get_resolved_many`] to resolve and read, or for
@@ -1024,7 +1034,7 @@ impl Store {
             reassembly.completion.map(|(_, code)| code),
         )?;
 
-        reassembly.finish()
+        reassembly.finish(GET_RESOLVED)
     }
 
     /// Resolves several mutable keys and reads the content each names, in one
@@ -1070,27 +1080,70 @@ impl Store {
             |event| {
                 crate::log_event(&event);
 
-                let Ok(event) = event else {
-                    return;
-                };
-                let id = match event {
-                    Event::StorageGetHeader { id, .. }
-                    | Event::StorageGetData { id, .. }
-                    | Event::StorageGetItemComplete { id, .. } => id,
-                    _ => return,
-                };
-                // An id from outside the batch leaves the item it was meant
-                // for unreported, which fails the batch below.
-                if let Some(reassembly) = usize::try_from(id)
-                    .ok()
-                    .and_then(|index| reassemblies.get_mut(index))
-                {
-                    reassembly.record(event);
+                if let Ok(event) = event {
+                    Reassembly::route(&mut reassemblies, event);
                 }
             },
         );
 
-        get_resolved_outcomes(reassemblies, result)
+        get_outcomes(GET_RESOLVED, reassemblies, result)
+    }
+
+    /// Reads several addresses in full, in one call: [`Self::get`] for a
+    /// batch, which Lore reads concurrently in one FFI round trip rather than
+    /// one per address. The results come back in the order the items were
+    /// given.
+    ///
+    /// **One failed item does not fail the call**, as for [`Self::put_many`]:
+    /// an address neither side holds is [`LoreError::Failed`] with
+    /// [`ErrorCode::AddressNotFound`] in its own slot, and the rest still
+    /// answer. The outer error is left for what goes wrong with the call as a
+    /// whole.
+    ///
+    /// Every item's buffer is held until the call returns, so the whole batch
+    /// is in memory at once. Same rules as [`Self::get`] otherwise.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_storage_get`.
+    #[allow(clippy::type_complexity)]
+    pub fn get_many(
+        &self,
+        items: &[GetItem],
+    ) -> Result<Vec<Result<Vec<u8>, LoreError>>, LoreError> {
+        let mut raw_items = items
+            .iter()
+            .enumerate()
+            .map(|(index, item)| StorageGetItem {
+                // The position is the id, as for `Self::put_many`.
+                id: index as u64,
+                ..self.item(item.repository, item.address, 0, 0, false)
+            })
+            .collect::<Vec<_>>();
+
+        let mut reassemblies: Vec<Reassembly> = Vec::new();
+        reassemblies.resize_with(items.len(), Reassembly::default);
+
+        let result = crate::call::storage_get(
+            self.lore,
+            GET,
+            &self.globals,
+            StorageGetArgs {
+                handle: self.handle,
+                items: &mut raw_items,
+            },
+            |event| {
+                crate::log_event(&event);
+
+                if let Ok(event) = event {
+                    Reassembly::route(&mut reassemblies, event);
+                }
+            },
+        );
+
+        let outcomes = get_outcomes(GET, reassemblies, result)?;
+        Ok(outcomes
+            .into_iter()
+            .map(|outcome| outcome.map(|read| read.data))
+            .collect())
     }
 
     /// Reads one address into `sink`, one Lore fragment at a time, and
@@ -1212,7 +1265,7 @@ impl Store {
     }
 }
 
-/// One resolved read's events, reassembled into its buffer. Fragments are not
+/// One full read's events, reassembled into its buffer. Fragments are not
 /// promised in order, so the buffer is written by offset; see
 /// [`Store::get_range`] for what `covered` and `end` track.
 #[derive(Default)]
@@ -1225,6 +1278,24 @@ struct Reassembly {
 }
 
 impl Reassembly {
+    /// Hands one event of a batch to the item its id names, which is that
+    /// item's position. An id from outside the batch leaves the item it was
+    /// meant for unreported, which fails the batch in [`get_outcomes`].
+    fn route(reassemblies: &mut [Reassembly], event: Event<'_>) {
+        let id = match event {
+            Event::StorageGetHeader { id, .. }
+            | Event::StorageGetData { id, .. }
+            | Event::StorageGetItemComplete { id, .. } => id,
+            _ => return,
+        };
+        if let Some(reassembly) = usize::try_from(id)
+            .ok()
+            .and_then(|index| reassemblies.get_mut(index))
+        {
+            reassembly.record(event);
+        }
+    }
+
     /// Takes one event of this item's sequence; events of other kinds are
     /// ignored.
     fn record(&mut self, event: Event<'_>) {
@@ -1264,30 +1335,30 @@ impl Reassembly {
 
     /// Checks the delivery covered exactly what the header announced. Only
     /// meaningful once the item's own code has been checked.
-    fn finish(self) -> Result<Resolved<Vec<u8>>, LoreError> {
+    fn finish(self, command: &'static str) -> Result<Resolved<Vec<u8>>, LoreError> {
         let data = self.data.ok_or(LoreError::MissingEvent {
-            command: GET_RESOLVED,
+            command,
             expected: "storage_get_header",
         })?;
         let size = data.len() as u64;
 
         if let Some(over) = self.overflow {
             return Err(LoreError::SizeMismatch {
-                command: GET_RESOLVED,
+                command,
                 expected: size,
                 covered: over,
             });
         }
         if self.covered != size || self.end != size {
             return Err(LoreError::SizeMismatch {
-                command: GET_RESOLVED,
+                command,
                 expected: size,
                 covered: self.covered.min(self.end),
             });
         }
 
         let (address, _) = self.completion.ok_or(LoreError::MissingEvent {
-            command: GET_RESOLVED,
+            command,
             expected: "storage_get_item_complete",
         })?;
 
@@ -1335,17 +1406,20 @@ fn put_outcomes(
     Ok(outcomes)
 }
 
-/// Folds what a batch of resolved reads reported into one result per item, in
-/// the order the items were given, by the same rules as [`put_outcomes`].
+/// Folds what a batch of full reads reported into one result per item, in the
+/// order the items were given, by the same rules as [`put_outcomes`]. Serves
+/// both `storage::get` and `storage::get_resolved`, which report items the
+/// same way.
 #[allow(clippy::type_complexity)]
-fn get_resolved_outcomes(
+fn get_outcomes(
+    command: &'static str,
     reassemblies: Vec<Reassembly>,
     result: Result<(), LoreError>,
 ) -> Result<Vec<Result<Resolved<Vec<u8>>, LoreError>>, LoreError> {
     if reassemblies.iter().any(|item| item.completion.is_none()) {
         result?;
         return Err(LoreError::MissingEvent {
-            command: GET_RESOLVED,
+            command,
             expected: "storage_get_item_complete",
         });
     }
@@ -1355,11 +1429,11 @@ fn get_resolved_outcomes(
         .map(|item| {
             let code = item.completion.map(|(_, code)| code);
             match code.and_then(ErrorCode::from_raw) {
-                None => item.finish(),
+                None => item.finish(command),
                 // As for a put, the call's messages only count its failed
                 // items, so an item's code is all there is to report.
                 Some(code) => Err(LoreError::Failed {
-                    command: GET_RESOLVED,
+                    command,
                     code,
                     messages: Vec::new(),
                 }),
@@ -1535,8 +1609,8 @@ mod tests {
         }
     }
 
-    /// Feeds `events` to a batch of `items` the way `get_resolved_many`
-    /// routes them, then folds the batch.
+    /// Feeds `events` to a batch of `items` the way `get_many` and
+    /// `get_resolved_many` route them, then folds the batch.
     #[allow(clippy::type_complexity)]
     fn fold(
         items: usize,
@@ -1546,17 +1620,9 @@ mod tests {
         let mut reassemblies: Vec<Reassembly> = Vec::new();
         reassemblies.resize_with(items, Reassembly::default);
         for event in events {
-            let id = match event {
-                Event::StorageGetHeader { id, .. }
-                | Event::StorageGetData { id, .. }
-                | Event::StorageGetItemComplete { id, .. } => id,
-                _ => unreachable!(),
-            };
-            if let Some(reassembly) = reassemblies.get_mut(id as usize) {
-                reassembly.record(event);
-            }
+            Reassembly::route(&mut reassemblies, event);
         }
-        get_resolved_outcomes(reassemblies, result)
+        get_outcomes(GET_RESOLVED, reassemblies, result)
     }
 
     fn call_failed() -> Result<(), LoreError> {
