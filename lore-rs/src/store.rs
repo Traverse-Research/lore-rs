@@ -1,4 +1,5 @@
 use std::io::Write;
+use std::ops::{Bound, RangeBounds};
 
 use lore_sys::{
     lore_error_code_t, lore_fragment_t, lore_storage_close_args_t, lore_storage_flush_args_t,
@@ -757,13 +758,54 @@ impl Store {
     ///
     /// This corresponds to `lore_sys::Lore::lore_storage_get`.
     pub fn get(&self, repository: RepositoryId, address: Address) -> Result<Vec<u8>, LoreError> {
+        self.get_range(repository, address, ..)
+    }
+
+    /// Reads the bytes of one address that fall in `range`, counted from the
+    /// start of the decompressed content. Lore fetches and decompresses only
+    /// the fragments the range touches, so a small slice of a large item does
+    /// not cost the whole item.
+    ///
+    /// A range reaching past the end of the content is clamped to it, so the
+    /// buffer can be shorter than `range`. A range starting past the end is
+    /// [`LoreError::Failed`] with
+    /// [`ErrorCode::InvalidArguments`](crate::ErrorCode::InvalidArguments).
+    /// An empty range reads as an empty buffer without asking Lore, so it
+    /// says nothing about whether `address` exists. Otherwise the same rules
+    /// as [`Self::get`].
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_storage_get` with `offset`
+    /// and `length` set.
+    pub fn get_range(
+        &self,
+        repository: RepositoryId,
+        address: Address,
+        range: impl RangeBounds<u64>,
+    ) -> Result<Vec<u8>, LoreError> {
         const COMMAND: &str = "storage::get";
+
+        let start = match range.start_bound() {
+            Bound::Included(&start) => start,
+            Bound::Excluded(&start) => start.saturating_add(1),
+            Bound::Unbounded => 0,
+        };
+        // Lore reads a zero `length` as "to the end", so a bounded range that
+        // is empty has to stop here rather than be passed on.
+        let length = match range.end_bound() {
+            Bound::Included(&end) => Some(end.saturating_add(1).saturating_sub(start)),
+            Bound::Excluded(&end) => Some(end.saturating_sub(start)),
+            Bound::Unbounded => None,
+        };
+        if length == Some(0) {
+            return Ok(Vec::new());
+        }
 
         let mut data: Option<Vec<u8>> = None;
         // Fragments are not promised in order, so `data` is written by offset
         // and cannot report progress by its own length. `covered` sums what
         // was written and `end` tracks how far it reached: a response that
         // skipped a range fails one or the other even when its ranges add up.
+        // Both are relative to `start`, as is `data`.
         let mut covered = 0u64;
         let mut end = 0u64;
         let mut overflow = None;
@@ -775,20 +817,32 @@ impl Store {
             &self.globals,
             StorageGetArgs {
                 handle: self.handle,
-                items: &mut [self.item(repository, address, false)],
+                items: &mut [self.item(repository, address, start, length.unwrap_or(0), false)],
             },
             |event| {
                 crate::log_event(&event);
 
                 match event {
                     Ok(Event::StorageGetHeader { size_content, .. }) => {
-                        data = Some(vec![0u8; size_content as usize]);
+                        // The header reports the whole content; the range is
+                        // clamped to it. A start past the end fails the item,
+                        // so the saturation only keeps this from panicking.
+                        let range_end = match length {
+                            Some(length) => start.saturating_add(length).min(size_content),
+                            None => size_content,
+                        };
+                        data = Some(vec![0u8; range_end.saturating_sub(start) as usize]);
                     }
                     Ok(Event::StorageGetData { offset, bytes, .. }) => {
                         let length = bytes.len() as u64;
                         let Some(buffer) = data.as_mut() else {
                             // Data before the header is not a shape Lore
                             // produces; it fails the size check below.
+                            overflow = Some(offset.saturating_add(length));
+                            return;
+                        };
+                        // `offset` is within the whole content, not the range.
+                        let Some(offset) = offset.checked_sub(start) else {
                             overflow = Some(offset.saturating_add(length));
                             return;
                         };
@@ -989,7 +1043,7 @@ impl Store {
             &self.globals,
             StorageGetArgs {
                 handle: self.handle,
-                items: &mut [self.item(repository, address, true)],
+                items: &mut [self.item(repository, address, 0, 0, true)],
             },
             |event| {
                 crate::log_event(&event);
@@ -1045,15 +1099,17 @@ impl Store {
         &self,
         repository: RepositoryId,
         address: Address,
+        offset: u64,
+        length: u64,
         streaming: bool,
     ) -> StorageGetItem<'static> {
         StorageGetItem {
             id: 0,
             partition: repository.to_raw(),
             address: address.to_raw(),
-            // A zeroed offset/length pair reads the whole content.
-            offset: 0,
-            length: 0,
+            // A zero `length` reads to the end of the content.
+            offset,
+            length,
             streaming,
             local_cache: self.local_cache,
             // `Store::get` and `Store::read_to` reassemble through the
