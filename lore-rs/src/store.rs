@@ -160,7 +160,8 @@ pub struct PutResolvedOutcome {
     pub stored_remote: bool,
 }
 
-/// One key for [`Store::get_resolved_many`] to resolve and read.
+/// One key for [`Store::get_resolved_many`] to resolve and read, or for
+/// [`Store::resolve_many`] to resolve alone.
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
 pub struct GetResolvedItem {
     /// The partition the key is resolved and read in, as for
@@ -616,13 +617,73 @@ impl Store {
 
         LoreError::resolve(RESOLVE, result, Some(code))?;
 
-        // The zero hash is how a retracted key is stored.
-        let address = if hash.is_zero() {
-            None
-        } else {
-            Some(Address { hash, context })
-        };
-        Ok(address)
+        Ok(resolved_address(hash, context))
+    }
+
+    /// Resolves several mutable keys in one call: [`Self::resolve`] for a
+    /// batch, which Lore loads concurrently in one FFI round trip rather than
+    /// one per key. The results come back in the order the items were given.
+    ///
+    /// **One failed item does not fail the call**, as for [`Self::put_many`].
+    /// A key with no mapping is `Ok(None)` in its own slot, as it is for
+    /// [`Self::resolve`], and the rest still answer. The outer error is left
+    /// for what goes wrong with the call as a whole.
+    ///
+    /// Same rules as [`Self::resolve`] otherwise, with `backend` applying to
+    /// every item.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_storage_mutable_load` under
+    /// `LORE_KEY_TYPE_RESOLVE`.
+    #[allow(clippy::type_complexity)]
+    pub fn resolve_many(
+        &self,
+        backend: Backend,
+        items: &[GetResolvedItem],
+    ) -> Result<Vec<Result<Option<Address>, LoreError>>, LoreError> {
+        let raw_items = items
+            .iter()
+            .enumerate()
+            .map(|(index, item)| StorageMutableLoadItem {
+                // The position is the id, as for `Self::put_many`.
+                id: index as u64,
+                partition: item.repository.to_raw(),
+                key: item.key.to_raw(),
+                key_type: LORE_KEY_TYPE_RESOLVE,
+            })
+            .collect::<Vec<_>>();
+
+        let mut completions: Vec<Option<(Revision, lore_error_code_t)>> = vec![None; items.len()];
+
+        let result = crate::call::storage_mutable_load(
+            self.lore,
+            RESOLVE,
+            &self.globals.with_backend(backend),
+            StorageMutableLoadArgs {
+                handle: self.handle,
+                items: &raw_items,
+            },
+            |event| {
+                crate::log_event(&event);
+
+                if let Ok(Event::StorageMutableLoadItemComplete {
+                    id,
+                    value,
+                    error_code,
+                }) = event
+                {
+                    // An id from outside the batch leaves the item it was
+                    // meant for unreported, which fails the batch below.
+                    if let Some(slot) = usize::try_from(id)
+                        .ok()
+                        .and_then(|index| completions.get_mut(index))
+                    {
+                        *slot = Some((Revision::from_raw(value), error_code));
+                    }
+                }
+            },
+        );
+
+        resolve_outcomes(items, completions, result)
     }
 
     /// Points `key` at `value`, but only if it still resolves to `expected`:
@@ -1313,6 +1374,64 @@ fn get_resolved_outcomes(
     Ok(outcomes)
 }
 
+/// The address a resolved `hash` names under `context`, [`None`] for the zero
+/// hash, which is how a retracted key is stored.
+fn resolved_address(hash: Revision, context: ContextId) -> Option<Address> {
+    if hash.is_zero() {
+        None
+    } else {
+        Some(Address { hash, context })
+    }
+}
+
+/// Folds what a batch of resolves reported into one result per item, in the
+/// order the items were given, by the same rules as [`put_outcomes`] — except
+/// that a miss is the item's answer, [`None`], rather than its failure.
+#[allow(clippy::type_complexity)]
+fn resolve_outcomes(
+    items: &[GetResolvedItem],
+    completions: Vec<Option<(Revision, lore_error_code_t)>>,
+    result: Result<(), LoreError>,
+) -> Result<Vec<Result<Option<Address>, LoreError>>, LoreError> {
+    if completions.iter().any(Option::is_none) {
+        result?;
+        return Err(LoreError::MissingEvent {
+            command: RESOLVE,
+            expected: "storage_mutable_load_item_complete",
+        });
+    }
+
+    // Lore counts a miss as a failed item too, so the call failure it causes
+    // is accounted for even though the miss itself answers `Ok`.
+    let mut accounted_for = false;
+    let outcomes: Vec<Result<Option<Address>, LoreError>> = items
+        .iter()
+        .zip(completions.into_iter().flatten())
+        .map(|(item, (hash, code))| match ErrorCode::from_raw(code) {
+            None => Ok(resolved_address(hash, item.context)),
+            Some(code) => {
+                accounted_for = true;
+                match code {
+                    ErrorCode::AddressNotFound => Ok(None),
+                    // As for a put, the call's messages only count its failed
+                    // items, so an item's code is all there is to report.
+                    code => Err(LoreError::Failed {
+                        command: RESOLVE,
+                        code,
+                        messages: Vec::new(),
+                    }),
+                }
+            }
+        })
+        .collect();
+
+    if !accounted_for {
+        result?;
+    }
+
+    Ok(outcomes)
+}
+
 /// Turns what a metadata lookup reported into the fragment it found, folding
 /// a miss to [`None`] rather than an error.
 fn metadata_outcome(
@@ -1552,5 +1671,87 @@ mod tests {
     #[test]
     fn an_empty_batch_answers_with_nothing() {
         assert!(fold(0, Vec::new(), Ok(())).unwrap().is_empty());
+    }
+
+    fn resolve_items(contexts: &[u8]) -> Vec<GetResolvedItem> {
+        contexts
+            .iter()
+            .map(|&tag| GetResolvedItem {
+                context: ContextId::new([tag; 16]),
+                ..Default::default()
+            })
+            .collect()
+    }
+
+    #[test]
+    fn resolved_keys_complete_with_their_own_context() {
+        let items = resolve_items(&[1, 2, 3]);
+        let outcomes = resolve_outcomes(
+            &items,
+            vec![
+                Some((Revision::new([7; 32]), LORE_ERROR_CODE_NONE)),
+                Some((Revision::ZERO, LORE_ERROR_CODE_NONE)),
+                Some((Revision::new([9; 32]), LORE_ERROR_CODE_NONE)),
+            ],
+            Ok(()),
+        )
+        .unwrap();
+
+        let outcomes: Vec<_> = outcomes.into_iter().map(Result::unwrap).collect();
+        assert_eq!(
+            outcomes,
+            vec![
+                Some(Address {
+                    hash: Revision::new([7; 32]),
+                    context: items[0].context,
+                }),
+                // A retracted key.
+                None,
+                Some(Address {
+                    hash: Revision::new([9; 32]),
+                    context: items[2].context,
+                }),
+            ]
+        );
+    }
+
+    #[test]
+    fn an_unmapped_key_is_none_without_failing_the_batch() {
+        let outcomes = resolve_outcomes(
+            &resolve_items(&[1, 2]),
+            vec![
+                Some((Revision::ZERO, LORE_ERROR_CODE_ADDRESS_NOT_FOUND)),
+                Some((Revision::new([7; 32]), LORE_ERROR_CODE_NONE)),
+            ],
+            call_failed(),
+        )
+        .unwrap();
+
+        assert_eq!(outcomes[0].as_ref().unwrap(), &None);
+        assert!(outcomes[1].as_ref().unwrap().is_some());
+    }
+
+    #[test]
+    fn an_unresolved_item_fails_the_batch() {
+        let error = resolve_outcomes(
+            &resolve_items(&[1, 2]),
+            vec![Some((Revision::new([7; 32]), LORE_ERROR_CODE_NONE)), None],
+            Ok(()),
+        )
+        .unwrap_err();
+
+        assert!(matches!(error, LoreError::MissingEvent { .. }));
+    }
+
+    #[test]
+    fn a_resolve_call_failure_no_item_accounts_for_fails_the_batch() {
+        let error = resolve_outcomes(
+            &resolve_items(&[1]),
+            vec![Some((Revision::new([7; 32]), LORE_ERROR_CODE_NONE))],
+            call_failed(),
+        )
+        .unwrap_err();
+
+        assert!(matches!(error, LoreError::Call { .. }));
     }
 }
