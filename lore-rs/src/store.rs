@@ -62,11 +62,12 @@ pub struct StoreOptions {
     /// address is a round trip. Lore's storage API takes this per read item;
     /// the store applies it to every read it makes.
     pub local_cache: bool,
-    /// Skip re-hashing a loaded payload to check it against the address it
-    /// was read from. Off, every byte of every read is verified, which is the
-    /// right default for a store nothing else vouches for. Set it when a layer
-    /// of your own already assures integrity, such as a store scrubbed on a
-    /// schedule.
+    /// Trust the remote for this handle, as
+    /// [`GlobalArgs::trust_remote`](crate::GlobalArgs::trust_remote) does for
+    /// every call: payloads fetched from it have only their sizes checked
+    /// against their length and are never hashed. Off, every byte fetched is
+    /// verified, which is the right default for a remote nothing else vouches
+    /// for. Payloads the local store holds are never hashed either way.
     pub skip_verify: bool,
 }
 
@@ -596,8 +597,12 @@ impl Store {
         };
 
         // A miss is this call's answer rather than its failure, as for
-        // `metadata_outcome`.
-        if ErrorCode::from_raw(code) == Some(ErrorCode::AddressNotFound) {
+        // `metadata_outcome`. The local store reports it as an address it
+        // does not hold, the server as a plain miss.
+        if matches!(
+            ErrorCode::from_raw(code),
+            Some(ErrorCode::AddressNotFound | ErrorCode::NotFound)
+        ) {
             return Ok(None);
         }
 
@@ -747,9 +752,9 @@ impl Store {
     ///
     /// The buffer is sized from the header Lore sends first, and a delivery
     /// that does not cover exactly that is [`LoreError::SizeMismatch`]. An
-    /// address neither side holds is [`LoreError::Failed`] with
-    /// [`ErrorCode::AddressNotFound`](crate::ErrorCode::AddressNotFound), see
-    /// [`LoreError::is_not_found`]. The zero hash reads as an empty buffer.
+    /// address neither side holds is [`LoreError::Failed`] with a not-found
+    /// code, see [`LoreError::is_not_found`]. The zero hash reads as an empty
+    /// buffer.
     ///
     /// Lore reassembles the content before handing it over, so the whole
     /// buffer exists twice for a moment; [`Self::read_to`] streams instead.
@@ -901,9 +906,8 @@ impl Store {
     /// the only way to learn the key-to-hash mapping, since Lore does not
     /// otherwise expose it. Same `repository`, buffering and size-check rules
     /// as [`Self::get`]. A key with no mapping, or one naming absent content,
-    /// is [`LoreError::Failed`] with
-    /// [`ErrorCode::AddressNotFound`](crate::ErrorCode::AddressNotFound),
-    /// same as [`Self::get`].
+    /// is [`LoreError::Failed`] with a not-found code, see
+    /// [`LoreError::is_not_found`], same as [`Self::get`].
     ///
     /// `backend` determines which mutable store is used for the resolution of the key.
     /// [`Backend::Default`] will follow the same precedence the store has been opened with:
@@ -940,6 +944,7 @@ impl Store {
                     context: context.to_raw(),
                     streaming: false,
                     local_cache: self.local_cache,
+                    fragments: false,
                 }],
             },
             |event| {

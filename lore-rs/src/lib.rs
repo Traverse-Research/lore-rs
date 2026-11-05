@@ -2,7 +2,7 @@
 //!
 //! Three layers, each usable on its own:
 //!
-//! 1. [`lore_sys`]: the generated bindings, 263 function pointers loaded from
+//! 1. [`lore_sys`]: the generated bindings, 311 function pointers loaded from
 //!    the shared library. Every struct and constant of `lore.h`.
 //! 2. [`call`]: one safe function per Lore command, still shaped like the C
 //!    API — arguments in, [`Event`]s out through a callback — plus
@@ -38,7 +38,7 @@ mod string;
 pub use string::{LoreStringArrayExt, LoreStringExt};
 
 mod globals;
-pub use globals::{Backend, GlobalArgs, RawGlobals, WithBackend};
+pub use globals::{AuthMode, Backend, GlobalArgs, RawGlobals, WithBackend};
 
 mod event;
 pub use event::{log_event, Event};

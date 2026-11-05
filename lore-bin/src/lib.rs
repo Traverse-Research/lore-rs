@@ -6,7 +6,7 @@ use std::{
 /// The Lore release the bindings are generated for, and so the one whose
 /// binaries to download. Must match the tag the `lore` submodule is pinned to,
 /// CI verifies this.
-pub const LORE_VERSION: &str = "0.10.0";
+pub const LORE_VERSION: &str = "0.12.0";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Target {

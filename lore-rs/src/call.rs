@@ -207,8 +207,9 @@ where
 }
 
 /// Arguments for [`auth_login_with_token`].
-// `Debug` is written out below rather than derived: `token` is a credential,
-// and a derive would put it in any log line that formats these arguments.
+// `Debug` is written out below rather than derived: `token` and
+// `client_secret` are credentials, and a derive would put them in any log
+// line that formats these arguments.
 #[derive(Default, Clone, Copy)]
 pub struct AuthLoginWithTokenArgs<'a> {
     /// Server to log in against, as `lore://host:port`. Empty resolves it from
@@ -224,6 +225,13 @@ pub struct AuthLoginWithTokenArgs<'a> {
     /// is validated against this domain instead. Required when there is no
     /// server to ask.
     pub auth_url: &'a str,
+    /// Client id of a confidential client registered with the auth service.
+    /// Set, the login is as that client with `client_secret`, and `token`
+    /// and `token_type` must be empty.
+    pub client_id: &'a str,
+    /// Secret of the client `client_id` names. A credential, kept out of
+    /// `Debug` like `token`.
+    pub client_secret: &'a str,
 }
 
 impl std::fmt::Debug for AuthLoginWithTokenArgs<'_> {
@@ -233,6 +241,8 @@ impl std::fmt::Debug for AuthLoginWithTokenArgs<'_> {
             .field("token", &"[token]")
             .field("token_type", &self.token_type)
             .field("auth_url", &self.auth_url)
+            .field("client_id", &self.client_id)
+            .field("client_secret", &"[secret]")
             .finish()
     }
 }
@@ -245,12 +255,16 @@ impl AuthLoginWithTokenArgs<'_> {
             token: raw_str(self.token),
             token_type: raw_str(self.token_type),
             auth_url: raw_str(self.auth_url),
+            client_id: raw_str(self.client_id),
+            client_secret: raw_str(self.client_secret),
         }
     }
 }
 
 /// Logs in with a token obtained elsewhere, storing the Lore token it is
 /// exchanged for on [`Event::AuthUserInfo`], which a success always emits.
+/// With `args.client_id` set it logs in as that confidential client with its
+/// secret instead, and the token fields must be empty.
 ///
 /// The token store this writes is per OS user, not per process or per
 /// repository: it is the same one Lore's own CLI reads and writes, and a login
@@ -522,8 +536,10 @@ pub struct StorageOpenArgs<'a> {
     pub cache_target_bytes: u64,
     /// Soft cap on the immutable-store fragment count; zero selects the default.
     pub cache_target_fragments: u64,
-    /// Skip re-hashing a loaded payload to check it against the address it
-    /// was read from. Applies to every read on the handle.
+    /// Alias of [`GlobalArgs::trust_remote`] for this handle: it trusts its
+    /// remote when either is set, so payloads fetched from it have only their
+    /// sizes checked against their length and are never hashed. Payloads the
+    /// local store holds are never hashed either way.
     pub skip_verify: bool,
 }
 
@@ -993,6 +1009,13 @@ pub struct StorageGetResolvedItem {
     /// Keep bytes fetched from a remote in the local store even when the
     /// producer did not flag them for local caching.
     pub local_cache: bool,
+    /// Deliver one `LORE_EVENT_STORAGE_GET_FRAGMENT` per leaf fragment in
+    /// content order in place of [`Event::StorageGetData`], each carrying the
+    /// leaf's fragment and its payload as stored, with `streaming` ignored.
+    /// No leaf is expanded or checked against its hash. [`Event`] has no
+    /// variant for it yet, so the fragments reach a callback as
+    /// [`Event::Other`].
+    pub fragments: bool,
 }
 
 impl StorageGetResolvedItem {
@@ -1006,6 +1029,7 @@ impl StorageGetResolvedItem {
             context: self.context,
             streaming: u8::from(self.streaming),
             local_cache: u8::from(self.local_cache),
+            fragments: u8::from(self.fragments),
             // No caller-supplied buffer, which is what selects delivery
             // through `Event::StorageGetData`.
             data_out: lore_bytes_mut_t {
@@ -1063,8 +1087,8 @@ impl StorageGetResolvedArgs<'_> {
 ///
 /// The `address` on every event is the *resolved* address, so a caller can
 /// learn the key-to-hash mapping from the event stream. A key with no
-/// mapping, or one naming absent content, reports
-/// [`ErrorCode::AddressNotFound`](crate::ErrorCode::AddressNotFound) on the
+/// mapping, or one naming absent content, reports a not-found code, see
+/// [`LoreError::is_not_found`](crate::LoreError::is_not_found), on the
 /// item's [`Event::StorageGetItemComplete`], which then carries a zero
 /// address.
 ///
@@ -1271,7 +1295,9 @@ impl StorageMutableLoadArgs<'_> {
 /// fallthrough: the default and `globals.local`/`globals.offline` read the
 /// handle's local mutable store only, and `globals.remote` (or a handle bound
 /// to it) reads the server's only. A key with no stored value completes with
-/// [`ErrorCode::AddressNotFound`](crate::ErrorCode::AddressNotFound).
+/// [`ErrorCode::AddressNotFound`](crate::ErrorCode::AddressNotFound) from the
+/// local store and [`ErrorCode::NotFound`](crate::ErrorCode::NotFound) from
+/// the server's.
 ///
 /// This corresponds to `lore_sys::Lore::lore_storage_mutable_load`.
 pub fn storage_mutable_load(
@@ -2247,6 +2273,12 @@ pub struct RevisionSyncArgs<'a> {
     pub dependency_recursive: bool,
     /// Deepest dependency traversal; zero is unlimited.
     pub dependency_depth_limit: u32,
+    /// View filter file to leave the working files materialized under, which
+    /// changes the subset of the repository that is on disk and carries the
+    /// working tree to what the new view holds. Empty keeps the view the
+    /// instance holds. Lore refuses it together with `reset` or `root_files`,
+    /// and when the sync would merge a diverged branch.
+    pub view: &'a str,
 }
 
 impl RevisionSyncArgs<'_> {
@@ -2265,6 +2297,7 @@ impl RevisionSyncArgs<'_> {
             dependency_tags: raw_str_array(dependency_tags),
             dependency_recursive: u8::from(self.dependency_recursive),
             dependency_depth_limit: self.dependency_depth_limit,
+            view: raw_str(self.view),
         }
     }
 }
@@ -2401,6 +2434,29 @@ mod tests {
         assert_eq!(unsafe { raw.token_type.try_to_str() }, Ok("eg1"));
         assert!(raw.remote_url.string.is_null());
         assert!(raw.auth_url.string.is_null());
+        assert!(raw.client_id.string.is_null());
+        assert!(raw.client_secret.string.is_null());
+    }
+
+    #[test]
+    fn revision_sync_args_conversion() {
+        let args = RevisionSyncArgs {
+            revision: "main@latest",
+            view: "views/art.view",
+            ..Default::default()
+        };
+        let raw = args.to_raw(&[], &[]);
+        assert_eq!(unsafe { raw.revision.try_to_str() }, Ok("main@latest"));
+        assert_eq!(unsafe { raw.view.try_to_str() }, Ok("views/art.view"));
+    }
+
+    #[test]
+    fn revision_sync_args_without_a_view_pass_a_null_pointer() {
+        // An empty view keeps the one the instance holds, which lore tells
+        // from unset rather than from a pointer to zero bytes.
+        let raw = RevisionSyncArgs::default().to_raw(&[], &[]);
+        assert!(raw.view.string.is_null());
+        assert_eq!(raw.view.length, 0);
     }
 
     #[test]
@@ -2410,12 +2466,19 @@ mod tests {
             AuthLoginWithTokenArgs {
                 token: "eg1~token",
                 token_type: "eg1",
+                client_id: "client-id",
+                client_secret: "client-secret",
                 ..Default::default()
             }
         );
 
         assert!(!printed.contains("eg1~token"), "{printed}");
+        assert!(!printed.contains("client-secret"), "{printed}");
         assert!(printed.contains("eg1"), "the type is not a secret");
+        assert!(
+            printed.contains("client-id"),
+            "the client id is not a secret"
+        );
     }
 
     #[test]

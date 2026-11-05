@@ -3,9 +3,18 @@ use lore_sys::{
     LORE_ERROR_CODE_INVALID_ARGUMENTS, LORE_ERROR_CODE_NONE, LORE_ERROR_CODE_SLOW_DOWN,
 };
 
+/// Codes of Lore's error registry that `lore_error_code_t` in `lore.h` does
+/// not name, numbered as `LoreError` in Lore's `lore-revision/src/interface.rs`
+/// numbers them.
+const LORE_ERROR_CODE_PAYLOAD_NOT_FOUND: lore_error_code_t = 81;
+const LORE_ERROR_CODE_NOT_FOUND: lore_error_code_t = 101;
+
 /// The outcome Lore attaches to a terminal event: `lore_error_code_t` as an
-/// enum. These are per-item codes (a storage item, a tree lookup), distinct
-/// from the FFI status a whole call returns.
+/// enum. A storage item reports its own FFI code, the same numbering a whole
+/// call's status uses, of which `lore.h` names five and Lore's registry more:
+/// the ones a store read runs into are named here, and the rest are
+/// [`Self::Other`], an oversized buffer (118) among them. A tree lookup
+/// reports one of the five values of the C enum.
 ///
 /// [`Self::Other`] rather than `#[non_exhaustive]`: the C type is an integer,
 /// so an unknown value is a runtime possibility and the caller should be able
@@ -15,8 +24,15 @@ pub enum ErrorCode {
     /// The arguments were invalid. Lore also folds "no such path" in a
     /// revision tree into this one.
     InvalidArguments,
-    /// Neither the local store nor the remote holds the address.
+    /// Neither the local store nor the remote holds the address. A mutable
+    /// key with no value reports this from the local store.
     AddressNotFound,
+    /// The address is known but no store that was asked holds its payload,
+    /// which is what a read of absent content reports.
+    PayloadNotFound,
+    /// The server reported a miss: what a mutable key with no value reports
+    /// from the remote store.
+    NotFound,
     Internal,
     /// The backing store is overloaded; retry later.
     SlowDown,
@@ -30,6 +46,8 @@ impl ErrorCode {
             LORE_ERROR_CODE_NONE => return None,
             LORE_ERROR_CODE_INVALID_ARGUMENTS => Self::InvalidArguments,
             LORE_ERROR_CODE_ADDRESS_NOT_FOUND => Self::AddressNotFound,
+            LORE_ERROR_CODE_PAYLOAD_NOT_FOUND => Self::PayloadNotFound,
+            LORE_ERROR_CODE_NOT_FOUND => Self::NotFound,
             LORE_ERROR_CODE_INTERNAL => Self::Internal,
             LORE_ERROR_CODE_SLOW_DOWN => Self::SlowDown,
             other => Self::Other(other),
@@ -42,6 +60,8 @@ impl std::fmt::Display for ErrorCode {
         match self {
             Self::InvalidArguments => f.write_str("invalid arguments"),
             Self::AddressNotFound => f.write_str("address not found"),
+            Self::PayloadNotFound => f.write_str("payload not found"),
+            Self::NotFound => f.write_str("not found"),
             Self::Internal => f.write_str("internal error"),
             Self::SlowDown => f.write_str("slow down (rate limited)"),
             Self::Other(code) => write!(f, "unknown error code {code}"),
@@ -115,12 +135,12 @@ pub enum LoreError {
 
 impl LoreError {
     /// Whether Lore reported that neither the local store nor the remote
-    /// holds the address that was asked for.
+    /// holds what was asked for: the address, or the payload it names.
     pub fn is_not_found(&self) -> bool {
         matches!(
             self,
             Self::Failed {
-                code: ErrorCode::AddressNotFound,
+                code: ErrorCode::AddressNotFound | ErrorCode::PayloadNotFound,
                 ..
             }
         )
@@ -229,5 +249,26 @@ impl std::error::Error for LoreError {
 impl From<libloading::Error> for LoreError {
     fn from(error: libloading::Error) -> Self {
         Self::Load(error)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn a_missing_payload_is_not_found() {
+        assert_eq!(ErrorCode::from_raw(81), Some(ErrorCode::PayloadNotFound));
+        assert_eq!(ErrorCode::from_raw(101), Some(ErrorCode::NotFound));
+
+        let failed = |code| LoreError::Failed {
+            command: "storage::get",
+            code,
+            messages: Vec::new(),
+        };
+        assert!(failed(ErrorCode::AddressNotFound).is_not_found());
+        assert!(failed(ErrorCode::PayloadNotFound).is_not_found());
+        assert!(!failed(ErrorCode::NotFound).is_not_found());
+        assert!(!failed(ErrorCode::Other(118)).is_not_found());
     }
 }
