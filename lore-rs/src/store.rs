@@ -3,7 +3,7 @@ use std::ops::{Bound, RangeBounds};
 
 use lore_sys::{
     lore_error_code_t, lore_fragment_t, lore_storage_close_args_t, lore_storage_flush_args_t,
-    lore_store_t, LORE_KEY_TYPE_RESOLVE,
+    lore_store_t, LORE_ERROR_CODE_NONE, LORE_KEY_TYPE_RESOLVE,
 };
 
 use crate::{
@@ -168,6 +168,36 @@ pub struct GetItem {
     /// [`RepositoryId::ZERO`] is rejected.
     pub repository: RepositoryId,
     pub address: Address,
+}
+
+/// One address for [`Store::get_range_many`] to read part of.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub struct GetRangeItem {
+    /// The partition the read is authorized against, as for [`Store::get`].
+    /// [`RepositoryId::ZERO`] is rejected.
+    pub repository: RepositoryId,
+    pub address: Address,
+    /// First byte to read, counted from the start of the decompressed
+    /// content.
+    pub offset: u64,
+    /// How many bytes to read from `offset`, [`None`] to read to the end.
+    /// `Some(0)` reads as an empty buffer without asking Lore, as an empty
+    /// range does for [`Store::get_range`].
+    pub length: Option<u64>,
+}
+
+impl GetRangeItem {
+    /// The item reading the bytes of `address` that fall in `range`, as
+    /// [`Store::get_range`] takes it.
+    pub fn new(repository: RepositoryId, address: Address, range: impl RangeBounds<u64>) -> Self {
+        let (offset, length) = span(range);
+        Self {
+            repository,
+            address,
+            offset,
+            length,
+        }
+    }
 }
 
 /// One key for [`Store::get_resolved_many`] to resolve and read, or for
@@ -866,38 +896,18 @@ impl Store {
         address: Address,
         range: impl RangeBounds<u64>,
     ) -> Result<Vec<u8>, LoreError> {
-        const COMMAND: &str = "storage::get";
-
-        let start = match range.start_bound() {
-            Bound::Included(&start) => start,
-            Bound::Excluded(&start) => start.saturating_add(1),
-            Bound::Unbounded => 0,
-        };
+        let (start, length) = span(range);
         // Lore reads a zero `length` as "to the end", so a bounded range that
         // is empty has to stop here rather than be passed on.
-        let length = match range.end_bound() {
-            Bound::Included(&end) => Some(end.saturating_add(1).saturating_sub(start)),
-            Bound::Excluded(&end) => Some(end.saturating_sub(start)),
-            Bound::Unbounded => None,
-        };
         if length == Some(0) {
             return Ok(Vec::new());
         }
 
-        let mut data: Option<Vec<u8>> = None;
-        // Fragments are not promised in order, so `data` is written by offset
-        // and cannot report progress by its own length. `covered` sums what
-        // was written and `end` tracks how far it reached: a response that
-        // skipped a range fails one or the other even when its ranges add up.
-        // Both are relative to `start`, as is `data`.
-        let mut covered = 0u64;
-        let mut end = 0u64;
-        let mut overflow = None;
-        let mut outcome: Option<lore_error_code_t> = None;
+        let mut reassembly = Reassembly::ranged(start, length);
 
         let result = crate::call::storage_get(
             self.lore,
-            COMMAND,
+            GET,
             &self.globals,
             StorageGetArgs {
                 handle: self.handle,
@@ -906,74 +916,14 @@ impl Store {
             |event| {
                 crate::log_event(&event);
 
-                match event {
-                    Ok(Event::StorageGetHeader { size_content, .. }) => {
-                        // The header reports the whole content; the range is
-                        // clamped to it. A start past the end fails the item,
-                        // so the saturation only keeps this from panicking.
-                        let range_end = match length {
-                            Some(length) => start.saturating_add(length).min(size_content),
-                            None => size_content,
-                        };
-                        data = Some(vec![0u8; range_end.saturating_sub(start) as usize]);
-                    }
-                    Ok(Event::StorageGetData { offset, bytes, .. }) => {
-                        let length = bytes.len() as u64;
-                        let Some(buffer) = data.as_mut() else {
-                            // Data before the header is not a shape Lore
-                            // produces; it fails the size check below.
-                            overflow = Some(offset.saturating_add(length));
-                            return;
-                        };
-                        // `offset` is within the whole content, not the range.
-                        let Some(offset) = offset.checked_sub(start) else {
-                            overflow = Some(offset.saturating_add(length));
-                            return;
-                        };
-                        let size = buffer.len() as u64;
-                        let Some(range_end) = offset
-                            .checked_add(length)
-                            .filter(|range_end| *range_end <= size)
-                        else {
-                            overflow = Some(offset.saturating_add(length));
-                            return;
-                        };
-
-                        buffer[offset as usize..range_end as usize].copy_from_slice(bytes);
-                        covered += length;
-                        end = end.max(range_end);
-                    }
-                    Ok(Event::StorageGetItemComplete { error_code, .. }) => {
-                        outcome = Some(error_code);
-                    }
-                    _ => {}
+                if let Ok(event) = event {
+                    reassembly.record(event);
                 }
             },
         );
-        LoreError::resolve(COMMAND, result, outcome)?;
+        LoreError::resolve(GET, result, reassembly.completion.map(|(_, code)| code))?;
 
-        let data = data.ok_or(LoreError::MissingEvent {
-            command: COMMAND,
-            expected: "storage_get_header",
-        })?;
-        let size = data.len() as u64;
-
-        if let Some(over) = overflow {
-            return Err(LoreError::SizeMismatch {
-                command: COMMAND,
-                expected: size,
-                covered: over,
-            });
-        }
-        if covered != size || end != size {
-            return Err(LoreError::SizeMismatch {
-                command: COMMAND,
-                expected: size,
-                covered: covered.min(end),
-            });
-        }
-
-        Ok(data)
+        Ok(reassembly.finish(GET)?.data)
     }
 
     /// Resolves a mutable key and reads the content it names, in one call:
@@ -1109,35 +1059,80 @@ impl Store {
         &self,
         items: &[GetItem],
     ) -> Result<Vec<Result<Vec<u8>, LoreError>>, LoreError> {
-        let mut raw_items = items
+        let items = items
             .iter()
-            .enumerate()
-            .map(|(index, item)| StorageGetItem {
-                // The position is the id, as for `Self::put_many`.
-                id: index as u64,
-                ..self.item(item.repository, item.address, 0, 0, false)
+            .map(|item| GetRangeItem::new(item.repository, item.address, ..))
+            .collect::<Vec<_>>();
+        self.get_range_many(&items)
+    }
+
+    /// Reads part of several addresses in one call: [`Self::get_range`] for a
+    /// batch, as [`Self::get_many`] is [`Self::get`] for one. The results come
+    /// back in the order the items were given, and one failed item does not
+    /// fail the call.
+    ///
+    /// There is no ranged counterpart of [`Self::get_resolved_many`], as Lore
+    /// cannot read part of what a key resolves to. Resolve the keys with
+    /// [`Self::resolve_many`] first, and read the ranges of the addresses
+    /// they answer here.
+    ///
+    /// Same rules as [`Self::get_range`] for each item's range, and as
+    /// [`Self::get_many`] otherwise.
+    ///
+    /// This corresponds to `lore_sys::Lore::lore_storage_get` with `offset`
+    /// and `length` set.
+    #[allow(clippy::type_complexity)]
+    pub fn get_range_many(
+        &self,
+        items: &[GetRangeItem],
+    ) -> Result<Vec<Result<Vec<u8>, LoreError>>, LoreError> {
+        let mut reassemblies = items
+            .iter()
+            .map(|item| match item.length {
+                // Lore would read a zero `length` to the end, so an empty
+                // range answers here and stays out of the call.
+                Some(0) => Reassembly::empty(item.address),
+                length => Reassembly::ranged(item.offset, length),
             })
             .collect::<Vec<_>>();
 
-        let mut reassemblies: Vec<Reassembly> = Vec::new();
-        reassemblies.resize_with(items.len(), Reassembly::default);
+        let mut raw_items = items
+            .iter()
+            .enumerate()
+            .filter(|(_, item)| item.length != Some(0))
+            .map(|(index, item)| StorageGetItem {
+                // The position is the id, as for `Self::put_many`.
+                id: index as u64,
+                ..self.item(
+                    item.repository,
+                    item.address,
+                    item.offset,
+                    item.length.unwrap_or(0),
+                    false,
+                )
+            })
+            .collect::<Vec<_>>();
 
-        let result = crate::call::storage_get(
-            self.lore,
-            GET,
-            &self.globals,
-            StorageGetArgs {
-                handle: self.handle,
-                items: &mut raw_items,
-            },
-            |event| {
-                crate::log_event(&event);
+        let result = if raw_items.is_empty() {
+            Ok(())
+        } else {
+            crate::call::storage_get(
+                self.lore,
+                GET,
+                &self.globals,
+                StorageGetArgs {
+                    handle: self.handle,
+                    items: &mut raw_items,
+                },
+                |event| {
+                    crate::log_event(&event);
 
-                if let Ok(event) = event {
-                    Reassembly::route(&mut reassemblies, event);
-                }
-            },
-        );
+                    if let Ok(event) = event {
+                        Reassembly::route(&mut reassemblies, event);
+                    }
+                },
+            )
+        };
 
         let outcomes = get_outcomes(GET, reassemblies, result)?;
         Ok(outcomes
@@ -1265,12 +1260,20 @@ impl Store {
     }
 }
 
-/// One full read's events, reassembled into its buffer. Fragments are not
-/// promised in order, so the buffer is written by offset; see
-/// [`Store::get_range`] for what `covered` and `end` track.
+/// One read's events, reassembled into its buffer: the whole content by
+/// default, or the range [`Self::ranged`] names.
 #[derive(Default)]
 struct Reassembly {
+    /// Where the range starts within the content, which `data` and the
+    /// counts below are relative to.
+    start: u64,
+    /// The range's length, [`None`] to the end of the content.
+    length: Option<u64>,
     data: Option<Vec<u8>>,
+    // Fragments are not promised in order, so `data` is written by offset and
+    // cannot report progress by its own length. `covered` sums what was
+    // written and `end` tracks how far it reached: a response that skipped a
+    // range fails one or the other even when its ranges add up.
     covered: u64,
     end: u64,
     overflow: Option<u64>,
@@ -1278,6 +1281,23 @@ struct Reassembly {
 }
 
 impl Reassembly {
+    fn ranged(start: u64, length: Option<u64>) -> Self {
+        Self {
+            start,
+            length,
+            ..Self::default()
+        }
+    }
+
+    /// An empty range of `address`, answered without asking Lore.
+    fn empty(address: Address) -> Self {
+        Self {
+            data: Some(Vec::new()),
+            completion: Some((address, LORE_ERROR_CODE_NONE)),
+            ..Self::default()
+        }
+    }
+
     /// Hands one event of a batch to the item its id names, which is that
     /// item's position. An id from outside the batch leaves the item it was
     /// meant for unreported, which fails the batch in [`get_outcomes`].
@@ -1301,11 +1321,25 @@ impl Reassembly {
     fn record(&mut self, event: Event<'_>) {
         match event {
             Event::StorageGetHeader { size_content, .. } => {
-                self.data = Some(vec![0u8; size_content as usize]);
+                // The header reports the whole content; the range is clamped
+                // to it. A start past the end fails the item, so the
+                // saturation only keeps this from panicking.
+                let range_end = match self.length {
+                    Some(length) => self.start.saturating_add(length).min(size_content),
+                    None => size_content,
+                };
+                self.data = Some(vec![0u8; range_end.saturating_sub(self.start) as usize]);
             }
             Event::StorageGetData { offset, bytes, .. } => {
                 let length = bytes.len() as u64;
                 let Some(buffer) = self.data.as_mut() else {
+                    // Data before the header is not a shape Lore produces; it
+                    // fails the size check in `Self::finish`.
+                    self.overflow = Some(offset.saturating_add(length));
+                    return;
+                };
+                // `offset` is within the whole content, not the range.
+                let Some(offset) = offset.checked_sub(self.start) else {
                     self.overflow = Some(offset.saturating_add(length));
                     return;
                 };
@@ -1364,6 +1398,22 @@ impl Reassembly {
 
         Ok(Resolved { address, data })
     }
+}
+
+/// Where `range` starts and how long it is, [`None`] for a range that runs to
+/// the end of the content.
+fn span(range: impl RangeBounds<u64>) -> (u64, Option<u64>) {
+    let start = match range.start_bound() {
+        Bound::Included(&start) => start,
+        Bound::Excluded(&start) => start.saturating_add(1),
+        Bound::Unbounded => 0,
+    };
+    let length = match range.end_bound() {
+        Bound::Included(&end) => Some(end.saturating_add(1).saturating_sub(start)),
+        Bound::Excluded(&end) => Some(end.saturating_sub(start)),
+        Bound::Unbounded => None,
+    };
+    (start, length)
 }
 
 /// Folds what a put reported into one result per item, in the order the items
@@ -1578,7 +1628,7 @@ impl Drop for Store {
 
 #[cfg(test)]
 mod tests {
-    use lore_sys::{LORE_ERROR_CODE_ADDRESS_NOT_FOUND, LORE_ERROR_CODE_NONE};
+    use lore_sys::LORE_ERROR_CODE_ADDRESS_NOT_FOUND;
 
     use super::*;
 
@@ -1737,6 +1787,88 @@ mod tests {
     #[test]
     fn an_empty_batch_answers_with_nothing() {
         assert!(fold(0, Vec::new(), Ok(())).unwrap().is_empty());
+    }
+
+    #[test]
+    fn spans_follow_the_range_bounds() {
+        assert_eq!(span(..), (0, None));
+        assert_eq!(span(4..), (4, None));
+        assert_eq!(span(4..10), (4, Some(6)));
+        assert_eq!(span(4..=10), (4, Some(7)));
+        assert_eq!(span(..3), (0, Some(3)));
+        // A reversed range is empty rather than wrapping.
+        assert_eq!(
+            span((Bound::Included(10), Bound::Excluded(4))),
+            (10, Some(0))
+        );
+    }
+
+    #[test]
+    fn ranged_items_land_relative_to_their_own_start() {
+        // A 6-byte item read from 2 to the end, and a 10-byte one read from 4
+        // for 3 bytes, interleaved.
+        let mut reassemblies = vec![Reassembly::ranged(2, None), Reassembly::ranged(4, Some(3))];
+        for event in [
+            header(1, 10),
+            header(0, 6),
+            data(0, 4, b"ef"),
+            data(1, 4, b"xyz"),
+            data(0, 2, b"cd"),
+            complete(0, address(1), LORE_ERROR_CODE_NONE),
+            complete(1, address(2), LORE_ERROR_CODE_NONE),
+        ] {
+            Reassembly::route(&mut reassemblies, event);
+        }
+
+        let outcomes = get_outcomes(GET, reassemblies, Ok(())).unwrap();
+        assert_eq!(outcomes[0].as_ref().unwrap().data, b"cdef");
+        assert_eq!(outcomes[1].as_ref().unwrap().data, b"xyz");
+    }
+
+    #[test]
+    fn a_range_past_the_end_is_clamped() {
+        let mut reassemblies = vec![Reassembly::ranged(3, Some(100))];
+        for event in [
+            header(0, 5),
+            data(0, 3, b"de"),
+            complete(0, address(1), LORE_ERROR_CODE_NONE),
+        ] {
+            Reassembly::route(&mut reassemblies, event);
+        }
+
+        let outcomes = get_outcomes(GET, reassemblies, Ok(())).unwrap();
+        assert_eq!(outcomes[0].as_ref().unwrap().data, b"de");
+    }
+
+    #[test]
+    fn data_before_the_range_fails_its_item() {
+        let mut reassemblies = vec![Reassembly::ranged(4, None)];
+        for event in [
+            header(0, 6),
+            data(0, 2, b"cdef"),
+            complete(0, address(1), LORE_ERROR_CODE_NONE),
+        ] {
+            Reassembly::route(&mut reassemblies, event);
+        }
+
+        let outcomes = get_outcomes(GET, reassemblies, Ok(())).unwrap();
+        assert!(matches!(outcomes[0], Err(LoreError::SizeMismatch { .. })));
+    }
+
+    #[test]
+    fn an_empty_range_answers_without_events() {
+        let mut reassemblies = vec![Reassembly::empty(address(1)), Reassembly::default()];
+        for event in [
+            header(1, 2),
+            data(1, 0, b"ok"),
+            complete(1, address(2), LORE_ERROR_CODE_NONE),
+        ] {
+            Reassembly::route(&mut reassemblies, event);
+        }
+
+        let outcomes = get_outcomes(GET, reassemblies, Ok(())).unwrap();
+        assert_eq!(outcomes[0].as_ref().unwrap().data, b"");
+        assert_eq!(outcomes[1].as_ref().unwrap().data, b"ok");
     }
 
     fn resolve_items(contexts: &[u8]) -> Vec<GetResolvedItem> {
